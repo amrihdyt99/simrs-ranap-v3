@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class DaftarMasalah extends Model
+{
+    use HasFactory;
+
+    protected $table = 'rs_m_daftar_masalah';
+    protected $primaryKey = 'masalah_kode';
+    protected $connection = 'mysql';
+}

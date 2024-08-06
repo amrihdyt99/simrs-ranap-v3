@@ -1,0 +1,1 @@
+@include('new_perawat.nursing.nurse_note_new')

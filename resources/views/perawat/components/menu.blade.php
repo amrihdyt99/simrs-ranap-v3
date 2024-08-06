@@ -1,0 +1,4 @@
+<a href="{{route('perawat.patient.summary',['reg_no'=>$registrationInap->reg_no])}}" class="btn text-sm btn-outline-primary mb-2 {{\Illuminate\Support\Facades\Request::route()->getName() === 'perawat.patient.summary' ? 'active' : ''}}" style="width: 100%">Patient Summary</a>
+<a href="{{route('perawat.patient.diagnose',['reg_no'=>$registrationInap->reg_no])}}" class="btn text-sm btn-outline-primary mb-2 {{\Illuminate\Support\Facades\Request::route()->getName() === 'perawat.patient.diagnose' ? 'active' : ''}}" style="width: 100%">Diagnose</a>
+<a href="{{route('perawat.patient.nursing',['reg_no'=>$registrationInap->reg_no])}}" class="btn text-sm btn-outline-primary mb-2 {{\Illuminate\Support\Facades\Request::route()->getName() === 'perawat.patient.nursing' ? 'active' : ''}}" style="width: 100%">Nursing</a>
+<a href="" class="btn text-sm btn-outline-primary mb-2" style="width: 100%">Print Tools</a>

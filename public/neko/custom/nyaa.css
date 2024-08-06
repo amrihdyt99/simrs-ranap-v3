@@ -1,0 +1,26 @@
+.dtsp-emptyMessage{display:none}table td,table th{font-size:12px;vertical-align:middle;}
+.bootstrap-datetimepicker-widget {
+  z-index: 9999;
+  color: #495057;
+  background-color: #fff;
+  border-color: #a9b5c9;
+  outline: 0;
+  box-shadow: 0 0 0 2px #a4afc4;
+}
+.frac {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  letter-spacing: 0.001em;
+  text-align: center;
+}
+.frac > span {
+  display: block;
+  padding: 0.1em;
+}
+.frac span.bottom {
+  border-top: thin solid black;
+}
+.frac span.symbol {
+  display: none;
+}

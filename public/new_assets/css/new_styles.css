@@ -1,0 +1,479 @@
+::-webkit-scrollbar{
+    height: 10px;
+    width: 10px;
+    background: gray;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+background: #f1f1f1; 
+    margin-top: 50px !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888; 
+    margin-top: 50px !important;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555; 
+    margin-top: 50px !important;
+}
+
+::-webkit-scrollbar-thumb:horizontal{
+    background: rgb(124, 124, 124);
+    border-radius: 10px;
+    margin-top: 50px !important;
+}
+
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #5cbc7c !important;
+    border-radius: 50px !important;
+    padding: 8px !important;
+    width: 300px !important;
+}
+.btn-small {
+  font-size: 12px;
+  color: white;
+  padding: 3px 14px;
+}
+.breadcrumb {
+  background-color: transparent;
+}
+.text-header-panel {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+.active-tab {
+  background: #24db51 !important;
+  background: -webkit-linear-gradient(to right, #2ad727, #0ede50) !important; 
+  background: linear-gradient(to right, #2ad727, #0ede50) !important; 
+  color: white;
+}
+.btn-second {
+  background-color: rgb(236, 231, 231)
+}
+.tab-assesment {
+    background-color: blueviolet;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px 5px 0px 0px !important;
+}
+.tab-soap {
+    background-color: rgb(226, 43, 43);
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px 5px 0px 0px !important;
+}
+.btn-reset {
+    background-color: rgb(0, 207, 10);
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px 5px 0px 0px !important;
+}
+.tab-idle {
+    background-color: rgb(219, 219, 219);
+    color: rgb(128, 128, 128);
+    border-color: rgb(219, 219, 219);
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px 5px 0px 0px !important;
+}
+.tab-resume {
+    background: #24db51 !important;
+    background: -webkit-linear-gradient(to right, #2ad727, #0ede50) !important; 
+    background: linear-gradient(to right, #2ad727, #0ede50) !important; 
+    width: 15.2%;
+    height: 50px;
+    text-align: center;
+    padding-top: 15px;
+    font-size: 18px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 2px;
+}
+.nav-item .nav-link {
+  font-size: 15px !important;
+  padding: 10px;
+}
+.form-control, .typeahead, .tt-query, .tt-hint {
+    border: 1px solid #a5a5a5 !important;
+    border-radius: 5px;
+    font-weight: 400;
+    font-size: 13.5px;
+    height: 35px;
+}
+
+
+.select2-container--default .select2-selection--single,
+.select2-selection .select2-selection--single {
+    border: 1px solid #d2d6de;
+    border-radius: 0;
+    padding: 6px 12px;
+    height: 34px
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px
+}
+
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 28px;
+    user-select: none;
+    -webkit-user-select: none
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-right: 10px
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 0;
+    padding-right: 0;
+    height: auto;
+    margin-top: -3px
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 28px
+}
+
+.select2-container--default .select2-selection--single,
+.select2-selection .select2-selection--single {
+    border: 1px solid #d2d6de;
+    border-radius: 0 !important;
+    padding: 6px 12px;
+    height: 40px !important
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 26px;
+    position: absolute;
+    top: 6px !important;
+    right: 1px;
+    width: 20px
+}
+.label-admisi {
+    font-size: 14px !important;
+}
+.modal-xxl {
+    width: 98% !important;
+    max-width:100% !important;
+}
+.no-radius {
+    border-radius: 0px !important;
+}
+.box {
+  border: 1px rgb(165, 165, 165) solid;
+}
+.pd-0 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.table1 tr td {
+  border-bottom: 0.5px solid rgb(121, 121, 121) !important;
+  padding-bottom: 5px !important;
+  padding-right: 10px !important;
+}
+.buttons-html5 {
+    background: #24db51 !important;
+    background: -webkit-linear-gradient(to right, #2ad727, #0ede50) !important; 
+    background: linear-gradient(to right, #2ad727, #0ede50) !important; 
+    color: white;
+    border-radius: 5px;
+    padding: 8px;
+    width: 80px;
+    border: transparent;
+}
+.table-responsive {
+  padding-bottom: 30px !important;
+}
+#td_icd , #td_inap{
+  padding: 0px !important;
+}
+#tr-resume td textarea {
+  margin: 0px !important;
+  width: 100%;
+  height: 300px;
+  border: transparent !important;
+  padding: 8px !important;
+}
+.tab-button {
+  width: 175px;
+  padding: 10px;
+  border: green 1px solid;
+  text-align: center;
+  text-transform: uppercase;
+  color: green;
+  font-size: 15px;
+  border-radius: 50px;
+  margin-right: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.tab-button:hover {
+  background-color: green;
+  font-weight: 600;
+  color: white;
+}
+.tab-button.active {
+  background-color: green;
+  font-weight: 600;
+  color: white;
+}
+.primary-color {
+  background: #24db51 !important;
+  background: -webkit-linear-gradient(to right, #2ad727, #0ede50) !important; 
+  background: linear-gradient(to right, #2ad727, #0ede50) !important;  
+  color: white !important;
+}
+.text-success {
+  color: #24db51 !important;
+}
+.btn-success {
+    background: #24db51 !important;
+    color: white !important;
+}
+.btn-info {
+    background: #24d8db !important;
+    color: white !important;
+}
+@-webkit-keyframes blinker {
+  from {opacity: 1.0;}
+  to {opacity: 0.0;}
+}
+.blink{
+  text-decoration: blink;
+  -webkit-animation-name: blinker;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-timing-function:ease-in-out;
+  -webkit-animation-direction: alternate;
+}
+.horizontal-menu .top-navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .navbar-dropdown .dropdown-item {
+    margin-bottom: 0;
+    padding: none !important;
+    cursor: pointer;
+}
+
+
+.table1 tr, .table1 td, .table1 th {
+    padding: 5px !important;
+    color: black !important;
+    font-size: 15px;
+}
+.table_detail_order tr, .table_detail_order td, .table_detail_prescribe tr, .table_detail_prescribe td {
+    padding: 6px !important;
+}
+.form-control, .typeahead, .tt-query, .tt-hint {
+    border: 1px solid #b4b4b4;
+    border-radius: 5px;
+    font-weight: 400;
+    font-size: 13.5px;
+    height: 35px;
+}
+.card .card-body {
+    padding: 20px;
+}
+.left-tab.active{
+    background: #24db51 !important;
+    background: -webkit-linear-gradient(to right, #2ad727, #0ede50) !important; 
+    background: linear-gradient(to right, #2ad727, #0ede50) !important; 
+    padding: 20px;
+    width: 100%;
+    color: aliceblue;
+    margin-bottom: 3px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.left-tab {
+    background-color: rgb(145, 145, 145);
+    padding: 20px;
+    width: 100%;
+    color: aliceblue;
+    margin-bottom: 3px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.small-tab.active{
+    background-color: green;
+    padding: 10px;
+    width: 100%;
+    color: aliceblue;
+    margin-bottom: 3px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.small-tab {
+    background-color: rgb(202, 202, 202);
+    padding: 10px;
+    width: 100%;
+    color: aliceblue;
+    margin-bottom: 3px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.form-group-left {
+    border-bottom: 1px rgba(0, 0, 0, 0.418) solid !important;
+    padding-bottom: 0px;
+    margin-bottom: 14px !important;
+}
+.form-group-left h3 {
+    color: black;
+    font-size: 18px;
+    font-weight: 600;
+}
+.select2-hidden-accessible {
+    border: 0 !important;
+    clip: rect(0 0 0 0) !important;
+    height: 1px !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    position: absolute !important;
+    width: 1px !important
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
+}
+.table1 thead tr th {
+    background-color: rgb(255, 234, 0) !important;
+    color: black !important;
+    font-weight: 700;
+    text-transform: uppercase !important;
+}
+.table1 .verifikasi{
+    padding: 6px !important;
+}
+.table1 .verifikasi > textarea{
+    border: none;
+    border-bottom: 1px solid black !important;
+}
+.table1 th:first-child {
+    border-radius: 10px 0px 0px 0px !important;
+}
+.table1 th:last-child {
+    border-radius: 0px 10px 0px 0px !important;
+}
+.kbw-signature { width: 100%; height: 1200px; }
+.picker {
+    position:fixed;
+    width:90px;
+    height:60px;
+    bottom:40px;
+    right:40px;
+}
+.picker .color-picker {
+    display: inline-block;
+    width:20px;
+    height:20px;
+    padding: 5px;
+}
+#planning_ {
+    width: 100%;
+    height: 170px;
+    overflow-y: scroll;
+    display: block;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #a5a5a5 !important;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+/* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
+@media (min-width: 768px) {  
+    .card-columns {
+        column-count: 4;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .card-columns {
+        column-count: 4;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {  
+    .card-columns {
+        column-count: 4;
+    } 
+}
+#pkonsultasi_dokter_poli {
+    border: 1px solid #d2d6de;
+    border-radius: 0 !important;
+    padding: 6px 12px;
+    height: 40px !important;
+}
+.rotate {
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    -webkit-transform-origin: 50% 50%;
+    -moz-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    -o-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+.bubble-alergi {
+    background-color: red;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+.bubble-resiko {
+    background-color: rgb(255, 208, 0);
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+.form-group-left p {
+    display: inline-block;
+    text-align: center !important;
+    margin-right: 10px !important;
+}
