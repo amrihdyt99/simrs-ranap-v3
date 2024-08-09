@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <table class="table1">
+            <table class="table1 mt-2">
                 <thead>
                     <tr>
                         <th>
@@ -780,10 +780,10 @@
                     </td>
                     <td>
                         <input type="radio" name="penolakan_jenis_kelamin_2" id="laki4" value="Laki-laki"
-                            {{ $penolakan->penolakan_jenis_kelamin_2 == 'Laki-laki' ?: '' }}>
+                            {{ $penolakan->penolakan_jenis_kelamin_2 == 'Laki-laki' ? 'checked' : '' }}>
                         <label for="laki4">Laki-laki</label>
                         <input type="radio" name="penolakan_jenis_kelamin_2" id="perempuan4" value="Perempuan"
-                            {{ $penolakan->penolakan_jenis_kelamin_2 == 'Perempuan' ?: '' }}>
+                            {{ $penolakan->penolakan_jenis_kelamin_2 == 'Perempuan' ? 'checked' : '' }}>
                         <label for="perempuan4">Perempuan</label>
                     </td>
                 </tr>
@@ -877,8 +877,7 @@
     <p>tidak ada data persetujuan atau penolakan</p>
 @endif
 
-</div>
-</div>
+
 {{-- @push('nyaa_scripts') --}}
 <script>
     $(function() {

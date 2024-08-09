@@ -1093,6 +1093,7 @@ function getAssementDewasa(){
             setChecked('asdew_sensori', resp.asdew_sensori)
             setChecked('asdew_lembab', resp.asdew_lembab)
             setChecked('asdew_aktivitas', resp.asdew_aktivitas)
+            setChecked('asdew_mobilitas', resp.asdew_mobilitas)
             setChecked('asdew_nutrisi', resp.asdew_nutrisi)
             setChecked('asdew_friksi', resp.asdew_friksi)
             $('[name="asdew_skor_braden"]').val(resp.asdew_skor_braden)
