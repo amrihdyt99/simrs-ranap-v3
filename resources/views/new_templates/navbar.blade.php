@@ -5,8 +5,8 @@
                 <ul class="navbar-nav navbar-nav-left">
                     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                         <a class="navbar-brand brand-logo mr-3" href="{{ url('/') }}">
-                            <img src="{{asset('')}}new_assets/images/logo.jpg" style="height: 50px;" alt="RSUD Siti Fatimah"/>
-                            <img src="{{asset('')}}new_assets/images/sumsel.png" style="height: 50px;" alt="SumSel"/>
+                            <img src="{{asset('')}}new_assets/images/logo.jpg" style="height: 50px;" alt="RSUD Siti Fatimah" />
+                            <img src="{{asset('')}}new_assets/images/sumsel.png" style="height: 50px;" alt="SumSel" />
                         </a>
                         {{-- <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo-mini.svg" alt="logo"/></a> --}}
                     </div>
@@ -51,44 +51,44 @@
                     </a>
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
-                <span class="mdi mdi-menu"></span>
+                    <span class="mdi mdi-menu"></span>
                 </button>
             </div>
         </div>
     </nav>
 
 
-        <nav class="bottom-navbar">
-            <div class="container">
-                <ul class="nav page-navigation">
-                    @if (auth()->user()->level_user == 'admin')
-                        @include('new_templates.partials.admin')
-                    @elseif (auth()->user()->level_user == 'dokter')
-                        @include('new_templates.partials.dokter')
-                    @elseif (auth()->user()->level_user == 'perawat')
-                        @include('new_templates.partials.perawat')
-                    @elseif (auth()->user()->level_user == 'fisioterapis' || auth()->user()->level_user == 'terapi wicara' || auth()->user()->level_user == 'okupasi terapi' || auth()->user()->level_user == 'orthotic prosthetic')
-                        @include('new_templates.partials.fisioterapis')
-                    @elseif (auth()->user()->level_user == 'kasir')
-                        @include('new_templates.partials.kasir')
-                    @elseif (auth()->user()->level_user == 'pendaftaran')
-                        @include('new_templates.partials.pendaftaran')
-                    @elseif (auth()->user()->level_user == 'lab')
-                        @include('new_templates.partials.lab')
-                    @elseif (auth()->user()->level_user == 'radiologi')
-                        @include('new_templates.partials.radiologi')
-                    @elseif (auth()->user()->level_user == 'dietitian')
-                        @include('new_templates.partials.dietitian')
-                    @endif
-                    <li class="nav-item">
-                        <a href="{{asset('files/pdf_tes.pdf')}}" target="_blank" class="nav-link">
-                            <i class="mdi mdi-file-document-box-outline menu-icon"></i>
-                            <span class="menu-title">Dokumentasi</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+    <nav class="bottom-navbar">
+        <div class="container">
+            <ul class="nav page-navigation">
+                @if (auth()->user()->level_user == 'admin')
+                @include('new_templates.partials.admin')
+                @elseif (auth()->user()->level_user == 'dokter')
+                @include('new_templates.partials.dokter')
+                @elseif (auth()->user()->level_user == 'perawat')
+                @include('new_templates.partials.perawat')
+                @elseif (auth()->user()->level_user == 'fisioterapis' || auth()->user()->level_user == 'terapi wicara' || auth()->user()->level_user == 'okupasi terapi' || auth()->user()->level_user == 'orthotic prosthetic')
+                @include('new_templates.partials.fisioterapis')
+                @elseif (auth()->user()->level_user == 'kasir')
+                @include('new_templates.partials.kasir')
+                @elseif (auth()->user()->level_user == 'pendaftaran')
+                @include('new_templates.partials.pendaftaran')
+                @elseif (auth()->user()->level_user == 'lab')
+                @include('new_templates.partials.lab')
+                @elseif (auth()->user()->level_user == 'radiologi')
+                @include('new_templates.partials.radiologi')
+                @elseif (auth()->user()->level_user == 'dietitian')
+                @include('new_templates.partials.dietitian')
+                @endif
+                <li class="nav-item">
+                    <a href="{{asset('files/pdf_tes.pdf')}}" target="_blank" class="nav-link">
+                        <i class="mdi mdi-file-document-box-outline menu-icon"></i>
+                        <span class="menu-title">Dokumentasi</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </div>
 
 {{-- @include('auth.modal.pengaturan_akun') --}}

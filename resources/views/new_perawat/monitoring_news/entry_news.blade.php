@@ -10,6 +10,7 @@
         <body>
             <form id="entry-news">
                 <table class="w-100" border="1">
+                    <input type="hidden" name="user_name" class="form-control" value="{{auth()->user()->name}}">
                     <tbody>
                         <tr>
                             <td rowspan="3">Tanda Tanda Vital</td>
