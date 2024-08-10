@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('asdew_sensori')->nullable();
             $table->string('asdew_lembab')->nullable();
             $table->string('asdew_aktivitas')->nullable();
+            $table->string('asdew_mobilitas')->nullable();
             $table->string('asdew_nutrisi')->nullable();
             $table->string('asdew_friksi')->nullable();
             $table->string('asdew_skor_braden')->nullable();

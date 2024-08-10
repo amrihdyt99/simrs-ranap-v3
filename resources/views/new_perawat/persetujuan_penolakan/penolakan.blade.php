@@ -89,9 +89,9 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_jenis_kelamin_2" id="laki5" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_2=='Laki-laki' ? : ''}}>
+                        <input type="radio" name="penolakan_jenis_kelamin_2" id="laki5" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_2=='Laki-laki' ? 'checked' : ''}}>
                         <label for="laki5">Laki-laki</label>
-                        <input type="radio" name="penolakan_jenis_kelamin_2" id="perempuan5" value="Perempuan" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_2=='Perempuan' ? : ''}}>
+                        <input type="radio" name="penolakan_jenis_kelamin_2" id="perempuan5" value="Perempuan" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_2=='Perempuan' ? 'checked' : ''}}>
                         <label for="perempuan5">Perempuan</label>
                     </td>
                 </tr>
