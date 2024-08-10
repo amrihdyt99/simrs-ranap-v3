@@ -13,26 +13,26 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_surat_rujuk
             </div>
             <div class="col-sm-12">
                 <div class="w-100">
-                <table id="dttb_surat_rujukan3" nyaa-urldatatable="{{ $url_form }}"
-                nyaa-columns='[
+                    <table id="dttb_surat_rujukan3" nyaa-urldatatable="{{ $url_form }}"
+                        nyaa-columns='[
                     {"data": "id", "name": "id"},
                     {"data": "aksi_data", "orderable": false, "searchable": false},
                     {"data": "item_id_terima", "name": "item_id_terima"},
                     {"data": "quantity_terima", "name": "quantity_terima"},
                     {"data": "item_unit_code_terima", "name": "item_unit_code_terima"}
                 ]'
-                nyaa-kode_surat_rujukan="{{ $surat_rujukan->kode_surat_rujukan }}"
-                class="w-100 table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Aksi</th>
-                            <th>Nama Obat</th>
-                            <th>Qty</th>
-                            <th>Satuan</th>
-                        </tr>
-                    </thead>
-                </table>
+                        nyaa-kode_surat_rujukan="{{ $surat_rujukan->kode_surat_rujukan }}"
+                        class="w-100 table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Aksi</th>
+                                <th>Nama Obat</th>
+                                <th>Qty</th>
+                                <th>Satuan</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_surat_rujuk
                                                 <p class="m-0">Qty *</p>
                                                 <input nyaatempname="quantity_terima" autocomplete="off" type="text" class="form-control">
                                             </div>
-                                            
+
                                             <div class="form-group col-sm-12 col-md-7">
                                                 <p class="m-0">Satuan *</p>
                                                 <input nyaatempname="item_unit_code_terima" autocomplete="off" type="text" class="form-control">
@@ -79,7 +79,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_surat_rujuk
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </nyaatempform>
                     </div>
                     <div class="modal-footer">
@@ -89,6 +89,6 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_surat_rujuk
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>

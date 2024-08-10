@@ -277,7 +277,7 @@
     </div>
     <div class="card-body">
         @php
-            $width_data = 50 / 2;
+        $width_data = 50 / 2;
         @endphp
         <table style="width: 100%;">
             <tr>
@@ -513,272 +513,346 @@
 
 {{-- persetujuan tindakan medis --}}
 @if (isset($persetujuan))
-    <div class="card mt-5">
-        <div class="card-header">
-            <h5><b>PERSETUJUAN TINDAKAN MEDIS</b></h5>
-        </div>
-        <div class="card-body">
-            <table style="width: 100%;">
-                <tr>
-                    <td>
-                        Nama
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_nama_1 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Jenis Kelamin
-                    </td>
-                    <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="laki" value="Laki-laki"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : '' }}>
-                        <label for="laki">Laki-laki</label>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="perempuan" value="Perempuan"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : '' }}>
-                        <label for="perempuan">Perempuan</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Tanggal Lahir
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_tanggal_lahir_1 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Alamat
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_alamat_1 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Dengan ini menyatakan SETUJU untuk dilakukan tindakan.
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_pernyataan }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Terhadap
-                    </td>
-                    <td>
-                        <input type="radio" name="persetujuan_terhadap" id="saya" value="Saya sendiri"
-                            {{ $persetujuan->persetujuan_terhadap == 'Saya sendiri' ? 'checked' : '' }}>
-                        <label for="saya">Saya sendiri</label>
-                        <input type="radio" name="persetujuan_terhadap" id="anak" value="Anak"
-                            {{ $persetujuan->persetujuan_terhadap == 'Anak' ? 'checked' : '' }}>
-                        <label for="anak">Anak</label>
-                        <input type="radio" name="persetujuan_terhadap" id="ayah" value="Ayah"
-                            {{ $persetujuan->persetujuan_terhadap == 'Ayah' ? 'checked' : '' }}>
-                        <label for="ayah">Ayah</label>
-                        <input type="radio" name="persetujuan_terhadap" id="ibu" value="Ibu"
-                            {{ $persetujuan->persetujuan_terhadap == 'Ibu' ? 'checked' : '' }}>
-                        <label for="ibu">Ibu</label>
-                        <input type="radio" name="persetujuan_terhadap" id="saudara" value="Saudara"
-                            {{ $persetujuan->persetujuan_terhadap == 'Saudara' ? 'checked' : '' }}>
-                        <label for="saudara">Saudara</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 300px;">
-                        Nama
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_nama_2 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Jenis Kelamin
-                    </td>
-                    <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="laki2" value="Laki-laki"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_2 == 'Laki-laki' ? 'checked' : '' }}>
-                        <label for="laki2">Laki-laki</label>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="perempuan2" value="Perempuan"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_2 == 'Perempuan' ? 'checked' : '' }}>
-                        <label for="perempuan2">Perempuan</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Tanggal Lahir
-                    </td>
-                    <td>
-                        <{{ $persetujuan->persetujuan_tanggal_lahir_2 }} </td>
-                </tr>
-                <tr>
-                    <td>
-                        Alamat
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_alamat_2 }}
-                    </td>
-                </tr>
-            </table>
-            <p>Saya memahami perlunya dan manfaat tindakan tersebut sebagaimana telah dijelaskan seperti di atas
-                kepada
-                saya, termasuk
-                risiko dan komplikasi yang mungkin timbul.</p>
-            <p>
-                Saya juga menyadari bahwa oleh karena ilmu kedokteran bukanlah ilmu pasti, maka keberhasilan
-                tindakan
-                medis bukanlah
-                keniscayaan, melainkan sangat bergantung kepada Tuhan Yang Maha Esa.
-            </p>
-
-            <table style="width: 40%; float: right; border: none; margin-top: 30px">
-                <tbody>
-                    <tr>
-                        <td>
-                            <h6>
-                                Palembang, tanggal
-                            </h6>
-                        </td>
-                        <td>
-                            {{ $persetujuan->persetujuan_tanggal_waktu_ttd }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>Yang bertanda tangan dibawah ini saya, </p>
-            <table style="width: 100%; border: none; text-align:center;">
-                <tbody>
-                    <tr>
-                        <td colspan="3" style="text-align: right;">
-                            <h6>Saksi</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <h6>
-                                Yang menyatakan
-                            </h6>
-                        </td>
-                        <td>
-                            <h6>Dokter</h6>
-                        </td>
-                        <td>
-                            <h6>1. Keluarga</h6>
-                        </td>
-                        <td>
-                            <h6>2. Perawat</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="card mt-5">
+    <div class="card-header">
+        <h5><b>PERSETUJUAN TINDAKAN MEDIS</b></h5>
     </div>
+    <div class="card-body">
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    Nama
+                </td>
+                <td>
+                    {{ $persetujuan->persetujuan_nama_1 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Jenis Kelamin
+                </td>
+                <td>
+                    <input type="radio" name="persetujuan_jenis_kelamin_1" id="laki" value="Laki-laki"
+                        {{ $persetujuan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : '' }}>
+                    <label for="laki">Laki-laki</label>
+                    <input type="radio" name="persetujuan_jenis_kelamin_1" id="perempuan" value="Perempuan"
+                        {{ $persetujuan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : '' }}>
+                    <label for="perempuan">Perempuan</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tanggal Lahir
+                </td>
+                <td>
+                    {{ $persetujuan->persetujuan_tanggal_lahir_1 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Alamat
+                </td>
+                <td>
+                    {{ $persetujuan->persetujuan_alamat_1 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Dengan ini menyatakan SETUJU untuk dilakukan tindakan.
+                </td>
+                <td>
+                    {{ $persetujuan->persetujuan_pernyataan }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Terhadap
+                </td>
+                <td>
+                    <input type="radio" name="persetujuan_terhadap" id="saya" value="Saya sendiri"
+                        {{ $persetujuan->persetujuan_terhadap == 'Saya sendiri' ? 'checked' : '' }}>
+                    <label for="saya">Saya sendiri</label>
+                    <input type="radio" name="persetujuan_terhadap" id="anak" value="Anak"
+                        {{ $persetujuan->persetujuan_terhadap == 'Anak' ? 'checked' : '' }}>
+                    <label for="anak">Anak</label>
+                    <input type="radio" name="persetujuan_terhadap" id="ayah" value="Ayah"
+                        {{ $persetujuan->persetujuan_terhadap == 'Ayah' ? 'checked' : '' }}>
+                    <label for="ayah">Ayah</label>
+                    <input type="radio" name="persetujuan_terhadap" id="ibu" value="Ibu"
+                        {{ $persetujuan->persetujuan_terhadap == 'Ibu' ? 'checked' : '' }}>
+                    <label for="ibu">Ibu</label>
+                    <input type="radio" name="persetujuan_terhadap" id="saudara" value="Saudara"
+                        {{ $persetujuan->persetujuan_terhadap == 'Saudara' ? 'checked' : '' }}>
+                    <label for="saudara">Saudara</label>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;">
+                    Nama
+                </td>
+                <td>
+                    {{ $persetujuan->persetujuan_nama_2 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Jenis Kelamin
+                </td>
+                <td>
+                    <input type="radio" name="persetujuan_jenis_kelamin_2" id="laki2" value="Laki-laki"
+                        {{ $persetujuan->persetujuan_jenis_kelamin_2 == 'Laki-laki' ? 'checked' : '' }}>
+                    <label for="laki2">Laki-laki</label>
+                    <input type="radio" name="persetujuan_jenis_kelamin_2" id="perempuan2" value="Perempuan"
+                        {{ $persetujuan->persetujuan_jenis_kelamin_2 == 'Perempuan' ? 'checked' : '' }}>
+                    <label for="perempuan2">Perempuan</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tanggal Lahir
+                </td>
+                <td>
+                    <{{ $persetujuan->persetujuan_tanggal_lahir_2 }} </td>
+            </tr>
+            <tr>
+                <td>
+                    Alamat
+                </td>
+                <td>
+                    {{ $persetujuan->persetujuan_alamat_2 }}
+                </td>
+            </tr>
+        </table>
+        <p>Saya memahami perlunya dan manfaat tindakan tersebut sebagaimana telah dijelaskan seperti di atas
+            kepada
+            saya, termasuk
+            risiko dan komplikasi yang mungkin timbul.</p>
+        <p>
+            Saya juga menyadari bahwa oleh karena ilmu kedokteran bukanlah ilmu pasti, maka keberhasilan
+            tindakan
+            medis bukanlah
+            keniscayaan, melainkan sangat bergantung kepada Tuhan Yang Maha Esa.
+        </p>
+
+        <table style="width: 40%; float: right; border: none; margin-top: 30px">
+            <tbody>
+                <tr>
+                    <td>
+                        <h6>
+                            Palembang, tanggal
+                        </h6>
+                    </td>
+                    <td>
+                        {{ $persetujuan->persetujuan_tanggal_waktu_ttd }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Yang bertanda tangan dibawah ini saya, </p>
+        <table style="width: 100%; border: none; text-align:center;">
+            <tbody>
+                <tr>
+                    <td colspan="3" style="text-align: right;">
+                        <h6>Saksi</h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h6>
+                            Yang menyatakan
+                        </h6>
+                    </td>
+                    <td>
+                        <h6>Dokter</h6>
+                    </td>
+                    <td>
+                        <h6>1. Keluarga</h6>
+                    </td>
+                    <td>
+                        <h6>2. Perawat</h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (..................)
+                    </td>
+                    <td>
+                        (..................)
+                    </td>
+                    <td>
+                        (..................)
+                    </td>
+                    <td>
+                        (..................)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 @elseif (isset($penolakan))
-    <div class="card mt-5">
-        <div class="card-header">
-            <h5><b>PENOLAKAN TINDAKAN MEDIS</b></h5>
-        </div>
-        <div class="card-body">
-            {{-- penolakan tindakan medis --}}
-            <p>Yang bertanda tangan dibawah ini saya, </p>
-            <table class="table1" style="width: 100%;">
+<div class="card mt-5">
+    <div class="card-header">
+        <h5><b>PENOLAKAN TINDAKAN MEDIS</b></h5>
+    </div>
+    <div class="card-body">
+        {{-- penolakan tindakan medis --}}
+        <p>Yang bertanda tangan dibawah ini saya, </p>
+        <table class="table1" style="width: 100%;">
+            <tr>
+                <td style="width: 300px;">
+                    Nama
+                </td>
+                <td>
+                    {{ $penolakan->penolakan_nama_1 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Jenis Kelamin
+                </td>
+                <td>
+                    <input type="radio" name="penolakan_jenis_kelamin_1" id="laki3" value="Laki-laki"
+                        {{ $penolakan->penolakan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : '' }}>
+                    <label for="laki3">Laki-laki</label>
+                    <input type="radio" name="penolakan_jenis_kelamin_1" id="perempuan3" value="Perempuan"
+                        {{ $penolakan->penolakan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : '' }}>
+                    <label for="perempuan3">Perempuan</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tanggal Lahir
+                </td>
+                <td>
+                    {{ $penolakan->penolakan_tanggal_lahir_1 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Alamat
+                </td>
+                <td>
+                    {{ $penolakan->penolakan_alamat_1 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Dengan ini menyatakan TIDAK SETUJU untuk dilakukan tindakan.
+                </td>
+                <td>
+                    {{ $penolakan->penolakan_pernyataan }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Terhadap
+                </td>
+                <td>
+                    <input type="radio" name="penolakan_terhadap" id="saya3" value="Saya sendiri"
+                        {{ $penolakan->penolakan_terhadap == 'Saya sendiri' ? 'checked' : '' }}>
+                    <label for="saya3">Saya sendiri</label>
+                    <input type="radio" name="penolakan_terhadap" id="anak3" value="Anak"
+                        {{ $penolakan->penolakan_terhadap == 'Anak' ? 'checked' : '' }}>
+                    <label for="anak3">Anak</label>
+                    <input type="radio" name="penolakan_terhadap" id="ayah3" value="Ayah"
+                        {{ $penolakan->penolakan_terhadap == 'Ayah' ? 'checked' : '' }}>
+                    <label for="ayah3">Ayah</label>
+                    <input type="radio" name="penolakan_terhadap" id="ibu3" value="Ibu"
+                        {{ $penolakan->penolakan_terhadap == 'Ibu' ? 'checked' : '' }}>
+                    <label for="ibu3">Ibu</label>
+                    <input type="radio" name="penolakan_terhadap" id="saudara3" value="Saudara"
+                        {{ $penolakan->penolakan_terhadap == 'Saudara' ? 'checked' : '' }}>
+                    <label for="saudara3">Saudara</label>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;">
+                    Nama
+                </td>
+                <td>
+                    {{ $penolakan->penolakan_nama_2 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Jenis Kelamin
+                </td>
+                <td>
+                    <input type="radio" name="penolakan_jenis_kelamin_2" id="laki4" value="Laki-laki"
+                        {{ $penolakan->penolakan_jenis_kelamin_2 == 'Laki-laki' ?: '' }}>
+                    <label for="laki4">Laki-laki</label>
+                    <input type="radio" name="penolakan_jenis_kelamin_2" id="perempuan4" value="Perempuan"
+                        {{ $penolakan->penolakan_jenis_kelamin_2 == 'Perempuan' ?: '' }}>
+                    <label for="perempuan4">Perempuan</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tanggal Lahir
+                </td>
+                <td>
+                    {{ $penolakan->penolakan_nama_2 }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Alamat
+                </td>
+                <td>
+                    {{ $penolakan->penolakan_alamat_2 }}
+                </td>
+            </tr>
+        </table>
+        <p>Saya memahami perlunya dan manfaat tindakan tersebut sebagaimana telah dijelaskan seperti di atas
+            kepada
+            saya, termasuk
+            risiko dan komplikasi yang mungkin timbul.</p>
+        <p>
+            Saya juga menyadari bahwa oleh karena ilmu kedokteran bukanlah ilmu pasti, maka keberhasilan
+            tindakan
+            medis bukanlah
+            keniscayaan, melainkan sangat bergantung kepada Tuhan Yang Maha Esa.
+        </p>
+
+        <table style="width: 40%; float: right; border: none; margin-top: 30px">
+            <tbody>
                 <tr>
-                    <td style="width: 300px;">
-                        Nama
+                    <td>
+                        <h5>
+                            Palembang, tanggal
+                        </h5>
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_nama_1 }}
+                        <input type="datetime-local" name="penolakan_tanggal_ttd" id=""
+                            class="form-control" value="{{ $penolakan->penolakan_tanggal_ttd }}">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <table style="width: 100%; border: none; text-align:center;">
+            <tbody>
+                <tr>
+                    <td colspan="3" style="text-align: right;">
+                        <h5>Saksi</h5>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Jenis Kelamin
+                        <h5>
+                            Yang menyatakan
+                        </h5>
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_jenis_kelamin_1" id="laki3" value="Laki-laki"
-                            {{ $penolakan->penolakan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : '' }}>
-                        <label for="laki3">Laki-laki</label>
-                        <input type="radio" name="penolakan_jenis_kelamin_1" id="perempuan3" value="Perempuan"
-                            {{ $penolakan->penolakan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : '' }}>
-                        <label for="perempuan3">Perempuan</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Tanggal Lahir
+                        <h5>Dokter</h5>
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_tanggal_lahir_1 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Alamat
+                        <h5>1. Keluarga</h5>
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_alamat_1 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Dengan ini menyatakan TIDAK SETUJU untuk dilakukan tindakan.
-                    </td>
-                    <td>
-                        {{ $penolakan->penolakan_pernyataan }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Terhadap
-                    </td>
-                    <td>
-                        <input type="radio" name="penolakan_terhadap" id="saya3" value="Saya sendiri"
-                            {{ $penolakan->penolakan_terhadap == 'Saya sendiri' ? 'checked' : '' }}>
-                        <label for="saya3">Saya sendiri</label>
-                        <input type="radio" name="penolakan_terhadap" id="anak3" value="Anak"
-                            {{ $penolakan->penolakan_terhadap == 'Anak' ? 'checked' : '' }}>
-                        <label for="anak3">Anak</label>
-                        <input type="radio" name="penolakan_terhadap" id="ayah3" value="Ayah"
-                            {{ $penolakan->penolakan_terhadap == 'Ayah' ? 'checked' : '' }}>
-                        <label for="ayah3">Ayah</label>
-                        <input type="radio" name="penolakan_terhadap" id="ibu3" value="Ibu"
-                            {{ $penolakan->penolakan_terhadap == 'Ibu' ? 'checked' : '' }}>
-                        <label for="ibu3">Ibu</label>
-                        <input type="radio" name="penolakan_terhadap" id="saudara3" value="Saudara"
-                            {{ $penolakan->penolakan_terhadap == 'Saudara' ? 'checked' : '' }}>
-                        <label for="saudara3">Saudara</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 300px;">
-                        Nama
-                    </td>
-                    <td>
-                        {{ $penolakan->penolakan_nama_2 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Jenis Kelamin
-                    </td>
-                    <td>
+                        <h5>2. Perawat</h5>
                         <input type="radio" name="penolakan_jenis_kelamin_2" id="laki4" value="Laki-laki"
                             {{ $penolakan->penolakan_jenis_kelamin_2 == 'Laki-laki' ? 'checked' : '' }}>
                         <label for="laki4">Laki-laki</label>
@@ -789,99 +863,31 @@
                 </tr>
                 <tr>
                     <td>
-                        Tanggal Lahir
+                        (..................)
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_nama_2 }}
+                        (..................)
+                    </td>
+                    <td>
+                        (..................)
+                    </td>
+                    <td>
+                        (..................)
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        Alamat
-                    </td>
-                    <td>
-                        {{ $penolakan->penolakan_alamat_2 }}
-                    </td>
-                </tr>
-            </table>
-            <p>Saya memahami perlunya dan manfaat tindakan tersebut sebagaimana telah dijelaskan seperti di atas
-                kepada
-                saya, termasuk
-                risiko dan komplikasi yang mungkin timbul.</p>
-            <p>
-                Saya juga menyadari bahwa oleh karena ilmu kedokteran bukanlah ilmu pasti, maka keberhasilan
-                tindakan
-                medis bukanlah
-                keniscayaan, melainkan sangat bergantung kepada Tuhan Yang Maha Esa.
-            </p>
-
-            <table style="width: 40%; float: right; border: none; margin-top: 30px">
-                <tbody>
-                    <tr>
-                        <td>
-                            <h5>
-                                Palembang, tanggal
-                            </h5>
-                        </td>
-                        <td>
-                            <input type="datetime-local" name="penolakan_tanggal_ttd" id=""
-                                class="form-control" value="{{ $penolakan->penolakan_tanggal_ttd }}">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-
-            <table style="width: 100%; border: none; text-align:center;">
-                <tbody>
-                    <tr>
-                        <td colspan="3" style="text-align: right;">
-                            <h5>Saksi</h5>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <h5>
-                                Yang menyatakan
-                            </h5>
-                        </td>
-                        <td>
-                            <h5>Dokter</h5>
-                        </td>
-                        <td>
-                            <h5>1. Keluarga</h5>
-                        </td>
-                        <td>
-                            <h5>2. Perawat</h5>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>
 @else
-    <p>tidak ada data persetujuan atau penolakan</p>
+<p>tidak ada data persetujuan atau penolakan</p>
 @endif
 
 
 {{-- @push('nyaa_scripts') --}}
 <script>
     $(function() {
-        neko_select2_init('{{ route('nyaa_universal.select2.m_paramedic') }}', 'ParamedicCode');
+        neko_select2_init(`{{ route('nyaa_universal.select2.m_paramedic')}}`, 'ParamedicCode');
     })
 </script>
 {{-- @endpush --}}
