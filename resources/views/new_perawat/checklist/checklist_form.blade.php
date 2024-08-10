@@ -45,8 +45,8 @@
                             <td>: {{ $datapasien->room_class }}</td>
                         </tr>
                         <tr>
-                            <td>Tgl Masuk Rawat Inap</td>
-                            <td>:</td>
+                            <td>Tgl Masuk Rawat Inap </td>
+                            <td>:{{app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->carbon_format_day_date_id($datapasien->reg_tgl)}}</td>
                         </tr>
                         <tr>
                             <td>Tgl Assesment</td>
@@ -285,7 +285,7 @@
                                 <input type="checkbox" name="alat" id="" class="" value="Ya" {{$data->alat=='Ya' ? 'checked': ''}}> Ya :
                                 <input type="checkbox" name="lokasi_alat" id="" class="" value="Kanan" {{$data->lokasi_alat=='Kanan' ? 'checked' : ''}}> Kanan
                                 <input type="checkbox" name="lokasi_alat" id="" class="" value="Kiri" {{$data->lokasi_alat=='Kiri' ? 'checked' : ''}}>Kiri <br> di bawa oleh
-                                <input type="text" name="bawa_alat" id=""></td>
+                                <input type="text" name="bawa_alat" id="" value="{{$data->bawa_alat}}"></td>
                         </tr>
                         <tr>
                             <td class="align-middle">c. Uang tunai </td>
