@@ -500,6 +500,7 @@ class NursingController extends Controller
                 'asdew_sensori' => $request->asdew_sensori,
                 'asdew_lembab' => $request->asdew_lembab,
                 'asdew_aktivitas' => $request->asdew_aktivitas,
+                'asdew_mobilitas' => $request->asdew_mobilitas,
                 'asdew_nutrisi' => $request->asdew_nutrisi,
                 'asdew_friksi' => $request->asdew_friksi,
                 'asdew_skor_braden' => $request->asdew_skor_braden,
