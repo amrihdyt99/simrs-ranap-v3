@@ -1,7 +1,7 @@
 @empty($surat_rujukan)
-    @php
-        $surat_rujukan = optional((object) []);
-    @endphp
+@php
+$surat_rujukan = optional((object) []);
+@endphp
 @endempty
 <h4><b>Persiapan Pasien</b></h4>
 <div class="card">
@@ -264,7 +264,7 @@
         </div>
 
 
-        {{-- 
+        {{--
     @php
         $rujukan_dokumen_yang_disertakan = json_decode($rujukan_internal->rujukan_dokumen_yang_disertakan) ?? [];
     @endphp
@@ -347,7 +347,8 @@
                     </td>
                     <td rowspan="4">Waktu Menghubungi : <br> Tanggal
                         :{{ $surat_rujukan->rujukan_hubungi_tanggal }} <br>Jam:
-                        {{ $surat_rujukan->rujukan_hubungi_jam }}</td>
+                        {{ $surat_rujukan->rujukan_hubungi_jam }}
+                    </td>
                 </tr>
                 <tr>
                     <td class="noborder">RS Tujuan</td>
@@ -366,7 +367,8 @@
                         Alasan Transfer : {{ $surat_rujukan->rujukan_alasan_transfer }}
                     </td>
                     <td>Waktu Transfer : <br> Tanggal :{{ $surat_rujukan->rujukan_transfer_tanggal }} <br>Jam:
-                        {{ $surat_rujukan->rujukan_transfer_jam }}</td>
+                        {{ $surat_rujukan->rujukan_transfer_jam }}
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2">Kategori Pasien Transfer : {{ $surat_rujukan->rujukan_kategori }}</td>
@@ -414,7 +416,7 @@
         </table>
 
         @php
-            $width_data = 100 / 2;
+        $width_data = 100 / 2;
         @endphp
         <table border="1" style="width: 100%">
             <thead>
@@ -428,16 +430,16 @@
             </thead>
             <tbody>
                 @foreach ($surat_rujukan_prosedur_operasi as $data_operasi)
-                    <tr>
-                        <td>{{ $data_operasi->detail_prosedur_operasi }}</td>
-                        <td>{{ $data_operasi->waktu_prosedur_operasi }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ $data_operasi->detail_prosedur_operasi }}</td>
+                    <td>{{ $data_operasi->waktu_prosedur_operasi }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
 
         @php
-            $width_data = 100 / 2;
+        $width_data = 100 / 2;
         @endphp
         <table border="1" style="width: 100%">
             <thead>
@@ -452,17 +454,17 @@
             </thead>
             <tbody>
                 @foreach ($surat_rujukan_alat_terpasang as $data_alat)
-                    <tr>
-                        <td>{{ $data_alat->nama_alat_terpasang }}</td>
-                        <td>{{ $data_alat->waktu_alat_terpasang }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ $data_alat->nama_alat_terpasang }}</td>
+                    <td>{{ $data_alat->waktu_alat_terpasang }}</td>
+                </tr>
                 @endforeach
 
             </tbody>
         </table>
 
         @php
-            $width_data = 100 / 3;
+        $width_data = 100 / 3;
         @endphp
         <table border="1" style="width: 100%">
             <thead>
@@ -477,18 +479,18 @@
             </thead>
             <tbody>
                 @foreach ($surat_rujukan_obat_diterima as $data_obat_diterima)
-                    <tr>
-                        <td>{{ $data_obat_diterima->item_id_terima }}</td>
-                        <td>{{ $data_obat_diterima->quantity_terima }}</td>
-                        <td>{{ $data_obat_diterima->item_unit_code_terima }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ $data_obat_diterima->item_id_terima }}</td>
+                    <td>{{ $data_obat_diterima->quantity_terima }}</td>
+                    <td>{{ $data_obat_diterima->item_unit_code_terima }}</td>
+                </tr>
                 @endforeach
 
             </tbody>
         </table>
 
         @php
-            $width_data = 100 / 3;
+        $width_data = 100 / 3;
         @endphp
         <table border="1" style="width: 100%">
             <thead>
@@ -503,17 +505,17 @@
             </thead>
             <tbody>
                 @foreach ($surat_rujukan_obat_dibawa as $data_obat_dibawa)
-                    <tr>
-                        <td>{{ $data_obat_dibawa->item_id_bawa }}</td>
-                        <td>{{ $data_obat_dibawa->quantity_bawa }}</td>
-                        <td>{{ $data_obat_dibawa->item_unit_code_bawa }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ $data_obat_dibawa->item_id_bawa }}</td>
+                    <td>{{ $data_obat_dibawa->quantity_bawa }}</td>
+                    <td>{{ $data_obat_dibawa->item_unit_code_bawa }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
 
         @php
-            $width_data = 100 / 5;
+        $width_data = 100 / 5;
         @endphp
         <table border="1" style="width: 100%">
             <tbody>
@@ -528,13 +530,13 @@
                     <th style="width: {{ $width_data }}%">RR (x/mnt)</th>
                 </tr>
                 @foreach ($surat_rujukan_status_pasien as $data_status_pasien)
-                    <tr>
-                        <td>{{ $data_status_pasien->waktu }}</td>
-                        <td>{{ $data_status_pasien->kesadaran }}</td>
-                        <td>{{ $data_status_pasien->td }}</td>
-                        <td>{{ $data_status_pasien->hr }}</td>
-                        <td>{{ $data_status_pasien->rr }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ $data_status_pasien->waktu }}</td>
+                    <td>{{ $data_status_pasien->kesadaran }}</td>
+                    <td>{{ $data_status_pasien->td }}</td>
+                    <td>{{ $data_status_pasien->hr }}</td>
+                    <td>{{ $data_status_pasien->rr }}</td>
+                </tr>
                 @endforeach
 
             </tbody>
@@ -607,7 +609,7 @@
 {{-- @push('nyaa_scripts') --}}
 <script>
     $(function() {
-        neko_select2_init('{{ route('nyaa_universal.select2.m_paramedic') }}', 'ParamedicCode');
+        neko_select2_init(`{{ route('nyaa_universal.select2.m_paramedic') }}`, 'ParamedicCode');
     })
 </script>
 {{-- @endpush --}}
