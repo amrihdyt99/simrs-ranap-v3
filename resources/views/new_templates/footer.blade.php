@@ -1269,7 +1269,7 @@
                     "reg_no": regno,
                 },
                 success: function (data) {
-                    //console.log(data)
+                    console.log(data)
                     var dataSoap = data.data_soap
                     var table = ""
                     for(var i=0; i<dataSoap.length; i++){

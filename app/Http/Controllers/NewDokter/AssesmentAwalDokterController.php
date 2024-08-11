@@ -251,26 +251,26 @@ class AssesmentAwalDokterController extends Controller
         $dataLab = DB::connection('mysql')
             ->table('job_orders_dt')
             ->join('job_orders', 'job_orders.order_no', 'job_orders_dt.order_no')
-            ->where(['id_cppt' => $reg_no, 'jenis_order' => 'lab'])
+            ->where(['job_orders_dt.id_cppt' => $reg_no, 'jenis_order' => 'lab'])
             ->get();
 
         $dataradiologi = DB::connection('mysql')
             ->table('job_orders_dt')
             ->join('job_orders', 'job_orders.order_no', 'job_orders_dt.order_no')
-            ->where(['id_cppt' => $reg_no, 'jenis_order' => 'radiologi'])
+            ->where(['job_orders_dt.id_cppt' => $reg_no, 'jenis_order' => 'radiologi'])
             ->get();
 
         $datafisio = DB::connection('mysql')
             ->table('job_orders_dt')
             ->join('job_orders', 'job_orders.order_no', 'job_orders_dt.order_no')
-            ->where(['id_cppt' => $reg_no, 'jenis_order' => 'fisio'])
+            ->where(['job_orders_dt.id_cppt' => $reg_no, 'jenis_order' => 'fisio'])
             ->get();
 
 
         $dataobat = DB::connection('mysql')
             ->table('job_orders_dt')
             ->join('job_orders', 'job_orders.order_no', 'job_orders_dt.order_no')
-            ->where(['id_cppt' => $reg_no, 'jenis_order' => 'obat'])
+            ->where(['job_orders_dt.id_cppt' => $reg_no, 'jenis_order' => 'obat'])
             ->get();
 
         //        $datasoap=DB::connection('mysql')
