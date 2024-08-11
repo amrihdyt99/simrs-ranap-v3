@@ -490,7 +490,7 @@
                     console.log(data)
                     if(data.success == true){
                         $('#modalSOAP').modal('hide');
-                        location.reload()
+                        getSoapDokter()
                     }else{
                         Swal.fire({
                             title: 'Gagal',
