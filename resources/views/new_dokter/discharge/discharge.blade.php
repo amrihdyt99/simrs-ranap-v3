@@ -237,13 +237,13 @@
                 <div class="col-lg-8 pr-0">
                     <div class="form-group">
                         <label for="">Tanggal Discharge</label>
-                        <input type="date"  value="{{$discharge->pdischarge_tgl}}" readonly class="form-control no-radius">
+                        <input type="date"  value="{{$discharge->pdischarge_tgl ?? ''}}" readonly class="form-control no-radius">
                     </div>
                 </div>
                 <div class="col-lg-4 pl-0">
                     <div class="form-group">
                         <label for="">Jam Discharge</label>
-                        <input type="time" value="{{$discharge->pdischarge_jam}}" readonly  class="form-control no-radius">
+                        <input type="time" value="{{$discharge->pdischarge_jam ?? ''}}" readonly  class="form-control no-radius">
                     </div>
                 </div>
             </div>
@@ -253,13 +253,13 @@
                 <div class="col-lg-8 pr-0">
                     <div class="form-group">
                         <label for="">Tgl Kematian</label>
-                        <input type="date" value="{{$discharge->pdischarge_tgl_mati}}" readonly class="form-control no-radius">
+                        <input type="date" value="{{$discharge->pdischarge_tgl_mati ?? ''}}" readonly class="form-control no-radius">
                     </div>
                 </div>
                 <div class="col-lg-4 pl-0">
                     <div class="form-group">
                         <label for="">Jam Kematian</label>
-                        <input type="time" value="{{$discharge->pdischarge_jam_mati}}" readonly class="form-control no-radius">
+                        <input type="time" value="{{$discharge->pdischarge_jam_mati ?? ''}}" readonly class="form-control no-radius">
                     </div>
                 </div>
             </div>
@@ -275,12 +275,12 @@
                 <label class="label-admisi">Alasan Pulang</label>
                 <div class="row">
                     <div class="col">
-                        <input type="text" class="form-control" readonly value="{{$discharge->pdischarge_method}}">
+                        <input type="text" class="form-control" readonly value="{{$discharge->pdischarge_method ?? ''}}">
                     </div>
                 </div>
             </fieldset>
 
-            @if ($discharge->pdischarge_method == 'Meninggal')
+            @if ($discharge->pdischarge_method ?? '' == 'Meninggal')
             <div class="form-group">
                 <label for="">Kelompok penyebab kematian</label>
                 <select class="form-control" id="kelompok_penyebab_kematian">
@@ -309,7 +309,7 @@
                 <label class="label-admisi">Kondisi Pulang</label>
                 <div class="row">
                     <div class="col">
-                        <input type="text" value="{{$discharge->pdischarge_condition}}" readonly class="form-control">
+                        <input type="text" value="{{$discharge->pdischarge_condition ?? ''}}" readonly class="form-control">
                     </div>
                 </div>
             </fieldset>
@@ -318,7 +318,7 @@
                 <label class="label-admisi">Terapi Yang Sudah Diberikan</label>
                 <div class="row">
                     <div class="col">
-                       <textarea class="form-control" readonly rows="4">{{$resume->terapi_yang_diberikan}}</textarea>
+                       <textarea class="form-control" readonly rows="4">{{$resume->terapi_yang_diberikan ?? ''}}</textarea>
                     </div>
                 </div>
             </fieldset>
@@ -326,7 +326,7 @@
                 <label class="label-admisi">Obat yang dibawa pulang</label>
                 <div class="row">
                     <div class="col">
-                       <textarea class="form-control" readonly rows="4">{{$resume->obat_dibawa}}</textarea>
+                       <textarea class="form-control" readonly rows="4">{{$resume->obat_dibawa ?? ''}}</textarea>
                     </div>
                 </div>
             </fieldset>
@@ -335,15 +335,15 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label for="">Catatan Medis</label>
-                <textarea readonly class="form-control" rows="4">{{$discharge->pdischarge_med_notes}}</textarea>
+                <textarea readonly class="form-control" rows="4">{{$discharge->pdischarge_med_notes ?? ''}}</textarea>
             </div>
             <div class="form-group">
                 <label for="">Catatan</label>
-                <textarea readonly class="form-control" rows="4">{{$discharge->pdischarge_notes}}</textarea>
+                <textarea readonly class="form-control" rows="4">{{$discharge->pdischarge_notes ?? ''}}</textarea>
             </div>
             <div class="form-group">
                 <label for="">Tanggal Terapi</label>
-                <input type="date" value="{{$resume->tanggal_tindakan}}" readonly class="form-control" >
+                <input type="date" value="{{$resume->tanggal_tindakan ?? ''}}" readonly class="form-control" >
             </div>
         </div>
     </div>
@@ -355,7 +355,7 @@
             <label class="label-admisi">Nama Tindakan/Operasi</label>
             <div class="row">
                 <div class="col">
-                    <textarea class="form-control" readonly rows="4">{{$resume->tindakan_atau_operasi}}</textarea>
+                    <textarea class="form-control" readonly rows="4">{{$resume->tindakan_atau_operasi ?? ''}}</textarea>
                 </div>
             </div>
         </fieldset>
@@ -364,7 +364,7 @@
             <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
             <div class="row">
                 <div class="col">
-                    <textarea class="form-control"  rows="4" readonly>{{$resume->penyebab_luar}}</textarea>
+                    <textarea class="form-control"  rows="4" readonly>{{$resume->penyebab_luar ?? ''}}</textarea>
                 </div>
             </div>
         </fieldset>
@@ -373,11 +373,11 @@
     <div class="col-lg-6">
         <div class="form-group">
             <label for="">Kode ICD-9-CM</label>
-            <textarea readonly class="form-control" rows="4">{{$resume->icd_9_tindakan}}</textarea>
+            <textarea readonly class="form-control" rows="4">{{$resume->icd_9_tindakan ?? ''}}</textarea>
         </div>
         <div class="form-group">
             <label for="">Kode ICD-10</label>
-            <textarea readonly class="form-control" rows="4">{{$resume->icd_10_penyebab}}</textarea>
+            <textarea readonly class="form-control" rows="4">{{$resume->icd_10_penyebab ?? ''}}</textarea>
         </div>
     </div>
 </div>
@@ -392,28 +392,28 @@
     
             <div class="form-group">
                 <label class="control-label">Klinik</label>
-            <input type="text" value="{{$resume->klinik}}" readonly class="form-control"/>
+            <input type="text" value="{{$resume->klinik ?? ''}}" readonly class="form-control"/>
             </div>
 
             <div class="form-group">
                 <label class="control-label">Dokter</label>
-                <input type="text" value="{{$resume->dokter}}" readonly class="form-control"/>
+                <input type="text" value="{{$resume->dokter ?? ''}}" readonly class="form-control"/>
             </div>
 
             <div class="form-group">
                 <label class="control-label">Tanggal Kontrol</label>
-                <input type="date" value="{{$resume->tanggal_kontrol_rsud}}" readonly class="form-control"/>
+                <input type="date" value="{{$resume->tanggal_kontrol_rsud ?? ''}}" readonly class="form-control"/>
             </div>
             
             <h4>Rujukan RS Lain</h4>
             
             <div class="form-group">
                 <label class="control-label">Tanggal</label>
-                <input type="date"  value="{{$resume->tanggal_rs_lain}}" readonly class="form-control" />
+                <input type="date"  value="{{$resume->tanggal_rs_lain ?? ''}}" readonly class="form-control" />
             </div>
             <div class="form-group">
                 <label class="control-label">Ke RS</label>
-                <input type="text"  value="{{$resume->nama_rs_lain}}" readonly placeholder="" class="form-control" />
+                <input type="text"  value="{{$resume->nama_rs_lain ?? ''}}" readonly placeholder="" class="form-control" />
             </div>
             
             
@@ -421,34 +421,34 @@
             
             <div class="form-group">
                 <label class="control-label">Tanggal</label>
-                <input type="date"  value="{{$resume->tanggal_rujuk_balik}}" readonly class="form-control" />
+                <input type="date"  value="{{$resume->tanggal_rujuk_balik ?? ''}}" readonly class="form-control" />
             </div>
             <div class="form-group">
                 <label class="control-label">Ke RS</label>
-                <input type="text"  value="{{$resume->nama_rs_rujuk_balik}}" readonly placeholder="" class="form-control" />
+                <input type="text"  value="{{$resume->nama_rs_rujuk_balik ?? ''}}" readonly placeholder="" class="form-control" />
             </div>
             <div class="form-group">
                 <label class="control-label">Puskesmas</label>
-                <input type="text"  value="{{$resume->puskesmas}}" readonly class="form-control" />
+                <input type="text"  value="{{$resume->puskesmas ?? ''}}" readonly class="form-control" />
             </div>
             <div class="form-group">
                 <label class="control-label">Dokter Praktek Pribadi</label>
-                <input type="text"  value="{{$resume->dokter_pribadi}}" readonly class="form-control" />
+                <input type="text"  value="{{$resume->dokter_pribadi ?? ''}}" readonly class="form-control" />
             </div>
             
             <h4>Edukasi Pasien</h4>
             
             <div class="form-group">
                 <label class="control-label">Penyakit</label>
-                <input type="text"  value="{{$resume->edukasi_penyakit}}" readonly class="form-control" />
+                <input type="text"  value="{{$resume->edukasi_penyakit ?? ''}}" readonly class="form-control" />
             </div>
             <div class="form-group">
                 <label class="control-label">Diet</label>
-                <input type="text"  value="{{$resume->edukasi_diet}}" readonly class="form-control" />
+                <input type="text"  value="{{$resume->edukasi_diet ?? ''}}" readonly class="form-control" />
             </div>
             <div class="form-group">
                 <label class="control-label">Alat bantu bila ada</label>
-                <input type="text"  value="{{$resume->edukasi_alat_bantu}}" readonly class="form-control" />
+                <input type="text"  value="{{$resume->edukasi_alat_bantu ?? ''}}" readonly class="form-control" />
             </div>
         </div>        
     </div>
