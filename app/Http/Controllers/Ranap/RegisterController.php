@@ -401,7 +401,7 @@ class RegisterController extends Controller
         }
     }
 
-    //api untuk ruangan
+    //api untuk 
     function getRuangan()
     {
         $ruangan = DB::connection('mysql2')

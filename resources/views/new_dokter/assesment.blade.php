@@ -476,7 +476,7 @@
     </script>
 
     <script src="{{asset('new_assets/js/cpoe.js')}}"></script>
-     <script src="{{asset('new_assets/js/prescribe.js')}}"></script>
+    <script src="{{asset('new_assets/js/prescribe.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/diagnosa.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/prosedur.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/billing.js')}}"></script>
