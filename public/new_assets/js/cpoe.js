@@ -48,8 +48,8 @@ $('body #cpoe_tindakan, body #select-tindakan').change(function () {
 
 $('body').on('click', '.remove_cpoe', function () {
     $id = $(this).data('id');
-    $('body #row_cpoe_' + $id).remove();
-    $('body #grid_tindakan[data-id="' + $id + '"]').prop('checked', false);
+    $('[id*="row_cpoe_' + $id+'"]').remove();
+    $('[id*="grid_tindakan"][data-id="' + $id + '"]').prop('checked', false);
 });
 
 $('body').on('click', '.remove_ordercpoe', function (event) {

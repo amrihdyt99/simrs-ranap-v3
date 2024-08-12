@@ -218,7 +218,7 @@
         </div>
           @endif
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Tutup Panel CPPT</button>
+            <button type="button" class="btn btn-secondary float-right" onclick="clickTab('soap')" data-dismiss="modal">Tutup Panel CPPT</button>
             <button type="button"  class="btn btn-success" id="btn-save-soapdok" onclick="simpanCppt()">Simpan CPPT</button>
         </div>
       </div>
@@ -479,7 +479,7 @@
                     "soapdok_subject": $('#subject').val(),
                     "soapdok_object": $('#object').val(),
                     "soapdok_assesment": $('#assesment').val(),
-                    "soapdok_planning": $('#planning_').val(),
+                    "soapdok_planning": $('#planning_').html(),
                     "soapdok_instruksi": $('#instruksi').val(),
                     "soapdok_dokter":"{{ auth()->user()->dokter_id}}",
                     "nama_ppa":"{{ auth()->user()->name}}",
@@ -491,6 +491,7 @@
                     if(data.success == true){
                         $('#modalSOAP').modal('hide');
                         getSoapDokter()
+                        clickTab('soap')
                     }else{
                         Swal.fire({
                             title: 'Gagal',
