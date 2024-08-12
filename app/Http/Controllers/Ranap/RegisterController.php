@@ -228,7 +228,7 @@ class RegisterController extends Controller
             $registrasi['reg_info_kewajiban'] = $request->reg_info_hak_kewajiban;
             $registrasi['reg_info_general_consent'] = $request->reg_info_general_consent;
             $registrasi['reg_info_carabayar'] = $request->reg_info_carabayar;
-            $registrasi['reg_kategori'] = $kategori;
+            // $registrasi['reg_kategori'] = $kategori; // belum ada kolom kategori di database
             RegistrationInap::create($registrasi);
 
             //update data ruangan
@@ -402,7 +402,6 @@ class RegisterController extends Controller
     }
 
     //api untuk ruangan
-
     function getRuangan()
     {
         $ruangan = DB::connection('mysql2')
@@ -412,11 +411,20 @@ class RegisterController extends Controller
             ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-            ->whereNull('registration_no')->where('is_active', '1')->where('bed_status', '0116^R')->get();
+            ->whereNull('registration_no')
+            ->where(function($query) {
+                $query->where('is_active', 1)
+                      ->orWhereNull('is_active'); // menambahkan kondisi manampilkan data jika NULL
+            })
+            ->where(function($query) {
+                $query->where('bed_status', 'ready') // menampilkan data dengan status ready
+                      ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
+            })
+            ->get();
         return response()->json([
             'data' => $ruangan
         ]);
-    }
+    }    
 
     function getRuanganRawat()
     {
@@ -425,12 +433,16 @@ class RegisterController extends Controller
             ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
-            ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')->where('is_active', '1')->distinct()->get();
+            ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
+            ->where(function($query) {
+                $query->where('is_active', 1)
+                      ->orWhereNull('is_active');
+            })
+            ->distinct()->get();
         return response()->json([
             'data' => $ruangan
         ]);
     }
-
 
     function getBussinessPartner()
     {
