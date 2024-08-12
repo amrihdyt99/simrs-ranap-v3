@@ -14,7 +14,7 @@ class BedController extends Controller
 {
     public function index(Request $request)
     {
-        if($request->ajax()){
+        if ($request->ajax()) {
             return $this->ajax_index($request);
         }
         return view('master.pages.bed.index');
@@ -32,22 +32,21 @@ class BedController extends Controller
         return DataTables()
             ->eloquent($bed)
             ->editColumn('aksi_data', function ($query) use ($request) {
-                return
-                ( '<a href="'
-                . route('master.bed.edit', [$query->bed_id])
-                . '" class="btn btn-sm"><i class="fas fa-edit text-info"></i></a>' )
-                .
-                '<form action="'
-                . route('master.bed.destroy', [$query->bed_id])
-                . '" method="POST">'
-                . csrf_field()
-                . method_field('DELETE')
-                . '<button class="btn btn-sm" type="submit" onclick="return confirm(\'Apakah yakin ingin menghapus?\')"><i class="fas fa-trash text-danger"></i></button></form>';
+                return ('<a href="'
+                        . route('master.bed.edit', [$query->bed_id])
+                        . '" class="btn btn-sm"><i class="fas fa-edit text-info"></i></a>')
+                    .
+                    '<form action="'
+                    . route('master.bed.destroy', [$query->bed_id])
+                    . '" method="POST">'
+                    . csrf_field()
+                    . method_field('DELETE')
+                    . '<button class="btn btn-sm" type="submit" onclick="return confirm(\'Apakah yakin ingin menghapus?\')"><i class="fas fa-trash text-danger"></i></button></form>';
             })
             ->editColumn('reg_no', function ($query) use ($request) {
-                if($query->registration){
+                if ($query->registration) {
                     return $query->registration->reg_no;
-                }else{
+                } else {
                     return '';
                 }
             })
@@ -58,7 +57,7 @@ class BedController extends Controller
                 return $query->room ? $query->room->RoomName : '';
             })
             ->editColumn('PatientName', function ($query) use ($request) {
-                return $query->registration ? ($query->registration->pasien ? $query->registration->pasien->PatientName :'') : '';
+                return $query->registration ? ($query->registration->pasien ? $query->registration->pasien->PatientName : '') : '';
             })
             ->escapeColumns([])
             ->toJson();
