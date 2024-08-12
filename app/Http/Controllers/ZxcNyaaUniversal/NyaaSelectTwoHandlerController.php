@@ -92,21 +92,35 @@ class NyaaSelectTwoHandlerController extends Controller
 
     public function m_ruangan_baru_all(Request $request)
     {
-        $cxx = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->db_connection_mysql2()
-            ->table('m_bed')
-            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
-            ->join('m_unit', 'm_unit.ServiceUnitCode', '=', 'm_unit_departemen.ServiceUnitCode')
-            ->select('m_unit.ServiceUnitName', 'm_bed.service_unit_id as id')
-            ->where('m_unit.ServiceUnitName', 'LIKE', '%' . $request->input('term', '') . '%')
-            // ->where('bed_status', '0116^O')
-            ->take($this->select2_take())
+        // $cxx = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->db_connection_mysql2()
+        //     ->table('m_bed')
+        //     ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+        //     ->join('m_unit', 'm_unit.ServiceUnitCode', '=', 'm_unit_departemen.ServiceUnitCode')
+        //     ->select('m_unit.ServiceUnitName', 'm_bed.service_unit_id as id')
+        //     ->where('m_unit.ServiceUnitName', 'LIKE', '%' . $request->input('term', '') . '%')
+        //     // ->where('bed_status', '0116^O')
+        //     ->take($this->select2_take())
+        //     ->distinct()
+        //     ->get();
+
+        $cxx = DB::connection('mysql2')
+            ->table('m_ruangan_baru')
+            ->select('m_ruangan_baru.nama_ruangan', 'm_ruangan_baru.id');
+        // ->where('bed_status', '0116^O')
+
+
+        if ($request->has('term')) {
+            $cxx = $cxx->where('nama_ruangan', 'LIKE', '%' . $request->term . '%');
+        }
+
+        $cxx = $cxx->take($this->select2_take())
             ->distinct()
             ->get();
 
         $cxy = array();
         foreach ($cxx as $data) {
             $a['id'] = $data->id;
-            $a['text'] = $data->ServiceUnitName;
+            $a['text'] = $data->nama_ruangan;
             array_push($cxy, $a);
         }
         return ['results' => $cxy];
@@ -122,7 +136,7 @@ class NyaaSelectTwoHandlerController extends Controller
                 'rs_m_item.IsActive' => '1',
                 'rs_m_item.IsDeleted' => '0',
             ])
-            ->where(function($query) use($request){
+            ->where(function ($query) use ($request) {
                 $query->where('ItemCode', 'LIKE', '%' . $request->input('term', '') . '%')
                     ->orWhere('ItemName1', 'LIKE', '%' . $request->input('term', '') . '%');
             })
@@ -132,7 +146,7 @@ class NyaaSelectTwoHandlerController extends Controller
         $cxy = array();
         foreach ($cxx as $data) {
             $a['id'] = $data->ItemCode;
-            $a['text'] = '['.$data->ItemCode.'] '.$data->ItemName1;
+            $a['text'] = '[' . $data->ItemCode . '] ' . $data->ItemName1;
 
             // CUSTOM
             $a['data_id'] = $data->ItemCode;

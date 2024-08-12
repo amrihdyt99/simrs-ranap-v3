@@ -1147,78 +1147,77 @@
             },
         });
     }
-=======
-        $('[name="asdew_skor_braden"]').val(sum);
 
-        if (sum >= 20 && sum <= 23) {
-            $('[name="asdew_kategori"]').val('Resiko rendah');
-        } else if (sum >= 15 && sum <= 19) {
-            $('[name="asdew_kategori"]').val('Resiko sedang');
-        } else if (sum >= 11 && sum <= 14) {
-            $('[name="asdew_kategori"]').val('Resiko tinggi');
-        } else if (sum >= 6 && sum <= 10) {
-            $('[name="asdew_kategori"]').val('Resiko sangat tinggi');
-        }
-    });
-}
-function getAssementDewasa(){
-    $.ajax({
-        url: '{{ route('perawat.get_data_assesment_dewasa') }}',
-        type: 'post',
-        dataType: 'json',
-        data : {
-            "reg": regno,
-            "reg_no": regno,
-            "medrec": medrec,
-        },
-        success: function(resp) {
-            setChecked('asdew_sensori', resp.asdew_sensori)
-            setChecked('asdew_lembab', resp.asdew_lembab)
-            setChecked('asdew_aktivitas', resp.asdew_aktivitas)
-            setChecked('asdew_mobilitas', resp.asdew_mobilitas)
-            setChecked('asdew_nutrisi', resp.asdew_nutrisi)
-            setChecked('asdew_friksi', resp.asdew_friksi)
-            $('[name="asdew_skor_braden"]').val(resp.asdew_skor_braden)
-            $('[name="asdew_kategori"]').val(resp.asdew_kategori)
-            setChecked('asdew_luka', resp.asdew_luka)
-            setChecked('asdew_rom', resp.asdew_rom)
-            setChecked('asdew_deformitas', resp.asdew_deformitas)
-            $('[name="asdew_deformitas_lainnya"]').val(resp.asdew_deformitas_lainnya)
-            setChecked('asdew_ggtidur', resp.asdew_ggtidur)
-            $('[name="asdew_ggtidur_lainnya"]').val(resp.asdew_ggtidur_lainnya)
-            setChecked('asdew_keluhan[]', resp.asdew_keluhan)
-            $('[name="asdew_keluhan_lainnya"]').val(resp.asdew_keluhan_lainnya)
-            setChecked('asdew_haus', resp.asdew_haus)
-            setChecked('asdew_mukosa', resp.asdew_mukosa)
-            setChecked('asdew_tugor', resp.asdew_tugor)
-            setChecked('asdew_edema', resp.asdew_edema)
-            $('[name="asdew_bab_kali"]').val(resp.asdew_bab_kali)
-            setChecked('asdew_bab', resp.asdew_bab)
-            setChecked('asdew_keluhan_bab[]', resp.asdew_keluhan_bab)
-            $('[name="asdew_keluhan_bab_lainnya"]').val(resp.asdew_keluhan_bab_lainnya)
-            $('[name="asdew_feces_lainnya"]').val(resp.asdew_feces_lainnya)
-            $('[name="asdew_feces"]').val(resp.asdew_feces)
-            $('[name="asdew_frekuensi_bak"]').val(resp.asdew_frekuensi_bak)
-            $('[name="asdew_jumlah_bak"]').val(resp.asdew_jumlah_bak)
-            $('[name="asdew_warna_urin"]').val(resp.asdew_warna_urin)
-            setChecked('asdew_keluhan_bak', resp.asdew_keluhan_bak)
-            $('[name="asdew_keluhan_bak_lainnya"]').val(resp.asdew_keluhan_bak_lainnya)
-            setChecked('asdew_bahasa', resp.asdew_bahasa)
-            $('[name="asdew_bahasa_lainnya"]').val(resp.asdew_bahasa_lainnya)
-            setChecked('asdew_pendidikan', resp.asdew_pendidikan)
-            $('[name="asdew_pendidikan_lainnya"]').val(resp.asdew_pendidikan_lainnya)
-            setChecked('asdew_penterjemah', resp.asdew_penterjemah)
-            setChecked('asdew_baca', resp.asdew_baca)
-            setChecked('asdew_belajar', resp.asdew_belajar)
-            $('[name="asdew_budaya"]').val(resp.asdew_budaya)
-            setChecked('asdew_hambatan[]', resp.asdew_hambatan)
-            $('[name="asdew_hambatan_lainnya"]').val(resp.asdew_hambatan_lainnya)
-        },
-        error: function(data) {
-            neko_refresh();
-        },
-    });
-}
+    $('[name="asdew_skor_braden"]').val(sum);
+
+    if (sum >= 20 && sum <= 23) {
+        $('[name="asdew_kategori"]').val('Resiko rendah');
+    } else if (sum >= 15 && sum <= 19) {
+        $('[name="asdew_kategori"]').val('Resiko sedang');
+    } else if (sum >= 11 && sum <= 14) {
+        $('[name="asdew_kategori"]').val('Resiko tinggi');
+    } else if (sum >= 6 && sum <= 10) {
+        $('[name="asdew_kategori"]').val('Resiko sangat tinggi');
+    }
+
+    function getAssementDewasa() {
+        $.ajax({
+            url: `{{ route('perawat.get_data_assesment_dewasa') }}`,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                "reg": regno,
+                "reg_no": regno,
+                "medrec": medrec,
+            },
+            success: function(resp) {
+                setChecked('asdew_sensori', resp.asdew_sensori)
+                setChecked('asdew_lembab', resp.asdew_lembab)
+                setChecked('asdew_aktivitas', resp.asdew_aktivitas)
+                setChecked('asdew_mobilitas', resp.asdew_mobilitas)
+                setChecked('asdew_nutrisi', resp.asdew_nutrisi)
+                setChecked('asdew_friksi', resp.asdew_friksi)
+                $('[name="asdew_skor_braden"]').val(resp.asdew_skor_braden)
+                $('[name="asdew_kategori"]').val(resp.asdew_kategori)
+                setChecked('asdew_luka', resp.asdew_luka)
+                setChecked('asdew_rom', resp.asdew_rom)
+                setChecked('asdew_deformitas', resp.asdew_deformitas)
+                $('[name="asdew_deformitas_lainnya"]').val(resp.asdew_deformitas_lainnya)
+                setChecked('asdew_ggtidur', resp.asdew_ggtidur)
+                $('[name="asdew_ggtidur_lainnya"]').val(resp.asdew_ggtidur_lainnya)
+                setChecked('asdew_keluhan[]', resp.asdew_keluhan)
+                $('[name="asdew_keluhan_lainnya"]').val(resp.asdew_keluhan_lainnya)
+                setChecked('asdew_haus', resp.asdew_haus)
+                setChecked('asdew_mukosa', resp.asdew_mukosa)
+                setChecked('asdew_tugor', resp.asdew_tugor)
+                setChecked('asdew_edema', resp.asdew_edema)
+                $('[name="asdew_bab_kali"]').val(resp.asdew_bab_kali)
+                setChecked('asdew_bab', resp.asdew_bab)
+                setChecked('asdew_keluhan_bab[]', resp.asdew_keluhan_bab)
+                $('[name="asdew_keluhan_bab_lainnya"]').val(resp.asdew_keluhan_bab_lainnya)
+                $('[name="asdew_feces_lainnya"]').val(resp.asdew_feces_lainnya)
+                $('[name="asdew_feces"]').val(resp.asdew_feces)
+                $('[name="asdew_frekuensi_bak"]').val(resp.asdew_frekuensi_bak)
+                $('[name="asdew_jumlah_bak"]').val(resp.asdew_jumlah_bak)
+                $('[name="asdew_warna_urin"]').val(resp.asdew_warna_urin)
+                setChecked('asdew_keluhan_bak', resp.asdew_keluhan_bak)
+                $('[name="asdew_keluhan_bak_lainnya"]').val(resp.asdew_keluhan_bak_lainnya)
+                setChecked('asdew_bahasa', resp.asdew_bahasa)
+                $('[name="asdew_bahasa_lainnya"]').val(resp.asdew_bahasa_lainnya)
+                setChecked('asdew_pendidikan', resp.asdew_pendidikan)
+                $('[name="asdew_pendidikan_lainnya"]').val(resp.asdew_pendidikan_lainnya)
+                setChecked('asdew_penterjemah', resp.asdew_penterjemah)
+                setChecked('asdew_baca', resp.asdew_baca)
+                setChecked('asdew_belajar', resp.asdew_belajar)
+                $('[name="asdew_budaya"]').val(resp.asdew_budaya)
+                setChecked('asdew_hambatan[]', resp.asdew_hambatan)
+                $('[name="asdew_hambatan_lainnya"]').val(resp.asdew_hambatan_lainnya)
+            },
+            error: function(data) {
+                neko_refresh();
+            },
+        });
+    }
 
     // assesment gizi dewasa
     //
