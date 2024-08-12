@@ -33,8 +33,8 @@ class BedController extends Controller
             ->eloquent($bed)
             ->editColumn('aksi_data', function ($query) use ($request) {
                 return ('<a href="'
-                        . route('master.bed.edit', [$query->bed_id])
-                        . '" class="btn btn-sm"><i class="fas fa-edit text-info"></i></a>')
+                    . route('master.bed.edit', [$query->bed_id])
+                    . '" class="btn btn-sm"><i class="fas fa-edit text-info"></i></a>')
                     .
                     '<form action="'
                     . route('master.bed.destroy', [$query->bed_id])
