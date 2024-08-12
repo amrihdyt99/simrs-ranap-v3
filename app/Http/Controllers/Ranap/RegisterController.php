@@ -228,7 +228,7 @@ class RegisterController extends Controller
             $registrasi['reg_info_kewajiban'] = $request->reg_info_hak_kewajiban;
             $registrasi['reg_info_general_consent'] = $request->reg_info_general_consent;
             $registrasi['reg_info_carabayar'] = $request->reg_info_carabayar;
-            $registrasi['reg_kategori'] = $kategori;
+            // $registrasi['reg_kategori'] = $kategori; // belum ada kolom kategori di database
             RegistrationInap::create($registrasi);
 
             //update data ruangan
@@ -401,7 +401,7 @@ class RegisterController extends Controller
         }
     }
 
-    //api untuk ruangan
+    //api untuk 
     function getRuangan()
     {
         $ruangan = DB::connection('mysql2')
@@ -421,7 +421,6 @@ class RegisterController extends Controller
                       ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
             })
             ->get();
-            
         return response()->json([
             'data' => $ruangan
         ]);
