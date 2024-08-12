@@ -343,6 +343,12 @@
                                       </div>
                                   </div>
                                   <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="label-admisi">Penanggungjawab Alamat</label>
+                                        <input type="text" class="form-control" name="reg_pjawab_alamat" id="reg_pjawab_alamat" placeholder="Penanggungjawab Alamat pasien">
+                                    </div>
+                                </div>
+                                  <div class="col-lg-4">
                                       <div class="form-group">
                                           <label class="label-admisi">Informasi General Consent</label>
                                           <select class="form-control" id="reg_info_general_consent"
