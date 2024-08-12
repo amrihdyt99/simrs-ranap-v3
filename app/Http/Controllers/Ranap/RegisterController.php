@@ -413,7 +413,7 @@ class RegisterController extends Controller
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
             ->where(function($query) {
-                $query->where('is_active', '1')
+                $query->where('is_active', 1)
                       ->orWhereNull('is_active'); // menambahkan kondisi manampilkan data jika NULL
             })
             ->where(function($query) {
@@ -436,7 +436,7 @@ class RegisterController extends Controller
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
             ->where(function($query) {
-                $query->where('is_active', '1')
+                $query->where('is_active', 1)
                       ->orWhereNull('is_active');
             })
             ->distinct()->get();

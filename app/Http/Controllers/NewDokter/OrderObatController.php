@@ -406,6 +406,10 @@ class OrderObatController extends Controller
             ->select('job_orders_dt.id', 'waktu_order', 'jenis_order', 'job_orders_dt.order_no', 'item_name', 'harga_jual', 'ParamedicName')
             ->get();
 
+        if (isset($request->plain_data)) {
+            return $joborderdetail;
+        }
+
         if (count($joborderdetail) > 0) {
             return response()->json([
                 'success' => true,
