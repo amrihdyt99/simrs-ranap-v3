@@ -1,0 +1,12 @@
+ser login ranap
+
+username        | level user     | password
+adminmaster     | data master    | palembang123
+adminregister   | registrasi     | password
+dr_diah         | dokter         | 123
+kasir           |  kasir         |password
+stela           | perawat        |password
+
+user login rme
+username        | level user     | password
+stela           | perawat        |password

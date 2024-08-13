@@ -45,6 +45,7 @@
               <label for="">Pilih Ruangan</label>
               <select name="pilru" id="pilru" class="form-control select2-mod" style="width: 100%" onchange="filter_ruang()"></select>
             </div>
+            <button type="button" onclick="$('#modal_pil').modal('hide')" class="btn btn-secondary float-right" aria-label="Close">Close</button>
           </div>
         </div>
       </div>

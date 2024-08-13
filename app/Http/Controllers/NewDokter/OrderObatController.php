@@ -236,6 +236,7 @@ class OrderObatController extends Controller
             ]);
         }
         $data_pasien = DB::connection('mysql2')->table('m_bed')->where('registration_no', $request->cpoe_reg)->first();
+        // return $data_pasien;
         $jenisorder = $request->jenisorder;
         $countorder = DB::connection('mysql')
             ->table("job_orders")
@@ -257,7 +258,7 @@ class OrderObatController extends Controller
         $jobOrder['waktu_order'] = now()->toDateTimeString();
         //$jobOrder['service_unit'] = $request->service_unit;
         $jobOrder['order_no'] = $orderNumberFormat;
-        $jobOrder['service_unit'] = $data_pasien->service_unit_id;
+        $jobOrder['service_unit'] = $data_pasien->service_unit_id ?? '';
         $jobOrder['id_cppt'] = $request->cpoe_cppt;
         $detailBatch = array();
         $itemsToLab = array();
@@ -404,6 +405,10 @@ class OrderObatController extends Controller
             ])
             ->select('job_orders_dt.id', 'waktu_order', 'jenis_order', 'job_orders_dt.order_no', 'item_name', 'harga_jual', 'ParamedicName')
             ->get();
+
+        if (isset($request->plain_data)) {
+            return $joborderdetail;
+        }
 
         if (count($joborderdetail) > 0) {
             return response()->json([
