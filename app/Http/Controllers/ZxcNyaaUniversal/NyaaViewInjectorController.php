@@ -885,6 +885,8 @@ class NyaaViewInjectorController extends AaaBaseController
     {
         $informasi = DB::connection('mysql')
             ->table('rs_tindakan_medis_informasi')
+            ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
+            ->select('rs_tindakan_medis_informasi.*', 'rs_m_paramedic.ParamedicName')
             ->where('reg_no', $request->reg_no)
             ->first();
 
