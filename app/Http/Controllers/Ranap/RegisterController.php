@@ -221,7 +221,7 @@ class RegisterController extends Controller
             $registrasi['reg_lama'] = $request->link_regis;
             $registrasi['reg_diagnosis'] = $request->reg_diagnosis;
             $registrasi['reg_medrec'] = $request->reg_medrec;
-            $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat;
+            $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat ?? '-';
             $registrasi['reg_pjawab_nohp'] = $request->reg_pjawab_nohp;
             $registrasi['reg_pjawab_hub'] = $request->reg_hub_pasien;
             $registrasi['reg_ketersidaan_kamar'] = $request->reg_ketersidaan_kamar;
