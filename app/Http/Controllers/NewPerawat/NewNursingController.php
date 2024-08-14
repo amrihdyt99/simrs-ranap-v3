@@ -409,6 +409,7 @@ class NewNursingController extends Controller
             'turun_berat_badan' => $request->asper_penurunan_bb_dewasa,
             'turun_nafsu_makan' => $request->asper_penurunan_nafsu_dewasa,
             'ketegori' => $request->asper_kategori_dewasa,
+            'total_skor' => $request->total_skor_dewasa,
             'catatan' => ""
         );
 

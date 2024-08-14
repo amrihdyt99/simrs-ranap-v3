@@ -76,6 +76,8 @@ function calculateGiziDewasaScore() {
     });
     $('#total_skor_dewasa').val(score);
     // setKategoriDewasa(score);
+
+    return score;
 }
 
 // function setKategoriDewasa(score) {

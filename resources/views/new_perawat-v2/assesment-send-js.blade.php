@@ -32,10 +32,13 @@
 
     function addskrinninggizi() {
         neko_proses();
+
+        var skorDewasa = calculateGiziDewasaScore();
+
         $.ajax({
             url: "{{route('add.skrinninggizi')}}",
             type: "POST",
-            data: $('#entry_asesmen').serialize() + "&medrec=" + medrec,
+            data: $('#entry_asesmen').serialize() + "&medrec=" + medrec + "&total_skor_dewasa=" + skorDewasa,
             success: function(data) {
                 // neko_simpan_success();
             },
