@@ -437,7 +437,7 @@ class NewNursingController extends Controller
             'asper_skor_anak' => $request->asper_skor_anak,
             'asper_sebab_malnutrisi_lain' => $request->asper_sebab_malnutrisi_lain,
             'asper_sebab_malnutrisi' => json_encode($request->asper_sebab_malnutrisi),
-
+            'total_skor_gizi_anak' => $request->total_skor_anak,
         );
 
         $simpan = DB::connection('mysql')
@@ -499,6 +499,7 @@ class NewNursingController extends Controller
         $paramsawalsearch = array(
             'reg_no' => $request->reg_no,
             'reg_medrec' => $request->medrec,
+            'user_id' => $request->user_id,
         );
 
         $paramsawalsearch2 = array(
@@ -998,6 +999,28 @@ class NewNursingController extends Controller
             'reg_medrec' => $request->medrec,
             'reg_no' => $request->regno,
         ];
+
+        $total_resiko_jatuh_dewasa = 
+        $request->resiko_jatuh_bulan_terakhir +
+        $request->resiko_jatuh_medis_sekunder +
+        $request->resiko_jatuh_alat_bantu_jalan +
+        $request->resiko_jatuh_infus +
+        $request->resiko_jatuh_berjalan +
+        $request->resiko_jatuh_mental;
+
+        $total_resiko_jatuh_geriatri =
+        $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan +
+        $request->resiko_jatuh_geriatri_pusing +
+        $request->resiko_jatuh_geriatri_kebingungan +
+        $request->resiko_jatuh_geriatri_nokturia +
+        $request->resiko_jatuh_geriatri_kebingungan_intermiten +
+        $request->resiko_jatuh_geriatri_kelemahan_umum +
+        $request->resiko_jatuh_geriatri_obat_beresiko_tinggi +
+        $request->resiko_jatuh_geriatri_riwayat_jatuh_12_bulan +
+        $request->resiko_jatuh_geriatri_osteoporosis +
+        $request->resiko_jatuh_geriatri_pendengaran_dan_pengeliatan +
+        $request->resiko_jatuh_geriatri_70_tahun_keatas;
+
         $params = [
             'resiko_jatuh_bulan_terakhir' => $request->resiko_jatuh_bulan_terakhir,
             'resiko_jatuh_medis_sekunder' => $request->resiko_jatuh_medis_sekunder,
@@ -1005,6 +1028,7 @@ class NewNursingController extends Controller
             'resiko_jatuh_infus' => $request->resiko_jatuh_infus,
             'resiko_jatuh_berjalan' => $request->resiko_jatuh_berjalan,
             'resiko_jatuh_mental' => $request->resiko_jatuh_mental,
+            'total_resiko_jatuh_dewasa' => $total_resiko_jatuh_dewasa,
 
             // default
             'resiko_jatuh_geriatri_gangguan_gaya_berjalan' => $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan,
@@ -1018,6 +1042,7 @@ class NewNursingController extends Controller
             'resiko_jatuh_geriatri_osteoporosis' => $request->resiko_jatuh_geriatri_osteoporosis,
             'resiko_jatuh_geriatri_pendengaran_dan_pengeliatan' => $request->resiko_jatuh_geriatri_pendengaran_dan_pengeliatan,
             'resiko_jatuh_geriatri_70_tahun_keatas' => $request->resiko_jatuh_geriatri_70_tahun_keatas,
+            'total_resiko_jatuh_geriatri' => $total_resiko_jatuh_geriatri,
         ];
 
         $simpan = DB::connection('mysql')

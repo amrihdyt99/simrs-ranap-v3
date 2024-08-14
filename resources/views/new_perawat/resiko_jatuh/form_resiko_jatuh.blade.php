@@ -95,7 +95,7 @@
             </form>
 
             <div class="card-header mt-5">
-                <h3>Penilaian Risiko Jatuh Pasien Dewasa Hall Morse Scale</h3>
+                <h3>Penilaian Risiko Jatuh Pasien Geriatri > 60 Tahun</h3>
             </div>
                 <table class="table1">
                     <tbody>
@@ -256,8 +256,8 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" align="center"><strong>TOTAL SKOR</strong></td>
-                                <td>&nbsp;</td>
+                                <td colspan="2" align="center"><strong>TOTAL SKOR </strong></td>
+                                <td>&nbsp; {{$skrining_resiko_jatuh->total_resiko_jatuh_dewasa}}</td>
                             </tr>
                         </table>
                     </td>
@@ -365,7 +365,7 @@
                             </tr>
                             <tr>
                                 <td colspan="3" align="center"><strong>TOTAL SKOR</strong></td>
-                                <td>&nbsp;0</td>
+                                <td>&nbsp;{{$skrining_resiko_jatuh->total_resiko_jatuh_geriatri}}</td>
                             </tr>
                         </table>
                     </td>

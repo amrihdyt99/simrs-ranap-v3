@@ -107,6 +107,8 @@ function calculateGiziAnakScore() {
         score += parseInt($(this).data('id'));
     });
     $('#total_skor_anak').val(score);
+
+    return score;
 }
 
 </script>

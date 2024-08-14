@@ -34,6 +34,7 @@
         neko_proses();
 
         var skorDewasa = calculateGiziDewasaScore();
+        var skorAnak = calculateGiziAnakScore();
 
         $.ajax({
             url: "{{route('add.skrinninggizi')}}",
@@ -49,7 +50,7 @@
         $.ajax({
             url: "{{route('add.skrinninggizianak')}}",
             type: "POST",
-            data: $('#entry_asesmen').serialize() + "&medrec=" + medrec,
+            data: $('#entry_asesmen').serialize() + "&medrec=" + medrec + "&total_skor_anak=" + skorAnak,
             success: function(data) {
                 neko_simpan_success();
             },
