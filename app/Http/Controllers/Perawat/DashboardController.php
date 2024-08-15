@@ -25,11 +25,11 @@ class DashboardController extends Controller
             ->table("m_registrasi")
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
+            ->leftJoin('m_ruangan', 'm_registrasi.reg_ruangan', '=', 'm_ruangan.RoomID')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
             ->where('m_registrasi.reg_discharge', '!=', '3')
             ->when($request->nama_ruangan !== null, function ($query) use ($request) {
-                return $query->where('m_ruangan_baru.id', $request->nama_ruangan);
+                return $query->where('m_ruangan.RoomID', $request->nama_ruangan);
             })
             ->when($request->reg_tgl !== null, function ($query) use ($request) {
                 return $query->where('m_registrasi.reg_tgl', Carbon::createFromFormat('d/m/Y', $request->reg_tgl)->format('Y-m-d'));
@@ -39,7 +39,7 @@ class DashboardController extends Controller
                 'm_registrasi.reg_medrec',
                 'm_registrasi.reg_no',
                 'm_paramedis.ParamedicName',
-                'm_ruangan_baru.nama_ruangan',
+                'm_ruangan.RoomName',
                 'm_registrasi.reg_cara_bayar',
                 'm_registrasi.reg_tgl',
             ])
