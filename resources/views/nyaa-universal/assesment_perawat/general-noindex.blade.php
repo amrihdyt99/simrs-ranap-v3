@@ -1,4 +1,5 @@
 <h2 class="text-black">{{ $dt_judul }}</h2>
+<p>format file pdf</p>
 <br>
 <div class="row">
   <div class="col-sm-12 pb-3" style>

@@ -2,7 +2,7 @@
 <form id="cathlab_sign_out">
     <div class="form-group">
         <label>Pukul</label>
-        <input type="time" class="form-control" name="cath_signout_pukul">
+        <input type="time" class="form-control" name="cath_signout_pukul" value="{{$sign_out->cath_signout_pukul}}">
     </div>
     <ol>
         <li>

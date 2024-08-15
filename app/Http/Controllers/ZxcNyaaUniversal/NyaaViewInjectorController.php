@@ -254,28 +254,36 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('transfer_reg', $request->reg_no)
             ->first();
 
-        $transfer_internal_alat_terpasang = DB::connection('mysql')
+            $transfer_internal_alat_terpasang = DB::connection('mysql')
             ->table('transfer_internal_alat_terpasang')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
             ->get();
-
+        
         $transfer_internal_kejadian = DB::connection('mysql')
             ->table('transfer_internal_kejadian')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
             ->get();
-
+        
         $transfer_internal_obat_dibawa = DB::connection('mysql')
             ->table('transfer_internal_obat_dibawa')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
             ->get();
-
+        
         $transfer_internal_status_pasien = DB::connection('mysql')
             ->table('transfer_internal_status_pasien')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
             ->get();
 
         $context = array(
@@ -945,31 +953,42 @@ class NyaaViewInjectorController extends AaaBaseController
         $surat_rujukan_prosedur_operasi = DB::connection('mysql')
             ->table('rs_rujukan_prosedur_operasi')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan)
+            // ->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan)
+            ->when($surat_rujukan && $surat_rujukan->kode_surat_rujukan, function ($query) use ($surat_rujukan) {
+                return $query->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan);
+            })
             ->get();
 
         $surat_rujukan_alat_terpasang = DB::connection('mysql')
             ->table('rs_rujukan_alat_terpasang')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan)
+            ->when($surat_rujukan && $surat_rujukan->kode_surat_rujukan, function ($query) use ($surat_rujukan) {
+                return $query->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan);
+            })
             ->get();
 
         $surat_rujukan_obat_diterima = DB::connection('mysql')
             ->table('rs_rujukan_obat_diterima')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan)
+            ->when($surat_rujukan && $surat_rujukan->kode_surat_rujukan, function ($query) use ($surat_rujukan) {
+                return $query->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan);
+            })
             ->get();
 
         $surat_rujukan_obat_dibawa = DB::connection('mysql')
             ->table('rs_rujukan_obat_cairan_dibawa')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan)
+            ->when($surat_rujukan && $surat_rujukan->kode_surat_rujukan, function ($query) use ($surat_rujukan) {
+                return $query->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan);
+            })
             ->get();
 
         $surat_rujukan_status_pasien = DB::connection('mysql')
             ->table('rs_rujukan_status_pasien')
             ->where('reg_no', $request->reg_no)
-            ->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan)
+            ->when($surat_rujukan && $surat_rujukan->kode_surat_rujukan, function ($query) use ($surat_rujukan) {
+                return $query->where('kode_surat_rujukan', $surat_rujukan->kode_surat_rujukan);
+            })
             ->get();
 
         $context = array(
