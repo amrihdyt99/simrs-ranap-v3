@@ -42,11 +42,13 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex">
-                                <h3 class="card-title">Pendaftaraan Rawat Inap </h3>
-                                <a href="{{ route('register.ranap.create') }}"
-                                    class="btn btn-success btn-sm ml-auto">Tambah
-                                    Data</a>
-                                    <button onclick="tarik_regis()" class="btn btn-primary no-radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button>
+                                <h3 class="card-title w-100">Pendaftaraan Rawat Inap </h3>
+                                <div class="d-flex">
+                                  {{-- <a href="{{ route('register.ranap.create') }}" class="btn btn-success btn-sm ml-auto">
+                                    Tambah Data
+                                  </a> --}}
+                                  <button onclick="tarik_regis()" class="btn btn-primary radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button>
+                                </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
