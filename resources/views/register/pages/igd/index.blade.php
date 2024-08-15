@@ -6,13 +6,18 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav ">
         <li class="nav-item">
-            <a class="{{ Request::segment(1) == "ranap" ? "active text-bold" : "" }} nav-link " href={{ route('register.ranap.index') }}>
-                <span>Pendaftaran Inap</span>
+            <a class="{{ Request::segment(1) == "ranap" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.ranap.index') }}>
+                <span>Pendaftaran Rawat Inap</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="{{ Request::segment(1) == "igd" ? "active text-bold" : "" }} nav-link " href={{ route('register.igd.index') }}>
-                <span>Pendaftaran IGD</span>
+            <a class="{{ Request::segment(1) == "rajal" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.rajal.index') }}>
+                <span>Data Pendaftaran Rajal</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="{{ Request::segment(1) == "igd" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.igd.index') }}>
+                <span>Data Pendaftaran IGD</span>
             </a>
         </li>
       </ul>
@@ -55,12 +60,12 @@
                                     <tbody>
                                         @foreach ($igd as $row)
                                             <tr>
-                                                <td>{{ $row->reg_tgl }}</td>
-                                                <td>{{ $row->reg_no }}</td>
-                                                <td>{{ $row->reg_medrec }}</td>
-                                                <td>{{ $row->pasien->PatientName }}</td>
-                                                <td>{{ $row->physician->ParamedicName }}</td>
-                                                <td>{{ $row->reg_cara_bayar }}</td>
+                                                <td>{{ $row->reg_tgl ?? '-' }}</td>
+                                                <td>{{ $row->reg_no ?? '-' }}</td>
+                                                <td>{{ $row->reg_medrec ?? '-' }}</td>
+                                                <td>{{ $row->pasien->PatientName ?? '-' }}</td>
+                                                <td>{{ $row->physician->ParamedicName ?? '-' }}</td>
+                                                <td>{{ $row->reg_cara_bayar ?? '-' }}</td>
                                                 <td>
                                                     <a href="#" class="btn btn-sm btn-info">
                                                         <i class="fa fa-list"></i>

@@ -7,7 +7,7 @@
       <ul class="navbar-nav ">
         <li class="nav-item">
             <a class="{{ Request::segment(1) == "ranap" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.ranap.index') }}>
-                <span>Pendaftaran Inap</span>
+                <span>Pendaftaran Rawat Inap</span>
             </a>
         </li>
         <li class="nav-item">

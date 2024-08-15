@@ -7,7 +7,7 @@
       <ul class="navbar-nav ">
         <li class="nav-item">
             <a class="{{ Request::segment(1) == "ranap" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.ranap.index') }}>
-                <span>Pendaftaran Inap</span>
+                <span>Pendaftaran Rawat Inap</span>
             </a>
         </li>
         <li class="nav-item">
@@ -60,11 +60,11 @@
                                     <tbody>
                                         @foreach ($data as $row)
                                             <tr>
-                                                <td>{{ $row['ranap_tanggal'] }}</td>
-                                                <td>{{ $row['ranap_reg'] }}</td>
-                                                <td>{{ $row['reg_medrec'] }}</td>
-                                                <td>{{ $row['nama_pasien'] }}</td>
-                                                <td>{{ $row['ranap_dpjp'] }}</td>
+                                                <td>{{ $row['ranap_tanggal'] ?? '-' }}</td>
+                                                <td>{{ $row['ranap_reg'] ?? '-' }}</td>
+                                                <td>{{ $row['reg_medrec'] ?? '-'}}</td>
+                                                <td>{{ $row['nama_pasien'] ?? '-' }}</td>
+                                                <td>{{ $row['ranap_dpjp'] ?? '-' }}</td>
                                                 <td>-</td>
                                                 <td>
                                                     <button class="btn btn-sm btn-primary" onclick="handleRegistrasiRanap({{ json_encode($row) }})">
