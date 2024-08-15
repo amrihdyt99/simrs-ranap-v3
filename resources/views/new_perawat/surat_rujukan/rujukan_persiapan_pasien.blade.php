@@ -506,9 +506,9 @@ $surat_rujukan = optional((object) []);
             <tbody>
                 @foreach ($surat_rujukan_obat_dibawa as $data_obat_dibawa)
                 <tr>
-                    <td>{{ $data_obat_dibawa->item_id_bawa }}</td>
-                    <td>{{ $data_obat_dibawa->quantity_bawa }}</td>
-                    <td>{{ $data_obat_dibawa->item_unit_code_bawa }}</td>
+                    <td>{{ $data_obat_dibawa->item_id_bawa ?? '' }}</td>
+                    <td>{{ $data_obat_dibawa->quantity_bawa ?? '' }}</td>
+                    <td>{{ $data_obat_dibawa->item_unit_code_bawa ?? '' }}</td>
                 </tr>
                 @endforeach
             </tbody>
