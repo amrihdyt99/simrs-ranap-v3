@@ -119,8 +119,40 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    
-                    console.log(data);
+                    const url = "{{ route('register.rajal.store') }}"
+                    const payload = {
+                        ...data,
+                        _token: "{{ csrf_token() }}"
+                    }
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: payload,
+                        dataType: "json",
+                        success: function (response) {
+                            Swal.fire(
+                                'Berhasil!',
+                                'Pasien berhasil didaftarkan ke rawat inap.',
+                                'success'
+                            )
+                            // reload the page
+                            // location.reload()
+                            console.log({response})
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat mendaftarkan pasien ke rawat inap.',
+                                'error'
+                            )
+                        }
+                    });
                 }
             });
         }

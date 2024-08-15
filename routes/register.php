@@ -4,6 +4,7 @@ use App\Http\Controllers\Master\PatientController;
 use App\Http\Controllers\Ranap as Ranap;
 use App\Http\Controllers\IGD as IGD;
 use App\Http\Controllers\IGD\RegisterController;
+use App\Http\Controllers\Rajal\RegistrationRajalController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(function () {
@@ -29,7 +30,8 @@ Route::prefix('igd')->middleware(['auth', 'role:adminregister'])->group(function
 });
 
 Route::prefix('rajal')->name('register.rajal.')->middleware(['auth', 'role:adminregister'])->group(function () {
-    Route::get('/', [RegisterController::class, 'indexRajal'])->name('index');
+    Route::get('/', [RegistrationRajalController::class, 'indexRajal'])->name('index');
+    Route::post('/', [RegistrationRajalController::class, 'storeRajal'])->name('store');
 });
 
 
