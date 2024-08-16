@@ -29,7 +29,8 @@ class RegistrationRajalController extends Controller
             try {
                 DB::beginTransaction();
                 $register_ranap = new RegistrationInap();
-                $register_ranap->reg_no = request()->ranap_reg;
+                $register_ranap->reg_no = $register_ranap->generateCode();
+                $register_ranap->reg_lama = request()->ranap_reg;
                 $register_ranap->reg_medrec = request()->reg_medrec;
                 $register_ranap->reg_tgl = date('Y-m-d');
                 $register_ranap->reg_jam = date('H:i:s');
