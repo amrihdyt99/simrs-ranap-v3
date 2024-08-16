@@ -78,6 +78,7 @@ Route::prefix('nyx-sistem')
                 Route::post('checklist_kepulangan', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'checklist_kepulangan'])->name('checklist_kepulangan');
                 Route::post('persetujuan_penolakan', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan'])->name('persetujuan_penolakan');
                 Route::post('surat_rujukan', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'surat_rujukan'])->name('surat_rujukan');
+                Route::post('show_qrcode', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'show_qrcode'])->name('show_qrcode');
             });
         });
 

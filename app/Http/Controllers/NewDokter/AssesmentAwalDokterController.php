@@ -632,7 +632,7 @@ class AssesmentAwalDokterController extends Controller
                     'jenisorder' => $v_order,
                 ]);
 
-                $item['order_'.$v_order] = $call_tindakan->getOrderTindakanJenis($request);
+                $item['order_' . $v_order] = $call_tindakan->getOrderTindakanJenis($request);
             }
 
             $item['diagnosa'] = $this->get_diagnosa($request, $value->soapdok_reg);

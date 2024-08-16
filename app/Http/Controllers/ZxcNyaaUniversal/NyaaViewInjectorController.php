@@ -254,14 +254,14 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('transfer_reg', $request->reg_no)
             ->first();
 
-            $transfer_internal_alat_terpasang = DB::connection('mysql')
+        $transfer_internal_alat_terpasang = DB::connection('mysql')
             ->table('transfer_internal_alat_terpasang')
             ->where('reg_no', $request->reg_no)
             ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
                 return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
             })
             ->get();
-        
+
         $transfer_internal_kejadian = DB::connection('mysql')
             ->table('transfer_internal_kejadian')
             ->where('reg_no', $request->reg_no)
@@ -269,7 +269,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
             })
             ->get();
-        
+
         $transfer_internal_obat_dibawa = DB::connection('mysql')
             ->table('transfer_internal_obat_dibawa')
             ->where('reg_no', $request->reg_no)
@@ -277,7 +277,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
             })
             ->get();
-        
+
         $transfer_internal_status_pasien = DB::connection('mysql')
             ->table('transfer_internal_status_pasien')
             ->where('reg_no', $request->reg_no)
@@ -1006,5 +1006,16 @@ class NyaaViewInjectorController extends AaaBaseController
         );
         return view('new_perawat.surat_rujukan.index')
             ->with($context);
+    }
+
+    function show_qrcode(Request $request)
+    {
+        $data = DB::connection('mysql')
+            ->table('rs_pasien_cppt')
+            ->where('soapdok_id', $request->soap_id)
+            ->first();
+
+
+        return view('new_perawat.qrcode.show', compact('data'));
     }
 }

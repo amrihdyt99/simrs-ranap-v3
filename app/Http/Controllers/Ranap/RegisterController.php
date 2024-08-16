@@ -412,19 +412,19 @@ class RegisterController extends Controller
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('is_active', 1)
-                      ->orWhereNull('is_active'); // menambahkan kondisi manampilkan data jika NULL
+                    ->orWhereNull('is_active'); // menambahkan kondisi manampilkan data jika NULL
             })
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('bed_status', 'ready') // menampilkan data dengan status ready
-                      ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
+                    ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
             })
             ->get();
         return response()->json([
             'data' => $ruangan
         ]);
-    }    
+    }
 
     function getRuanganRawat()
     {
@@ -434,9 +434,9 @@ class RegisterController extends Controller
             ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('is_active', 1)
-                      ->orWhereNull('is_active');
+                    ->orWhereNull('is_active');
             })
             ->distinct()->get();
         return response()->json([
