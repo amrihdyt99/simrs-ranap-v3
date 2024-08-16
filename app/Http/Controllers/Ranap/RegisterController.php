@@ -221,6 +221,7 @@ class RegisterController extends Controller
             $registrasi['reg_lama'] = $request->link_regis;
             $registrasi['reg_diagnosis'] = $request->reg_diagnosis;
             $registrasi['reg_medrec'] = $request->reg_medrec;
+            $registrasi['reg_class'] = $request->reg_class;
             $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat ?? '-';
             $registrasi['reg_pjawab_nohp'] = $request->reg_pjawab_nohp;
             $registrasi['reg_pjawab_hub'] = $request->reg_hub_pasien;
@@ -406,10 +407,10 @@ class RegisterController extends Controller
     {
         $ruangan = DB::connection('mysql2')
             ->table('m_bed')
-            ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
-            ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->leftjoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftjoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            ->leftjoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+            ->leftjoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
             ->where(function($query) {
