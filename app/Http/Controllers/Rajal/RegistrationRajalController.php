@@ -23,6 +23,16 @@ class RegistrationRajalController extends Controller
         return view('register.pages.rajal.index', compact('data'));
     }
 
+    public function indexRajalLegacy()
+    {
+
+        $response = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran');
+        $data = json_decode($response->body(), true);
+        // dd($data);
+
+        return view('register.pages.rajal.index', compact('data'));
+    }
+
     public function storeRajal()
     {
         if (request()->ajax()) {
