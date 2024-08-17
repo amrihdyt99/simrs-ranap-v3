@@ -142,8 +142,7 @@
                                 'success'
                             )
                             // reload the page
-                            // location.reload()
-                            console.log({response})
+                            location.reload();
                         },
                         error: function (xhr, status, error) {
                             Swal.fire(
