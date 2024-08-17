@@ -39,9 +39,9 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex">
-                                <h3 class="card-title">Pendaftaraan Rawat IGD </h3>
-                                <a href="{{ route('register.igd.create') }}" class="btn btn-success btn-sm ml-auto">Tambah
-                                    Data</a>
+                                <h3 class="card-title">Data Pendaftaraan Rajal  </h3>
+                                {{-- <a href="{{ route('register.igd.create') }}" class="btn btn-success btn-sm ml-auto">Tambah
+                                    Data</a> --}}
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
@@ -58,18 +58,19 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($igd as $row)
+                                        @foreach ($data as $row)
                                             <tr>
-                                                <td>{{ $row->reg_tgl ?? '-' }}</td>
-                                                <td>{{ $row->reg_no ?? '-' }}</td>
-                                                <td>{{ $row->reg_medrec ?? '-' }}</td>
-                                                <td>{{ $row->pasien->PatientName ?? '-' }}</td>
-                                                <td>{{ $row->physician->ParamedicName ?? '-' }}</td>
-                                                <td>{{ $row->reg_cara_bayar ?? '-' }}</td>
+                                                <td>{{ $row['ranap_tanggal'] ?? '-' }}</td>
+                                                <td>{{ $row['ranap_reg'] ?? '-' }}</td>
+                                                <td>{{ $row['reg_medrec'] ?? '-'}}</td>
+                                                <td>{{ $row['nama_pasien'] ?? '-' }}</td>
+                                                <td>{{ $row['ranap_dpjp'] ?? '-' }}</td>
+                                                <td>-</td>
                                                 <td>
-                                                    <a href="#" class="btn btn-sm btn-info">
-                                                        <i class="fa fa-list"></i>
-                                                    </a>
+                                                    <button class="btn btn-sm btn-primary" onclick="handleRegistrasiRanap({{ json_encode($row) }})">
+                                                        <i class="fa fa-plus"></i>
+                                                        <span>Registrasi Ranap</span>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -104,5 +105,56 @@
                 "responsive": true,
             });
         });
+
+        const handleRegistrasiRanap = (data)=>{
+            // show confirm dialog with SweetAlert
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: "Apakah anda yakin ingin mendaftarkan pasien ini ke rawat inap?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, daftarkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const url = "{{ route('register.rajal.store') }}"
+                    const payload = {
+                        ...data,
+                        _token: "{{ csrf_token() }}"
+                    }
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: payload,
+                        dataType: "json",
+                        success: function (response) {
+                            Swal.fire(
+                                'Berhasil!',
+                                'Pasien berhasil didaftarkan ke rawat inap.',
+                                'success'
+                            )
+                            // reload the page
+                            // location.reload()
+                            console.log({response})
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat mendaftarkan pasien ke rawat inap.',
+                                'error'
+                            )
+                        }
+                    });
+                }
+            });
+        }
     </script>
 @endpush

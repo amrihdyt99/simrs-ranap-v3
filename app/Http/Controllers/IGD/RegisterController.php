@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\ICD10;
 use App\Models\Paramedic;
 use App\Models\RegistrationIGD;
+use App\Models\RegistrationInap;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Yajra\DataTables\Contracts\DataTable;
 
 class RegisterController extends Controller
 {
