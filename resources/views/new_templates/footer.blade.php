@@ -999,12 +999,15 @@
                                 //console.log("ini lab")
                                 //console.log(resp.data)
                                 // orderToLab(resp.data)
+                                clickTab('lab', 'Laboratorium')
                             }else if(kategori=="radiologi"){
                                 alert('Tindakan radiologi berhasil ditambah, segera dikirim apabila cppt sudah di simpan')
                                 clickTab('radiologi', 'Radiologi')
                                 //kirim saat save cppt
                                 // orderToRadiologi(resp.data)
                             }
+                            
+                            $('#table-item-cpoe').html('')
                         }else{
                             alert(resp.message)
                         }
@@ -1275,22 +1278,74 @@
                     for(var i=0; i<dataSoap.length; i++){
                         var statusVerifikasi = dataSoap[i].status_review
                         var soapdok_dokter = dataSoap[i].soapdok_dokter
+                        var reg_dokter = dataSoap[i].reg_dokter
                         var is_dokter=dataSoap[i].is_dokter
                         var utama=dataSoap[i].dpjp_utama
+
+                        $row_lab = ''
+                        $row_radiologi = ''
+                        $row_obat = ''
+                        $row_lainnya = ''
+                        $row_diagnosa = ''
+
+                        if (dataSoap[i].order_lab.length > 0) {
+                            $.each(dataSoap[i].order_lab, function(i_lab, item_lab){
+                                $row_lab += `
+                                    `+(i_lab == 0 ? '<br><b>Laboratorium</b><br>' : '')+`
+                                    - `+item_lab.item_name+`<br>    
+                                `
+                            })
+                        }
+                        if (dataSoap[i].order_radiologi.length > 0) {
+                            $.each(dataSoap[i].order_radiologi, function(i_lab, item_lab){
+                                $row_lab += `
+                                    `+(i_lab == 0 ? '<br><b>Radiologi</b><br>' : '')+`
+                                    - `+item_lab.item_name+`<br>    
+                                `
+                            })
+                        }
+                        if (dataSoap[i].order_obat.length > 0) {
+                            $.each(dataSoap[i].order_obat, function(i_lab, item_lab){
+                                $row_lab += `
+                                    `+(i_lab == 0 ? '<br><b>Obat</b><br>' : '')+`
+                                    - `+item_lab.item_name+`<br>    
+                                `
+                            })
+                        }
+                        if (dataSoap[i].order_lainnya.length > 0) {
+                            $.each(dataSoap[i].order_lainnya, function(i_lab, item_lab){
+                                $row_lab += `
+                                    `+(i_lab == 0 ? '<br><b>Tindakan Lainnya</b><br>' : '')+`
+                                    - `+item_lab.item_name+`<br>    
+                                `
+                            })
+                        }
+                        if (dataSoap[i].diagnosa.length > 0) {
+                            $.each(dataSoap[i].diagnosa, function(i_diagnosa, item_diagnosa){
+                                $row_diagnosa += `
+                                    `+item_diagnosa.ID_ICD10+` - `+item_diagnosa.NM_ICD10+`<br>    
+                                `
+                            })
+                        }
+
                         table = table + "<tr>"
-                        table = table + "<td class='text-center'>"+dataSoap[i].soap_tanggal+"</td>"
+                        table = table + "<td>"+dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu+"</td>"
                         table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+"</td>"
-                        table = table + "<td> (S)"+dataSoap[i].soapdok_subject+"<br/>" +
-                            "(O)" +dataSoap[i].soapdok_object+"<br/>" +
-                            "(A)" +dataSoap[i].soapdok_assesment+"<br/>" +
-                            "(P)" +dataSoap[i].soapdok_planning+"<br/>" +
-                            "</td>"
-                        table = table + "<td>"+dataSoap[i].soapdok_instruksi+"</td>"
+                        table = table + `<td>
+                             (S) `+(dataSoap[i].soapdok_subject ?? '')+`<br/>
+                             (O) `+(dataSoap[i].soapdok_object ?? '')+`<br/>
+                             (A) `+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment+'<br><div class="pl-4">'+$row_diagnosa+'</div>' : '')+`<br/>
+                             (P) `
+                                +(dataSoap[i].soapdok_planning ?? '')+`<br/><br>
+                                <b>Tindakan Penunjang & Obat :</b>
+                                <span class="pl-3">`+$row_lab+'<br>'+$row_radiologi+'<br>'+$row_obat+'<br>'+$row_lainnya+`</span>
+                            </td>`
+                        table = table + "<td>"+(dataSoap[i].soapdok_instruksi ?? '')+"</td>"
                         // if(is_dokter=="1"){
                         //     table = table + "<td class='text-center'></td>"
                         // }else{
                             if(statusVerifikasi==0){
-                                if (soapdok_dokter != utama) {
+                                if (reg_dokter != utama) {
                                     table = table + "<td class='text-center'>" +
                                     "<button class='btn btn-secondary''>Menunggu Verif DPJP Utama</button>" +
                                     "</td>"

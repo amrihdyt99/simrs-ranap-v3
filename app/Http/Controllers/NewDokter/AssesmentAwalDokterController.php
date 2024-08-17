@@ -43,12 +43,17 @@ class AssesmentAwalDokterController extends Controller
         }
     }
 
-    function get_diagnosa($reg)
+    function get_diagnosa(Request $request, $reg)
     {
         $reg = str_replace("_", "/", $reg);
         $data =  DB::connection('mysql')->table('rs_pasien_diagnosa')->select('NM_ICD10', 'pdiag_id', 'ID_ICD10')
             ->join('icd10_bpjs', 'ID_ICD10', 'pdiag_diagnosa')
             ->where('pdiag_reg', $reg)->where('pdiag_deleted', 0)->orderBy('pdiag_id', 'asc')->get();
+
+        if (isset($request->plain_data)) {
+            return $data;
+        }
+
         return response()->json($data);
     }
     function get_prosedur($reg)
@@ -582,11 +587,60 @@ class AssesmentAwalDokterController extends Controller
             ->leftJoin('rs_m_paramedic','rs_m_paramedic.ParamedicCode','=','rs_pasien_soapdok.soapdok_dokter')
             ->where('soapdok_reg',$reg_no)
             ->get();*/
-        $data_soap = DB::connection('mysql')
+        $data = DB::connection('mysql')
             ->table('rs_pasien_cppt')
             ->where('soapdok_reg', $request->reg_no)
             ->where('status_review', '!=', '99')
             ->get();
+
+        $data_soap = [];
+        foreach ($data as $key => $value) {
+            $item['soapdok_id'] = $value->soapdok_id;
+            $item['soapdok_dokter'] = $value->soapdok_dokter;
+            $item['nama_ppa'] = $value->nama_ppa;
+            $item['soapdok_poli'] = $value->soapdok_poli;
+            $item['soapdok_reg'] = $value->soapdok_reg;
+            $item['soapdok_subject'] = $value->soapdok_subject;
+            $item['soapdok_object'] = $value->soapdok_object;
+            $item['soapdok_assesment'] = $value->soapdok_assesment;
+            $item['soapdok_planning'] = $value->soapdok_planning;
+            $item['soapdok_instruksi'] = $value->soapdok_instruksi;
+            $item['soap_tanggal'] = $value->soap_tanggal;
+            $item['soap_waktu'] = $value->soap_waktu;
+            $item['med_rec'] = $value->med_rec;
+            $item['soapdok_deleted'] = $value->soapdok_deleted;
+            $item['status_review'] = $value->status_review;
+            $item['created_at'] = $value->created_at;
+            $item['updated_at'] = $value->updated_at;
+            $item['tanggal_verifikasi'] = $value->tanggal_verifikasi;
+            $item['nama_verifikasi'] = $value->nama_verifikasi;
+            $item['is_dokter'] = $value->is_dokter;
+            $item['soapdok_bed'] = $value->soapdok_bed;
+            $item['dpjp_utama'] = $value->dpjp_utama;
+            $item['reg_dokter'] = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $value->soapdok_reg)->first()->reg_dokter ?? '';
+
+            $request->merge([
+                'plain_data' => true
+            ]);
+
+            $call_tindakan = new OrderObatController;
+
+            $jenis_order = ['lab', 'radiologi', 'obat', 'lainnya'];
+
+            foreach ($jenis_order as $v_order) {
+                $request->merge([
+                    'id_cppt' => $value->soapdok_id,
+                    'jenisorder' => $v_order,
+                ]);
+
+                $item['order_' . $v_order] = $call_tindakan->getOrderTindakanJenis($request);
+            }
+
+            $item['diagnosa'] = $this->get_diagnosa($request, $value->soapdok_reg);
+
+            array_push($data_soap, $item);
+        }
+
         return response()->json([
             'success' => true,
             'data_soap' => $data_soap
@@ -620,7 +674,9 @@ class AssesmentAwalDokterController extends Controller
     {
         $id = $request->id;
         $utama = $request->dpjp_utama;
-        $ttd = $this->get_ttd($utama);
+        // $ttd = $this->get_ttd($utama);
+        $ttd = '-';
+
         if (!$ttd) {
             return response()->json([
                 'success' => false,

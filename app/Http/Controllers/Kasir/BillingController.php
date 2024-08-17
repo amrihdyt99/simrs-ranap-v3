@@ -20,19 +20,7 @@ class BillingController extends Controller
         return view('kasir/billing/daftar_tagihan');
     }*/
 
-    public function detailtagihan($reg_no){
-        $sql="SELECT * FROM job_orders_dt
-                LEFT JOIN job_orders ON
-                job_orders_dt.order_no=job_orders.order_no LEFT JOIN
-                rs_m_paramedic ON
-                rs_m_paramedic.ParamedicCode=job_orders.kode_dokter
-                WHERE job_orders_dt.reg_no=?";
-
-        //$sqlobat="SELECT * FROM job_orders_dt WHERE reg_no=?";
-       /* $sqlpasien="SELECT m_pasien.* FROM m_registrasi JOIN m_pasien ON
-                    m_registrasi.reg_medrec=m_pasien.MedicalNo WHERE
-                    m_registrasi.reg_no=?";*/
-
+    public function detailtagihan(Request $request, $reg_no){
         $datamypatient=DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
@@ -50,18 +38,83 @@ class BillingController extends Controller
             ->where(['no_reg'=>$reg_no])
             ->get();
 
-
-
-
-        //$data['tagihanobat']=DB::connection("mysql")->select($sqlobat,[$reg_no]);
-        $data['tagihan']=DB::connection('mysql')->select($sql,[$reg_no]);
         $data['reg_no']=$reg_no;
+        $data['reg_rj']='QREG/RJ/202310190049';
         $data['pasien']=$datamypatient;
         $data['visit']=$ceksoapdokter;
         $data['paket']=$historypaket;
-        return view('kasir/billing/daftar_tagihan',$data);
+
+        return view('new_kasir.view',$data);
+        // return view('kasir/billing/daftar_tagihan',$data);
     }
 
+    public function detailOrders(Request $request){
+        $order_penunjang = [];
+
+        $lainnya = DB::table('job_orders_dt as a')
+                    ->where('a.reg_no', $request->reg_ri)
+                    ->where('jenis_order', 'lainnya')
+                    ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
+                    ->select([
+                        'a.*',
+                        'b.*',
+                        DB::raw("(select ParamedicName from rs_m_paramedic where ParamedicCode = kode_dokter) as ParamedicName")
+                    ])
+                    ->get();
+
+                    // return $lainnya;
+
+        foreach ($lainnya as $key => $value) {
+            $item['ItemReg'] = $value->reg_no;
+            $item['ItemCode'] = $value->id;
+            $item['ItemOrder'] = $value->order_no;
+            $item['ItemOrderCode'] = $value->order_no;
+            $item['ItemTanggal'] = $value->waktu_order;
+            $item['ItemName1'] = $value->item_name;
+            $item['ItemBundle'] = null;
+            $item['ItemTindakan'] = $value->jenis_order;
+            $item['ItemTarif'] = $value->harga_jual;
+            $item['ItemTarifAwal'] = $value->harga_jual;
+            $item['ItemJumlah'] = $value->qty;
+            $item['ItemDokter'] = $value->ParamedicName;
+            $item['ItemPoli'] = '';
+            $item['ItemReview'] = '-';
+
+            array_push($order_penunjang, $item);
+        }
+
+        $lab = json_decode(getService(urlLabRadiology().'/api/status-order-v2?regno='.$request->reg_rj));
+                
+        if (isset($lab->code) && $lab->code == 200) {
+            foreach ($lab->data as $key => $value) {
+                foreach ($value->item_order as $sub_key => $sub_value) {
+                    $item['ItemReg'] = $value->no_reg;
+                    $item['ItemCode'] = $sub_value->kode_tindakan;
+                    $item['ItemOrderCode'] = $value->no_order;
+                    $item['ItemOrder'] = '';
+                    $item['ItemTanggal'] = $value->waktu_tanggal_order;
+                    $item['ItemName1'] = $sub_value->nama_tindakan;
+                    $item['ItemBundle'] = 0;
+                    $item['ItemTindakan'] = 'Laboratorium';
+                    $item['ItemTarif'] = $sub_value->tarif_personal;
+                    $item['ItemTarifAwal'] = $sub_value->tarif_personal;
+                    $item['ItemJumlah'] = 1;
+                    $item['ItemDokter'] = $value->dokter_order;
+                    $item['ItemPoli'] = $value->poli_order;
+                    $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
+
+                    if ($sub_value->status_cancel == 'N') {
+                        array_push($order_penunjang, $item);
+                    }
+                }
+            }
+        }
+
+        return [
+            'order' => $order_penunjang,
+            'validation' => DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg_ri)->first()
+        ];
+    }
 
     function addTindakan(Request $request){
 //        $user=Auth::user();
@@ -329,69 +382,69 @@ class BillingController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function checkStatus(Request $request){
+        try {
+            $data = DB::table('rs_pasien_billing_validation')
+                ->where('pvalidation_reg', $request->reg_no)
+                ->select('pvalidation_status')
+                ->first();
+
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function storePayment(Request $request){
+        try {
+            $data = [
+                'pvalidation_code' => genKode(DB::table('rs_pasien_billing_validation'), 'created_at', null, null, 'QARP'),
+                'pvalidation_reg' => $request->reg,
+                'pvalidation_total' => $request->total,
+                'pvalidation_detail' => $request->payment_detail,
+                'pvalidation_user' => auth()->user()->id,
+                'pvalidation_status' => 1,
+                'pvalidation_selected' => $request->selected_orders,
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        return view('kasir/billing/daftar_tagihan');
-    }
+            $check_ = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)->count();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+            if ($check_ > 0) {
+                $delete = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)
+                    ->delete();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+                $store = DB::table('rs_pasien_billing_validation')->insert($data);
+            } else {
+                $store = DB::table('rs_pasien_billing_validation')->insert($data);
+            }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            //SEND PAYMENT STATUS TO RADIOLOGY
+            // if ($request->selected_radiology) {
+            //     foreach ($request->selected_radiology as $key => $value) {
+            //         $data_rad = [
+            //             'payer_by' => auth()->user()->name,
+            //             'payer_datetime' => date('Y-m-d H:i:s'),
+            //             'ono' => $value['ItemOrderCode']
+            //         ];
+
+            //         $send_radiology = postService(urlLabRadiology().'/api/send-payer-radiologi', $data_rad);
+
+            //         $sent_response = [
+            //             'radiologi' => json_decode($send_radiology)
+            //         ];
+                    
+            //         DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)
+            //                             ->where('pvalidation_code', $data['pvalidation_code'])
+            //                             ->update([
+            //                                 'pvalidation_response' => json_encode($sent_response)
+            //                             ]);
+            //     }
+            // }
+            
+            return response()->json(200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

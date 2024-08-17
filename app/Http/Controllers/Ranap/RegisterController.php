@@ -141,7 +141,6 @@ class RegisterController extends Controller
             'MobilePhoneNo2' => $request->telepon_2,
             'CityOfBirth' => $request->tempat_lahir,
             'DateOfBirth' => $request->tanggal_lahir
-
         );
 
         //cek pasien
@@ -221,14 +220,15 @@ class RegisterController extends Controller
             $registrasi['reg_lama'] = $request->link_regis;
             $registrasi['reg_diagnosis'] = $request->reg_diagnosis;
             $registrasi['reg_medrec'] = $request->reg_medrec;
-            $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat;
+            $registrasi['reg_class'] = $request->reg_class;
+            $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat ?? '-';
             $registrasi['reg_pjawab_nohp'] = $request->reg_pjawab_nohp;
             $registrasi['reg_pjawab_hub'] = $request->reg_hub_pasien;
             $registrasi['reg_ketersidaan_kamar'] = $request->reg_ketersidaan_kamar;
             $registrasi['reg_info_kewajiban'] = $request->reg_info_hak_kewajiban;
             $registrasi['reg_info_general_consent'] = $request->reg_info_general_consent;
             $registrasi['reg_info_carabayar'] = $request->reg_info_carabayar;
-            $registrasi['reg_kategori'] = $kategori;
+            // $registrasi['reg_kategori'] = $kategori; // belum ada kolom kategori di database
             RegistrationInap::create($registrasi);
 
             //update data ruangan
@@ -401,31 +401,30 @@ class RegisterController extends Controller
         }
     }
 
-    //api untuk ruangan
+    //api untuk 
     function getRuangan()
     {
         $ruangan = DB::connection('mysql2')
             ->table('m_bed')
-            ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
-            ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->leftjoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftjoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            ->leftjoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+            ->leftjoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
-            ->where(function($query) {
-                $query->where('is_active', '1')
-                      ->orWhereNull('is_active'); // menambahkan kondisi manampilkan data jika NULL
+            ->where(function ($query) {
+                $query->where('is_active', 1)
+                    ->orWhereNull('is_active'); // menambahkan kondisi manampilkan data jika NULL
             })
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('bed_status', 'ready') // menampilkan data dengan status ready
-                      ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
+                    ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
             })
             ->get();
-            
         return response()->json([
             'data' => $ruangan
         ]);
-    }    
+    }
 
     function getRuanganRawat()
     {
@@ -435,9 +434,9 @@ class RegisterController extends Controller
             ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
-            ->where(function($query) {
-                $query->where('is_active', '1')
-                      ->orWhereNull('is_active');
+            ->where(function ($query) {
+                $query->where('is_active', 1)
+                    ->orWhereNull('is_active');
             })
             ->distinct()->get();
         return response()->json([

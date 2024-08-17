@@ -6,13 +6,18 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav ">
         <li class="nav-item">
-            <a class="{{ Request::segment(1) == "ranap" ? "active text-bold" : "" }} nav-link " href={{ route('register.ranap.index') }}>
-                <span>Pendaftaran Inap</span>
+            <a class="{{ Request::segment(1) == "ranap" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.ranap.index') }}>
+                <span>Pendaftaran Rawat Inap</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="{{ Request::segment(1) == "igd" ? "active text-bold" : "" }} nav-link " href={{ route('register.igd.index') }}>
-                <span>Pendaftaran IGD</span>
+            <a class="{{ Request::segment(1) == "rajal" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.rajal.index') }}>
+                <span>Data Pendaftaran Rajal</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="{{ Request::segment(1) == "igd" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.igd.index') }}>
+                <span>Data Pendaftaran IGD</span>
             </a>
         </li>
       </ul>
@@ -37,11 +42,13 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex">
-                                <h3 class="card-title">Pendaftaraan Rawat Inap </h3>
-                                <a href="{{ route('register.ranap.create') }}"
-                                    class="btn btn-success btn-sm ml-auto">Tambah
-                                    Data</a>
-                                    <button onclick="tarik_regis()" class="btn btn-primary no-radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button>
+                                <h3 class="card-title w-100">Pendaftaraan Rawat Inap </h3>
+                                <div class="d-flex">
+                                  {{-- <a href="{{ route('register.ranap.create') }}" class="btn btn-success btn-sm ml-auto">
+                                    Tambah Data
+                                  </a> --}}
+                                  <button onclick="tarik_regis()" class="btn btn-primary radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button>
+                                </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">

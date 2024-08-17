@@ -460,7 +460,7 @@
             <legend class="col-form-label col-sm-2 ptx-0 pt-1">Mukosa Mulut</legend>
             <div class="col-sm-10">
                 <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="kering" value="kering" name="asper_mukosa_mulut {{$pengkajian_awal->asper_mukosa_mulut=='kering' ? 'checked' : ''}}>
+                    <input type="radio" class="custom-control-input" id="kering" value="kering" name="asper_mukosa_mulut" {{$pengkajian_awal->asper_mukosa_mulut=='kering' ? 'checked' : ''}}>
                     <label class="custom-control-label" for="kering">Kering</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">

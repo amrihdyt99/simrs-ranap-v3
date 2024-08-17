@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/css/all.min.css"/>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
     <title>@yield('title')</title>
 </head>
@@ -49,7 +51,7 @@
         </nav>
         <div class="container">
             <div class="topnav d-flex justify-content-between">
-                <a href="{{ url('billing') }}" class="{{ request()->is('billing*') ? 'active' : '' }}"
+                <a href="{{ url('kasir') }}" class="{{ request()->is('kasir*') ? 'active' : '' }}"
                     class="col-2"><i class="bi bi-boxes"></i> <br> Biling</a>
                 <a href="{{ url('report') }}" class="{{ request()->is('report*') ? 'active' : '' }}"><i
                         class="bi
@@ -83,17 +85,15 @@
         $(".theSelect").select2();
     </script>
 
-    {{--<script src="https://code.jquery.com/jquery-3.5.1.js"></script>--}}
-    <script src="{{asset('assets/plugins/jquery/jquery.min.js')}}"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
     <script type="text/javascript">
         $(function() {
-            $(".datepicker").datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-                todayHighlight: true,
-            });
+            // $(".datepicker").datepicker({
+            //     format: 'yyyy-mm-dd',
+            //     autoclose: true,
+            //     todayHighlight: true,
+            // });
         });
     </script>
     <script>
@@ -152,9 +152,35 @@
             tarifitem.value=arrayHargaTindakan[optItemTindakan.options.selectedIndex]
         }
 
+        // NEW
+        var $level_ = '{{auth()->user()->level_user}}'
+        
+        function formatNumber(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function condition(data){
+            $data = (data) ? data : '';
+
+            return $data;
+        }
+
+        function loadingButton(type, id, text) {
+            if (type == 'pending') {
+                    $('body '+id).removeClass('btn-success')
+                    $('body '+id).addClass('btn-warning')
+                    $('body '+id).attr('disabled', true)
+                    $('body '+id).html('Mohon tunggu...')
+            } else {
+                $('body '+id).removeClass('btn-warning')
+                $('body '+id).addClass('btn-success')
+                $('body '+id).attr('disabled', false)
+                $('body '+id).html(text)
+            }
+        }
 
     </script>
-    @stack('scripts')
+    @yield('scripts')
 </body>
 
 </html>
