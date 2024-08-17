@@ -22,6 +22,15 @@ class NewSoapCOntroller extends Controller
 
         );
 
+        $getDpjpUtama = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+        ->where('m_registrasi.reg_no', '=', $request->soaper_reg)
+        ->select('m_paramedis.ParamedicCode')
+        ->first();
+
+        $dpjpUtama = $getDpjpUtama ? $getDpjpUtama->ParamedicCode : null;
+
         $simpan = DB::connection('mysql')
             ->table('rs_pasien_soaper')
             ->insert($params);
@@ -41,6 +50,7 @@ class NewSoapCOntroller extends Controller
                 'soapdok_instruksi' => "",
                 'nama_ppa' => $request->nama_ppa,
                 'status_review' => '0',
+                'dpjp_utama' => $dpjpUtama,
             );
 
             $simpancppt = DB::connection('mysql')
