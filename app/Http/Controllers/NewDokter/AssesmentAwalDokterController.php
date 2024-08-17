@@ -617,6 +617,7 @@ class AssesmentAwalDokterController extends Controller
             $item['is_dokter'] = $value->is_dokter;
             $item['soapdok_bed'] = $value->soapdok_bed;
             $item['dpjp_utama'] = $value->dpjp_utama;
+            $item['reg_dokter'] = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $value->soapdok_reg)->first()->reg_dokter ?? '';
 
             $request->merge([
                 'plain_data' => true
@@ -673,7 +674,9 @@ class AssesmentAwalDokterController extends Controller
     {
         $id = $request->id;
         $utama = $request->dpjp_utama;
-        $ttd = $this->get_ttd($utama);
+        // $ttd = $this->get_ttd($utama);
+        $ttd = '-';
+
         if (!$ttd) {
             return response()->json([
                 'success' => false,
