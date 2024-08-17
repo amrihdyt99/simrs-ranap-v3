@@ -104,13 +104,13 @@ class NyaaSelectTwoHandlerController extends Controller
         //     ->get();
 
         $cxx = DB::connection('mysql2')
-            ->table('m_ruangan_baru')
-            ->select('m_ruangan_baru.nama_ruangan', 'm_ruangan_baru.id');
+            ->table('m_ruangan')
+            ->select('m_ruangan.RoomName', 'm_ruangan.RoomID');
         // ->where('bed_status', '0116^O')
 
 
         if ($request->has('term')) {
-            $cxx = $cxx->where('nama_ruangan', 'LIKE', '%' . $request->term . '%');
+            $cxx = $cxx->where('RoomName', 'LIKE', '%' . $request->term . '%');
         }
 
         $cxx = $cxx->take($this->select2_take())
@@ -119,8 +119,8 @@ class NyaaSelectTwoHandlerController extends Controller
 
         $cxy = array();
         foreach ($cxx as $data) {
-            $a['id'] = $data->id;
-            $a['text'] = $data->nama_ruangan;
+            $a['id'] = $data->RoomID;
+            $a['text'] = $data->RoomName;
             array_push($cxy, $a);
         }
         return ['results' => $cxy];

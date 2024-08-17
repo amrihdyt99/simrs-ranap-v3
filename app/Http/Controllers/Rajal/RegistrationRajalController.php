@@ -18,6 +18,23 @@ class RegistrationRajalController extends Controller
     {
         $response = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran');
         $data = json_decode($response->body(), true);
+
+        $non_exist_data_reg = collect($data)->filter(function ($value, $key) {
+            return !$this->findExistRegistrationData($value['ranap_reg']);
+        })->values()->all();
+
+        // dd($non_exist_data_reg);
+
+        return view('register.pages.rajal.index', [
+            'data' => $non_exist_data_reg
+        ]);
+    }
+
+    public function indexRajalLegacy()
+    {
+
+        $response = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran');
+        $data = json_decode($response->body(), true);
         // dd($data);
 
         return view('register.pages.rajal.index', compact('data'));
@@ -29,7 +46,8 @@ class RegistrationRajalController extends Controller
             try {
                 DB::beginTransaction();
                 $register_ranap = new RegistrationInap();
-                $register_ranap->reg_no = request()->ranap_reg;
+                $register_ranap->reg_no = $register_ranap->generateCode();
+                $register_ranap->reg_lama = request()->ranap_reg;
                 $register_ranap->reg_medrec = request()->reg_medrec;
                 $register_ranap->reg_tgl = date('Y-m-d');
                 $register_ranap->reg_jam = date('H:i:s');
@@ -53,5 +71,11 @@ class RegistrationRajalController extends Controller
                 ], 500);
             }
         }
+    }
+
+    private function findExistRegistrationData($reg_no)
+    {
+        $register_ranap = RegistrationInap::where('reg_lama', $reg_no)->first();
+        return $register_ranap;
     }
 }

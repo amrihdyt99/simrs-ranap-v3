@@ -180,8 +180,8 @@
           searchable: true,
         },
         {
-          data: "nama_ruangan",
-          name: "m_ruangan_baru.nama_ruangan",
+          data: "RoomName",
+          name: "m_ruangan.RoomName",
           orderable: true,
           searchable: true,
         },
