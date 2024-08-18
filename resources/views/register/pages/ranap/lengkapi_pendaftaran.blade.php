@@ -243,7 +243,7 @@
                                                         @endforeach
                                                     @else
                                                         @foreach ($golongan_darah as $key => $value)
-                                                            <option value="{{ $key }} {{ $key === $pasien->GCBloodType ? 'selected': '' }}">{{ $value }}</option>
+                                                            <option value="{{ $key }}" {{ $key === $pasien->GCBloodType ? 'selected': '' }}>{{ $value }}</option>
                                                         @endforeach
                                                     @endempty
                                                 </select>
