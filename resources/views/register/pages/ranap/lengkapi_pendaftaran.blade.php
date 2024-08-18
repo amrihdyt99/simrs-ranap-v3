@@ -566,7 +566,7 @@
             $('#kitas').hide()
             const cara_bayar = "{{ $registration->reg_cara_bayar ?? '' }}";
             $.ajax({
-                url: '{{route('get.bussinesspartner')}}',
+                url: "{{ route('get.bussinesspartner') }}",
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
