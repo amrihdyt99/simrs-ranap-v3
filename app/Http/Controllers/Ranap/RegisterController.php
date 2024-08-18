@@ -41,9 +41,16 @@ class RegisterController extends Controller
             'pasien' => $pasien,
             'registration' => $registration,
             'asal_pasien' => $asal_pasien,
-            ...$data,
+            'service_unit' => $data['service_unit'],
+            'service_room' => $data['service_room'],
+            'room_class' => $data['room_class'],
+            'ruangan_baru' => $data['ruangan_baru'],
+            'physician' => $data['physician'],
+            'bed' => $data['bed'],
+            'icd10' => $data['icd10'],
+            'cover_class' => $data['cover_class'],
         ];
-        dd($context['registration']);
+        //dd($context['registration']);
         return  view('register.pages.ranap.lengkapi_pendaftaran', $context);
     }
 
@@ -597,7 +604,7 @@ class RegisterController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            dd($th->getMessage());
+            //dd($th->getMessage());
             abort(500, $th->getMessage());
         }
     }
