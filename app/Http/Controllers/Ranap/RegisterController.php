@@ -473,9 +473,8 @@ class RegisterController extends Controller
         //     ->get();
 
         $data = $this->url_api('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business');
-
         return response()->json([
-            'data' => $data['data']
+            'data' => $data ? $data['data'] : []
         ]);
     }
 
@@ -485,7 +484,7 @@ class RegisterController extends Controller
         $data = $this->url_api('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/contract/' . $idbussines);
 
         return response()->json([
-            'data' => $data['data']
+            'data' => $data ? $data['data'] : []
         ]);
     }
 
