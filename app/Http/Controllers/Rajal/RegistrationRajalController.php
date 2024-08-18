@@ -40,6 +40,9 @@ class RegistrationRajalController extends Controller
         return view('register.pages.rajal.index', compact('data'));
     }
 
+    /**
+     * Store data outpatient registration into inpatient registration
+     */
     public function storeRajal()
     {
         if (request()->ajax()) {
@@ -51,6 +54,9 @@ class RegistrationRajalController extends Controller
                 $register_ranap->reg_medrec = request()->reg_medrec;
                 $register_ranap->reg_tgl = date('Y-m-d');
                 $register_ranap->reg_jam = date('H:i:s');
+                $register_ranap->reg_poli = request()->poli_kode_asal;
+                $register_ranap->reg_dokter = request()->dokter_poli_kode;
+                $register_ranap->reg_cttn = request()->ranap_diagnosa;
                 $register_ranap->save();
                 DB::commit();
                 return response()->json([
