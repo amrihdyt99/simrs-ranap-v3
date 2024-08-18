@@ -20,6 +20,9 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
     Route::get('gc1/{reg_no}', [Ranap\RegisterController::class, 'gc1'])->where('reg_no', '(.*)')->name('register.ranap.gc1');
     Route::post('/uploadTtdAdmisi', [Ranap\RegisterController::class, 'uploadTtdAdmisi'])->name('register.ranap.uploadTtdAdmisi');
     Route::post('/uploadGcdua', [Ranap\RegisterController::class, 'uploadGc2'])->name('register.ranap.uploadGcdua');
+
+    Route::get('lengkapi-pendaftaran/{reg_no}', [Ranap\RegisterController::class, 'lengkapiPendaftaran'])->where('reg_no', '(.*)')->name('register.ranap.lengkapi-pendaftaran');
+    Route::post('lengkapi-pendaftaran', [Ranap\RegisterController::class, 'storeLengkapiPendaftaran'])->where('reg_no', '(.*)')->name('register.ranap.lengkapi-pendaftaran.store');
 });
 
 Route::prefix('igd')->middleware(['auth', 'role:adminregister'])->group(function () {
