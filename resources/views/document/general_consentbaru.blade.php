@@ -22,7 +22,7 @@
 <h5>TANGGUNG JAWAB PASIEN/KELUARGA (PATIENT&rsquo;S RESPONBILITIES) </h5>
 <ol>
     <ol>
-        <li>Memberikan informasi  yang akurat dan lengkap tentang  keluhan sakit sekarang,  riwayat medis {{$datapasien->PatientName}} yang  lalu, riwayat medikasi/pengobatan dan hal-hal lain yang berkaitan dengan  kesehatan pasien.</li>
+        <li>Memberikan informasi  yang akurat dan lengkap tentang  keluhan sakit sekarang,  riwayat medis {{$datapasien->PatientName ?? ''}} yang  lalu, riwayat medikasi/pengobatan dan hal-hal lain yang berkaitan dengan  kesehatan pasien.</li>
         <li>Memperlakukan staf rumah sakit dan pasien lain dengan bermartabat dan hormat serta tidak melakukan  tindakan yang mengganggu pekerjaan tenaga  rumah sakit.</li>
         <li>Menghormati privasi orang lain dan barang  milik rumah sakit.</li>
         <li>Tidak membawa  alkohol, obat-obat yang tidak mendapat  persetujuan rumah sakit, senjata/benda tajam ke dalam rumah sakit.</li>
@@ -43,7 +43,7 @@
     </ol>
 </ol>
 <p>&nbsp;</p>
-<p>       1.{{$datapasien->reg_pjawab}}                 2………………………….                 3. ….……………………….</p>
+<p>       1.{{$datapasien->reg_pjawab ?? '-'}}                 2………………………….                 3. ….……………………….</p>
 <h5>KEINGINAN PRIVASI (DESIRE  PRIVACY) </h5>
 <h5>     Saya  mengizinkan Rumah Sakit memberi akses bagi keluarga dan handai taulan serta  orang – orang yang akan menengok / menemui saya.</h5>
 <h5>     Apabila ada tamu / pengunjung yang tidak saya inginkan,  maka saya akan melaporkan kepada petugas jaga </h5>
@@ -93,7 +93,7 @@
     <li>Apabila  tidak memberikan persetujuan, atau dikemudian hari mencabut persetujuan yang  diberikan untuk melepaskan rahasia kedokteran kepada perusahaan asuransi yang  menjamin, maka pasien dan atau keluarga wajib untuk membayar semua pelayanan  dan tindakan medis dari RSUD Siti Fatimah Provinsi Sumatera Selatan.</li>
     <li>Apabila  pihak rumah sakit membutuhkan proses hukum untuk menagih biaya pelayanan yang  sudah diperoleh pasien, maka pasien dan atau keluarga  wajib untuk membayar semua biaya yang  disebabkan dari proses hukum tersebut.</li>
 </ol>
-<p>Demikian saya atas nama pasien {{$datapasien->PatientName}} telah membaca serta memahami  surat persetujuan umum ini dan saya bersedia  memberi persetujuan  kepada rumah sakit  untuk memberikan informasi elektronik yg terkait,  termasuk tanda tangan elektronik dan perawatan medis dan apabila  saya melanggar ketentuan tersebut, maka siap menerima sanksi sesuai ketentuan  yang berlaku di RSUD Siti Fatimah Provinsi Sumatera Selatan.<br>
+<p>Demikian saya atas nama pasien {{$datapasien->PatientName ?? ''}} telah membaca serta memahami  surat persetujuan umum ini dan saya bersedia  memberi persetujuan  kepada rumah sakit  untuk memberikan informasi elektronik yg terkait,  termasuk tanda tangan elektronik dan perawatan medis dan apabila  saya melanggar ketentuan tersebut, maka siap menerima sanksi sesuai ketentuan  yang berlaku di RSUD Siti Fatimah Provinsi Sumatera Selatan.<br>
     <strong>PASIEN  DAN ATAU KELUARGA TELAH MEMBACA DAN SEPENUHNYA SETUJU </strong>dengan setiap pernyataan yang terdapat pada formulir  ini dan menandatangani tanpa paksaan dengan kesadaran penuh.</p>
 
 <table width="773">
@@ -117,7 +117,7 @@
     <tr>
         <form method="post" action="{{route('register.ranap.uploadGcdua')}}" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="reg_no" id="reg_no" value="{{$datapasien->reg_no}}"/>
+            <input type="hidden" name="reg_no" id="reg_no" value="{{$datapasien->reg_no ?? '-'}}"/>
             <td colspan="6">
                 (-------------------------------------)
                 {{--<div id="signature-pad2">
@@ -151,8 +151,6 @@
                         </div>
                     </div>
                 @endif
-
-
             </td>
         </form>
     </tr>

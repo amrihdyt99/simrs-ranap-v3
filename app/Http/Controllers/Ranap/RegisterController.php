@@ -12,6 +12,8 @@ use App\Models\RegistrationInap;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
+use App\Traits\Master\MasterPasienTrait;
+use App\Traits\Ranap\RanapRegistrationTrait;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
+    use RanapRegistrationTrait, MasterPasienTrait;
 
     public function index(Request $request)
     {
@@ -26,6 +29,29 @@ class RegisterController extends Controller
             return $this->ajax_index($request);
         }
         return view('register.pages.ranap.index');
+    }
+
+    public function lengkapiPendaftaran($reg_no)
+    {
+        $data = $this->getDataFormRegistration();
+        $registration = $this->getDataRegistrationRanap($this->parseRegNoByUnderScore($reg_no));
+        $pasien = $this->getPatientByMedicalRecord($registration->reg_medrec);
+        $asal_pasien = $this->getRegistrationOrigin($registration->reg_lama);
+        $context = [
+            'pasien' => $pasien,
+            'registration' => $registration,
+            'asal_pasien' => $asal_pasien,
+            'service_unit' => $data['service_unit'],
+            'service_room' => $data['service_room'],
+            'room_class' => $data['room_class'],
+            'ruangan_baru' => $data['ruangan_baru'],
+            'physician' => $data['physician'],
+            'bed' => $data['bed'],
+            'icd10' => $data['icd10'],
+            'cover_class' => $data['cover_class'],
+        ];
+        //dd($context['registration']);
+        return  view('register.pages.ranap.lengkapi_pendaftaran', $context);
     }
 
     public function ajax_index($request)
@@ -50,9 +76,14 @@ class RegisterController extends Controller
         return DataTables()
             ->of($data)
             ->editColumn('aksi_data', function ($query) use ($request) {
-                return ('<a href="'
+                $query->reg_no = str_replace("/", "_", $query->reg_no);
+                $btn_admisi = '<a href="'
                     . route('register.ranap.slipadmisi', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>Admisi</a>');
+                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>Admisi</a>';
+                $btn_lengkapi_pendaftaran = '<a href="'
+                    . route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $query->reg_no])
+                    . '" class="btn btn-sm btn-outline-primary ml-1" target="_blank"><i class="mr-2 fa fa-edit"></i>Lengkapi Pendaftaran</a>';
+                return $btn_admisi . $btn_lengkapi_pendaftaran;
             })
             ->editColumn('dok_data', function ($query) use ($request) {
                 return ('<a href="'
@@ -105,19 +136,7 @@ class RegisterController extends Controller
 
     public function formRegisterInap()
     {
-        $data['service_unit'] = ServiceUnit::all();
-        $data['service_room'] = ServiceRoom::all();
-        $data['room_class'] = RoomClass::all();
-        $data['ruangan_baru'] = DB::connection('mysql2')
-            ->table('m_ruangan_baru')
-            ->get();
-        $data['kelas_baru'] = DB::connection('mysql2')
-            ->table('m_kelas_ruangan_baru')
-            ->get();
-        $data['physician'] = DB::connection('mysql')->table("rs_m_paramedic")->where(['GCParamedicType' => "X0055^001"])->get();
-        $data['bed'] = Bed::all();
-        $data['icd10'] = ICD10::all();
-        $data['cover_class'] = KelasKategori::all();
+        $data = $this->getDataFormRegistration();
         //return view('register.pages.baru.pilih_pasien',$data);
         return view('register.pages.ranap.create', $data);
     }
@@ -299,17 +318,20 @@ class RegisterController extends Controller
 
     function cetakSlipAdmisi($regno)
     {
+
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where('m_registrasi.reg_no', $regno)
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
             ->get()->first();
 
         $data['datapasien'] = $datamypatient;
+
+        // dd($data['datapasien']);
         return view('rekam_medis.slip_admisi', $data);
     }
 
@@ -333,7 +355,7 @@ class RegisterController extends Controller
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where('m_registrasi.reg_no', $regno)
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
             ->get()->first();
 
@@ -348,7 +370,7 @@ class RegisterController extends Controller
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where(['m_registrasi.reg_no' => $regno])
+            ->where(['m_registrasi.reg_no' => $this->parseRegNoByUnderScore($regno)])
             ->get()->first();
 
         $data['datapasien'] = $datamypatient;
@@ -565,5 +587,25 @@ class RegisterController extends Controller
         }
 
         return response()->json($json, $json['code']);
+    }
+
+    public function storeLengkapiPendaftaran()
+    {
+        try {
+            $pasien = $this->getPatientByMedicalRecord(request()->reg_medrec);
+            if (!$pasien) $this->createNewPatient();
+            else $this->updatePasien();
+            DB::beginTransaction();
+            $this->updateDataRegistration(request()->reg_no);
+            // dd($param_pasien);
+            DB::commit();
+
+            return redirect()->route('register.ranap.index');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            //dd($th->getMessage());
+            abort(500, $th->getMessage());
+        }
     }
 }
