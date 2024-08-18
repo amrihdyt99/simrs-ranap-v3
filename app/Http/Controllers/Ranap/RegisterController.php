@@ -311,13 +311,14 @@ class RegisterController extends Controller
 
     function cetakSlipAdmisi($regno)
     {
+
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where('m_registrasi.reg_no', $regno)
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
             ->get()->first();
 
@@ -347,7 +348,7 @@ class RegisterController extends Controller
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where('m_registrasi.reg_no', $regno)
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
             ->get()->first();
 
@@ -362,7 +363,7 @@ class RegisterController extends Controller
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where(['m_registrasi.reg_no' => $regno])
+            ->where(['m_registrasi.reg_no' => $this->parseRegNoByUnderScore($regno)])
             ->get()->first();
 
         $data['datapasien'] = $datamypatient;

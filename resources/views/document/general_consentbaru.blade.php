@@ -135,9 +135,6 @@
             <td colspan="6">
                 <img id="anatomi" src="{{asset('new_assets/images/multi_organ/anatomi_tubuh.png')}}" width="100px" height="100px" hidden/>
                 {{--<textarea id="signature64" name="signed" style="display: none"></textarea>--}}
-                @empty($datapasien->ttd_gc_hal_dua)
-                -
-                @else
                 @if($datapasien->ttd_gc_hal_dua!=null)
                     <img src="{{$datapasien->ttd_gc_hal_dua}}" width="350px" height="100px"/>
                 @else
@@ -154,7 +151,6 @@
                         </div>
                     </div>
                 @endif
-                @endempty
             </td>
         </form>
     </tr>
