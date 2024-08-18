@@ -28,6 +28,7 @@ class DashboardController extends Controller
             ->leftJoin('m_ruangan', 'm_registrasi.reg_ruangan', '=', 'm_ruangan.RoomID')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
             ->where('m_registrasi.reg_discharge', '!=', '3')
+            ->whereNull('m_registrasi.reg_deleted')
             ->when($request->nama_ruangan !== null, function ($query) use ($request) {
                 return $query->where('m_ruangan.RoomID', $request->nama_ruangan);
             })
