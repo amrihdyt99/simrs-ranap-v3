@@ -13,31 +13,31 @@
     <tbody id="table-cppt-perawat">
     </tbody>
 </table>
-
+</script>
 
 @push('myscripts')
 
-    <script>
-        //on load page
-        $(document).ready(function(){
-            //load data
-            console.log("load cppt")
-            getSoapPerawat();
+<script>
+    //on load page
+    $(document).ready(function() {
+        //load data
+        console.log("load cppt")
+        getSoapPerawat();
+    });
+</script>
+<script>
+    function addSoapPerawat() {
+        $.ajax({
+            url: "{{route('add.soap.new.perawat')}}",
+            type: "POST",
+            data: $('form-entry-soap').serialize(),
+            success: function(data) {
+                $('#modal-soap').modal('hide');
+                $('#table-cppt-perawat').html(data);
+            }
         });
-    </script>
-    <script>
-        function addSoapPerawat(){
-           $.ajax({
-               url: "{{route('add.soap.new.perawat')}}",
-                type: "POST",
-                data: $('form-entry-soap').serialize(),
-                success: function(data){
-                    $('#modal-soap').modal('hide');
-                    $('#table-cppt-perawat').html(data);
-                }
-            });
-        }
-    </script>
+    }
+</script>
 
 
 @endpush

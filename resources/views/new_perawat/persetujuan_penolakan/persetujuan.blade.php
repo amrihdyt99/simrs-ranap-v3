@@ -29,11 +29,13 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="laki" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_1=='Laki-laki' ? 'checked' : ''}}>
-                        <label for="laki">Laki-laki</label>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="perempuan" value="Perempuan" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_1=='Perempuan' ? 'checked' : ''}}>
-                        <label for="perempuan">Perempuan</label>
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : ''}}>
+                        <label for="persetujuan_jenis_kelamin_1_laki_laki">Laki-laki</label>
+                    
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : ''}}>
+                        <label for="persetujuan_jenis_kelamin_1_perempuan">Perempuan</label>
                     </td>
+                    
                 </tr>
                 <tr>
                     <td>
@@ -64,16 +66,16 @@
                         Terhadap
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_terhadap" id="saya" value="Saya sendiri" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Saya sendiri' ? 'checked' : ''}}>
-                        <label for="saya">Saya sendiri</label>
-                        <input type="radio" name="persetujuan_terhadap" id="anak" value="Anak" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Anak' ? 'checked' : ''}}>
-                        <label for="anak">Anak</label>
-                        <input type="radio" name="persetujuan_terhadap" id="ayah" value="Ayah" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Ayah' ? 'checked' : ''}}>
-                        <label for="ayah">Ayah</label>
-                        <input type="radio" name="persetujuan_terhadap" id="ibu" value="Ibu" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Ibu' ? 'checked' : ''}}>
-                        <label for="ibu">Ibu</label>
-                        <input type="radio" name="persetujuan_terhadap" id="saudara" value="Saudara" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Saudara' ? 'checked' : ''}}>
-                        <label for="saudara">Saudara</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_1" value="Saya sendiri" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Saya sendiri' ? 'checked' : ''}}>
+                        <label for="persetujuan_terhadap_1">Saya sendiri</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_2" value="Anak" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Anak' ? 'checked' : ''}}>
+                        <label for="persetujuan_terhadap_2">Anak</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_3" value="Ayah" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Ayah' ? 'checked' : ''}}>
+                        <label for="persetujuan_terhadap_3">Ayah</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_4" value="Ibu" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Ibu' ? 'checked' : ''}}>
+                        <label for="persetujuan_terhadap_4">Ibu</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_5" value="Saudara" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Saudara' ? 'checked' : ''}}>
+                        <label for="persetujuan_terhadap_5">Saudara</label>
                     </td>
                 </tr>
                 <tr>
@@ -89,10 +91,10 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="laki2" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_2=='Laki-laki' ? 'checked' : ''}}>
-                        <label for="laki2">Laki-laki</label>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="perempuan2" value="Perempuan" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_2=='Perempuan' ? 'checked' : ''}}>
-                        <label for="perempuan2">Perempuan</label>
+                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_laki_laki" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_2=='Laki-laki' ? 'checked' : ''}}>
+                        <label for="persetujuan_jenis_kelamin_2_laki_laki">Laki-laki</label>
+                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_perempuan" value="Perempuan" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_2=='Perempuan' ? 'checked' : ''}}>
+                        <label for="persetujuan_jenis_kelamin_2_perempuan">Perempuan</label>
                     </td>
                 </tr>
                 <tr>

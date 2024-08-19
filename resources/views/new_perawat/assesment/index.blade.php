@@ -53,3 +53,62 @@
         </div>
     </form>
 </div> --}}
+<script>
+    $(document).ready(function() {
+    calculateGiziDewasaScore();
+    $('.gizi_dewasa').on('change', function() {
+        calculateGiziDewasaScore();
+    });
+
+    calculateGiziAnakScore();
+    $('.gizi_anak').on('change', function() {
+        calculateGiziAnakScore();
+    });
+});
+
+function calculateGiziDewasaScore() {
+    var score = 0;
+    $('input[name="asper_penurunan_bb_dewasa"]:checked').each(function() {
+        score += parseInt($(this).data('id'));
+    });
+    $('input[name="asper_penurunan_nafsu_dewasa"]:checked').each(function() {
+        score += parseInt($(this).data('id'));
+    });
+    $('#total_skor_dewasa').val(score);
+    // setKategoriDewasa(score);
+
+    return score;
+}
+
+// function setKategoriDewasa(score) {
+//     var kategori = "";
+//     if (score >= 2 && score <= 4) {
+//         kategori = "Risiko Malnutrisi";
+//     } else if (score >= 5) {
+//         kategori = "Malnutrisi";
+//     } else {
+//         kategori = "Tidak Berisiko";
+//     }
+//     $('#kategori').val(kategori);
+// }
+
+function calculateGiziAnakScore() {
+    var score = 0;
+    $('input[name="asper_kurus_anak"]:checked').each(function() {
+        score += parseInt($(this).data('id'));
+    });
+    $('input[name="asper_penurunan_bb_anak"]:checked').each(function() {
+        score += parseInt($(this).data('id'));
+    });
+    $('input[name="asper_kondisi_anak"]:checked').each(function() {
+        score += parseInt($(this).data('id'));
+    });
+    $('input[name="asper_penyakit_anak"]:checked').each(function() {
+        score += parseInt($(this).data('id'));
+    });
+    $('#total_skor_anak').val(score);
+
+    return score;
+}
+
+</script>

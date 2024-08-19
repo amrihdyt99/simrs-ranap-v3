@@ -992,6 +992,23 @@
     // function original dari footer
     // RAW
 
+    function getQrCode(id) {
+        $.ajax({
+            type: "POST",
+            data: {
+                "soap_id": id,
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.show_qrcode')}}",
+            success: function(data) {
+                inject_view_data(data);
+                getPhysicianTeam();
+            },
+            error: function(data) {
+                clear_show_error();
+            },
+        });
+    }
+
     function getSoapPerawat() {
         var table = $('#table-cppt-perawat');
         table.html(df_loading_anim);
@@ -1045,8 +1062,16 @@
                         btnShowQR.type = 'button'
                         btnShowQR.className = 'btn btn-success'
                         btnShowQR.innerText = 'Lihat QRCode'
-                        btnShowQR.id = 'btnShowQR' + i
+                        btnShowQR.id = 'btnShowQR' + datasoap[i].soapdok_reg
                         btnShowQR.value = datasoap[i].id
+                        let soap_id = datasoap[i].soapdok_id;
+                        btnShowQR.onclick = function() {
+                            clear_show_load();
+                            document.querySelector("#ddx-utama").scrollIntoView({
+                                behavior: "smooth"
+                            });
+                            setTimeout(getQrCode(soap_id), 280);
+                        }
                         var trNamaVerifikasi = document.createElement('tr')
                         var trTglVerifikasi = document.createElement('tr')
                         trNamaVerifikasi.appendChild(document.createTextNode(datasoap[i].nama_verifikasi))
@@ -1064,6 +1089,7 @@
             },
         });
     }
+
 
     function getSoapPerawat_modal() {
         $('#modalSOAP').modal('show');
@@ -1104,6 +1130,7 @@
                 setChecked('asdew_sensori', resp.asdew_sensori)
                 setChecked('asdew_lembab', resp.asdew_lembab)
                 setChecked('asdew_aktivitas', resp.asdew_aktivitas)
+                setChecked('asdew_mobilitas', resp.asdew_mobilitas)
                 setChecked('asdew_nutrisi', resp.asdew_nutrisi)
                 setChecked('asdew_friksi', resp.asdew_friksi)
                 $('[name="asdew_skor_braden"]').val(resp.asdew_skor_braden)

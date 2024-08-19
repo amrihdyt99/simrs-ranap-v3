@@ -1278,6 +1278,7 @@
                     for(var i=0; i<dataSoap.length; i++){
                         var statusVerifikasi = dataSoap[i].status_review
                         var soapdok_dokter = dataSoap[i].soapdok_dokter
+                        var reg_dokter = dataSoap[i].reg_dokter
                         var is_dokter=dataSoap[i].is_dokter
                         var utama=dataSoap[i].dpjp_utama
 
@@ -1344,7 +1345,7 @@
                         //     table = table + "<td class='text-center'></td>"
                         // }else{
                             if(statusVerifikasi==0){
-                                if (soapdok_dokter != utama) {
+                                if (reg_dokter != utama) {
                                     table = table + "<td class='text-center'>" +
                                     "<button class='btn btn-secondary''>Menunggu Verif DPJP Utama</button>" +
                                     "</td>"

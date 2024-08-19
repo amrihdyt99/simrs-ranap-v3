@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Untitled Document</title>
+    <title>General Consent Hal 2</title>
     <script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
 
     <style>
@@ -249,7 +249,7 @@
                 <tr>
                     <form method="post" action="{{route('register.ranap.uploadGcdua')}}" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="reg_no" id="reg_no" value="{{$datapasien->reg_no}}"/>
+                        <input type="hidden" name="reg_no" id="reg_no" value="{{$datapasien->reg_no ?? ''}}"/>
                     <td colspan="6">
                         (-------------------------------------)
                         {{--<div id="signature-pad2">
@@ -267,14 +267,14 @@
                     <td colspan="6">
                         <img id="anatomi" src="{{asset('new_assets/images/multi_organ/anatomi_tubuh.png')}}" width="100px" height="100px" hidden/>
                         {{--<textarea id="signature64" name="signed" style="display: none"></textarea>--}}
-                             @if($datapasien->ttd_gc_hal_dua!=null)
-                                <img src="{{$datapasien->ttd_gc_hal_dua}}" width="350px" height="100px"/>
-                            @else
+                        @if($datapasien->ttd_gc_hal_dua!=null)
+                        <img src="{{$datapasien->ttd_gc_hal_dua}}" width="350px" height="100px"/>
+                        @else
                             <div id="signature-pad">
                                 <div style="border:solid 1px teal; width:360px;height:110px;padding:3px;position:relative;">
                                     <canvas id="the_canvas" width="350px" height="100px">Your browser does not support the HTML canvas tag.</canvas>
                                     <div id="note" onmouseover="my_function();">The signature should be inside box</div>
-
+                                    
                                 </div>
                                 <div style="margin:10px;">
                                     <input type="hidden" id="signature" name="signature">
@@ -282,7 +282,7 @@
                                     <button type="submit" id="save_btn" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
                                 </div>
                             </div>
-                            @endif
+                        @endif
 
 
                     </td>

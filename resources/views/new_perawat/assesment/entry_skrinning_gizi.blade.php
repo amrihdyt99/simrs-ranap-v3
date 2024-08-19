@@ -72,14 +72,14 @@
                                 <td>- > 15 Kg</td>
                                 <td>3</td>
                                 <td><input type="radio" name="asper_penurunan_bb_dewasa" value="> 15 Kg"
-                                        data-id="4" class="gizi_dewasa"
+                                        data-id="3" class="gizi_dewasa"
                                         {{ $skrining_gizi->turun_berat_badan == '> 15 Kg' ? 'checked' : '' }}></td>
                             </tr>
                             <tr>
                                 <td>- Tidak tahu berapa kg penurunannya</td>
                                 <td>4</td>
                                 <td><input type="radio" name="asper_penurunan_bb_dewasa" value="Tidak tahu"
-                                        data-id="2" class="gizi_dewasa"
+                                        data-id="4" class="gizi_dewasa"
                                         {{ $skrining_gizi->turun_berat_badan == 'Tidak tahu' ? 'checked' : '' }}></td>
                             </tr>
                             </td>
