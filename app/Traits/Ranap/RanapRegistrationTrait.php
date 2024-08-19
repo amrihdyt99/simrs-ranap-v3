@@ -96,9 +96,10 @@ trait RanapRegistrationTrait
 
     public function createNewPatient()
     {
+        DB::beginTransaction();
         $paramspasien = $this->getParamPasien();
         $paramspasien['MedicalNo'] = request()->reg_medrec;
-
+        DB::commit();
         try {
             Pasien::create($paramspasien);
         } catch (\Throwable $th) {

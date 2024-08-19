@@ -243,7 +243,7 @@
                                                         @endforeach
                                                     @else
                                                         @foreach ($golongan_darah as $key => $value)
-                                                            <option value="{{ $key }} {{ $key === $pasien->GCBloodType ? 'selected': '' }}">{{ $value }}</option>
+                                                            <option value="{{ $key }}" {{ $key === $pasien->GCBloodType ? 'selected': '' }}>{{ $value }}</option>
                                                         @endforeach
                                                     @endempty
                                                 </select>
@@ -566,7 +566,7 @@
             $('#kitas').hide()
             const cara_bayar = "{{ $registration->reg_cara_bayar ?? '' }}";
             $.ajax({
-                url: '{{route('get.bussinesspartner')}}',
+                url: "{{ route('get.bussinesspartner') }}",
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
