@@ -56,10 +56,19 @@
     <!-- Page specific script -->
     <script>
         $(function() {
-          mod_pilih_ruang()
+          if(sessionStorage.getItem('pilihruang')){
+            const pilihruang =sessionStorage.getItem('pilihruang').split(',');
+            load_data('area', pilihruang[0]);
+            load_data('patient', pilihruang[0]);
+            $('#title_ruang').text(pilihruang[1]);
+          }else {
+            mod_pilih_ruang()
+          }
+
           $('.select2-mod').select2({
                 dropdownParent: $("#modal_pil")
             });
+            
           list_ruang()
           neko_datepicker("reg_tgl");
 
@@ -101,6 +110,7 @@
         load_data('patient',arr[0])
         $('#title_ruang').text(arr[1])
         $('#modal_pil').modal('hide')
+        sessionStorage.setItem('pilihruang', isi);
       }
     }
 
