@@ -1760,15 +1760,15 @@ class NewNursingController extends Controller
     {
         $paramsawalsearch = array(
             'reg_no' => $request->reg_no,
-            'med_rec' => $request->med_rec,
+            'reg_medrec' => $request->reg_medrec,
         );
 
         $paramsobgyn = $request->all();
         unset($paramsobgyn['user_id']);
-        unset($paramsobgyn['med_rec']);
+        unset($paramsobgyn['reg_medrec']);
         unset($paramsobgyn['reg_no']);
 
-        $paramsobgyn['med_rec'] = $request->med_rec;
+        $paramsobgyn['reg_medrec'] = $request->reg_medrec;
         $paramsobgyn['reg_no'] = $request->reg_no;
 
         $simpan = DB::connection('mysql')
@@ -2405,7 +2405,8 @@ class NewNursingController extends Controller
                     ->where('reg_no', $request->reg_no)
                     ->update($data);
             } else {
-                $data['kode_tindakan_medis_setuju_tolak'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
+                // $data['kode_tindakan_medis_setuju_tolak'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
+                $data['kode_tindakan_medis_setuju_tolak'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_tindakan_medis();
                 $store = DB::connection('mysql')
                     ->table('rs_tindakan_medis_informasi')
                     ->insert($data);
@@ -2528,7 +2529,8 @@ class NewNursingController extends Controller
                     ->where('reg_no', $request->reg_no)
                     ->update($data);
             } else {
-                $data['kode_surat_rujukan'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
+                // $data['kode_surat_rujukan'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
+                $data['kode_surat_rujukan'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_surat_rujukan();
                 $store = DB::connection('mysql')
                     ->table('rs_rujukan_persiapan_pasien')
                     ->insert($data);

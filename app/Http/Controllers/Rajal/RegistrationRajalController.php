@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rajal;
 
 use App\Http\Controllers\Controller;
 use App\Models\RegistrationInap;
+use App\Traits\Master\MasterPasienTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 class RegistrationRajalController extends Controller
 {
 
+    use MasterPasienTrait;
     /**
      * * Menampilkan data registrasi pasien yang berasal dari rawat jalan
      */
@@ -40,10 +42,15 @@ class RegistrationRajalController extends Controller
         return view('register.pages.rajal.index', compact('data'));
     }
 
+    /**
+     * Store data outpatient registration into inpatient registration
+     */
     public function storeRajal()
     {
         if (request()->ajax()) {
             try {
+                $pasien = $this->getPatientByMedicalRecord(request()->reg_medrec);
+                if (!$pasien) $this->storePatientByMedicalRecord(request()->reg_medrec);
                 DB::beginTransaction();
                 $register_ranap = new RegistrationInap();
                 $register_ranap->reg_no = $register_ranap->generateCode();
@@ -51,6 +58,9 @@ class RegistrationRajalController extends Controller
                 $register_ranap->reg_medrec = request()->reg_medrec;
                 $register_ranap->reg_tgl = date('Y-m-d');
                 $register_ranap->reg_jam = date('H:i:s');
+                $register_ranap->reg_poli = request()->poli_kode_asal;
+                $register_ranap->reg_dokter = request()->dokter_poli_kode;
+                $register_ranap->reg_cttn = request()->ranap_diagnosa;
                 $register_ranap->save();
                 DB::commit();
                 return response()->json([

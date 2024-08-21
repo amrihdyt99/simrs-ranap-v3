@@ -7,7 +7,7 @@
         <form id="form-entry-order">
             <div class="modal-body">
                 @csrf
-                <input type="hidden" name="cpoe_reg" value="{{$reg->reg_no}}">
+                <input type="hidden" name="cpoe_reg" value="{{$reg_no}}">
                 <input type="hidden" name="cpoe_nama">
                 <div class="form-group"> 
                     <label>Jenis Item</label> 
