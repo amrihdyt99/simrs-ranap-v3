@@ -166,6 +166,43 @@ class UniversalFunctionController extends Controller
         return (string)($this->carbon_now_datetime_noseparator().'-'.$this->nyaa_uuid4());
     }
 
+    public function generate_code_transfer_internal()
+    {
+        $text = "TI";
+        
+        $now = Carbon::now();
+        $timestamp = $now->format('YmdHisv'); 
+        
+        $generatedCode = $text . $timestamp;
+        
+        return $generatedCode;
+    }
+
+    public function generate_code_tindakan_medis()
+    {
+        $text = "TM";
+        
+        $now = Carbon::now();
+        $timestamp = $now->format('YmdHisv'); 
+        
+        $generatedCode = $text . $timestamp;
+        
+        return $generatedCode;
+    }
+
+    public function generate_code_surat_rujukan()
+    {
+        $text = "SR";
+        
+        $now = Carbon::now();
+        $timestamp = $now->format('YmdHisv'); 
+        
+        $generatedCode = $text . $timestamp;
+        
+        return $generatedCode;
+    }
+
+
     public function string_ke_object($string)
     {
         if(!$string){
@@ -1078,10 +1115,15 @@ class UniversalFunctionController extends Controller
             dd('Mohon untuk hanya memilih file dengan format yang diizinkan.');
         }
 
-        $namafile_chunk1 = (string)Carbon::now()->format('YmdHis');
-        $namafile_chunk2 = $this->nyaa_uuid4();
-        $namafile_chunk3 = Str::random(10);
-        $new_filename = ($namafile_chunk1.'_'.$namafile_chunk2.'_'.$namafile_chunk3)
+        // $namafile_chunk1 = (string)Carbon::now()->format('YmdHis');
+        // $namafile_chunk2 = $this->nyaa_uuid4();
+        // $namafile_chunk3 = Str::random(10);
+        // $new_filename = ($namafile_chunk1.'_'.$namafile_chunk2.'_'.$namafile_chunk3)
+        //                 .'.'
+        //                 .$format_file;
+        $namafile_chunk1 = (string)Carbon::now()->format('YmdHisv');
+        
+        $new_filename = ($namafile_chunk1)
                         .'.'
                         .$format_file;
         $dataxx_time = (string)Carbon::now()->format('Y/m');
