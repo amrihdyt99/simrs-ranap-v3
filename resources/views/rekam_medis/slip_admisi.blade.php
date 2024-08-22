@@ -208,7 +208,7 @@
                         <td>
                             @empty($datapasien->reg_ketersidaan_kamar)
                             -
-                            @else    
+                            @else
                                 @if($datapasien->reg_ketersidaan_kamar == 1)
                                     Ya
                                 @else
@@ -488,7 +488,7 @@
                                     Ada
                                 @else
                                     <input type="radio" name="radio" id="rm_lama4" value="rm_lama" checked readonly/>
-                                    Tidak 
+                                    Tidak
                                 </td>
                             @endempty
                         @endif
@@ -588,31 +588,27 @@ IRD--}}
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td align="center">
-                            @empty($data->ttd_admisi)
-                            -
+                            @if($datapasien->ttd_admisi!=null)
+                                <img src="{{$datapasien->ttd_admisi}}" width="100" height="50" />
                             @else
-                                @if($datapasien->ttd_admisi!=null)
-                                    <img src="{{$datapasien->ttd_admisi}}" width="100" height="50" />
-                                @else
-                                    <form action="{{route('register.ranap.uploadTtdAdmisi')}}" method="post" enctype="multipart/form-data">
-                                        {{csrf_field()}}
-                                        <input type="hidden" name="reg_no" value="{{$datapasien->reg_no}}">
-                                        <div id="signature-pad">
-                                            <div style="border:solid 1px teal; width:150px;height:110px;padding:3px;position:relative;">
-                                                <canvas id="the_canvas" width="140px" height="100px">Your browser does not support the HTML canvas tag.</canvas>
-                                                <div id="note" onmouseover="my_function();">The signature should be inside box</div>
-
-                                            </div>
-                                            <div style="margin:10px;">
-                                                <input type="hidden" id="signature" name="signature">
-                                                <button type="button" id="clear_btn" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Clear</button>
-                                                <button type="submit" id="save_btn" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
-                                            </div>
+                                <form action="{{route('register.ranap.uploadTtdAdmisi')}}" method="post" enctype="multipart/form-data">
+                                    {{csrf_field()}}
+                                    <input type="hidden" name="reg_no" value="{{$datapasien->reg_no}}">
+                                    <div id="signature-pad">
+                                        <div style="border:solid 1px teal; width:150px;height:110px;padding:3px;position:relative;">
+                                            <canvas id="the_canvas" width="140px" height="100px">Your browser does not support the HTML canvas tag.</canvas>
+                                            <div id="note" onmouseover="my_function();">The signature should be inside box</div>
 
                                         </div>
-                                    </form>
-                                @endif
-                            @endempty
+                                        <div style="margin:10px;">
+                                            <input type="hidden" id="signature" name="signature">
+                                            <button type="button" id="clear_btn" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Clear</button>
+                                            <button type="submit" id="save_btn" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            @endif
                         </td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
