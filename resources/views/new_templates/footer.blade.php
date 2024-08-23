@@ -1274,6 +1274,16 @@
                 success: function (data) {
                     console.log(data)
                     var dataSoap = data.data_soap
+
+                 dataSoap.sort(function(a, b) {
+                    if (a.status_review !== b.status_review) {
+                        return a.status_review - b.status_review;
+                    }
+                    var dateA = new Date(a.soap_tanggal + ' ' + a.soap_waktu);
+                    var dateB = new Date(b.soap_tanggal + ' ' + b.soap_waktu);
+                    return dateB - dateA;
+            });
+
                     var table = ""
                     for(var i=0; i<dataSoap.length; i++){
                         var statusVerifikasi = dataSoap[i].status_review
