@@ -87,12 +87,25 @@ class RegisterController extends Controller
                 return $btn_admisi . $btn_lengkapi_pendaftaran;
             })
             ->editColumn('dok_data', function ($query) use ($request) {
-                return ('<a href="'
-                    . route('register.ranap.gc1', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>General Consent Hal 1</a>'
-                    . '<a href="'
-                    . route('register.ranap.gc2', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>General Consent Hal 2</a>');
+                $reg_no = $query->reg_no;
+                $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
+                $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
+
+                return ('<a href="#" class="btn btn-sm btn-outline-primary" id="viewGcBtn-' . $reg_no . '"><i class="mr-2 fa fa-print"></i>General Consent</a>'
+                    . '<script>
+                document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
+                    e.preventDefault();
+                    Promise.all([
+                        fetch("' . $gc1Url . '").then(response => response.text()),
+                        fetch("' . $gc2Url . '").then(response => response.text())
+                    ]).then(contents => {
+                        const combinedContent = contents.join("<hr>");
+                        const viewWindow = window.open("", "_blank");
+                        viewWindow.document.write(combinedContent);
+                        viewWindow.document.close();
+                    }).catch(error => console.error("Error:", error));
+                });
+            </script>');
             })
             ->editColumn('status', function ($query) use ($request) {
                 if ($query->reg_status == null) {
@@ -106,10 +119,10 @@ class RegisterController extends Controller
                 $partner = collect($business_partner)->firstWhere('BusinessPartnerID', $query->reg_cara_bayar);
                 return $partner ? $partner['BusinessPartnerName'] : '-';
             })
-
             ->escapeColumns([])
             ->toJson();
     }
+
 
     public function batal_ranap($no)
     {
@@ -433,10 +446,10 @@ class RegisterController extends Controller
     {
         $ruangan = DB::connection('mysql2')
             ->table('m_bed')
-            ->leftjoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->leftjoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->leftjoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
-            ->leftjoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
             ->where(function ($query) {
@@ -448,6 +461,7 @@ class RegisterController extends Controller
                     ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
             })
             ->get();
+        // dd($ruangan[1]);
         return response()->json([
             'data' => $ruangan
         ]);
@@ -458,7 +472,7 @@ class RegisterController extends Controller
         $ruangan = DB::connection('mysql2')
             ->table('m_bed')
             ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
             ->where(function ($query) {
