@@ -27,7 +27,6 @@
         <span style="margin-right: 5px; margin-bottom: 5px; white-space: nowrap; font-size: 0.875rem;" class="badge badge-primary">{{ trim($team_member) }}</span>
     @endforeach
 </td>
-
             <td class="text-sm">{{$row->nama_ruangan}}</td>
             <td class="text-sm">{{$row->reg_cara_bayar}}</td>
             <td class="text-sm">
