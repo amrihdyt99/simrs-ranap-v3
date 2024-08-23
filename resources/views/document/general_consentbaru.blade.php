@@ -100,15 +100,16 @@
     <tr>
         <td colspan="6">&nbsp;</td>
         <td width="181" rowspan="6">&nbsp;</td>
+        {{-- <td colspan="6">Palembang,{{Date('d-m-Y')}}</td> --}}
+    </tr>
+    <tr>
         <td colspan="6">Palembang,{{Date('d-m-Y')}}</td>
+        {{-- <td colspan="6">Tanda tangan dan nama</td> --}}
     </tr>
     <tr>
-        <td colspan="6" style="text-align:center">Petugas pemberi informasi</td>
-        <td colspan="6">Tanda tangan dan nama</td>
-    </tr>
-    <tr>
-        <td colspan="6">&nbsp;</td>
-        <td colspan="6">(wali jika pasien &lt; 18 tahun)</td>
+        <td colspan="6" style="text-align:left">Petugas pemberi informasi</td>
+        {{-- <td colspan="6">&nbsp;</td>
+        <td colspan="6">(wali jika pasien &lt; 18 tahun)</td> --}}
     </tr>
     <tr>
         <td height="57" colspan="6">&nbsp;</td>
@@ -135,7 +136,7 @@
             <td colspan="6">
                 <img id="anatomi" src="{{asset('new_assets/images/multi_organ/anatomi_tubuh.png')}}" width="100px" height="100px" hidden/>
                 {{--<textarea id="signature64" name="signed" style="display: none"></textarea>--}}
-                @if($datapasien->ttd_gc_hal_dua!=null)
+                {{-- @if($datapasien->ttd_gc_hal_dua!=null)
                     <img src="{{$datapasien->ttd_gc_hal_dua}}" width="350px" height="100px"/>
                 @else
                     <div id="signature-pad">
@@ -150,7 +151,7 @@
                             <button type="submit" id="save_btn" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
                         </div>
                     </div>
-                @endif
+                @endif --}}
             </td>
         </form>
     </tr>
@@ -161,15 +162,15 @@
         <td width="37">Pukul</td>
         <td width="3">:</td>
         <td width="85">{{date('H:i:s')}}</td>
-        <td width="19">Tgl</td>
+        {{-- <td width="19">Tgl</td>
         <td width="3">:</td>
         <td width="51">{{date('d-m-Y')}}</td>
         <td width="42">Pukul</td>
         <td width="3">:</td>
-        <td width="135">{{date('H:i:s')}}</td>
+        <td width="135">{{date('H:i:s')}}</td> --}}
     </tr>
 </table>
-
+<div style="page-break-after: always"></div>
 <script>
     var wrapper = document.getElementById("signature-pad");
     var clearButton = wrapper.querySelector("[data-action=clear]");
