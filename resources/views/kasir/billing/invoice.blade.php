@@ -1,9 +1,10 @@
 <?php
-    header("Content-type: text/css; charset: UTF-8");
+header("Content-type: text/css; charset: UTF-8");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,68 +13,87 @@
     <link rel="stylesheet" media="all" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('new_assets/css/jquery.dataTables.min.css')}}">
     <style>
-        .table td, .table th {
+        .table td,
+        .table th {
             padding: 0.25rem;
             border-top: transparent;
             font-size: 12px;
         }
-        .table-header td{
+
+        .table-header td {
             padding-right: 20px;
         }
+
         .table-header td span:first-child {
             font-size: 25px;
             font-weight: 600;
         }
+
         .table-header td img {
             width: 80px !important;
         }
-        #table-billing td, #table-billing th {
+
+        #table-billing td,
+        #table-billing th {
             border-bottom: 1px solid black;
             font-size: 10px;
         }
-        .table-metode td, .table-metode th {
+
+        .table-metode td,
+        .table-metode th {
             padding: 0rem;
             border: none;
             font-size: 12px;
         }
+
         .border-none tr {
             border: 0px !important;
         }
+
         .f-10 {
             font-size: 12px;
         }
+
         .f-12 {
             font-size: 12px;
         }
+
         .f-14 {
             font-size: 14px;
         }
+
         .text-right {
             text-align: right
         }
+
         .text-left {
             text-align: left
         }
+
         .text-center {
             text-align: center
         }
+
         .float-right {
             float: right;
         }
+
         .text-capitalize {
             text-transform: capitalize !important;
         }
+
         .text-bold {
             font-weight: 600;
         }
+
         @media print {
             .btn_print {
                 display: none !important;
             }
         }
-
     </style>
 </head>
+
 <body>
     <div class="row">
         <div class="col text-center">
@@ -116,35 +136,35 @@
 
     <table id="example" class="table dt-responsive nowrap mt-3 mb-3" style="width:100%">
         <thead>
-        <tr>
-            <th>JENIS TINDAKAN/ITEM</th>
-            <th>KODE TINDAKAN</th>
-            <th>NAMA TINDAKAN</th>
-            <th>HARGA</th>
-        </tr>
+            <tr>
+                <th>JENIS TINDAKAN/ITEM</th>
+                <th>KODE TINDAKAN</th>
+                <th>NAMA TINDAKAN</th>
+                <th>HARGA</th>
+            </tr>
         </thead>
         <tbody>
-        @php
+            @php
             $totaltagihanpaket=0;
-        @endphp
-        @foreach($paket as $rowpaket)
+            @endphp
+            @foreach($paket as $rowpaket)
 
             @php
-                $totaltagihanpaket=$totaltagihanpaket+$rowpaket->price;
+            $totaltagihanpaket=$totaltagihanpaket+$rowpaket->price;
             @endphp
             <tr>
                 <td>Paket</td>
                 <td>{{$rowpaket->item_code}}</td>
-                <td>{{$rowpaket->item_name}}<br/>
+                <td>{{$rowpaket->item_name}}<br />
                     @php
-                        echo "<ul>".$rowpaket->rincian_paket."</ul>";
+                    echo "<ul>".$rowpaket->rincian_paket."</ul>";
                     @endphp
                 </td>
 
                 <td>Rp. {{number_format($rowpaket->price,2)}}</td>
             </tr>
 
-        @endforeach
+            @endforeach
 
 
         </tbody>
@@ -168,20 +188,20 @@
         </thead>
         <tbody>
             @foreach ($detail as $item)
-                @php
-                    $totaltagihan=0;
-                    $total = $item->harga_jual * $item->qty;
-                    $totaltagihan = $totaltagihan+$total;
-                @endphp
-                @if($item->jenis_order!="paket")
-                    <tr>
-                        <td>{{$item->item_code}}</td>
-                        <td>{{$item->item_name}}</td>
-                        <td class="text-right">{{number_format($item->harga_jual, 2)}}</td>
-                        <td class="text-center">{{$item->qty}}</td>
-                        <td class="text-right">{{number_format($total, 2)}}</td>
-                    </tr>
-                @endif
+            @php
+            $totaltagihan=0;
+            $total = $item->harga_jual * $item->qty;
+            $totaltagihan = $totaltagihan+$total;
+            @endphp
+            @if($item->jenis_order!="paket")
+            <tr>
+                <td>{{$item->item_code}}</td>
+                <td>{{$item->item_name}}</td>
+                <td class="text-right">{{number_format($item->harga_jual, 2)}}</td>
+                <td class="text-center">{{$item->qty}}</td>
+                <td class="text-right">{{number_format($total, 2)}}</td>
+            </tr>
+            @endif
 
             @endforeach
         </tbody>
@@ -275,4 +295,5 @@
     <script>
     </script>
 </body>
+
 </html>

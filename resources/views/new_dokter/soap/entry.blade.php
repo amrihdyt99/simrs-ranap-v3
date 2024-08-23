@@ -15,16 +15,22 @@
 
 
 @push('myscripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
        getSoapDokter()
 
     });
 
-
-
     function updateverifikasi(id){
-        //console.log(id)
+        Swal.fire({
+            title:'Yakin ingin memverifikasi data ini?',
+            icon: 'warning',
+            showCancelButton:true,
+            confirmButtonText: 'Ya, Verifikasi',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
         $.ajax({
             url: "{{ route('dokter.verifikasicppt') }}",
             type: "POST",
@@ -34,18 +40,22 @@
                 "nama_ppa":"{{ auth()->user()->name}}",
                 "dpjp_utama":"{{ auth()->user()->dokter_id}}",
             },
-            success: function (data) {
-                console.log(data)
-                var success=data.success;
-                if(success==true){
-                    alert('Data Berhasil Di Verifikasi')
-                    getSoapDokter()
-                }else{
-                    alert(data.msg)
+            success: function(data) {
+                    console.log(data);
+                    var success = data.success;
+                    if (success == true) {
+                        Swal.fire('Berhasil!', 'Data berhasil diverifikasi.', 'success');
+                        getSoapDokter(); // Memuat ulang tabel setelah verifikasi
+                    } else {
+                        Swal.fire('Gagal', data.msg, 'error');
+                    }
                 }
-            }
-        })
-    }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire('Dibatalkan', 'Verifikasi dibatalkan.', 'info');
+        }
+    });
+}
 
 
 </script>

@@ -702,7 +702,8 @@ class NursingController extends Controller
                 ->where('transfer_reg', $request->transfer_reg)
                 ->update($data);
             } else {
-                $data['kode_transfer_internal']=app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
+                // $data['kode_transfer_internal']=app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
+                $data['kode_transfer_internal']=app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
                 $store = DB::connection('mysql')->table('transfer_internal')
                             ->insert($data);
             }
