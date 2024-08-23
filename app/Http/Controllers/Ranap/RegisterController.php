@@ -435,7 +435,7 @@ class RegisterController extends Controller
             ->table('m_bed')
             ->leftjoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->leftjoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->leftjoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+            ->leftjoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
             ->leftjoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
@@ -448,6 +448,7 @@ class RegisterController extends Controller
                     ->orWhere('bed_status', '0116^R'); // menampilkan jika status 0116^R
             })
             ->get();
+        // dd($ruangan[1]);
         return response()->json([
             'data' => $ruangan
         ]);
@@ -458,7 +459,7 @@ class RegisterController extends Controller
         $ruangan = DB::connection('mysql2')
             ->table('m_bed')
             ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
             ->where(function ($query) {
