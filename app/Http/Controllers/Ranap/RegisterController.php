@@ -54,62 +54,75 @@ class RegisterController extends Controller
     }
 
     public function ajax_index($request)
-    {
-        $business_partner = (object)$this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business')['data'] ?? [];
-        $data = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
-            ->select([
-                'm_registrasi.reg_tgl',
-                'm_registrasi.reg_no',
-                'm_registrasi.reg_medrec',
-                'm_pasien.PatientName',
-                'm_paramedis.ParamedicName',
-                // 'businesspartner.BusinessPartnerName as reg_cara_bayar',
-                'm_registrasi.reg_status',
-                'm_registrasi.reg_cara_bayar',
-            ])
-            ->whereNull('reg_deleted')
-            ->orderByDesc('reg_tgl');
+{
+    $business_partner = (object)$this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business')['data'] ?? [];
+    $data = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+        ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
+        ->select([
+            'm_registrasi.reg_tgl',
+            'm_registrasi.reg_no',
+            'm_registrasi.reg_medrec',
+            'm_pasien.PatientName',
+            'm_paramedis.ParamedicName',
+            // 'businesspartner.BusinessPartnerName as reg_cara_bayar',
+            'm_registrasi.reg_status',
+            'm_registrasi.reg_cara_bayar',
+        ])
+        ->whereNull('reg_deleted')
+        ->orderByDesc('reg_tgl');
 
-        return DataTables()
-            ->of($data)
-            ->editColumn('aksi_data', function ($query) use ($request) {
-                $query->reg_no = str_replace("/", "_", $query->reg_no);
-                $btn_admisi = '<a href="'
-                    . route('register.ranap.slipadmisi', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>Admisi</a>';
-                $btn_lengkapi_pendaftaran = '<a href="'
-                    . route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary ml-1" target="_blank"><i class="mr-2 fa fa-edit"></i>Lengkapi Pendaftaran</a>';
-                return $btn_admisi . $btn_lengkapi_pendaftaran;
-            })
-            ->editColumn('dok_data', function ($query) use ($request) {
-                return ('<a href="'
-                    . route('register.ranap.gc1', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>General Consent Hal 1</a>'
-                    . '<a href="'
-                    . route('register.ranap.gc2', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>General Consent Hal 2</a>');
-            })
-            ->editColumn('status', function ($query) use ($request) {
-                if ($query->reg_status == null) {
-                    $reg = str_replace("/", "_", $query->reg_no);
-                    return '<button onclick="hapus_pasien(' . "'$reg'" . ')" class="btn btn-sm btn-danger "><i class="fa fa-trash"></i> Batal</button>';
-                } else {
-                    return '<button class="btn btn-sm btn-warning">Dalam Perawatan</button>';
-                }
-            })
-            ->editColumn('reg_cara_bayar', function ($query) use ($business_partner) {
-                $partner = collect($business_partner)->firstWhere('BusinessPartnerID', $query->reg_cara_bayar);
-                return $partner ? $partner['BusinessPartnerName'] : '-';
-            })
+    return DataTables()
+        ->of($data)
+        ->editColumn('aksi_data', function ($query) use ($request) {
+            $query->reg_no = str_replace("/", "_", $query->reg_no);
+            $btn_admisi = '<a href="'
+                . route('register.ranap.slipadmisi', ['reg_no' => $query->reg_no])
+                . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>Admisi</a>';
+            $btn_lengkapi_pendaftaran = '<a href="'
+                . route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $query->reg_no])
+                . '" class="btn btn-sm btn-outline-primary ml-1" target="_blank"><i class="mr-2 fa fa-edit"></i>Lengkapi Pendaftaran</a>';
+            return $btn_admisi . $btn_lengkapi_pendaftaran;
+        })
+        ->editColumn('dok_data', function ($query) use ($request) {
+            $reg_no = $query->reg_no;
+            $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
+            $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
+        
+            return ('<a href="#" class="btn btn-sm btn-outline-primary" id="viewGcBtn-' . $reg_no . '"><i class="mr-2 fa fa-print"></i>General Consent</a>'
+            . '<script>
+                document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
+                    e.preventDefault();
+                    Promise.all([
+                        fetch("' . $gc1Url . '").then(response => response.text()),
+                        fetch("' . $gc2Url . '").then(response => response.text())
+                    ]).then(contents => {
+                        const combinedContent = contents.join("<hr>");
+                        const viewWindow = window.open("", "_blank");
+                        viewWindow.document.write(combinedContent);
+                        viewWindow.document.close();
+                    }).catch(error => console.error("Error:", error));
+                });
+            </script>');        
+        })
+        ->editColumn('status', function ($query) use ($request) {
+            if ($query->reg_status == null) {
+                $reg = str_replace("/", "_", $query->reg_no);
+                return '<button onclick="hapus_pasien(' . "'$reg'" . ')" class="btn btn-sm btn-danger "><i class="fa fa-trash"></i> Batal</button>';
+            } else {
+                return '<button class="btn btn-sm btn-warning">Dalam Perawatan</button>';
+            }
+        })
+        ->editColumn('reg_cara_bayar', function ($query) use ($business_partner) {
+            $partner = collect($business_partner)->firstWhere('BusinessPartnerID', $query->reg_cara_bayar);
+            return $partner ? $partner['BusinessPartnerName'] : '-';
+        })
+        ->escapeColumns([])
+        ->toJson();
+}
 
-            ->escapeColumns([])
-            ->toJson();
-    }
 
     public function batal_ranap($no)
     {
