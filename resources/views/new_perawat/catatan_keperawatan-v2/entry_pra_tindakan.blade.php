@@ -1,6 +1,6 @@
 @empty($pra_tindakan)
 @php
-   $pra_tindakan = optional((object)[]);
+$pra_tindakan = optional((object)[]);
 @endphp
 @endempty
 <form id="form_pra_tindakan">
@@ -69,7 +69,7 @@
                     </div>
 
                     @php
-                        $data_pra_status_mental = json_decode($pra_tindakan->pra_status_mental) ?? [];
+                    $data_pra_status_mental = json_decode($pra_tindakan->pra_status_mental) ?? [];
                     @endphp
 
                     <div class="col-lg-10">
@@ -112,8 +112,8 @@
                         Riwayat Penyakit
                     </div>
                     @php
-                        $data_pra_penyakit_dahulu = json_decode($pra_tindakan->pra_penyakit_dahulu) ?? [];
-                        $data_pra_stent = json_decode($pra_tindakan->pra_stent) ?? [];
+                    $data_pra_penyakit_dahulu = json_decode($pra_tindakan->pra_penyakit_dahulu) ?? [];
+                    $data_pra_stent = json_decode($pra_tindakan->pra_stent) ?? [];
                     @endphp
                     <div class="col-lg-10">
                         <div class="custom-control custom-checkbox custom-control-inline">
@@ -500,7 +500,7 @@
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input id="input_verif_ruangan_4_1" type="radio" class="custom-control-input"
                                     value="Ya" name="verif_ruangan_4" {{ $pra_tindakan->verif_ruangan_4 == 'Ya' ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="input_verif_ruangan_4_1" >Ya</label>
+                                <label class="custom-control-label" for="input_verif_ruangan_4_1">Ya</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input id="input_verif_ruangan_4_2" type="radio" class="custom-control-input"
@@ -995,7 +995,7 @@
                     <td style="border-bottom: 1px solid black">
                         <input type="text"
                             name="persiapan_keterangan_6" class="form-control" value="{{$pra_tindakan->persiapan_keterangan_6}}">
-                        </td>
+                    </td>
                 </tr>
                 <tr>
                     <td>7</td>

@@ -23,6 +23,9 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
 
     Route::get('lengkapi-pendaftaran/{reg_no}', [Ranap\RegisterController::class, 'lengkapiPendaftaran'])->where('reg_no', '(.*)')->name('register.ranap.lengkapi-pendaftaran');
     Route::post('lengkapi-pendaftaran', [Ranap\RegisterController::class, 'storeLengkapiPendaftaran'])->where('reg_no', '(.*)')->name('register.ranap.lengkapi-pendaftaran.store');
+    Route::get('vclaim-manual', [Ranap\RegisterController::class, 'viewVClaimManual'])->name('register.vclaim');
+    Route::get('vclaim-manual/create', [Ranap\RegisterController::class, 'viewFormVClaimManual'])->name('register.vclaim.form');
+    Route::post('vclaim-manual', [Ranap\RegisterController::class, 'storeVClaim'])->name('register.vclaim.store');
 });
 
 Route::prefix('igd')->middleware(['auth', 'role:adminregister'])->group(function () {
