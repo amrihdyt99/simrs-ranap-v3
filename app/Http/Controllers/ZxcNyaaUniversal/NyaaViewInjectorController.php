@@ -510,6 +510,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
+            ->where('m_registrasi.reg_no', "=", $reg_no)
             ->get();
 
         return view(

@@ -216,6 +216,7 @@ class AssesmentAwalDokterController extends Controller
         } else {
             $asdok_pengobatan_ket =  implode(",", $request->asdok_pengobatan_ket);
         }
+        $tanggal_pemberian = $request->input('asdok_rawat_inap_ket', date('Y-m-d'));
         $params = array(
             'no_reg' => $request->asdok_reg,
             'anamnesis' => $request->asdok_amnesis,

@@ -174,7 +174,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-sm-12">
-                        <input type="date" id="ruang" class="form-control" name="asdok_rawat_inap_ket" />
+                        <input type="date" id="ruang" class="form-control" name="asdok_rawat_inap_ket" value="{{ date('Y-m-d') }}" readonly/>
                     </div>
                 </div>
             </div>
