@@ -30,6 +30,8 @@
           <a class="dropdown-item" href="{{ route('master.departement.index') }}">Departement</a>
           <a class="dropdown-item" href="{{ route('master.location.index') }}">Location</a>
           <a class="dropdown-item" href="{{ route('master.site.index') }}">Site</a>
+          <a class="dropdown-item" href="{{ route('master.practitioner.index') }}">Practitioner</a>
+          <a class="dropdown-item" href="{{ route('master.organization.index') }}">Organization</a>
         </div>
       </li>
 

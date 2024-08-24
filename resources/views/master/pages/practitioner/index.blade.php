@@ -9,8 +9,8 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>
-                            Bed Management
-                            <a href="{{ route('master.bed.create') }}" class="btn btn-success rounded-circle">
+                            Practitioner
+                            <a href="{{ route('master.practitioner.create') }}" class="btn btn-success rounded-circle">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </h1>
@@ -43,15 +43,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_temporary" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1">Temporary</option>
-                                <option value="0" selected>Tidak Temporary</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -63,19 +54,14 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <table id="bed_table" class="w-100 table table-bordered">
+                                <table id="paramedic_table" class="w-100 table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Action</th>
-                                            <th>Unit</th>
-                                            <th>Room</th>
-                                            <th>Kelas</th>
-                                            <th>No. Bed</th>
-                                            <th>Status</th>
-                                            <th>Type Bed</th>
-                                            <th>No. Registeration</th>
-                                            <th>MRN</th>
-                                            <th>Pasien</th>
+                                            <th>Paramedic Name</th>
+                                            <th>SpecialtyCode</th>
+                                            <th>StartExperienceDate</th>
+                                            <th>LicenseExpiredDate</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -100,18 +86,15 @@
             load_data();
 
             $('#status_hapus').change(function() {
-                $('#bed_table').DataTable().draw();
-            });
-            $('#status_temporary').change(function() {
-                $('#bed_table').DataTable().draw();
+                $('#paramedic_table').DataTable().draw();
             });
             $('#status_active').change(function() {
-                $('#bed_table').DataTable().draw();
+                $('#paramedic_table').DataTable().draw();
             });
         });
 
         function load_data() {
-            $('#bed_table').DataTable({
+            $('#paramedic_table').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -125,9 +108,8 @@
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
                     },
                     data: function(d) {
-                        d.is_deleted = $('#status_hapus').val();
-                        d.is_temporary = $('#status_temporary').val();
-                        d.is_active = $('#status_active').val();
+                        d.IsDeleted = $('#status_hapus').val();
+                        d.IsActive = $('#status_active').val();
                     }
                 },
                 columns: [{
@@ -136,54 +118,29 @@
                         searchable: false
                     },
                     {
-                        data: "unit.ServiceUnitName",
-                        name: "unit.ServiceUnitName"
+                        data: "ParamedicName",
+                        name: "ParamedicName"
                     },
                     {
-                        data: "RoomName",
-                        name: "room.RoomName"
+                        data: "SpecialtyCode",
+                        name: "SpecialtyCode"
                     },
                     {
-                        data: "class_category.ClassName",
-                        name: "class_category.ClassName"
+                        data: "StartExperienceDate",
+                        name: "StartExperienceDate"
                     },
                     {
-                        data: "room_id",
-                        name: "room_id"
+                        data: "LicenseExpiredDate",
+                        name: "LicenseExpiredDate"
                     },
-                    {
-                        data: "bed_status",
-                        name: "bed_status"
-                    },
-                    {
-                        data: "bed_code",
-                        name: "bed_code"
-                    },
-                    {
-                        data: "reg_no",
-                        name: "registration.reg_no",
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: "medrec",
-                        name: "registration.medrec",
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: "PatientName",
-                        name: "registration.pasien.PatientName",
-                        orderable: false,
-                        searchable: false
-                    }
+
                 ],
             });
         }
 
         function confirmDelete(element) {
             const id = $(element).data('id');
-            const url = '{{ route('master.bed.destroy', ':id') }}'.replace(':id', id);
+            const url = '{{ route('master.practitioner.destroy', ':id') }}'.replace(':id', id);
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -205,7 +162,7 @@
                         },
                         success: function(response) {
                             Swal.fire('Berhasil!', response.success, 'success');
-                            $('#bed_table').DataTable().ajax.reload();
+                            $('#paramedic_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
                             Swal.fire('Gagal!', response.responseJSON.error, 'error');
@@ -215,44 +172,9 @@
             });
         }
 
-        // function changeStatus(element, status) {
-        //     const id = $(element).data('id');
-        //     const url = '{{ route('master.bed.changeStatusActive', ':id') }}'.replace(':id', id);
-
-        //     Swal.fire({
-        //         title: 'Apakah Anda yakin?',
-        //         text: `Status akan diubah ${status === 1 ? 'menjadi Aktif' : 'menjadi Nonaktif'}.`,
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Ya, ubah!',
-        //         cancelButtonText: 'Batal'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             $.ajax({
-        //                 url: url,
-        //                 type: "PATCH",
-        //                 data: {
-        //                     is_active: status,
-        //                     _token: $("meta[name='csrf-token']").attr('content')
-        //                 },
-        //                 success: function(response) {
-        //                     Swal.fire('Berhasil!', response.success, 'success');
-        //                     $('#bed_table').DataTable().ajax.reload();
-        //                 },
-        //                 error: function(response) {
-        //                     Swal.fire('Gagal!', response.responseJSON.error, 'error');
-
-        //                 }
-        //             });
-        //         }
-        //     });
-        // }
-
         function changeStatus(element) {
             const id = $(element).data('id');
-            const url = '{{ route('master.bed.changeStatusActive', ':id') }}'.replace(':id', id);
+            const url = '{{ route('master.practitioner.changeStatusActive', ':id') }}'.replace(':id', id);
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -273,7 +195,7 @@
                         },
                         success: function(response) {
                             Swal.fire('Berhasil!', response.success, 'success');
-                            $('#bed_table').DataTable().ajax.reload();
+                            $('#paramedic_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
                             Swal.fire('Gagal!', response.responseJSON.error, 'error');

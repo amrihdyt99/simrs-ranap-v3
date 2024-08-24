@@ -9,8 +9,9 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>
-                            Bed Management
-                            <a href="{{ route('master.bed.create') }}" class="btn btn-success rounded-circle">
+                            Organization
+                            <a href="#" class="btn btn-success rounded-circle" data-toggle="modal"
+                                data-target="#createOrganizationModal">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </h1>
@@ -43,15 +44,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_temporary" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1">Temporary</option>
-                                <option value="0" selected>Tidak Temporary</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -63,19 +55,15 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <table id="bed_table" class="w-100 table table-bordered">
+                                <table id="organization_table" class="w-100 table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Action</th>
-                                            <th>Unit</th>
-                                            <th>Room</th>
-                                            <th>Kelas</th>
-                                            <th>No. Bed</th>
-                                            <th>Status</th>
-                                            <th>Type Bed</th>
-                                            <th>No. Registeration</th>
-                                            <th>MRN</th>
-                                            <th>Pasien</th>
+                                            <th>Organization Code</th>
+                                            <th>Organization Name</th>
+                                            <th>Organization Level</th>
+                                            <th>Parent Organization</th>
+                                            <th>Organization Percentage</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -92,6 +80,9 @@
         </section>
         <!-- /.content -->
     </div>
+
+    @include('master.pages.organization.create')
+    @include('master.pages.organization.update')
 @endsection
 
 @push('nyaa_scripts')
@@ -100,18 +91,15 @@
             load_data();
 
             $('#status_hapus').change(function() {
-                $('#bed_table').DataTable().draw();
-            });
-            $('#status_temporary').change(function() {
-                $('#bed_table').DataTable().draw();
+                $('#organization_table').DataTable().draw();
             });
             $('#status_active').change(function() {
-                $('#bed_table').DataTable().draw();
+                $('#organization_table').DataTable().draw();
             });
         });
 
         function load_data() {
-            $('#bed_table').DataTable({
+            $('#organization_table').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -125,9 +113,8 @@
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
                     },
                     data: function(d) {
-                        d.is_deleted = $('#status_hapus').val();
-                        d.is_temporary = $('#status_temporary').val();
-                        d.is_active = $('#status_active').val();
+                        d.IsDeleted = $('#status_hapus').val();
+                        d.IsActive = $('#status_active').val();
                     }
                 },
                 columns: [{
@@ -136,54 +123,106 @@
                         searchable: false
                     },
                     {
-                        data: "unit.ServiceUnitName",
-                        name: "unit.ServiceUnitName"
+                        data: "OrganizationCode",
+                        name: "OrganizationCode"
                     },
                     {
-                        data: "RoomName",
-                        name: "room.RoomName"
+                        data: "OrganizationName",
+                        name: "OrganizationName"
                     },
                     {
-                        data: "class_category.ClassName",
-                        name: "class_category.ClassName"
+                        data: "OrganizationLevel",
+                        name: "OrganizationLevel"
                     },
                     {
-                        data: "room_id",
-                        name: "room_id"
+                        data: "ParentOrganization",
+                        name: "ParentOrganization"
                     },
                     {
-                        data: "bed_status",
-                        name: "bed_status"
-                    },
-                    {
-                        data: "bed_code",
-                        name: "bed_code"
-                    },
-                    {
-                        data: "reg_no",
-                        name: "registration.reg_no",
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: "medrec",
-                        name: "registration.medrec",
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: "PatientName",
-                        name: "registration.pasien.PatientName",
-                        orderable: false,
-                        searchable: false
+                        data: "OrganizationPercentage",
+                        name: "OrganizationPercentage"
                     }
                 ],
             });
         }
 
+
+        $('#createOrganizationForm').submit(function(event) {
+            event.preventDefault();
+
+            let form = $(this);
+            let url = form.attr('action');
+            let formData = new FormData(form[0]);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $('#createOrganizationModal').modal('hide');
+                    $('#organization_table').DataTable().ajax.reload();
+                    Swal.fire('Success!', response.success, 'success');
+                },
+                error: function(response) {
+                    Swal.fire('Error!', response.responseJSON.error || 'An error occurred.',
+                        'error');
+                }
+            });
+        });
+
+        $('#organization_table').on('click', '.edit-btn', function() {
+            let row = $(this).closest('tr');
+            let data = $('#organization_table').DataTable().row(row).data();
+
+            $('#editOrganizationId').val(data.OrganizationCode);
+            $('#editOrganizationCode').val(data.OrganizationCode);
+            $('#editOrganizationName').val(data.OrganizationName);
+            $('#editOrganizationLevel').val(data.OrganizationLevel);
+            $('#editParentOrganization').val(data.ParentOrganization);
+            $('#editOrganizationPercentage').val(data.OrganizationPercentage);
+
+            $('#editOrganizationModal').modal('show');
+        });
+
+        $('#editOrganizationForm').submit(function(event) {
+            event.preventDefault();
+
+            let form = $(this);
+            let url = "{{ route('master.organization.update', ':id') }}".replace(':id', $(
+                '#editOrganizationId').val());
+            let formData = new FormData(form[0]);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-HTTP-Method-Override': 'PUT'
+                },
+                success: function(response) {
+                    $('#editOrganizationModal').modal('hide');
+                    $('#organization_table').DataTable().ajax.reload();
+                    Swal.fire('Success!', response.success, 'success');
+                },
+                error: function(response) {
+                    Swal.fire('Error!', 'An error occurred. Please try again.', 'error');
+                }
+            });
+        });
+
+
+
         function confirmDelete(element) {
             const id = $(element).data('id');
-            const url = '{{ route('master.bed.destroy', ':id') }}'.replace(':id', id);
+            const url = '{{ route('master.organization.destroy', ':id') }}'.replace(':id', id);
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -205,54 +244,20 @@
                         },
                         success: function(response) {
                             Swal.fire('Berhasil!', response.success, 'success');
-                            $('#bed_table').DataTable().ajax.reload();
+                            $('#organization_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error, 'error');
+                            Swal.fire('Gagal!', response.responseJSON.error || 'An error occurred.',
+                                'error');
                         }
                     });
                 }
             });
         }
 
-        // function changeStatus(element, status) {
-        //     const id = $(element).data('id');
-        //     const url = '{{ route('master.bed.changeStatusActive', ':id') }}'.replace(':id', id);
-
-        //     Swal.fire({
-        //         title: 'Apakah Anda yakin?',
-        //         text: `Status akan diubah ${status === 1 ? 'menjadi Aktif' : 'menjadi Nonaktif'}.`,
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Ya, ubah!',
-        //         cancelButtonText: 'Batal'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             $.ajax({
-        //                 url: url,
-        //                 type: "PATCH",
-        //                 data: {
-        //                     is_active: status,
-        //                     _token: $("meta[name='csrf-token']").attr('content')
-        //                 },
-        //                 success: function(response) {
-        //                     Swal.fire('Berhasil!', response.success, 'success');
-        //                     $('#bed_table').DataTable().ajax.reload();
-        //                 },
-        //                 error: function(response) {
-        //                     Swal.fire('Gagal!', response.responseJSON.error, 'error');
-
-        //                 }
-        //             });
-        //         }
-        //     });
-        // }
-
         function changeStatus(element) {
             const id = $(element).data('id');
-            const url = '{{ route('master.bed.changeStatusActive', ':id') }}'.replace(':id', id);
+            const url = '{{ route('master.organization.changeStatusActive', ':id') }}'.replace(':id', id);
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -273,10 +278,11 @@
                         },
                         success: function(response) {
                             Swal.fire('Berhasil!', response.success, 'success');
-                            $('#bed_table').DataTable().ajax.reload();
+                            $('#organization_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error, 'error');
+                            Swal.fire('Gagal!', response.responseJSON.error || 'An error occurred.',
+                                'error');
                         }
                     });
                 }
