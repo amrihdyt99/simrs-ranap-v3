@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\NewDokter\OrderObatController;
 use App\Models\Pasien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,61 +90,32 @@ class BillingController extends Controller
             array_push($order_penunjang, $item);
         }
 
-        $call_obat = new OrderObatController;
+        // $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $request->reg_rj));
 
-        $request->merge([
-            'reg_no' => $request->reg_ri,
-        ]);
+        // if (isset($lab->code) && $lab->code == 200) {
+        //     foreach ($lab->data as $key => $value) {
+        //         foreach ($value->item_order as $sub_key => $sub_value) {
+        //             $item['ItemReg'] = $value->no_reg;
+        //             $item['ItemCode'] = $sub_value->kode_tindakan;
+        //             $item['ItemOrderCode'] = $value->no_order;
+        //             $item['ItemOrder'] = '';
+        //             $item['ItemTanggal'] = $value->waktu_tanggal_order;
+        //             $item['ItemName1'] = $sub_value->nama_tindakan;
+        //             $item['ItemBundle'] = 0;
+        //             $item['ItemTindakan'] = 'Laboratorium';
+        //             $item['ItemTarif'] = $sub_value->tarif_personal;
+        //             $item['ItemTarifAwal'] = $sub_value->tarif_personal;
+        //             $item['ItemJumlah'] = 1;
+        //             $item['ItemDokter'] = $value->dokter_order;
+        //             $item['ItemPoli'] = $value->poli_order;
+        //             $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
 
-        $obat_ = $call_obat->getFinalOrder($request);
-
-        foreach ($obat_ as $key => $value) {
-            foreach ($value->job_order_dt as $k => $v) {
-                $item['ItemReg'] = $value->reg_no;
-                $item['ItemCode'] = $v->item_code;
-                $item['ItemOrderCode'] = $value->order_no;
-                $item['ItemOrder'] = $v->id;
-                $item['ItemTanggal'] = $value->waktu_order;
-                $item['ItemName1'] = $v->item->item_name;
-                $item['ItemBundle'] = 0;
-                $item['ItemTindakan'] = 'Obat';
-                $item['ItemTarif'] = $v->harga_jual;
-                $item['ItemTarifAwal'] = $v->harga_jual;
-                $item['ItemJumlah'] = $v->quantity;
-                $item['ItemDokter'] = $value->kode_dokter;
-                $item['ItemPoli'] = $value->kode_poli;
-                $item['ItemReview'] = $value->is_review == false ? 0 : 1;
-
-                array_push($order_penunjang, $item);
-            }
-        }
-
-        $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $request->reg_rj));
-
-        if (isset($lab->code) && $lab->code == 200) {
-            foreach ($lab->data as $key => $value) {
-                foreach ($value->item_order as $sub_key => $sub_value) {
-                    $item['ItemReg'] = $value->no_reg;
-                    $item['ItemCode'] = $sub_value->kode_tindakan;
-                    $item['ItemOrderCode'] = $value->no_order;
-                    $item['ItemOrder'] = '';
-                    $item['ItemTanggal'] = $value->waktu_tanggal_order;
-                    $item['ItemName1'] = $sub_value->nama_tindakan;
-                    $item['ItemBundle'] = 0;
-                    $item['ItemTindakan'] = 'Laboratorium';
-                    $item['ItemTarif'] = $sub_value->tarif_personal;
-                    $item['ItemTarifAwal'] = $sub_value->tarif_personal;
-                    $item['ItemJumlah'] = 1;
-                    $item['ItemDokter'] = $value->dokter_order;
-                    $item['ItemPoli'] = $value->poli_order;
-                    $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
-
-                    if ($sub_value->status_cancel == 'N') {
-                        array_push($order_penunjang, $item);
-                    }
-                }
-            }
-        }
+        //             if ($sub_value->status_cancel == 'N') {
+        //                 array_push($order_penunjang, $item);
+        //             }
+        //         }
+        //     }
+        // }
 
         return [
             'order' => $order_penunjang,

@@ -18,41 +18,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
     <link rel="stylesheet" href="{{asset('')}}new_assets/css/select2.min.css">
     <style>
-      .col-sm-2.col-form-label{
-        text-align: right;
-      }
-      .select2-container {
-          width: 100% !important; /* or any other value */
-      }
-      #modalPrescribeNew .modal-dialog{
-          overflow-y: initial !important
-      }
-      #modalPrescribeNew .modal-body{
-          height: 90vh;
-          overflow-y: scroll;
-      }
-      .modal-tab {
-        background-color: rgb(145, 145, 145);
-        padding: 10px;
-        width: 150px;
-        color: aliceblue;
-        margin-bottom: 3px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-      }
-      .modal-tab.active{
-        background: #24db51 !important;
-        background: -webkit-linear-gradient(to right, #2ad727, #0ede50) !important; 
-        background: linear-gradient(to right, #2ad727, #0ede50) !important; 
-        color: aliceblue;
-      }
-      .modal-tab.first-tab{
-        border-radius: 50px 0px 0px 50px;
-      }
-      .modal-tab.last-tab{
-        border-radius: 0px 50px 50px 0px;
-      }
+    .col-sm-2.col-form-label{
+      text-align: right;
+    }
     </style>
     @yield('styles')
 

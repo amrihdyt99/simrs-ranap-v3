@@ -7,10 +7,9 @@
 <div class="row">
     <div class="col">
         <div class="table-responsive">
-            <table class="table1 table_detail_prescribe mb-3" width="100%">
+            <table class="table1 table_detail_prescribe" width="100%">
                 <thead>
                     <tr class="bg-warning text-uppercase">
-                        {{-- <th></th> --}}
                         <th class="text-center font-weight-bold">Jenis</th>
                         <th class="font-weight-bold">Kode Obat</th>
                         <th class="font-weight-bold">Nama Obat</th>
@@ -23,12 +22,12 @@
                 </thead>
                 <tbody id="table-prescribe">
                 </tbody>
-                <tfoot id="row_total_prescribe">
+                {{-- <tfoot id="row_total_prescribe">
                     <tr>
-                        <th colspan="7" class="text-right">TOTAL TARIF</th>
-                        <th colspan="1" class="text-right" id="total_tarif_prescribe" class="text-left" colspan="1">0</th>
+                        <th colspan="5">TOTAL TARIF</th>
+                        <th id="total_tarif_prescribe" class="text-left" colspan="1">-</th>
                     </tr>
-                </tfoot>
+                </tfoot> --}}
             </table>
         </div>
     </div>

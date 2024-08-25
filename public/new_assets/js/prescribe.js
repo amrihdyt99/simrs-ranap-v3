@@ -4,52 +4,31 @@ $.ajaxSetup({
     }
 });
 
-var req = '<span class="text-danger"> *<span>';
-var dataArrayTemp = []
-var dataArrayFinal = []
-
-// vendors = [{
-//     Name: 'Magenic',
-//     ID: 'ABC'
-//   },
-//   {
-//     Name: 'Microsoft',
-//     ID: 'DEF'
-//   } // and so on... 
-// ];
-
-// if (vendors.some(e => e.Name === 'Magenic')) {
-//     /* vendors contains the element we're looking for */
-//     console.log('array yes')
-// }
-
-$('body').on('click', '#prescribe-tab', function(){
-    let category = $(this).data('category')
-
-    getPrescribeFormSelect(category)
-})
-
-$('#btn-add-prescribe, #tab-prescribe').click(function(){
-    $('#modalSOAP').modal('hide')
-    $('#modalPrescribeNew').modal('show')
-    getPrescribeFormSelect('satuan')
-    orderPrescribeTemp();
+$dom = '';
+var arrayObat=[];
+$('#btn-add-prescribe').click(function(){
+    $('#modalSOAP').modal('hide');
+    $('#modalPrescribe').modal('show');
+    //integrasiObat();
 });
 
-orderPrescribe();
+$('#field_prescribe').hide();
+$('.load_prescribe').hide();
+$('#detail_prescribe').hide();
 
+//orderPrescribe();
+//orderPrescribeTemp();
 
 $('#btn-reload-prescribe').click(function(){
     orderPrescribe();
 });
 
-$("#modalPrescribeNew").on("hidden.bs.modal", function(){
+$("#modalPrescribe").on("hidden.bs.modal", function(){
     resetSelect2('#prescribe_item');
     $('#modalSOAP').modal('show');
     $('#tab-prescribe').addClass('active');
     $('#panel-prescribe').show();
 });
-
 $("#modalEditPrescribe").on("hidden.bs.modal", function(){
     resetSelect2('#prescribe_item');
     $('#modalSOAP').modal('show');
@@ -57,1028 +36,164 @@ $("#modalEditPrescribe").on("hidden.bs.modal", function(){
     $('#panel-prescribe').show();
 });
 
-function getObat($id = '', $category = ''){
-    $('#'+$id).select2({
-        minimumInputLength: 2,
-        ajax: {
-            url: $dom+'/api/getDataObat',
-            type: 'GET',
-            delay: 500,
-            data: function(params){
-                var searchData = {
-                    params: params.term
-                };
-                return searchData;
-            },
-            processResults: function(resp){
-                return {
-                    results:  $.map(resp, function (data) {
-                        return {
-                            text: data.item_id+ ' -- '+data.item_name+' (stok : '+data.total+')',
-                            id: data.item_id,
-                            'id_': data.item_id,
-                            'item_': data.item_name,
-                            'stock_': data.total,
-                            'price_': data.harga_jual,
-                            'komposisi_': data.komposisi,
-                            'sediaan_': data.dosis,
-                            'category_': $category,
-                            'satuan_dasar_': data.satuan_dasar,
-                            'satuan_dosis_': data.satuan_dosis_nama,
-                            'list_dosis_': data.listdosis
-                        }
-                    })
-                };
-            },
-        },
-    });
-}
-
-// PRESCRIBING TEMPORARY
-$(document).ready(function(){
-    getPrescribeFormSelect('satuan')
-})
-
-function getPrescribeFormSelect(category) {
-    let category_value = 1
-
-    if (category == 'satuan') {
-        category_value = 0
-    }
-
-    $('[id*="prescribe-tab"]').removeClass('active')
-    $('[id*="prescribe-tab"][data-category="'+category+'"]').addClass('active')
-
-    let form = `
-        <form id="temp-form-obat-`+category+`">
-            <input type="hidden" name="_token" value="`+$('[name="_token"]').val()+`">
-            <input type="hidden" name="prescribe_reg" value="`+$reg+`">
-            <input type="hidden" name="prescribe_flag" value="`+category_value+`">
-            <input type="hidden" name="prescribe_flag_racikan">
-            <div class="row row_header_`+category+` d-flex justify-content-end"></div>
-            <div id="row_select_prescribe"></div>
-            <button class="btn btn-success float-right" id="store-row-prescribe" data-category="`+category+`" type="button"><i class="fas fa-arrow-down"></i> Simpan ke tabel</button>
-            <button class="btn btn-secondary float-right mr-1" id="cancel-row-prescribe" data-category="`+category+`" type="button">batal</button>
-        </form>
-    `
-
-    $('#form_select_prescribe').html(form)
-    
-    getPrescribeRowSelect(null, category, 0)
-
-    if (category == 'racikan') {
-        $row_header = `
-            <div class="col-lg-2 pr-0 mb-3">
-                <label class="text-capitalize">Bentuk sediaan obat `+category+`</label>
-                <select class="form-control" name="prescribe_form" id="prescribe_item_form_`+category+`">
-                    <option val="">-- Pilih sediaan obat `+category+` --</option>
-                </select>
-            </div>
-            <div class="col-lg-2 pr-0 mb-3">
-                <label class="text-capitalize">Rute obat `+category+`</label>
-                <select class="form-control" name="prescribe_route" id="prescribe_item_route_`+category+`">
-                    <option val="">-- Pilih rute obat `+category+` --</option>
-                </select>
-            </div>
-        `
-
-        $('.row_header_'+category).html($row_header)
-
-        getPrescribeHeader(category)
-    }
-}
-
-function getPrescribeRowSelect(data, category, serial, update = 0) {
-    if (serial == 0) {
-        $('#row_select_prescribe').html('')
-    }
-    $('#add-row-prescribe').attr('data-update', '')
-
-    $div = '#row_select_prescribe'
-    if (update == 1) {
-        $div = '#row_edit_prescribe'
-        update = 1
-    }
-
-    if (!data) {
-        data = {
-            'temp_kode' : '',
-            'temp_id' : '',
-            'temp_order' : '',
-            'temp_reg' : '',
-            'temp_name' : '',
-            'temp_quantity' : '',
-            'temp_dosis' : '0',
-            'temp_hari' : 'x 1',
-            'temp_durasi_hari' : '',
-            'temp_ket_dosis' : '',
-            'temp_harga_jual' : '',
-            'temp_flag' : '',
-            'temp_flag_racikan' : '',
-            'temp_dokter' : '',
-            'temp_poli' : '',
-            'temp_deleted' : '',
-            'temp_sent' : '',
-            'temp_special_instruction' : 'Sesudah Makan, Habiskan',
-            'created_at' : '',
-            'updated_at' : '',
-            'ItemName1' : '-- Pilih nama obat --',
-            'ItemPrice' : '',
-            'ItemStock' : '',
-            'ItemUnit' : '0',
-            'ItemDosageUnit' : '',
-            'ItemBasicUnit' : '',
-            'ItemNotes' : '',
-        }
-    }
-
-    $row_prescribe = ` <div class="row row_`+category+`_`+serial+` my-3 mx-3">
-                            <div class="col-lg-12 px-0 mb-3">
-                                <label class="text-capitalize">Nama Obat `+category+`</label>
-                                <select class="form-control" name="prescribe_item[]" id="prescribe_item_`+category+`_`+serial+`" data-id="`+serial+`" onchange="prescribeItem(this.id)">
-                                    <option value="`+data.temp_kode+`">`+data.ItemName1+`</option>
-                                </select>
-                                <small id="empty_stock_prescribe_item_`+category+`_`+serial+`"></small>
-                            </div>
-                            <div class="col-lg-4"></div>
-                            <div class="col-lg-1 px-0">
-                                <label for="" class="label-admisi">Aturan Pakai `+req+`</label>
-                                <input type="number" name="prescribe_jumlah_perhari[]" value="`+parseInt(data.temp_per_hari)+`" id="prescribe_jumlah_perhari_`+category+`_`+serial+`" onkeyup="accumulateFrequency('`+category+`', '`+serial+`'); accumulateItemAmount('`+category+`', '`+serial+`')" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 3">
-                            </div>
-                            <div class="col-lg-1 px-0">
-                                <label for="" class="label-admisi">-</label>
-                                <input type="text" name="prescribe_hari[]" value="x 1" id="prescribe_hari_`+category+`_`+serial+`" onkeyup="accumulateItemAmount('`+category+`', '`+serial+`')" class="form-control no-radius mt-1" style="height: 40px;">
-                            </div>
-                            <div class="col-lg-1 px-0">
-                                <label for="" class="label-admisi">Dosis `+req+`</label>
-                                <input type="text" name="prescribe_dosis[]" value="`+data.temp_dosis+`" id="prescribe_dosis_`+category+`_`+serial+`" onkeyup="accumulateItemAmount('`+category+`', '`+serial+`')" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 250">
-                                <select name="prescribe_dosis_satuan[]" id="prescribe_satuan_dosis_`+category+`_`+serial+`" style="height: 40px;" onchange="accumulateItemAmount('`+category+`', '`+serial+`')" class="form-control no-radius">
-                                    <option value="`+data.ItemDosageUnit+`" selected>`+data.ItemDosageUnit+`</option>
-                                </select>
-                            </div>
-                            <div class="col-lg-1 px-0">
-                                <label for="" class="label-admisi">Durasi Hari `+req+`</label>
-                                <input type="number" name="prescribe_durasi_hari[]" value="`+parseInt(data.temp_durasi_hari)+`" id="prescribe_durasi_hari_`+category+`_`+serial+`" onkeyup="accumulateItemAmount('`+category+`', '`+serial+`')" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh : 5">
-                                <input type="hidden" value="`+parseFloat(data.ItemUnit)+`" id="prescribe_sediaan_`+category+`_`+serial+`" style="height: 40px;" class="form-control no-radius" placeholder="Sediaan dosis" readonly>
-                            </div>
-                            <div class="col-lg-1 px-0">
-                                <label for="" class="label-admisi">Jumlah Obat `+req+`</label>
-                                <input type="number" name="prescribe_quantity[]" value="`+Math.round(parseFloat(data.temp_quantity).toFixed(2))+`" step="any" id="prescribe_quantity_`+category+`_`+serial+`" onkeyup="accumulatePricePerItem(prescribe_harga_jual_`+category+`_`+serial+`, this.value, prescribe_item_`+category+`_`+serial+`)" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Jumlah obat">
-                                <input type="text" id="prescribe_satuan_dasar_`+category+`_`+serial+`" value="`+data.ItemBasicUnit+`" class="form-control no-radius" style="height: 40px;" placeholder="Satuan dasar" readonly>
-                            </div>
-                            <div class="col-lg-2 px-0">
-                                <label for="" class="label-admisi">Frekuensi</label>
-                                <input type="text" name="prescribe_ket_dosis[]" value="`+data.temp_ket_dosis+`" id="prescribe_ket_dosis_`+category+`_`+serial+`" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Frekuensi">
-                                <select name="prescribe_special_instruction[]" id="prescribe_special_instruction_`+category+`_`+serial+`" class="form-control no-radius" style="height: 40px;">
-                                    <option value="`+data.temp_special_instruction+`">`+data.temp_special_instruction+`</option>
-                                    <option value="Sesudah Makan, Habiskan">Sesudah Makan, Habiskan</option>
-                                    <option value="Sebelum Makan">Sebelum Makan</option>
-                                    <option value="Diminum Malam Hari">Diminum Malam Hari</option>
-                                    <option value="1 Kali Order">1 Kali Order</option>
-                                    <option value="1 Jam Sebelum Makan atau 2 Jam Sesudah Makan">1 Jam Sebelum Makan atau 2 Jam Sesudah Makan</option>
-                                    <option value="Melalui Dubur">Melalui Dubur</option>
-                                    <option value="Oleskan Tipis">Oleskan Tipis</option>
-                                    <option value="Pada Mata Kiri">Pada Mata Kiri</option>
-                                    <option value="Pada Mata Kanan">Pada Mata Kanan</option>
-                                    <option value="Pada Kedua Mata">Pada Kedua Mata</option>
-                                    <option value="Pada Telinga Kiri">Pada Telinga Kiri</option>
-                                    <option value="Pada Telinga Kanan">Pada Telinga Kanan</option>
-                                    <option value="Pada Kedua Telinga">Pada Kedua Telinga</option>
-                                    <option value="Tafering Off">Tafering Off</option>
-                                    <option value="Dibawah lidah bila nyeri dada">Dibawah lidah bila nyeri dada</option>
-                                    <option value="Saat dibutuhkan">Saat dibutuhkan</option>
-                                    <option value="Intranasal">Intranasal</option>
-                                </select>
-                            </div>
-                            <div class="col-lg-1 px-0 d-none">
-                                <label for="" class="label-admisi">Harga Satuan</label>
-                                <input type="number" readonly value="`+data.ItemPrice+`" name="prescribe_harga_awal[]" id="prescribe_harga_awal_`+category+`_`+serial+`" class="form-control no-radius mt-1" style="height: 40px;">
-                            </div>
-                            <div class="col-lg-1 px-0">
-                                <label for="" class="label-admisi ml-4 text-white">Stok</label>
-                                <div class="input-group mx-0">
-                                    <input type="hidden" name="prescribe_harga_jual[]" value="`+parseFloat(data.ItemPrice) * parseFloat(data.temp_quantity)+`" id="prescribe_harga_jual_`+category+`_`+serial+`" class="form-control no-radius mt-1" style="height: 40px;" readonly>
-                                    <input type="hidden" value="`+data.ItemStock+`" id="prescribe_stock_`+category+`_`+serial+`" class="form-control no-radius mt-1" style="height: 40px;" readonly>
-                                    <div class="input-group-append no-radius mt-1" id="add-row-prescribe" data-category="`+category+`" data-update="`+update+`">
-                                        <span class="input-group-text bg-primary text-white" style="height: 42px; cursor: pointer"><i class="fas fa-plus"></i></span>
-                                    </div>
-                                    <div class="input-group-append no-radius mt-1" id="remove-row-prescribe" data-category="`+category+`" data-serial="`+serial+`">
-                                        <span class="input-group-text bg-danger text-white" style="height: 42px; cursor: pointer"><i class="fas fa-times"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`
-                                
-            $($div).append($row_prescribe)
-    
-            getObat('prescribe_item_'+category+'_'+serial, category)
-
-            $(`#prescribe_special_instruction_`+category+`_`+serial).select2({
-                tags: true,
-            })
-}
-
-function getPrescribeHeader(category, data = '') {
-    var baseurl = 'http://rsud.sumselprov.go.id/farmasi/web-apis/';
-
-    var med_form = baseurl + 'data-induk/select2/bentukan-sediaan';
-
-    $('[id*="prescribe_item_form_'+category+'"]').select2({width:'100%',ajax:{delay:0,url:med_form,dataType:'json'}});
-
-    var med_route = baseurl + 'data-induk/select2/medication-route';
-
-   $('[id*="prescribe_item_route_'+category+'"]').select2({width:'100%',ajax:{delay:0,url:med_route,dataType:'json'}});
-
-   if (data.length > 0) {
-        form_ = data[0].temp_form ?? data[0].prescribe_form
-        route_ = data[0].temp_route ?? data[0].prescribe_route
-
-        $('[id*="prescribe_item_form_'+category+'"]').html('<option value="'+form_+'">'+form_+'</option>')
-        $('[id*="prescribe_item_route_'+category+'"]').html('<option value="'+route_+'">'+route_+'</option>')
-   }
-}
-
-function accumulateItemAmount(category, serial) {
-    let amount_per_day = parseFloat($('[id="prescribe_jumlah_perhari_'+category+'_'+serial+'"]').val())
-    let amount_day = parseInt($('[id="prescribe_durasi_hari_'+category+'_'+serial+'"]').val())
-    let frequency_day = parseInt($('[id="prescribe_hari_'+category+'_'+serial+'"]').val().split("x").pop())
-    let dosage = parseFloat($('[id="prescribe_dosis_'+category+'_'+serial+'"]').val())
-    let dosage_unit = $('[id="prescribe_satuan_dosis_'+category+'_'+serial+'"]').find(':selected').val()
-    let dosage_base_unit = $('[id="prescribe_satuan_dasar_'+category+'_'+serial+'"]').val()
-    let prep = $('[id="prescribe_sediaan_'+category+'_'+serial+'"]').val()
-    // let stock = $('#prescribe_stock_'+category+'_'+serial).val()
-    let amount_item = 0
-    let basic_price = parseFloat($('[id="prescribe_harga_awal_'+category+'_'+serial+'"]').val())
-
-    if (dosage_base_unit.toLowerCase().includes('botol')) {
-        $dosage_per_day = dosage * amount_per_day
-        $total_dosage = $dosage_per_day * amount_day
-        amount_item = $total_dosage / dosage_base_unit.match(/\d+/)[0]
-    } else {
-        if (isNaN(amount_per_day) || isNaN(amount_day)) {
-            // alert('Aturan pakai perhari dan durasi hari harus diisi')
-            $('[id="prescribe_quantity_'+category+'_'+serial+'"]').val('')
-        } else {
-            if (dosage_unit.includes('mg')) {
-                $dosage_per_day = amount_per_day * dosage
-                $dosage_total = $dosage_per_day * amount_day
-                amount_item = $dosage_total / prep
-            } else {
-                $amout_per_day = amount_per_day * dosage
-                amount_item = $amout_per_day * amount_day
-
-                console.log(amount_per_day)
-                console.log(dosage)
-                console.log($amout_per_day)
-                console.log(amount_item)
-            }
-
-            amount_item = parseFloat(amount_item).toFixed(2)
-
-            // if (category == 'racikan') {
-            // }
-
-            // if (amount_item > stock) {
-            //     amount_item = ''
-            //     alert('Jumlah obat tidak boleh melebihi stock yang tersedia : '+stock)
-            // }
-
-        }
-    }
-
-    $('[id="prescribe_quantity_'+category+'_'+serial+'"]').val(parseFloat(amount_item).toFixed(2))
-    $('[id="prescribe_harga_jual_'+category+'_'+serial+'"]').val(parseFloat(amount_item).toFixed(2) * basic_price)
-}
-
-function accumulateFrequency(category, serial) {
-    let amount_per_day = parseFloat($('#prescribe_jumlah_perhari_'+category+'_'+serial).val())
-    let frequency = 24 / amount_per_day
-
-    if (isNaN(frequency)) {
-        $('#prescribe_ket_dosis_'+category+'_'+serial).val('')
-    } else {
-        $('#prescribe_ket_dosis_'+category+'_'+serial).val('setiap '+frequency+' jam sekali')
-    }
-}
-
-$('body').on('click', '#add-row-prescribe', function(){
-    let category = $(this).data('category')
-    let serial = Math.random().toString(36).slice(2, 7) //generate random character
-    let update = $(this).data('update')
-
-    data = ''
-    if (category == 'racikan') {
-        data = {
-            'temp_kode' : '',
-            'temp_id' : '',
-            'temp_order' : '',
-            'temp_reg' : '',
-            'temp_name' : '',
-            'temp_quantity' : '',
-            'temp_dosis' : '0',
-            'temp_hari': $('[id*="prescribe_jumlah_perhari_racikan_"]').val(),
-            'temp_durasi_hari': $('[id*="prescribe_durasi_hari_racikan_"]').val(),
-            'temp_ket_dosis': $('[id*="prescribe_ket_dosis_racikan_"]').val(),
-            'temp_harga_jual' : '',
-            'temp_flag' : '',
-            'temp_flag_racikan' : '',
-            'temp_dokter' : '',
-            'temp_poli' : '',
-            'temp_deleted' : '',
-            'temp_sent' : '',
-            'temp_special_instruction': $('[id*="prescribe_special_instruction_racikan"]').val(),
-            'created_at' : '',
-            'updated_at' : '',
-            'ItemName1' : '-- Pilih nama obat --',
-            'ItemPrice' : '',
-            'ItemStock' : '',
-            'ItemUnit' : '0',
-            'ItemDosageUnit' : '',
-            'ItemBasicUnit' : '',
-            'ItemNotes' : '',
-        }
-    }
-
-    getPrescribeRowSelect(data, category, serial, update)
-})
-
-$('body').on('click', '#remove-row-prescribe', function(){
-    let category = $(this).data('category')
-    let serial = $(this).data('serial')
-    let count = $('[class*="row_'+category+'_"]').length
-
-    if (confirm('Hapus item obat ini ?')) {
-        if (count < 2) {
-            // remove value if there's only 1 row
-            $('.row_'+category+'_'+serial+' input').val('')
-            $('#prescribe_item_'+category+'_'+serial).val(null).trigger('change')
-        } else {
-            $('.row_'+category+'_'+serial).remove()
-        }
-    }
-})
-
-$('.prescribe-temp-loading').hide();
-$('body').on('click', '#store-row-prescribe', function(){
-    $category = $(this).data('category');
-
+function integrasiObat(){
+    var nyaa_namaobat=$('#x_nama_obat_cari').val();
+    // var nyaa_namaasal='ranap';
+    var nyaa_namaasal='rajal';
     $.ajax({
-        url: $dom+'/api/orderobatnew',
-        type: 'POST',
-        dataType: 'json',
-        data: $('#temp-form-obat-'+$category).serialize()+
-                `&id_cppt=`+$('[id="soapdok_id"]').val()+
-                `&dokter_order=`+$user_dokter_+
-                `&service_unit=`+$service_unit
-                ,
-        success: function(resp){
-            if (resp.success) {
-                orderPrescribeTemp();
-                getPrescribeFormSelect($category)
-            } else if (!resp.success) {
-                alert('Item/dosis/durasi hari/jumlah obat tidak boleh kosong');
-            }
-        },
-        error: function(){
-            alert('Gagal menyimpan data, mohon hubungi tim Administrator');
-        }
-    });
-
-});
-
-function orderPrescribeTemp(){
-    $('#t_harga_prescribe').val('')
-    $('#sub_harga_prescribe').val('')
-
-    var sum_temp = 0
-    
-    $.ajax({
-        url: $dom+'/api/getorderobatnew',
+        url: 'http://rsud.sumselprov.go.id/farmasi/web-apis/get-stokdepo?akseskunci=229470a5-fe98-479e-ba3f-5c5b8eec7c88&location='+nyaa_namaasal+'&limit=100&keyword='+encodeURIComponent(nyaa_namaobat),
         type: 'GET',
         dataType: 'json',
-        data: {
-            reg_no: $reg,
-            dokter: $user_dokter_,
-            type: 'temp',
+        beforeSend: function(){
+            $('body').find('.text-load').text('Memuat data obat ...');
         },
         success: function(resp){
-            $('.row_prescribe_temp').remove()
-            $('[id="table-row-prescribe"]').html('')
+            $('body').find('.text-load').text('');
+
+            // RESET UWU
+            $('#pilihObat').html('');
+            arrayObat=[];
 
             if (resp.data.length > 0) {
-                dataArrayTemp = []
-
                 $.each(resp.data, function(i, data){
-                    $bg = 'warning'
-                    $flag_temp = ''
-                    $flag = data.flag
-
-                    if (data.flag == 1) {
-                        $jenis_resep = 'racikan'
-                    } else {
-                        $jenis_resep = 'satuan'
-                    }
-                    
-                    if ($jenis_resep == 'racikan') {
-                        $bg = 'info';
-                        $flag_temp = `(ke `+data.flag_racikan+`)`
-                        $flag = data.flag_racikan   
-                    }
-
-                    $row_temp_flag =  `<tr class="tr_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                <td class="text-center text-uppercase cat_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                    <span class="btn btn-warning btn-sm ml-1" id="btn-edit-row-temp" title="Edit row obat" data-id="`+$flag+`" data-category="`+$jenis_resep+`">
-                                                        <i class="fas fa-edit" style="font-size: 12px"></i> Edit
-                                                    </span>
-                                                </td>
-                                                <td class="bg-`+$bg+` text-dark text-center text-uppercase cat_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                    <b>OBAT<br>`+$jenis_resep+`</br>
-                                                    `+$flag_temp+`<br>
-                                                </td>
-                                            </tr>`;
-                    
-                    $('[id="table-row-prescribe"]').append($row_temp_flag);
-
-                    $.each(data.obat, function(i, item){
-                        dataArrayTemp.push(item)
-
-                        $row_prescribe_temp_obat = `<tr class="tr_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                        <td>`+item.item_code+`</td>
-                                                        <td>
-                                                            `+item.item_name+`
-                                                            <span type="button" class="float-right text-danger mr-1" title="Hapus Item Obat" id="btn-delete-row-temp" data-id="`+item.id+`"><i class="fas fa-trash"></i></span>
-                                                        </td>
-                                                        <td>`+item.qty+`</td>
-                                                        <td class="text-right">Rp. `+formatNumber(parseFloat(parseFloat(item.harga_awal) * parseFloat(item.qty)).toFixed(2))+`</td>
-                                                        <td>dosis `+item.dosis+`; `+item.jumlah_perhari+` `+item.hari+' '+item.ket_dosis+', selama '+item.durasi_hari+` hari</td>
-                                                        <td></td>
-                                                    </tr>`;
-                                                    
-                        $('[id="table-row-prescribe"]').append($row_prescribe_temp_obat);
-                        
-                        if (item.harga_awal != 0) {
-                            sum_temp += parseFloat(item.harga_awal * item.qty)
-                        }
-                    });
-
-                    $temp_price = formatNumber(parseFloat(sum_temp).toFixed(2))
-                    $('#sub_harga_prescribe').text($temp_price)
-
-                    var rowCountPrescribe = $('.table_detail_order .tr_'+$jenis_resep+'_'+data.flag_racikan).length;
-                    
-                    $('.cat_'+$jenis_resep+'_'+data.flag_racikan).attr('rowspan', rowCountPrescribe);
+                    // console.log(data)
+                    arrayObat.push(data)
+                    // $opt_obat = '<option value="'+data.item_id+'" >'+data.item_id+' - '+data.item_name+'</option>';
+                    $opt_obat = `<option value="${data.item_id}">${data.item_name} - [Stok: ${Number(data.total)-0} ${data.satuan_dasar}] - Rp${Math.ceil(Number(data.harga_jual))}@${data.satuan_dasar}</option>`;
+                    $('#pilihObat').append($opt_obat);
                 });
             } else {
-                $('[id="table-row-prescribe"]').html(`
-                    <tr>
-                        <td class="text-center" colspan="7">Tidak ada data</td>
-                    </tr>    
-                `)
+                $('##pilihObat').append('<option>Tidak ada data</option>');
             }
-        }, error: function(){
-            console.log(error);
+            $('#total_prescribe').text(resp.length);
+            //templateRowPrescribeTemp(null, 'row_racikan', );
+            //templateRowPrescribeTemp(null, 'row_satuan', 'satuan');
         }
     });
-    
 }
 
-$('body').on('click', '#btn-edit-row-temp', function(){
-    $id = $(this).data('id')
-    $category = $(this).data('category')
+function getObat($id = '', $category = ''){
 
-    $('[id*="prescribe-tab"]').removeClass('active')
-    $('[id*="prescribe-tab"][data-category="'+$category+'"]').addClass('active')
-
-    $('[name="prescribe_flag_racikan"]').val(0)
-    $('[name="prescribe_flag"]').val(0)
-
-    $('.row_header_satuan').html('')
-
-    if ($category == 'racikan') {
-        $('[name="prescribe_flag_racikan"]').val($id)
-        $('[name="prescribe_flag"]').val(1)
-    }
-
-    $('a[id*="-tab"]').removeClass('active')
-    $('div[aria-labelledby*="-tab"]').removeClass('active show')
-    
-    $('#'+$category+'-tab').addClass('active')
-    $('div[aria-labelledby*="'+$category+'-tab"]').addClass('active show')
-
-    $('body, html, #modalPrescribeNew').scrollTop(0);
-    
-    prescribe_ = []
-
-    var sum_temp = 0
-
-    $.ajax({
-        url: $dom+'/api/getorderobatnew',
+    /*$.ajax({
+        url: 'http://rsud.sumselprov.go.id/farmasi/web-apis/get-stokdepo?akseskunci=229470a5-fe98-479e-ba3f-5c5b8eec7c88&location=ranap&debug=true',
         type: 'GET',
         dataType: 'json',
-        data: {
-            dokter: $user_dokter_,
-            type: 'temp',
-            reg_no: $reg,
-            params: [
-                {key: $category == 'satuan' ? 'flag' : 'flag_racikan', value: $id}
-            ]
-        },
         success: function(resp){
-
-            $('#row_select_prescribe').html('')
-
+            //console.log(resp)
+            $('#field_prescribe').show();
             if (resp.data.length > 0) {
-                $.each(resp.data[0].obat, function(i, data){
-                    if (i == 0 && data.temp_flag == 0) {
-                        $no_ = 0
-                    } else {
-                        $no_ = data.temp_id
-                    }
-
-                    prescribe_.push({
-                        'id' : 'prescribe_item_'+$category+'_'+$no_,
-                        'kode' : data.temp_kode,
-                        'item' : data.ItemName1,
-                        'price' : parseFloat(data.ItemPrice).toFixed(2),
-                        'price_sub' : parseFloat(data.temp_harga_jual).toFixed(2),
-                        'qty' : parseFloat(data.temp_quantity),
-                        'category' : $category,
-                    });
-
-                    sum_temp += parseFloat(data.temp_harga_jual)
-
-                    // var objIndex = resp.findIndex(x => x.temp_id === data.temp_id)
-
-                    // resp[objIndex].temp_harga_jual = data.ItemPrice
-
-                    getPrescribeRowSelect(data, $category, data.temp_id)
-
-                    $('[name="prescribe_catatan_dokter"]').text(data.temp_catatan_dokter)
-                })
-
-                if ($category == 'racikan') {
-                    $row_header = `
-                        <div class="col-lg-2 pr-0 mb-3">
-                            <label class="text-capitalize">Bentuk sediaan obat `+$category+`</label>
-                            <select class="form-control" name="prescribe_form" id="prescribe_item_form_`+$category+`">
-                                <option val="">-- Pilih sediaan obat `+$category+` --</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 pr-0 mb-3">
-                            <label class="text-capitalize">Rute obat `+$category+`</label>
-                            <select class="form-control" name="prescribe_route" id="prescribe_item_route_`+$category+`">
-                                <option val="">-- Pilih rute obat `+$category+` --</option>
-                            </select>
-                        </div>
-                    `
-
-                    $('.row_header_satuan').html($row_header)
-
-                    getPrescribeHeader($category, resp)
-                }
-
-                $('#sub_harga_prescribe').text(parseFloat($('#sub_harga_prescribe').text()) - sum_temp)
+                $.each(resp.data, function(i, data){
+                    $opt_obat = '<option value="'+data.item_id+'" data-id="'+data.item_id+'" data-item="'+data.item_name+'" data-stock="'+data.total+'" data-price="'+data.harga_jual+'" data-category="'+$category+'">'+data.item_id+' - '+data.item_name+'</option>';
+                    $('#'+$id).append($opt_obat);
+                });
+            } else {
+                $('#'+$id).append('<option>Tidak ada data</option>');
             }
+            $('#total_prescribe').text(resp.length);
+        },
+        error: function(){
+            alert('Gagal menampilkan data obat, mohon refresh')
         }
-    });
-});
-
-$('body').on('click', '[id="btn-delete-row-temp"]', function(){
-    $id = $(this).data('id');
-
-    if (confirm('Apakah anda yakin akan mengahapus item obat ini ?')) {
-        $.ajax({
-            url: $dom+'/api/deleteOrderobat',
-            type: 'post',
-            dataType: 'json',
-            data: {
-                _token: $('[name="_token"]').val(),
-                data_id: $id,
-                deleted_by: $user_,
-            },
-            success: function(resp){
-                if (resp.code != 200) {
-                    alert(resp.msg)
-                } else {
-                    orderPrescribeTemp()
-                }
-            },
-            error: function(){
-                alert('Gagal mengapus data, mohon hubungi tim IT');
-            }
-        });
-    }
-
-});
-
-$('body').on('click', '#remove-row-racikan', function(){
-    $id = $(this).data('id');
-    $id_row = 'prescribe_item_'+$id
-
-    $('.row_racikan_'+$id).remove();
-
-    prescribe_ = $.grep(prescribe_, function(item) {
-        return item.id !== $id_row;
-    })
-
-    $('#t_harga_prescribe').val(sumPrice(prescribe_, '#f_harga_prescribe'))
-});
-
-$('body').on('click', '#cancel-row-prescribe', function(){
-    $category = $(this).data('category');
-
-    prescribe_ = $.grep(prescribe_, function(item) {
-        if ($category == 'satuan') {
-            return item.category !== $category;
-        } else {
-            return item.category !== '';
-        }
-    })
-
-    $('#t_harga_prescribe').val(sumPrice(prescribe_, '#f_harga_prescribe'))
-
-    $('#f_harga_prescribe').html('')
-
-    orderPrescribeTemp()
-    
-    getPrescribeFormSelect($category)
-});
-
-// CONFIG PANEL PRESCRIBE
-var prescribe_ = []
-function prescribeItem($id = ''){
-    $('#'+$id).on('select2:select', function (e) {
-        var selectedOption = e.params.data;
-        
-        var $kode = selectedOption.id_;
-        var $item = selectedOption.item_;
-        var $stock = selectedOption.stock_;
-        var $price = selectedOption.price_;
-        var $komposisi = selectedOption.komposisi_;
-        var $sediaan = selectedOption.sediaan_;
-        var $category = selectedOption.category_;
-        var $satuan_dasar = selectedOption.satuan_dasar_;
-        var $satuan_dosis = selectedOption.satuan_dosis_;
-        var $list_dosis = selectedOption.list_dosis_;
-
-        let serial = $('#'+$id).data('id');
-
-        // if ($id == 'prescribe_item_'+$category) {
-        //     var num = '';
-        //     var $rows = '.row'
-        // } else {
-            //     var $rows = '.row[data-id="'+num+'"]'
-            //     var num = $('#'+$id).data('id');
-        // }
-        // $idx_kode = prescribe_.findIndex(x => x.kode === $kode)<0
-        // $idx_category = prescribe_.findIndex(x => x.category === $category)<0
-        // $idx_id = prescribe_.findIndex(x => x.id === $id)<0
-
-        $('#t_komposisi').html('')
-
-        if ($stock < 1) {
-            $('#empty_stock_prescribe_item_'+$category+'_'+serial).html('<span class="text-danger">Stok obat ini kosong, mohon konfirmasi ke bagian farmasi untuk pendistribusian obat tersebut</span>')
-            
-            $empty_field = $('.row_'+$category+'_'+serial+' input:not(#prescribe_hari_'+$category+'_'+serial+')').not(':last').not(':gt(-3)').attr('readonly', true)
-            if ($category == 'satuan') {
-                $empty_field.val('')
-            }
-
-            $('[class*="input-group-append"] span').hide()
-            $('[id="store-row-prescribe"]').hide()
-            
-            return false
-        } else {
-            $('#empty_stock_prescribe_item_'+$category+'_'+serial).html('')
-
-            $empty_field = $('.row_'+$category+'_'+serial+' input:not(#prescribe_hari_'+$category+'_'+serial+')').not(':last').not(':gt(-3)').attr('readonly', false)
-
-            // $('[name="prescribe_dosis_satuan[]"]').attr('readonly', true)
-            $('[id*="prescribe_satuan_dasar"]').attr('readonly', true)
-
-            if ($category == 'satuan') {
-                $empty_field.val('')
-            }
-
-            $('[class*="input-group-append"] span').show()
-            $('[id="store-row-prescribe"]').show()
-
-            $('[id="r_list_dosis_'+$category+'_'+serial+'"]').remove()
-            $.each($list_dosis, function(i, data){
-                $selected_ = ''
-                if (i == 0) {
-                    $selected_ = 'selected' 
-                }
-                
-                $('#prescribe_satuan_dosis_'+$category+'_'+serial)
-                        .append(`<option 
-                                    id="r_list_dosis_`+$category+`_`+serial+`" 
-                                    value="`+data.satuan_kode+`" 
-                                    data-value="`+data.satuan_angka+`"
-                                    `+$selected_+`>`+data.satuan_nama+`
-                                </option>`)
-            })
-
-            $('#prescribe_satuan_dasar_'+$category+'_'+serial+'').val($satuan_dasar)
-            $('#prescribe_sediaan_'+$category+'_'+serial+'').val($sediaan)
-
-            if ($komposisi.length > 0) {
-                $('#modalPrescribeKomposisi').modal('show')
-
-                $.each($komposisi, function(i, komposisi) {
-                    $tr_komposisi = `
-                        <tr>
-                            <td>`+komposisi.komposisi_nama+`</td>
-                            <td>`+komposisi.nilai_komposisi+`</td>
-                            <td>`+komposisi.komposisi_satuan_kode+`</td>
-                            <td>`+komposisi.komposisi_satuan_nama+`</td>
-                        </tr>
-                    `
-    
-                    $('#t_komposisi').append($tr_komposisi)
-                })
-            }
-            
-            prescribe_ = $.grep(prescribe_, function(item) {
-                return item.id !== $id;
-            })
-
-            prescribe_.push({
-                'id' : $id,
-                'kode' : $kode,
-                'item' : $item,
-                'price' : parseFloat($price),
-                'qty' : 1,
-                'category' : $category,
-            });
-            
-            $('#t_harga_prescribe').val(sumPrice(prescribe_, '#f_harga_prescribe'))
-    
-            $('body #prescribe_harga_awal_'+$category+'_'+serial).val(parseFloat($price).toFixed(2));
-            $('body #prescribe_stock_'+$category+'_'+serial).val($stock);
-        }
-    }); 
+    });*/
 }
-
-function sumPrice(array, element = '') {
-    var sum = 0;//Initial value hast to be 0
-    var prevPrice = parseFloat($('#sub_harga_prescribe').text())
-    var totPrice = parseFloat($('#total_tarif_prescribe').text())
-
-    $.each(array, function(key, value) {
-        var number = parseFloat(value.price);//Convert to numbers with parseFloat
-        sum += number * value.qty;//Sum the numbers
-    });
-
-    if (element) {
-        if (sum + prevPrice + totPrice > 70000 && $cara_bayar != 'Personal') {
-            $(element).html('<span class="badge badge-warning">Melebihi batas maksimal @Rp70.000</span>')
-            // $('[id*="store-row-prescribe"]').hide()
-        } else {
-            $(element).html('')
-            // $('[id*="store-row-prescribe"]').show()
-        }
-    }
-    
-    return parseFloat(sum + prevPrice + totPrice).toFixed(2)
-}
-
-function accumulatePricePerItem(elm, value, id) {
-    $price = parseFloat($(elm).val())
-
-    var objIndex = prescribe_.findIndex(x => x.id === $(id).attr('id'))
-
-    prescribe_[objIndex].qty = parseFloat(value)
-
-    $mainPrice = prescribe_[objIndex].price
-    $qty = prescribe_[objIndex].qty
-
-    if (value != '') {
-        $total_price = $mainPrice * $qty;
-    } else {
-        $total_price = $mainPrice
-    }
-
-    $(elm).val($total_price)
-
-    $('#t_harga_prescribe').val(sumPrice(prescribe_, '#f_harga_prescribe'))
-}
-
-// PROCESS PANEL PRESCRIBE
-$('[class*="prescribe-loading"]').hide();
-$('#send-row-prescribe').click(function(){
-    if (confirm('Kirim ke farmasi sekarang ?')) {
-        $('[class*="prescribe-loading"]').show();
-        $(this).hide();
-
-        $.ajax({
-            url: $dom+'/api/storeFinalOrder',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                _token: $('[name="_token"]').val(),
-                medrec: $medrec,
-                reg: $reg,
-                id_cppt: $id_cppt,
-                dokter: $user_dokter_,
-                service_unit: $service_unit,
-                catatan_dokter: $('[name="prescribe_catatan_dokter"]').val(),
-                data: JSON.stringify(dataArrayTemp)
-            },
-            success: function(resp){
-                $('[class*="prescribe-loading"]').hide();
-                $('#send-row-prescribe').show();
-                if (resp.code == 200) {
-                    $('#modalPrescribeNew').modal('hide');
-                    orderPrescribe();
-                    orderPrescribeTemp();
-                    // getResume();
-                } else if (resp.code == 404) {
-                    alert(resp.msg)
-                } else {
-                    alert(resp.msg ?? resp.pesan)
-                    orderPrescribeTemp()
-                }
-            },
-            error: function(){
-                alert('Gagal menyimpan data, mohon hubungi tim Administrator');
-            }
-        });
-
-		$('#sub_harga_prescribe').text(0)
-    }
-});
 
 function orderPrescribe(){
-    var sum_satuan = 0
-    var sum_racikan = 0
-
     $.ajax({
-        url: $dom+'/api/getorderobatnew',
+        url: $dom+'/auth/api/prescribe/data_order_satuan/'+$subs,
         type: 'GET',
         dataType: 'json',
-        data: {
-            reg_no: $reg,
-            type: 'final',
+        beforeSend: function(){
+            $('#table-prescribe').html('');
         },
         success: function(resp){
             if (Object.keys(resp).length>0) {
-                $('#table-prescribe').html('')
-                
                 $.each(resp, function(i, data){
+
                     $bg = 'bg-warning';
 
-                    $row_span = ''
-
-                    $count_header = $('[id*="prescribe_header"][data-no="'+data.order_no+'"]').length
-
-                    $status_proses = data.proses_by != '' ? 'Belum diproses' : ''
-                    
-                    if ($count_header < 1) {
-                        $row_span = `<td class="`+$bg+` text-dark text-uppercase prescribe_header" colspan="8" data-no="`+data.orrder_no+`" width="50px">
-                                        No. Order : <b>`+data.order_no+`</b> |
-                                        Jam. Order : <b>`+data.waktu_order+`</b> |
-                                        Status : <b>`+$status_proses+`</b>
-                                    </td>`;
+                    if (i == 0) {
+                        $row_span = '<td class="text-center '+$bg+' text-dark text-uppercase prescribe_satuan_"><b>OBAT<br>SATUAN</b></td>';
+                        $row_button = '<td class="prescribe_satuan_ text-center">'+
+                                            '<button type="button" class="btn btn-warning btn-sm ml-1" id="btn-edit-row-prescribe" data-id="'+data.prescribe_flag_racikan+'" data-category="satuan" data-order="'+data.prescribe_order_code+'"><i class="fas fa-edit" style="font-size: 12px"></i> Edit</button>'+
+                                        '</td>';
+                    } else {
+                        $row_span = '';
+                        $row_button = '';
                     }
-                                                    
-                    $('#table-prescribe').append($row_span);
 
-                    $.each(data.job_order_dt, function(i_sub, sub_data){
-                        $flag = 'Racikan ke '+sub_data.temp_flag_racikan
-                        $first_data = ''
-                        $bg = '#87ff5e'
+                    $row_prescribe_satuan = '<tr class="prescribe_satuan">'+
+                                                        $row_span+
+                                                        '<td>'+data.prescribe_item+'</td>'+
+                                                        '<td>'+data.ItemName1+'</td>'+
+                                                        '<td>'+data.prescribe_qty+'</td>'+
+                                                        '<td>'+data.prescribe_dosage+'</td>'+
+                                                        '<td>'+data.prescribe_frequency+' selama '+data.prescribe_duration+' hari</td>'+
+                                                        '<td>'+condition(data.prescribe_instruction)+'</td>'+
+                                                        $row_button+
+                                                    '</tr>';
 
-                        if (sub_data.temp_flag == 0) {
-                            $flag = 'Satuan'
-                            $bg = '#5eeaff'
-                        }
+                    $('#table-prescribe').append($row_prescribe_satuan);
 
-                        $row_button = `<span type="button" class="badge badge-warning btn-sm" id="btn-edit-row-prescribe" data-id="`+sub_data.temp_flag_racikan+`" data-category="`+$flag+`" data-order="`+data.order_no+`"><i class="fas fa-edit" style="font-size: 12px"></i> Edit</span>
-                                        <span type="button" class="badge badge-warning prescribe-loading-2" disabled data-id="`+sub_data.temp_flag_racikan+`" data-category="`+$flag+`" data-order="`+data.order_no+`"><i class="fas fa-spinner fa-spin"></i> Mohon tunggu...</span>`;
-
-                        $count_data = $('tr[data-no="'+data.order_no+'_'+sub_data.temp_flag+`_`+sub_data.temp_flag_racikan+'"]').length
-
-                        if ($count_data < 1) {
-                            $first_data = `<td style="background-color: `+$bg+`" data-no="`+data.order_no+'_'+sub_data.temp_flag+`_`+sub_data.temp_flag_racikan+`">
-                                                <b>`+$flag+`</b><br>
-                                                `+$row_button+`
-                                            </td>`
-                        }
-
-                        $tr_data = `
-                            <tr data-no="`+data.order_no+'_'+sub_data.temp_flag+`_`+sub_data.temp_flag_racikan+`">
-                                `+$first_data+`
-                                <td>`+sub_data.item_code+`</td>
-                                <td>`+sub_data.item.item_name+`</td>
-                                <td>`+sub_data.quantity+`</td>
-                                <td>`+sub_data.dosis+`</td>
-                                <td>`+sub_data.ket_dosis+`</td>
-                                <td>`+sub_data.hari+` setiap `+sub_data.spesial_instruksi+` selama `+sub_data.durasi_hari+` hari</td>
-                            </tr>
-                        `
-
-                        $('#table-prescribe').append($tr_data);
-
-                        sum_satuan += parseFloat(sub_data.harga_jual) * sub_data.quantity
-                    })
-
-
-                    $('#total_tarif_prescribe').text('Rp. '+formatNumber(parseFloat(sum_satuan).toFixed(2)))
-
-                    const result = data.job_order_dt.reduce((acc, order) => {
-                        const { temp_flag, temp_flag_racikan } = order;
-                        const key = `${temp_flag}_${temp_flag_racikan}`;
-                        
-                        if (!acc[key]) {
-                          acc[key] = 0;
-                        }
-                        
-                        acc[key]++;
-                        
-                        return acc;
-                      }, {});
-                    
-                    const resultArray = Object.keys(result).map(key => ({
-                        key,
-                        value: result[key]
-                      }));
-
-                    $.each(resultArray, function(i_rws, data_rws){
-                        $('td[data-no="'+data.order_no+'_'+data_rws.key+'"]').attr('rowspan', data_rws.value)
-                    })
                 });
 
-                $('body #table-prescribe tr:first-child').css({
-                    'background-color': '#ee5b5b',
-                })
-                $('body #table-prescribe tr:first-child td:not(:first-child)').css({
-                    'background-color': 'white',
-                })
+                var rowCountSatuan = $('.table_detail_prescribe .prescribe_satuan').length;
+                $('.prescribe_satuan_').attr('rowspan', rowCountSatuan);
 
-                $('.prescribe-loading-2').hide()
+            }
+        }, error: function(){
+            console.log(error);
+        }
+    });
 
-                // $.ajax({
-                //     url: $dom+'/auth/api/prescribe/data_order_racikan/'+r_space($reg),
-                //     type: 'GET',
-                //     dataType: 'json',
-                //     success: function(resp){
-                //         if (Object.keys(resp).length>0) {
-                //             $.each(resp, function(i, data){
-                                
-                //                 $bg = 'bg-info';
-                                
-                //                 if (i == 0) {
-                //                     $row_span = '<td class="text-center text-uppercase prescribe_racikan"><b>OBAT<br>RACIKAN</br></td>';
-                //                 } else {
-                //                     $row_span = '';
-                //                 }
-            
-                //                 $row_prescribe =   `<tr class="bg-info text-dark prescribe_racikan">
-                //                                         `+$row_span+`
-                //                                         <td colspan="6">
-                //                                             <b>Racikan `+data.flag_racikan+ `</b>
-                //                                         </td>
-                //                                         <td class="text-center">
-                //                                             <button type="button" data-category="racikan" class="btn btn-warning btn-sm" data-id="`+data.flag_racikan+`" data-order="`+data['obat'][0]['prescribe_order_code']+`" id="btn-edit-row-prescribe"><i class="fas fa-edit" style="font-size: 12px"></i> Edit</button>
-                //                                             <button class="btn btn-warning float-right prescribe-loading-2" disabled type="button" data-id="`+data.flag_racikan+`" data-category="racikan" data-order="`+data['obat'][0]['prescribe_order_code']+`"><i class="fas fa-spinner fa-spin"></i> Mohon tunggu...</button>
-                //                                         </td>
-                //                                     </tr>`
-                                
-                //                 $('#table-prescribe').append($row_prescribe);
-            
-                //                 $.each(data.obat, function(i, item){
-                //                     $row_prescribe_obat = `<tr class="prescribe_racikan">
-                //                                                     <td>`+item.prescribe_item+`</td>
-                //                                                     <td>`+item.ItemName1+`</td>
-                //                                                     <td>`+item.prescribe_qty+`</td>
-                //                                                     <td>`+item.prescribe_dosage+`</td>
-                //                                                     <td>`+item.prescribe_frequency+` selama `+item.prescribe_duration+` hari</td>
-                //                                                     <td>`+condition(item.prescribe_instruction)+`</td>
-                //                                                 </tr>`;
-                                                                
-                //                     $('#table-prescribe').append($row_prescribe_obat);
-            
-                //                     sum_racikan += parseFloat(item.prescribe_price)
-                //                 });
-            
-                //             });
-            
-                //             $racikan_price = parseFloat($('#total_tarif_prescribe').text()) + parseFloat(sum_racikan)
-                //             $('#total_tarif_prescribe').text($racikan_price.toFixed(2))
-                            
-                //             var rowCountrRacikan = $('#table-prescribe .prescribe_racikan').length;
-                //             // alert(rowCountrRacikan)
-                //             $('.prescribe_racikan').attr('rowspan', rowCountrRacikan);
-                //             $('#first_row_prescribe').attr('rowspan', parseInt($('#first_row_prescribe').attr('rowspan')) + rowCountrRacikan);
-            
-                //             $('.prescribe-loading-2').hide()
-            
-                //         }
-                //     }, error: function(){
-                //         console.log(error);
-                //     }
-                // });
+    $.ajax({
+        url: $dom+'/auth/api/prescribe/data_order_racikan/'+$subs,
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function(){
+            $('#table-prescribe').html('');
+        },
+        success: function(resp){
+            if (Object.keys(resp).length>0) {
+                $.each(resp, function(i, data){
+
+                    $bg = 'bg-info';
+
+                    if (i == 0) {
+                        $row_span = '<td class="text-center text-uppercase prescribe_racikan"><b>OBAT<br>RACIKAN</br></td>';
+                    } else {
+                        $row_span = '';
+                    }
+
+                    $row_prescribe =   '<tr class="bg-info text-dark prescribe_racikan">'+
+                                            $row_span+
+                                            '<td colspan="6">'+
+                                                '<b>Racikan '+data.flag_racikan+ '</b> ( '+data.dosis+', '+data.hari+' selama '+data.durasi_hari+' hari )'+
+                                            '</td>'+
+                                            '<td class="text-center">'+
+                                                '<button type="button" data-category="satuan" class="btn btn-warning btn-sm" data-id="'+data.flag_racikan+'" data-order="'+data['obat'][0]['prescribe_order_code']+'" id="btn-edit-row-prescribe"><i class="fas fa-edit" style="font-size: 12px"></i> Edit</button>'+
+                                            '</td>'+
+                                        '</tr>';
+
+                    $('#table-prescribe').append($row_prescribe);
+
+                    $.each(data.obat, function(i, item){
+                        $row_prescribe_obat = '<tr class="prescribe_racikan">'+
+                                                        '<td>'+item.prescribe_item+'</td>'+
+                                                        '<td>'+item.ItemName1+'</td>'+
+                                                        '<td>'+item.prescribe_qty+'</td>'+
+                                                        '<td></td>'+
+                                                        '<td></td>'+
+                                                        '<td>'+condition(item.prescribe_instruction)+'</td>'+
+                                                    '</tr>';
+
+                        $('#table-prescribe').append($row_prescribe_obat);
+                    });
+
+                });
+
+                var rowCountrRacikan = $('#table-prescribe .prescribe_racikan').length;
+                // alert(rowCountrRacikan)
+                $('.prescribe_racikan').attr('rowspan', rowCountrRacikan);
 
             }
         }, error: function(){
@@ -1087,19 +202,14 @@ function orderPrescribe(){
     });
 }
 
-//PRESCRIBING FINAL
 $('body').on('click', '#btn-edit-row-prescribe', function(){
-    $flag = $(this).data('id')
-    $category = $(this).data('category')
-    $order_code = $(this).data('order')
-
-    $('.prescribe-loading-2[data-order="'+$order_code+'"][data-category="'+$category+'"][data-id="'+$flag+'"]').show()
-    $('#btn-edit-row-prescribe[data-order="'+$order_code+'"][data-category="'+$category+'"][data-id="'+$flag+'"]').hide();
-
-    $('.row_header_satuan').html('')
+    $('#modalSOAP').modal('hide');
+    $('#modalEditPrescribe').modal('show');
+    $flag = $(this).data('id');
+    $order_code = $(this).data('order');
 
     $.ajax({
-        url: $dom+'/api/getFinalOrderDetail',
+        url: $dom+'/auth/api/prescribe/detail_order',
         type: 'GET',
         dataType: 'json',
         data: {
@@ -1108,98 +218,7 @@ $('body').on('click', '#btn-edit-row-prescribe', function(){
             order_code: $order_code,
         },
         success: function(resp){
-            $('.prescribe-loading-2[data-order="'+$order_code+'"][data-category="'+$category+'"][data-id="'+$flag+'"]').hide()
-            $('#btn-edit-row-prescribe[data-order="'+$order_code+'"][data-category="'+$category+'"][data-id="'+$flag+'"]').show()
-
-            if (resp.status == 200) {
-                $('#modalSOAP').modal('hide')
-                $('#modalEditPrescribe').modal('show')
-
-                let category = resp.data[0].prescribe_flag == 1 ? 'racikan' : 'satuan'
-
-                $('[name="prescribe_flag"]').val(resp.data[0].prescribe_flag)
-                $('[name="prescribe_flag_racikan"]').val(resp.data[0].prescribe_flag_racikan)
-                $('[name="prescribe_order_code"]').val(resp.data[0].prescribe_order_code)
-
-                $('#row_edit_prescribe').html('')
-
-
-                $.each(resp.data, function(i, item){
-                    let data_ = {
-                        'temp_kode' : item.prescribe_item,
-                        'temp_id' : item.prescribe_id,
-                        'temp_order' : item.prescribe_order_code,
-                        'temp_reg' : item.prescribe_reg,
-                        'temp_quantity' : item.prescribe_qty,
-                        'temp_dosis' : item.prescribe_dosage,
-                        'temp_hari' : item.prescribe_frequency,
-                        'temp_durasi_hari' : item.prescribe_duration,
-                        'temp_ket_dosis' : item.prescribe_instruction,
-                        'temp_harga_jual' : item.prescribe_price,
-                        'temp_flag' : item.prescribe_flag,
-                        'temp_flag_racikan' : item.prescribe_flag_racikan,
-                        'temp_dokter' : item.prescribe_dokter,
-                        'temp_poli' : item.prescribe_poli,
-                        'temp_deleted' : item.prescribe_deleted,
-                        'temp_sent' : item.prescribe_sent,
-                        'temp_special_instruction' : item.prescribe_special_instruction,
-                        'temp_form' : item.prescribe_form,
-                        'temp_route' : item.prescribe_route,
-                        'created_at' : item.created_at,
-                        'updated_at' : item.updated_at,
-                        'ItemName1' : item.ItemName1,
-                        'ItemPrice' : item.ItemPrice,
-                        'ItemStock' : item.ItemStock,
-                        'ItemUnit' : item.prescribe_dosage_prep,
-                        'ItemDosageUnit' : item.prescribe_dosage_unit,
-                        'ItemBasicUnit' : item.prescribe_basic_unit,
-                        'ItemNotes' : item.prescribe_notes,
-                    }
-
-                    getPrescribeRowSelect(data_, category, item.prescribe_id, 1)
-
-                    $edit_flag = 'satuan'
-                    if (item.prescribe_flag == 1) {
-                        $edit_flag = 'racikan'
-                    }
-
-                    $('[id="r_list_dosis_'+$edit_flag+'_'+item.prescribe_id+'"]').remove()
-
-                    $.each(item.ItemDosageList, function(sub_i, item_dosage){
-                        $selected_ = ''
-                        if (item_dosage.satuan_kode == item.prescribe_dosage_unit) {
-                            $selected_ = 'selected' 
-                        }
-
-                        $('#prescribe_satuan_dosis_'+$edit_flag+'_'+item.prescribe_id).append('<option id="r_list_dosis_'+$category+'_'+item.prescribe_id+'" value="'+item_dosage.satuan_kode+'" '+$selected_+'>'+item_dosage.satuan_nama+'</option>')
-                    })
-                })
-
-                if (category == 'racikan') {
-                    $row_header = `
-                        <div class="col-lg-2 pr-0 mb-3">
-                            <label class="text-capitalize">Bentuk sediaan obat `+$category+`</label>
-                            <select class="form-control" name="prescribe_form" id="prescribe_item_form_`+$category+`">
-                                <option val="">-- Pilih sediaan obat `+$category+` --</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 pr-0 mb-3">
-                            <label class="text-capitalize">Rute obat `+$category+`</label>
-                            <select class="form-control" name="prescribe_route" id="prescribe_item_route_`+$category+`">
-                                <option val="">-- Pilih rute obat `+$category+` --</option>
-                            </select>
-                        </div>
-                    `
-    
-                    $('.row_header_satuan').html($row_header)
-    
-                    getPrescribeHeader($category, resp.data)
-                }
-            } else if (resp.status == 409){
-                alert(resp.data)
-            } else {
-                alert(resp.data)
-            }
+            templateRowPrescribe(resp, 'row_edit_prescribe', '')
         },
         error: function(){
             alert('Gagal mengambil data, mohon hubungi tim Administrator');
@@ -1214,17 +233,356 @@ $('#edit-row-prescribe').click(function(){
         dataType: 'json',
         data: $('#form-edit-prescribe').serialize(),
         success: function(resp){
-            if (resp.status == 200) {
+            if (resp == 200) {
                 $('#modalEditPrescribe').modal('hide');
                 orderPrescribe();
                 getResume();
-                $('#row_edit_prescribe').html('')
-            } else if (resp.status == 404) {
-                alert(resp.data);
+            } else if (resp == 409) {
+                alert('Order obat tidak bisa diubah karena sudah diproses bagian farmasi');
             }
         },
         error: function(){
             alert('Gagal menyimpan data, mohon hubungi tim Administrator');
+        }
+    });
+});
+
+// PRESCRIBING TEMPORARY
+function orderPrescribeTemp(){
+    $.ajax({
+        url: $dom+'/auth/api/prescribe/data_satuan_temp/'+$subs,
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function(){
+            $('.row_prescribe_temp').remove();
+            $('#table-row-prescribe').html('');
+        },
+        success: function(resp){
+            if (Object.keys(resp).length>0) {
+                $.each(resp, function(i, data){
+
+                    $bg = 'bg-warning';
+
+                    if (i == 0) {
+                        $row_span = '<td class="text-center '+$bg+' text-dark text-uppercase cat_satuan"><b>OBAT<br>SATUAN</b></td>';
+                        $row_button = '<td class="cat_satuan text-center">'+
+                                            '<button type="button" class="btn btn-warning btn-sm ml-1" id="btn-edit-row-temp" title="Edit row obat" data-id="'+data.temp_flag+'" data-category="satuan"><i class="fas fa-edit" style="font-size: 12px"></i> Edit</button>'+
+                                        '</td>';
+                    } else {
+                        $row_span = '';
+                        $row_button = '';
+                    }
+
+                    $row_prescribe_temp_obat = '<tr class="tr_satuan">'+
+                                                        $row_span+
+                                                        '<td>'+data.temp_kode+'</td>'+
+                                                        '<td>'+
+                                                            data.ItemName1+
+                                                            '<span type="button" class="float-right text-danger mr-1" title="Hapus Item Obat" id="btn-delete-row-temp" data-id="'+data.temp_id+'"><i class="fas fa-trash"></i></span>'+
+                                                        '</td>'+
+                                                        '<td>'+data.temp_quantity+'</td>'+
+                                                        '<td>'+data.temp_ket_dosis+'</td>'+
+                                                        $row_button
+                                                    '</tr>';
+
+                    $('#table-row-prescribe').append($row_prescribe_temp_obat);
+
+                });
+                $('.th_satuan').attr('colspan', 2);
+                var rowCountSatuan = $('.table_detail_order .tr_satuan').length;
+                $('.cat_satuan').attr('rowspan', rowCountSatuan);
+
+            }
+        }, error: function(){
+            console.log(error);
+        }
+    });
+
+    $.ajax({
+        url: $dom+'/auth/api/prescribe/data_temp/'+$subs,
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function(){
+            $('.row_prescribe_temp').remove();
+            $('#table-row-prescribe').html('');
+        },
+        success: function(resp){
+            if (Object.keys(resp).length>0) {
+                $.each(resp, function(i, data){
+
+
+                    $bg = 'bg-info';
+
+                    if (i == 0) {
+                        $row_span = '<td class="text-center text-uppercase cat_racikan"><b>OBAT<br>RACIKAN</br></td>';
+                    } else {
+                        $row_span = '';
+                    }
+
+                    $row_prescribe_temp =   '<tr class="bg-info text-dark tr_racikan">'+
+                                                $row_span+
+                                                '<td colspan="4">'+
+                                                    '<b>Racikan '+data.flag_racikan+ '</b> ( '+data.dosis+' x '+data.hari+' selama '+data.durasi_hari+' hari )'+
+                                                '</td>'+
+                                                '<td class="text-center">'+
+                                                    '<button type="button" data-id="'+data.flag_racikan+'" data-category="racikan" class="btn btn-warning btn-sm" id="btn-edit-row-temp" title="Edit row obat"><i class="fas fa-edit" style="font-size: 12px"></i> Edit</button>'+
+                                                '</td>'+
+                                            '</tr>';
+
+                    $('#table-row-prescribe').append($row_prescribe_temp);
+
+                    $.each(data.obat, function(i, item){
+                        $row_prescribe_temp_obat = '<tr class="tr_racikan">'+
+                                                        '<td>'+item.temp_kode+'</td>'+
+                                                        '<td>'+
+                                                            item.ItemName1+
+                                                            '<span type="button" class="float-right text-danger mr-1" title="Hapus Item Obat" id="btn-delete-row-temp" data-id="'+item.temp_id+'"><i class="fas fa-trash"></i></span>'+
+                                                        '</td>'+
+                                                        '<td>'+item.temp_quantity+'</td>'+
+                                                        '<td>'+item.temp_ket_dosis+'</td>'+
+                                                        '<td></td>'+
+                                                    '</tr>';
+
+                        $('#table-row-prescribe').append($row_prescribe_temp_obat);
+                    });
+
+                });
+
+                var rowCountrRacikan = $('.table_detail_order .tr_racikan').length;
+                $('.cat_racikan').attr('rowspan', rowCountrRacikan);
+
+            }
+        }, error: function(){
+            console.log(error);
+        }
+    });
+
+}
+
+function prescribeItem($id = ''){
+    $kode = $('#'+$id).find(':selected').data('id');
+    $item = $('#'+$id).find(':selected').data('item');
+    $stock = $('#'+$id).find(':selected').data('stock');
+    $price = $('#'+$id).find(':selected').data('price');
+    $category = $('#'+$id).find(':selected').data('category');
+
+
+    if ($id == 'prescribe_item_'+$category) {
+        var num = '';
+    } else {
+        var num = $('#'+$id).data('id');
+    }
+
+    // if ($stock < 1) {
+    //     alert('Stok obat '+$item+' telah habis');
+    // } else {
+
+    // }
+    $('body #prescribe_harga_jual_racikan_'+num+''+$category).val($price);
+    $('body #prescribe_stock_racikan_'+num+''+$category).val($stock);
+}
+
+$('body').on('click', '#add-row-racikan', function(){
+    var num = $('div#racikan_item').length + 1;
+    $req = '<span class="text-danger"> *<span>';
+    $elm_id = "prescribe_item_"+num;
+    $category = $(this).data('category');
+
+    if ($category == '') {
+        $jenis = 'racikan';
+        $jenis2 = '';
+        $readonly = 'readonly';
+    } else if ($category == 'satuan') {
+        $jenis = 'satuan';
+        $jenis2 = 'satuan';
+        $readonly = '';
+    } else if ($category == 'edit_prescribe') {
+        $jenis = 'edit_prescribe';
+        $jenis2 = 'edit_prescribe';
+        $readonly = '';
+    }
+
+    $prescribe_dosis = $('#prescribe_dosis_').val();
+    $prescribe_hari = $('#prescribe_hari_').val();
+    $prescribe_durasi_hari = $('#prescribe_durasi_hari_').val();
+
+    $row_racikan = '<div class="row row_racikan_'+num+'" data-id="'+num+'">'+
+                        '<div class="col-lg-3 pr-0">'+
+                            '<div class="form-group" id="racikan_item">'+
+                                '<label class="text-capitalize">Nama Obat '+$category+'</label>'+
+                                '<select class="form-control select_'+num+' select2-hidden-accessible" name="prescribe_item[]" id="'+$elm_id+'" data-id="'+num+'" onchange="prescribeItem(this.id)" style="width: 100%;" tabindex="-1" aria-hidden="true">'+
+                                    '<option value="">-- Pilih nama obat --</option>'+
+                                '</select>'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-lg-1 px-0">'+
+                            '<label for="" class="label-admisi">Jumlah Obat '+$req+'</label>'+
+                            '<input type="number" name="prescribe_quantity[]" step="any" id="prescribe_quantity" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Jumlah obat">'+
+                            '<small>'+$req+' <i>menggunakan titik</i></small>'+
+                        '</div>'+
+                        '<div class="col-lg-1 px-0">'+
+                            '<label for="" class="label-admisi">Dosis '+$req+'</label>'+
+                            '<input type="text" name="prescribe_dosis[]" id="prescribe_dosis_'+$jenis2+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 250 ml">'+
+                        '</div>'+
+                        '<div class="col-lg-1 px-0">'+
+                            '<label for="" class="label-admisi">Frekuensi '+$req+'</label>'+
+                            '<input type="text" name="prescribe_hari[]" id="prescribe_hari_'+$jenis2+'" value="'+$prescribe_hari+'" '+$readonly+' class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 3x1">'+
+                        '</div>'+
+                        '<div class="col-lg-1 px-0">'+
+                            '<label for="" class="label-admisi">Durasi Hari '+$req+'</label>'+
+                            '<input type="text" name="prescribe_durasi_hari[]" id="prescribe_durasi_hari_'+$jenis2+'" value="'+$prescribe_durasi_hari+'" '+$readonly+' class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh : 5">'+
+                        '</div>'+
+                        '<div class="col-lg-3 px-0">'+
+                            '<label for="" class="label-admisi">Aturan Pakai</label>'+
+                            '<input type="text" name="prescribe_ket_dosis[]" id="prescribe_ket_dosis" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Aturan pakai">'+
+                        '</div>'+
+                        '<div class="col-lg-2 px-0">'+
+                            '<label for="" class="label-admisi">Stok</label>'+
+                            '<div class="input-group">'+
+                                '<input type="hidden" name="prescribe_harga_jual[]" id="prescribe_harga_jual_racikan_'+num+''+$jenis2+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                '<input type="text" id="prescribe_stock_racikan_'+$jenis+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                '<div class="input-group-append no-radius mt-1" id="remove-row-racikan" data-id="'+num+'">'+
+                                    '<span class="input-group-text bg-danger text-white" style="height: 42px; cursor: pointer"><i class="fas fa-times"></i></span>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>';
+
+    $('#row_'+$jenis).append($row_racikan);
+
+    $('.select_'+num).select2();
+
+    getObat($elm_id, $jenis2);
+});
+
+$('body').on('click', '#remove-row-racikan', function(){
+    $id = $(this).data('id');
+
+    $('.row_racikan_'+$id).remove();
+});
+
+$('body').on('click', '#cancel-row-prescribe', function(){
+    $category = $(this).data('category');
+
+    if ($category == 'satuan') {
+        $category_ = 'satuan';
+    } else {
+        $category_ = '';
+    }
+
+    templateRowPrescribeTemp(null, 'row_'+$category, $category_);
+});
+
+$('body').on('click', '#store-row-prescribe', function(){
+    $category = $(this).data('category');
+
+    if ($category == 'satuan') {
+        $category_ = 'satuan';
+    } else {
+        $category_ = '';
+    }
+
+    $.ajax({
+        url: $dom+'/auth/api/prescribe/store_temp',
+        type: 'POST',
+        dataType: 'json',
+        data: $('#form-obat-'+$category).serialize(),
+        success: function(resp){
+            if (resp == 200) {
+                templateRowPrescribeTemp(null, 'row_'+$category, $category_);
+                orderPrescribeTemp();
+                $('div[class*="row_racikan_"]').remove();
+            } else if (resp == 404) {
+                alert('Item obat tidak boleh kosong');
+            }
+        },
+        error: function(){
+            alert('Gagal menyimpan data, mohon hubungi tim Administrator');
+        }
+    });
+
+});
+
+
+$('body').on('click', '#btn-edit-row-temp', function(){
+    $id = $(this).data('id');
+    $category = $(this).data('category');
+
+    $('a[id*="-tab"]').removeClass('active');
+    $('div[aria-labelledby*="-tab"]').removeClass('active show');
+
+    $('#'+$category+'-tab').addClass('active');
+    $('div[aria-labelledby*="'+$category+'-tab"]').addClass('active show');
+
+    if ($category == 'satuan') {
+        $category_ = 'satuan';
+    } else {
+        $category_ = '';
+    }
+
+    $.ajax({
+        url: $dom+'/auth/api/prescribe/detail_temp/'+$id+'/'+$category+'/'+$subs,
+        type: 'GET',
+        dataType: 'json',
+        success: function(resp){
+            templateRowPrescribeTemp(resp, 'row_'+$category, $category_);
+        }
+    });
+});
+
+$('body').on('click', '#btn-delete-row-temp', function(){
+    $id = $(this).data('id');
+
+    if (confirm('Apakah anda yakin akan mengahapus item obat ini ?')) {
+        $.ajax({
+            url: $dom+'/auth/api/prescribe/delete_temp/'+$id,
+            type: 'GET',
+            dataType: 'json',
+            success: function(resp){
+                orderPrescribeTemp();
+            },
+            error: function(){
+                alert('Gagal mengapus data, mohon hubungi tim IT');
+            }
+        });
+    }
+
+});
+
+
+
+
+//PRESCRIBING FINAL
+$('body').on('click', '.edit_orderprescribe', function(){
+    $id = $(this).data('id');
+    resetForm('#form-prescribe-update');
+    $('#modalEditPrescribe').modal('show');
+    $('#prescribe_id').val($id);
+
+    $.ajax({
+        url: $dom+'/auth/api/prescribe/data_order/'+$subs+'/'+$id,
+        type: 'GET',
+        dataType: 'json',
+        success: function(resp){
+            res = resp.obat[0];
+                $('input#prescribe_update_item').val(res.ItemName1);
+                $('input[name="prescribe_update_method"]').val(res.prescribe_method);
+                $('input[name="prescribe_update_required"][value="'+res.prescribe_required+'"]').prop('checked', true);
+                $('input[name="prescribe_update_dosage"]').val(res.prescribe_dosage);
+                $('input[name="prescribe_update_unit"]').val(res.prescribe_unit);
+                $('input[name="prescribe_update_frequency"]').val(res.prescribe_frequency);
+                $('input[name="prescribe_update_duration"]').val(res.prescribe_duration);
+                $('input[name="prescribe_update_qty"]').val(res.prescribe_qty);
+                $('input[name="prescribe_update_item_unit"]').val(res.prescribe_item_unit);
+                $('input[name="prescribe_update_route"]').val(res.prescribe_route);
+                checkbox('prescribe_update_number[]', res.prescribe_number);
+                $('input[name="prescribe_update_date"]').val(res.prescribe_date);
+                $('input[name="prescribe_update_time"]').val(res.prescribe_time);
+                $('select[name="prescribe_update_instruction"]').val(res.prescribe_instruction);
+                $('input[name="prescribe_update_type"][value="'+res.prescribe_type+'"]').prop('checked', true);
+                $('input[name="prescribe_update_iteration"]').val(res.prescribe_iteration);
+                $('textarea[name="prescribe_update_note"]').text(res.prescribe_note);
+                $('input[name="prescribe_update_price"]').val(res.prescribe_price);
         }
     });
 });
@@ -1249,106 +607,343 @@ $('body').on('click','#btn-update-prescribe',function(){
     });
 });
 
-// COPY RESEP
-$('[id*="copy-prescribe"]').hide()
-$('[class*="prescribe-copy-loading"]').hide()
+$('body').on('click', '.remove_orderprescribe', function(event){
+    $id = $(this).data('id');
 
-function closePrevPrescribe() {
-    $('[class*="previous_prescribe_modal"]').removeClass('show').addClass('hide')
-}
-
-function lastPrescribe(execute = '', selected_reg = '') {
-    $('[id*="copy-prescribe"]').hide()
-    $('[class*="prescribe-copy-loading"]').show()
-
-    $.ajax({
-        url: $dom+'/auth/api/prescribe/data_last_order/',
-        type: 'get',
-        dataType: 'json',
-        data: {
-            medrec: $medrec,
-            selected_reg: selected_reg,
-            reg: $reg,
-            execute: execute  
-        },
-        beforeSend: function(){
-            $('#d_prev_prescribe').html('<p>Memuat data ...</p>')
-        },
-        success: function(resp){
-            $('#d_prev_prescribe').html('')
-            $('#detail_prev_prescribe').html('')
-
-            $('[id*="copy-prescribe"]').show()
-            $('[class*="prescribe-copy-loading"]').hide()
-
-            if (resp.header.length > 0) {
-
-                $.each(resp.data, function(i, data){
-
-                    $row_header = `
-                        <div class="detail_prev">
-                            No. Register : <b>`+data.reg+`</b> <br>
-                            Tanggal Order : <b>`+moment(data.tanggal_order).format('DD-MM-Y HH:mm:ss')+`</b>
-                            <span type="button" class="badge badge-warning badge-md float-right" id="btn-copy-prescribe" data-reg="`+data.reg+`"><i class="fas fa-copy"></i> Salin</span>
-                            <br><br>
-                            <b>R/</b>
-                            <span id="detail_prev_prescribe" data-order="`+data.reg+`" class="mt-2"></span>
-                        </div>
-                    `
-
-                    $('#d_prev_prescribe').append($row_header);
-
-                    $.each(data.detail, function(idx, item){
-                        $flag = 'satuan'
-                        $form = ''
-    
-                        if (item.temp_flag == 1) {
-                            $flag = 'racikan ke '+item.temp_flag_racikan
-                            $form = `
-                                m.f.l.a .Dtd. `+condition(item.temp_form)+`
-                                <br>
-                            `
-                        }
-
-                        $row_detail = `
-                            <span class="ml-4">
-                                `+item.temp_nama+` `+parseFloat(item.temp_dosis)+` `+item.temp_satuan_dosis+` (`+$flag+`)
-                                <br>
-                            </span>
-                        `
-
-                        $('#detail_prev_prescribe[data-order="'+data.reg+'"]').append($row_detail);
-                    })
-                })
-
-                orderPrescribeTemp()
-            } else {
-                $('#d_prev_prescribe').html('<p>Tidak ada resep sebelumnya</p>');
+    if (confirm("Apakah anda yakin ingin menghapus order tindakan ?")) {
+        $.ajax({
+            url: $dom+'/auth/api/prescribe/delete_order/'+$id,
+            type: 'DELETE',
+            dataType: 'json',
+            success: function(resp){
+                orderPrescribe();
             }
-        },
-        error: function(){
-            // alert('Gagal menyimpan data, mohon hubungi tim Administrator');
-        }
-    });
+        });
+    }
+});
+
+function templateRowPrescribe(items = null, id = '', category = ''){
+    $('#'+id).html('');
+
+    $req = '<span class="text-danger"> *<span>';
+
+    $('#form-edit-prescribe [name="prescribe_flag"]').val(items[0]['prescribe_flag']);
+    $('#form-edit-prescribe [name="prescribe_flag_racikan"]').val(items[0]['prescribe_flag_racikan']);
+    $('#form-edit-prescribe [name="prescribe_unit"]').val(items[0]['prescribe_unit']);
+    $('#form-edit-prescribe [name="prescribe_order_code"]').val(items[0]['prescribe_order_code']);
+
+    if (items != null) {
+        $.each(items, function(i, data){
+
+            $elm_id = "prescribe_item_"+data.prescribe_id;
+
+            if (i == 0) {
+
+                $row_button =   '<input type="hidden" name="prescribe_harga_jual[]" value="'+data.prescribe_price+'" id="prescribe_harga_jual_racikan_'+data.prescribe_id+''+category+'" class="form-control no-radius mt-1" style="height: 40px;">'+
+                                '<input type="text" id="prescribe_stock_racikan_'+category+'" class="form-control no-radius mt-1" style="height: 40px;">'+
+                                '<div class="input-group-append no-radius mt-1" id="add-row-racikan" data-category="edit_prescribe">'+
+                                    '<span class="input-group-text bg-primary text-white" style="height: 42px; cursor: pointer"><i class="fas fa-plus"></i></span>'+
+                                '</div>';
+            } else {
+                $row_button = '<input type="hidden" name="prescribe_harga_jual[]" value="'+data.prescribe_price+'" id="prescribe_harga_jual_racikan_'+data.prescribe_id+''+category+'" class="form-control no-radius mt-1" style="height: 40px;">'+
+                                '<input type="text" id="prescribe_stock_racikan_'+category+'" class="form-control no-radius mt-1" style="height: 40px;">'+
+                                '<div class="input-group-append no-radius mt-1" id="remove-row-racikan" data-id="'+data.prescribe_id+'">'+
+                                    '<span class="input-group-text bg-danger text-white" style="height: 42px; cursor: pointer"><i class="fas fa-times"></i></span>'+
+                                '</div>';
+            }
+
+            $row_racikan = '<div class="row row_racikan_'+data.prescribe_id+'" data-id="'+data.prescribe_id+'">'+
+                                '<input type="hidden" value="'+data.prescribe_flag_racikan+'" name="prescribe_flag_racikan">'+
+                                '<input type="hidden" value="'+data.prescribe_flag+'" name="prescribe_flag">'+
+                                '<input type="hidden" value="update" name="prescribe_status">'+
+                                '<div class="col-lg-3 pr-0">'+
+                                    '<div class="form-group" id="racikan_item">'+
+                                        '<label class="text-capitalize">Nama Obat '+category+'</label>'+
+                                        '<select class="form-control select_'+data.prescribe_id+' select2-hidden-accessible" name="prescribe_item[]" id="'+$elm_id+'" data-id="'+data.prescribe_id+'" onchange="prescribeItem(this.id)" style="width: 100%;" tabindex="-1" aria-hidden="true">'+
+                                            '<option value="'+data.prescribe_item+'"> '+data.ItemName1+' </option>'+
+                                        '</select>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Jumlah Obat '+$req+'</label>'+
+                                    '<input type="number" name="prescribe_quantity[]" step="any" id="prescribe_quantity" value="'+data.prescribe_qty+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Jumlah obat">'+
+                                    '<small>'+$req+' <i>menggunakan titik</i></small>'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Dosis '+$req+'</label>'+
+                                    '<input type="text" name="prescribe_dosis[]" id="prescribe_dosis_'+category+'" value="'+data.prescribe_dosage+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 250 ml">'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Frekuensi '+$req+'</label>'+
+                                    '<input type="text" name="prescribe_hari[]" id="prescribe_hari_'+category+'" value="'+data.prescribe_frequency+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 3x1">'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Durasi Hari '+$req+'</label>'+
+                                    '<input type="text" name="prescribe_durasi_hari[]" id="prescribe_durasi_hari_'+category+'" value="'+data.prescribe_duration+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh : 5">'+
+                                '</div>'+
+                                '<div class="col-lg-3 px-0">'+
+                                    '<label for="" class="label-admisi">Aturan Pakai</label>'+
+                                    '<input type="text" name="prescribe_ket_dosis[]" id="prescribe_ket_dosis" value="'+data.prescribe_instruction+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Aturan pakai">'+
+                                '</div>'+
+                                '<div class="col-lg-2 px-0">'+
+                                    '<label for="" class="label-admisi">Stok</label>'+
+                                    '<div class="input-group">'+
+                                        $row_button+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>';
+
+            $('#'+id).append($row_racikan);
+
+            $('.select_'+data.prescribe_id).select2();
+
+            getObat($elm_id, category);
+        });
+    }
 }
 
-$('body').on('click', '#copy-prescribe', function(){
-    lastPrescribe()
-    $('[class*="previous_prescribe_modal"]').removeClass('hide').addClass('show')
-        .find('h4').html('<b>Data Resep Sebelumnya</b>')
-})
+function templateRowPrescribeTemp(items = null, id = '', category = '', update = ''){
+    $('#'+id).html('');
 
-$('body').on('click', '#btn-copy-prescribe', function(){
-    if (confirm('Apakah anda yakin akan menyalin resep sebelumnya ?')) {
-        $reg_ = $(this).data('reg')
+    $req = '<span class="text-danger"> *<span>';
 
-        lastPrescribe(1, $reg_)
+    if (items != null) {
+        $.each(items, function(i, data){
+
+            $elm_id = "prescribe_item_"+data.temp_id;
+
+            if (i == 0) {
+                $elm_id = "prescribe_item_";
+
+                $row_button =   '<input type="hidden" name="prescribe_harga_jual[]" value="'+data.temp_harga_jual+'" id="prescribe_harga_jual_racikan_'+data.temp_id+''+category+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                '<input type="text" id="prescribe_stock_racikan_'+category+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                '<div class="input-group-append no-radius mt-1" id="add-row-racikan" data-category="'+category+'">'+
+                                    '<span class="input-group-text bg-primary text-white" style="height: 42px; cursor: pointer"><i class="fas fa-plus"></i></span>'+
+                                '</div>';
+            } else {
+                $row_button = '<input type="hidden" name="prescribe_harga_jual[]" value="'+data.temp_harga_jual+'" id="prescribe_harga_jual_racikan_'+data.temp_id+''+category+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                '<input type="text" id="prescribe_stock_racikan_'+category+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                '<div class="input-group-append no-radius mt-1" id="remove-row-racikan" data-id="'+data.temp_id+'">'+
+                                    '<span class="input-group-text bg-danger text-white" style="height: 42px; cursor: pointer"><i class="fas fa-times"></i></span>'+
+                                '</div>';
+            }
+
+            $row_racikan = '<div class="row row_racikan_'+data.temp_id+'" data-id="'+data.temp_id+'">'+
+                                '<input type="hidden" value="'+data.temp_flag_racikan+'" name="prescribe_flag_racikan">'+
+                                '<input type="hidden" value="'+data.temp_flag+'" name="prescribe_flag">'+
+                                '<input type="hidden" value="update" name="prescribe_status">'+
+                                '<div class="col-lg-3 pr-0">'+
+                                    '<div class="form-group" id="racikan_item">'+
+                                        '<label class="text-capitalize">Nama Obat '+category+'</label>'+
+                                        '<select class="form-control select_'+data.temp_id+' select2-hidden-accessible" name="prescribe_item[]" id="'+$elm_id+'" data-id="'+data.temp_id+'" onchange="prescribeItem(this.id)" style="width: 100%;" tabindex="-1" aria-hidden="true">'+
+                                            '<option value="'+data.temp_kode+'"> '+data.ItemName1+' </option>'+
+                                        '</select>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Jumlah Obat '+$req+'</label>'+
+                                    '<input type="number" name="prescribe_quantity[]" step="any" id="prescribe_quantity" value="'+data.temp_quantity+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Jumlah obat">'+
+                                    '<small>'+$req+' <i>menggunakan titik</i></small>'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Dosis '+$req+'</label>'+
+                                    '<input type="text" name="prescribe_dosis[]" id="prescribe_dosis_'+category+'" value="'+data.temp_dosis+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 250 ml">'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Frekuensi '+$req+'</label>'+
+                                    '<input type="text" name="prescribe_hari[]" id="prescribe_hari_'+category+'" value="'+data.temp_hari+'" readonly class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 3x1">'+
+                                '</div>'+
+                                '<div class="col-lg-1 px-0">'+
+                                    '<label for="" class="label-admisi">Durasi Hari '+$req+'</label>'+
+                                    '<input type="text" name="prescribe_durasi_hari[]" id="prescribe_durasi_hari_'+category+'" value="'+data.temp_durasi_hari+'" readonly class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh : 5">'+
+                                '</div>'+
+                                '<div class="col-lg-3 px-0">'+
+                                    '<label for="" class="label-admisi">Aturan Pakai</label>'+
+                                    '<input type="text" name="prescribe_ket_dosis[]" id="prescribe_ket_dosis" value="'+data.temp_ket_dosis+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Aturan pakai">'+
+                                '</div>'+
+                                '<div class="col-lg-2 px-0">'+
+                                    '<label for="" class="label-admisi">Stok</label>'+
+                                    '<div class="input-group">'+
+                                        $row_button+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>';
+
+            $('#'+id).append($row_racikan);
+
+            $('.select_'+data.temp_id).select2();
+
+            getObat($elm_id, category);
+        });
+    } else {
+        $row_racikan = '<div class="row">'+
+                            '<div class="col-lg-3 pr-0">'+
+                                '<div class="form-group" id="racikan_item">'+
+                                    '<label class="text-capitalize">Nama Obat '+category+'</label>'+
+                                    '<select class="form-control select2 select2-hidden-accessible" name="prescribe_item[]" id="prescribe_item_'+category+'" category="'+category+'" onchange="prescribeItem(this.id)" style="width: 100%;" tabindex="-1" aria-hidden="true">'+
+                                        '<option value="">-- Pilih nama obat --</option>'+
+                                    '</select>'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="col-lg-1 px-0">'+
+                                '<label for="" class="label-admisi">Jumlah Obat '+$req+'</label>'+
+                                '<input type="number" name="prescribe_quantity[]" step="any" id="prescribe_quantity" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Jumlah obat">'+
+                                '<small>'+$req+' <i>menggunakan titik</i></small>'+
+                            '</div>'+
+                            '<div class="col-lg-1 px-0">'+
+                                '<label for="" class="label-admisi">Dosis '+$req+'</label>'+
+                                '<input type="text" name="prescribe_dosis[]" id="prescribe_dosis_'+category+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 250 ml">'+
+                            '</div>'+
+                            '<div class="col-lg-1 px-0">'+
+                                '<label for="" class="label-admisi">Frekuensi '+$req+'</label>'+
+                                '<input type="text" name="prescribe_hari[]" id="prescribe_hari_'+category+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh 3x1">'+
+                            '</div>'+
+                            '<div class="col-lg-1 px-0">'+
+                                '<label for="" class="label-admisi">Durasi Hari '+$req+'</label>'+
+                                '<input type="text" name="prescribe_durasi_hari[]" id="prescribe_durasi_hari_'+category+'" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Contoh : 5">'+
+                            '</div>'+
+                            '<div class="col-lg-3 px-0">'+
+                                '<label for="" class="label-admisi">Aturan Pakai</label>'+
+                                '<input type="text" name="prescribe_ket_dosis[]" id="prescribe_ket_dosis" class="form-control no-radius mt-1" style="height: 40px;" placeholder="Aturan pakai">'+
+                            '</div>'+
+                            '<div class="col-lg-2 px-0">'+
+                                '<label for="" class="label-admisi">Stok</label>'+
+                                '<div class="input-group">'+
+                                    '<input type="hidden" name="prescribe_harga_jual[]" id="prescribe_harga_jual_racikan_'+category+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                    '<input type="text" id="prescribe_stock_racikan_'+category+'" class="form-control no-radius mt-1" style="height: 40px;" readonly>'+
+                                    '<div class="input-group-append no-radius mt-1" id="add-row-racikan" data-category="'+category+'">'+
+                                        '<span class="input-group-text bg-primary text-white" style="height: 42px; cursor: pointer"><i class="fas fa-plus"></i></span>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>';
+
+            $('#'+id).append($row_racikan);
+
+            $('.select2').select2();
+
+            getObat('prescribe_item_'+category, category);
     }
-})
+}
 
-$('body').on('keypress', '[name="prescribe_dosis[]"], [name="prescribe_quantity[]"]', function(e){
+$('body').on('keypress', '[name="prescribe_dosis[]"]', function(e){
     if (e.which == 13 || e.which == 44) {
         alert('Gunakan tanda titik "." untuk bilangan pecahan');
         return false; //<-- prevent
     }
 })
+
+//koding baru
+
+/*$('body').on('change','#pilihObat',function(){
+    var cmbPilihObat=document.getElementById('pilihObat')
+    var index=cmbPilihObat.options.selectedIndex-1;
+    console.log(arrayObat[index]);
+
+})*/
+function pilihObat(){
+    var cmbPilihObat=document.getElementById('pilihObat')
+    var index=cmbPilihObat.options.selectedIndex-1;
+    //console.log(arrayObat[index]);
+    setRowOrder(index)
+}
+
+function setRowOrder(index){
+    var itemData=arrayObat[Number(index)+1]
+    console.log(itemData)
+    var bodyTable=document.getElementById('table-row-prescribe')
+    var posisi=bodyTable.rows.length
+
+    const tr=document.createElement("tr")
+    const col1=document.createElement("td")
+    const col2=document.createElement("td")
+    const col3=document.createElement("td")
+    const col4=document.createElement("td")
+    const col5=document.createElement("td")
+    const col6=document.createElement("td")
+    const col7=document.createElement("td")
+    const col8=document.createElement("td")
+    const col9=document.createElement("td")
+    const col10=document.createElement("td")
+
+    const rowJenis=document.createElement("label")
+    rowJenis.id='jenis'+posisi
+    rowJenis.name='jenis'+posisi
+    rowJenis.innerText='satuan'
+    const rowKodeObat=document.createElement('input')
+    rowKodeObat.id='kode_obat'+posisi
+    rowKodeObat.name='kode_obat'+posisi
+    rowKodeObat.value=itemData.item_id
+    rowKodeObat.readOnly=true
+    const rowNamaObat=document.createElement('label')
+    rowNamaObat.id='nama_obat'+posisi
+    rowNamaObat.name='nama_obat'+posisi
+    rowNamaObat.innerText=itemData.item_name
+    const rowQty=document.createElement('input')
+    rowQty.id='qty'+posisi
+    rowQty.name='qty'+posisi
+    const rowDosis=document.createElement('input')
+    rowDosis.id='dosis'+posisi
+    rowDosis.name='dosis'+posisi
+    const rowHari=document.createElement('input')
+    rowHari.id='hari'+posisi
+    rowHari.name='hari'+posisi
+    const rowDurasi=document.createElement('input')
+    rowDurasi.id='durasi'+posisi
+    rowDurasi.name='durasi'+posisi
+
+    // HARGA OBAT
+    const rowHargaSatuan=document.createElement('div')
+    const rowHargaSatuaninput=document.createElement('input')
+    rowHargaSatuaninput.id='hargasatuan'+posisi
+    rowHargaSatuaninput.name='hargasatuan'+posisi
+    rowHargaSatuaninput.value=itemData.harga_jual
+    rowHargaSatuaninput.readOnly = true
+    rowHargaSatuaninput.type = 'hidden'
+
+    // SEMENTARA - INJECT INDEX FIELD
+    const posisidatainput=document.createElement('input')
+    posisidatainput.id='posisi_data'+posisi
+    posisidatainput.name='posisi_data'+posisi
+    posisidatainput.className='posisi_data'
+    posisidatainput.value=posisi
+    posisidatainput.readOnly = true
+    posisidatainput.type = 'hidden'
+
+    rowHargaSatuan.innerHTML = `<span>Rp${(Math.ceil(itemData.harga_jual)+0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>`+rowHargaSatuaninput.outerHTML+posisidatainput.outerHTML;
+
+    const rowKeterangan=document.createElement('input')
+    rowKeterangan.id='keterangan'+posisi
+    rowKeterangan.name='keterangan'+posisi
+
+    const rowAksi=document.createElement('button')
+    rowAksi.id='delete'+posisi
+    rowAksi.name='delete'+posisi
+    rowAksi.className='btn btn-danger'
+    rowAksi.innerText='hapus'
+
+    col1.appendChild(rowJenis)
+    col2.appendChild(rowKodeObat)
+    col3.appendChild(rowNamaObat)
+    col4.appendChild(rowQty)
+    col5.appendChild(rowDosis)
+    col6.appendChild(rowHari)
+    col7.appendChild(rowDurasi)
+    col8.appendChild(rowHargaSatuan)
+    col9.appendChild(rowKeterangan)
+    col10.appendChild(rowAksi)
+
+    tr.appendChild(col1)
+    tr.appendChild(col2)
+    tr.appendChild(col3)
+    tr.appendChild(col4)
+    tr.appendChild(col5)
+    tr.appendChild(col6)
+    tr.appendChild(col7)
+    tr.appendChild(col8)
+    tr.appendChild(col9)
+    tr.appendChild(col10)
+    bodyTable.appendChild(tr)
+
+}
+
