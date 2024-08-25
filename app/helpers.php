@@ -87,14 +87,18 @@ function postService($url, $data, $header = '') {
     return $response;
 }
 
-function getDataKeyValue($table, $field, $id) {
-    $data = $table::where($field, $id)->get();
+function getDataKeyValue($table, $field, $id, $column = ['*']) {
+    $data = $table->where($field, $id)->select($column)->get();
 
     foreach ($data as $key => $value) {
         $item[$key] = $value;
     }
 
-    return $item[0];
+    if (isset($item)) {
+        return $item[0];
+    } else {
+        return [];
+    }
 }
 function genKode($table = null, $field = null, $condition = null, $data = null, $kode = null){
     try {
