@@ -231,6 +231,8 @@
             $reg = "{{$reg}}";
             $medrec = "{{$patient->reg_medrec}}";
             $subs =  "";
+            var $service_unit = '{{$dataPasien->service_unit}}'
+            var $id_cppt = '{{$id_cppt}}' 
 
             $('div[id*="panel-"]').hide();
             $('#panel-assesment').show();
@@ -273,6 +275,7 @@
                     success: function (r) {
                         if (r.success) {
                             $('#modalSOAP').modal('show');
+                            clickTab('lab', 'Laboratorium')
                             //$('div[id*="panel-"]').hide();
                             $('div[id*="tab-"]').removeClass('active');
     
