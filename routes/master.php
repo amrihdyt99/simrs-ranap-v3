@@ -8,11 +8,13 @@ use App\Http\Controllers\Master\RoomClassController;
 use App\Http\Controllers\Master\MedicineController;
 use App\Http\Controllers\Master\IndicationController;
 use App\Http\Controllers\Master\InterventionController;
+use App\Http\Controllers\Master\OrganizationController;
 use App\Http\Controllers\Master\OutcomeController;
 use App\Http\Controllers\Master\RuanganController;
 use App\Http\Controllers\Master\ServiceUnitController;
 use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
+use App\Http\Controllers\Master\PractitionerController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister'])->group(function () {
@@ -25,6 +27,7 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
 
     Route::resource('patient', PatientController::class);
     Route::resource('bed', BedController::class);
+    Route::patch('bed/change-status-active/{id}', [BedController::class,'changeStatusActive'])->name('bed.changeStatusActive');
     Route::resource('class', RoomClassController::class);
     Route::resource('medicine', MedicineController::class);
     Route::resource('indication', IndicationController::class);
@@ -42,4 +45,9 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::resource('location', \App\Http\Controllers\Master\LocationController::class);
     Route::resource('site', \App\Http\Controllers\Master\SiteController::class);
     Route::post('user/processor', [\App\Http\Controllers\master\UserController::class, 'processor'])->name('user.processor');
+    Route::resource('practitioner', PractitionerController::class);
+    Route::patch('practitioner/change-status-active/{id}', [PractitionerController::class,'changeStatusActive'])->name('practitioner.changeStatusActive');
+    Route::resource('organization', OrganizationController::class);
+    Route::patch('organization/change-status-active/{id}', [OrganizationController::class,'changeStatusActive'])->name('organization.changeStatusActive');
+
 });
