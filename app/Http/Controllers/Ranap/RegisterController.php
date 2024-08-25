@@ -19,6 +19,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -624,6 +625,89 @@ class RegisterController extends Controller
             DB::rollBack();
             //dd($th->getMessage());
             abort(500, $th->getMessage());
+        }
+    }
+
+
+    public function viewVClaimManual(Request $request)
+    {
+
+        if ($request->ajax()) {
+            $business_partner = (object)$this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business')['data'] ?? [];
+            $data = DB::connection('mysql2')
+                ->table('m_pasien_vclaim')
+                ->join('m_registrasi', 'm_registrasi.reg_no', '=', 'm_pasien_vclaim.reg_no')
+                ->join('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+                ->select(
+                    'm_pasien.PatientName',
+                    'm_pasien_vclaim.*',
+                )->get();
+
+            return DataTables()
+                ->of($data)
+                ->editColumn('business_partner', function ($query) use ($business_partner) {
+                    $partner = collect($business_partner)->firstWhere('BusinessPartnerID', $query->business_partner_id);
+                    return $partner ? $partner['BusinessPartnerName'] : '-';
+                })
+                ->escapeColumns([])
+                ->toJson();
+        }
+
+        return  view('register.pages.ranap.vclaim');
+    }
+
+    public function viewFormVClaimManual()
+    {
+        return  view('register.pages.ranap.vclaim_form');
+    }
+
+    public function storeVClaim(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'business_partner_id' => 'required',
+                'reg_no' => 'required',
+                'card_no' => 'required',
+                'sep_no' => 'required',
+            ]);
+
+
+            if ($validator->passes()) {
+
+                $check_reg = DB::connection('mysql2')->table('m_pasien_vclaim')->where('reg_no', $request->reg_no)->count();
+                if ($check_reg) {
+                    return response()->json([
+                        'status' => 'false',
+                        'message' => 'Nomor registrasi telah dipakai',
+                    ]);
+                }
+
+                $vclaim = array(
+                    'business_partner_id' => $request->business_partner_id,
+                    'reg_no' => $request->reg_no,
+                    'card_no' => $request->card_no,
+                    'sep_no' => $request->sep_no,
+                );
+
+
+                DB::connection('mysql2')->table('m_pasien_vclaim')->insert($vclaim);
+
+                DB::commit();
+                $response = response()->json([
+                    'status' => 'success',
+                    'message' => 'Data berhasil disimpan',
+                ]);
+            } else {
+                abort(402, json_encode($validator->errors()->all()));
+            }
+            return $response;
+        } catch (\Throwable $throw) {
+            //throw $th;
+            DB::rollBack();
+            //dd($th->getMessage());
+            abort(500, $throw->getMessage());
         }
     }
 }
