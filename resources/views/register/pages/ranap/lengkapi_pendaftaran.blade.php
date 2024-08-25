@@ -600,8 +600,7 @@
         });
 
         $.ajax({
-            url: '{{route('
-            get.provinsi ')}}',
+            url: `{{route('get.provinsi')}}`,
             type: 'get',
             dataType: 'json',
             success: function(data) {
