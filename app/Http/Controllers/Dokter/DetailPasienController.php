@@ -59,7 +59,8 @@ class DetailPasienController extends Controller
         ->table("m_registrasi")
         ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
         ->leftJoin('m_paramedis','m_registrasi.reg_dokter','=','m_paramedis.ParamedicCode')
-        ->leftJoin('m_ruangan_baru','m_registrasi.service_unit','=','m_ruangan_baru.id')
+        // ->leftJoin('m_ruangan_baru','m_registrasi.service_unit','=','m_ruangan_baru.id')
+        ->leftJoin('m_ruangan','m_registrasi.service_unit','=','m_ruangan.RoomID')
         ->leftJoin('m_kelas_ruangan_baru','m_registrasi.bed','=','m_kelas_ruangan_baru.id')
         ->where('m_registrasi.reg_medrec', $id)
         ->select([
@@ -68,7 +69,8 @@ class DetailPasienController extends Controller
             'm_registrasi.reg_tgl',
             'm_registrasi.reg_no',
             'm_paramedis.ParamedicName',
-            'm_ruangan_baru.nama_ruangan',
+            // 'm_ruangan_baru.nama_ruangan',
+            'm_ruangan.RoomName',
             'm_registrasi.reg_cara_bayar',
         ]);
         return DataTables()
@@ -87,8 +89,11 @@ class DetailPasienController extends Controller
     {
         $registrasi = DB::connection('mysql2')
         ->table("m_registrasi")
-        ->leftJoin('m_ruangan_baru', function($join){
-            $join->on('m_registrasi.reg_ruangan', '=', 'm_ruangan_baru.id');
+        // ->leftJoin('m_ruangan_baru', function($join){
+        //     $join->on('m_registrasi.reg_ruangan', '=', 'm_ruangan_baru.id');
+        // })
+        ->leftJoin('m_ruangan', function($join){
+            $join->on('m_registrasi.reg_ruangan', '=', 'm_ruangan.RoomID');
         })
         ->leftJoin('m_paramedis', function($join){
             $join->on('m_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode');
@@ -102,7 +107,8 @@ class DetailPasienController extends Controller
         ->where('m_registrasi.reg_no', $id)
         ->select([
             "m_registrasi.*",
-            "m_ruangan_baru.nama_ruangan as nama_ruangan_registrasi",
+            // "m_ruangan_baru.nama_ruangan as nama_ruangan_registrasi",
+            "m_ruangan.RoomName as nama_ruangan_registrasi",
             "m_paramedis.ParamedicName as nama_dokter_registrasi",
             "m_kelas_ruangan_baru.nama_kelas as nama_kelas_registrasi",
             "m_pasien.PatientName as nama_pasien_registrasi",

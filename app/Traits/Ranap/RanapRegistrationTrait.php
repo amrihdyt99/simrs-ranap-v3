@@ -167,7 +167,7 @@ trait RanapRegistrationTrait
         $registrasi['reg_info_kewajiban'] = request()->reg_info_hak_kewajiban;
         $registrasi['reg_info_general_consent'] = request()->reg_info_general_consent;
         $registrasi['reg_info_carabayar'] = request()->reg_info_carabayar;
-
+        $registrasi['reg_cttn'] = request()->reg_cttn;
         return $registrasi;
     }
 
@@ -200,5 +200,6 @@ trait RanapRegistrationTrait
     {
         $data = $this->getDataPostRegistrationRanap($reg_no);
         RegistrationInap::where('reg_no', $reg_no)->update($data);
+        $this->updateRuangan($reg_no);
     }
 }
