@@ -373,17 +373,15 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-admisi">Purpose</label>
-                                            <select id="purpose" name="purpose" class="form-control select2bs4 {{ $errors->has('purpose') ? 'is-invalid' : '' }}">
-                                                <option value="Treatment" {{ "Treatment" == old("purpose") ? 'selected' : '' }}>
-                                                    Treatment
-                                                </option>
-                                                <option value="Parturition" {{ "Parturition" == old("purpose") ? 'selected' : '' }}>
-                                                    Parturition
-                                                </option>
-                                                <option value="New Born Baby" {{ "New Born Baby" == old("purpose") ? 'selected' : '' }}>
-                                                    New Born Baby
-                                                </option>
-                                            </select>
+                                            @if($registration->purpose)
+                                                <input type="text" id="purpose" name="purpose" class="form-control" value="{{ $registration->purpose }}" readonly>
+                                            @else
+                                                <select id="purpose" name="purpose" class="form-control select2bs4">
+                                                    <option value="Treatment">Treatment</option>
+                                                    <option value="Parturition">Parturition</option>
+                                                    <option value="New Born Baby">New Born Baby</option>
+                                                </select>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
