@@ -13,5 +13,11 @@ class PasienController extends Controller
     {
         return $this->getDataVisitHistoryPatient($medicalNo);
     }
-    public function webVisitHistory() {}
+    public function webVisitHistory($medicalNo)
+    {
+        if (request()->ajax()) {
+            $data = $this->getDataVisitHistoryPatient($medicalNo);
+            return response()->view("register.pages.visit-pasien.table-visit", compact('data'));
+        }
+    }
 }

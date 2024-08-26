@@ -123,8 +123,8 @@ trait MasterPasienTrait
                 'm_pasien.PatientName',
             )
             ->orderBy('reg_tgl', 'desc')
-            ->offset($offset) // Added pagination offset
-            ->limit($limit) // Added pagination limit
+            // ->offset($offset) // Added pagination offset
+            // ->limit($limit) // Added pagination limit
             ->get();
         return $data;
     }
