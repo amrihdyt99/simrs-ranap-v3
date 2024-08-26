@@ -39,6 +39,7 @@ class RegisterController extends Controller
         $data_bed = $this->getDataBedById($registration->bed ?? '');
         $pasien = $this->getPatientByMedicalRecord($registration->reg_medrec);
         $asal_pasien = $this->getRegistrationOrigin($registration->reg_lama);
+        $purpose = $registration->purpose;
         $context = [
             'pasien' => $pasien,
             'registration' => $registration,
@@ -51,6 +52,7 @@ class RegisterController extends Controller
             'bed' => $data['bed'],
             'icd10' => $data['icd10'],
             'cover_class' => $data['cover_class'],
+            'purpose' => $purpose,
             'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-'
         ];
         //dd($context['registration']);
@@ -207,16 +209,10 @@ class RegisterController extends Controller
 
     public function generateMRN()
     {
-        // Ambil MRN tertinggi dari database
+
         $latestMRN = DB::connection('mysql2')->table('m_pasien')->orderByDesc('MedicalNo')->first()->MedicalNo;
-
-        // Pisahkan MRN menjadi 4 bagian
         $parts = explode('-', $latestMRN);
-
-        // Tambahkan 1 pada bagian terakhir
         $parts[3] = str_pad((int)$parts[3] + 1, 2, '0', STR_PAD_LEFT);
-
-        // Gabungkan kembali menjadi format XX-XX-XX-XX
         $newMRN = implode('-', $parts);
 
         return $newMRN;
@@ -266,7 +262,6 @@ class RegisterController extends Controller
                     ->where(['MedicalNo' => $request->reg_medrec])
                     ->update($paramspasien);
             } else {
-                // Simpan pasien baru
                 DB::connection('mysql2')
                     ->table('m_pasien')
                     ->insert(array_merge($paramspasien, ['MedicalNo' => $request->reg_medrec]));
@@ -299,6 +294,7 @@ class RegisterController extends Controller
             $registrasi['reg_dokter'] = $request->reg_dokter;
             $registrasi['reg_no_dokumen'] = $request->reg_no_dokumen;
             $registrasi['departemen_asal'] = $request->departemen_asal;
+            $registrasi['purpose'] = $request->purpose;
             $registrasi['link_regis'] = $request->link_regis;
             $registrasi['reg_lama'] = $request->link_regis;
             $registrasi['reg_diagnosis'] = $request->reg_diagnosis;

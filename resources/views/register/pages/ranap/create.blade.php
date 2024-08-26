@@ -63,8 +63,8 @@
                                 </div>
                                 <div class="col-lg-10">
                                     <select id="mrn_category" name="mrn_category" class="form-control">
-                                        <option value="existing">MRN Dewasa</option>
-                                        <option value="newborn">MRN Bayi Baru Lahir</option>
+                                        <option value="existing">MRN Pasien</option>
+                                        <option value="newborn">MRN Pasien Baru</option>
                                     </select>
                                 </div>
                             </div>
@@ -88,7 +88,6 @@
                                     <input type="text" name="nama" id="nama" class="form-control" placeholder="Nama Pasien">
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <div class="col-lg-2">
                                     <label for="tempat_lahir" class="label-admisi">TTL</label>
@@ -100,7 +99,6 @@
                                     <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control">
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <div class="col-lg-2">
                                     <label for="jenis_kelamin" class="label-admisi">Jenis Kelamin</label>
@@ -108,8 +106,11 @@
                                 <div class="col-lg-4">
                                     <select id="jenis_kelamin" name="jenis_kelamin" class="form-control" disabled>
                                         <option value=""></option>
+                                        <option value="0001^X">Tidak Diketahui</option>
                                         <option value="0001^M">Laki-laki</option>
                                         <option value="0001^F">Perempuan</option>
+                                        <option value="0001^U">Tidak Dapat Ditentukan</option>
+                                        <option value="0001^N">Tidak Mengisi</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-2">
@@ -275,6 +276,25 @@
                                         </select>
                                     </div>
                                   </div>
+
+                                  <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="label-admisi">Purpose</label>
+                                        <select id="purpose" name="purpose" class="form-control select2bs4 {{ $errors->has('purpose') ? 'is-invalid' : '' }}">
+                                            <option value="Treatment" {{ "Treatment" == old("purpose") ? 'selected' : '' }}>
+                                                Treatment
+                                            </option>
+                                            <option value="Parturition" {{ "Parturition" == old("purpose") ? 'selected' : '' }}>
+                                                Parturition
+                                            </option>
+                                            <option value="New Born Baby" {{ "New Born Baby" == old("purpose") ? 'selected' : '' }}>
+                                                New Born Baby
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+
                                   <div class="col-lg-4">
                                     <div class="form-group">
                                         <label class="label-admisi">Link Registration</label>
