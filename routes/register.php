@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(function () {
     Route::get('/', [Ranap\RegisterController::class, 'index'])->name('register.ranap.index');
     Route::get('batal/{no}', [Ranap\RegisterController::class, 'batal_ranap'])->name('register.ranap.batal');
+   
+    Route::get('/api/generate-newborn-mrn', [RegisterController::class, 'generateNewbornMRN']);
 
+    // Route::get('/formnew', [Ranap\RegisterController::class, 'formRegisterInap'])->name('register.ranap.newpatient');
     Route::get('/form', [Ranap\RegisterController::class, 'formRegisterInap'])->name('register.ranap.create');
     Route::post('/form', [Ranap\RegisterController::class, 'storeRegisterInap'])->name('register.ranap.store');
     Route::get('/cetak/{reg_no}', [Ranap\RegisterController::class, 'cetakRegistrasi'])->where('reg_no', '(.*)')->name('register.ranap.cetak');
