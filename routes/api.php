@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
+use App\Http\Controllers\Master\PasienController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -190,5 +191,5 @@ Route::group(['prefix' => 'sphaira'], function () {
 });
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
-	Route::get('visit-history/{medicalRecord}', [RegisterController::class, 'getVisitHistory'])->name('visit.history');
+	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
 });
