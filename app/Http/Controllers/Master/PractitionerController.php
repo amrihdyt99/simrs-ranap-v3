@@ -103,7 +103,7 @@ class PractitionerController extends Controller
             'IsActive' => 1,
         ]);
 
-        return redirect()->route('master.practitioner.index')->with('success', 'Paramedic data has been added successfully!');
+        return redirect()->route('master.practitioner.index')->with('success', 'Data berhasil ditambah!');
     }
 
     public function edit($id)
@@ -143,7 +143,7 @@ class PractitionerController extends Controller
             'LastUpdatedDateTime' => Carbon::now(),
         ]);
 
-        return redirect()->route('master.practitioner.index')->with('success', 'Paramedic data has been updated successfully!');
+        return redirect()->route('master.practitioner.index')->with('success', 'Data berhasil di update!');
     }
 
 
