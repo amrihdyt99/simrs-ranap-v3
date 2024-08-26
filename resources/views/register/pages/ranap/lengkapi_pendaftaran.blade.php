@@ -112,11 +112,17 @@
                                                     disabled>
                                                     <option value=""></option>
                                                     @empty($pasien->GCSex)
+                                                    <option value="0001^X">Tidak Diketahui</option>
                                                     <option value="0001^M">Laki-laki</option>
                                                     <option value="0001^F">Perempuan</option>
+                                                    <option value="0001^U">Tidak Dapat Ditentukan</option>
+                                                    <option value="0001^N">Tidak Mengisi</option>
                                                     @else
+                                                    <option value="0001^X" {{ $pasien->GCSex === 'Unknown' ? 'selected' : '' }}>Tidak Diketahui</option>
                                                     <option value="0001^M" {{ $pasien->GCSex === 'Male' ? 'selected' : '' }}>Laki-laki</option>
                                                     <option value="0001^F" {{ $pasien->GCSex === 'Female' ? 'selected' : '' }}>Perempuan</option>
+                                                    <option value="0001^U" {{ $pasien->GCSex === 'Undertermined' ? 'selected' : '' }}>Tidak Dapat Ditentukan</option>
+                                                    <option value="0001^N" {{ $pasien->GCSex === 'Not Provided' ? 'selected' : '' }}>Tidak Mengisi</option>
                                                     @endempty
                                                 </select>
                                             </div>
@@ -359,6 +365,23 @@
                                                 <option
                                                     value="From Outpatient" {{ "From Outpatient"== $asal_pasien ? "selected" : "" }}>
                                                     From Outpatient
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label class="label-admisi">Purpose</label>
+                                            <select id="purpose" name="purpose" class="form-control select2bs4 {{ $errors->has('purpose') ? 'is-invalid' : '' }}">
+                                                <option value="Treatment" {{ "Treatment" == old("purpose") ? 'selected' : '' }}>
+                                                    Treatment
+                                                </option>
+                                                <option value="Parturition" {{ "Parturition" == old("purpose") ? 'selected' : '' }}>
+                                                    Parturition
+                                                </option>
+                                                <option value="New Born Baby" {{ "New Born Baby" == old("purpose") ? 'selected' : '' }}>
+                                                    New Born Baby
                                                 </option>
                                             </select>
                                         </div>
@@ -906,7 +929,6 @@
         });
     })
 </script>
-
 <script>
     function asal_pasien() {
         //get value departemen asal
@@ -932,7 +954,6 @@
             })
         }
     }
-
     function cariRMMaster() {
         sinkronData("tester")
         //ajax with header to get data from http://rsud.sumselprov.go.id/master-simrs/api/pasien/detail,
