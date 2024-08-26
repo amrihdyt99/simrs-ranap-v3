@@ -710,4 +710,9 @@ class RegisterController extends Controller
             abort(500, $throw->getMessage());
         }
     }
+
+    public function getVisitHistory($medicalNo)
+    {
+        return $this->getDataVisitHistoryPatient($medicalNo);
+    }
 }
