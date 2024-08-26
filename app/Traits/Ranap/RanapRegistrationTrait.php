@@ -143,7 +143,7 @@ trait RanapRegistrationTrait
         }
 
         $registrasi['reg_no'] = $reg_no;
-        $registrasi['reg_lama'] = $data_regisration->reg_lama;
+        // $registrasi['reg_lama'] = $data_regisration->reg_lama;
         $registrasi['reg_tgl'] = date('Y-m-d');
         $registrasi['reg_jam'] = date('H:i:s');
         $registrasi['bed'] = $data_bed->bed_id;
@@ -201,5 +201,34 @@ trait RanapRegistrationTrait
         $data = $this->getDataPostRegistrationRanap($reg_no);
         RegistrationInap::where('reg_no', $reg_no)->update($data);
         $this->updateRuangan($reg_no);
+    }
+
+    /**
+     * Get data patient origin from registration number
+     * @param string $reg_no The registration number of the patient.
+     * @return string The patient origin.
+     */
+    public function getDepartemenAsalPasien($reg_no)
+    {
+        if (!$reg_no) return null;
+        $split_by_slash = explode("/", $reg_no);
+        $departemen_asal = $split_by_slash[1];
+
+        $asal = "";
+        switch ($departemen_asal) {
+            case 'RI':
+                $asal = "Directly To The Inpatient";
+                break;
+            case 'RJ':
+                $asal = "From Outpatient";
+                break;
+            case 'ER':
+                $asal = "From Emergency";
+                break;
+            default:
+                $asal = "-";
+                break;
+        }
+        return $asal;
     }
 }

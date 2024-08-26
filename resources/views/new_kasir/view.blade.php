@@ -174,7 +174,7 @@
                 </div>
                 <div class="form-group">
                     <h6>Diagnosa</h6>
-                    <h3 id="bill_diagnosis">{{ $diagnosis->NM_ICD10 }}</h3>
+                    <h3 id="bill_diagnosis">{{ $diagnosis->NM_ICD10 ?? '-' }}</h3>
                 </div>
                 <div class="form-group">
                     <h6>Jenis Kunjungan</h6>

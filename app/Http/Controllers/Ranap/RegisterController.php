@@ -13,6 +13,7 @@ use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
 use App\Traits\HttpRequestTraits;
+use App\Traits\Master\MasterBedTraits;
 use App\Traits\Master\MasterPasienTrait;
 use App\Traits\Ranap\RanapRegistrationTrait;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    use RanapRegistrationTrait, MasterPasienTrait, HttpRequestTraits;
+    use RanapRegistrationTrait, MasterPasienTrait, HttpRequestTraits, MasterBedTraits;
 
     public function index(Request $request)
     {
@@ -35,6 +36,7 @@ class RegisterController extends Controller
     {
         $data = $this->getDataFormRegistration();
         $registration = $this->getDataRegistrationRanap($this->parseRegNoByUnderScore($reg_no));
+        $data_bed = $this->getDataBedById($registration->bed ?? '');
         $pasien = $this->getPatientByMedicalRecord($registration->reg_medrec);
         $asal_pasien = $this->getRegistrationOrigin($registration->reg_lama);
         $context = [
@@ -49,6 +51,7 @@ class RegisterController extends Controller
             'bed' => $data['bed'],
             'icd10' => $data['icd10'],
             'cover_class' => $data['cover_class'],
+            'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-'
         ];
         //dd($context['registration']);
         return  view('register.pages.ranap.lengkapi_pendaftaran', $context);
@@ -846,5 +849,11 @@ public function storeRegisterInap(Request $request)
             //dd($th->getMessage());
             abort(500, $throw->getMessage());
         }
+    }
+
+}
+    public function getVisitHistory($medicalNo)
+    {
+        return $this->getDataVisitHistoryPatient($medicalNo);
     }
 }
