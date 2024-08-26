@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rajal;
 use App\Http\Controllers\Controller;
 use App\Models\RegistrationInap;
 use App\Traits\Master\MasterPasienTrait;
+use App\Traits\Ranap\RanapRegistrationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Http;
 class RegistrationRajalController extends Controller
 {
 
-    use MasterPasienTrait;
+    use MasterPasienTrait, RanapRegistrationTrait;
     /**
      * * Menampilkan data registrasi pasien yang berasal dari rawat jalan
      */
@@ -56,6 +57,7 @@ class RegistrationRajalController extends Controller
                 $register_ranap->reg_no = $register_ranap->generateCode();
                 $register_ranap->reg_lama = request()->ranap_reg;
                 $register_ranap->reg_medrec = request()->reg_medrec;
+                $register_ranap->departemen_asal = $this->getDepartemenAsalPasien(request()->ranap_reg);
                 $register_ranap->reg_tgl = date('Y-m-d');
                 $register_ranap->reg_jam = date('H:i:s');
                 $register_ranap->reg_poli = request()->poli_kode_asal;

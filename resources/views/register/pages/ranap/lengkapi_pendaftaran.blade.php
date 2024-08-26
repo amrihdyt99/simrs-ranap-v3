@@ -281,6 +281,28 @@
                                             </div>
                                         </div>
                                     </div>
+
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h3>Visit History</h3>
+                                            <div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="date" name="" id="start_date" class="form-control">
+                                                    </div>
+                                                    <span>to</span>
+                                                    <div class="col">
+                                                        <input type="date" name="" id="end_date" class="form-control">
+                                                    </div>
+                                                    <div class="col">
+                                                        <button class="btn btn-primary" onclick="filterVisitHistory()" type="button">Filter</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="visit-history" class="mt-5"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-lg-6" id="readonly_">
@@ -355,10 +377,14 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label class="label-admisi">Bed Ranap </label>
+                                            <label class="label-admisi">Bed Ranap</label>
+                                            @empty($registration->bed)
                                             <select name="bed_id" id="bed_id" class="select2bs4 form-control">
-                                                <option value="">-- Pilih Bed --</option>
-                                            </select>
+                                                    <option value="">-- Pilih Bed --</option>
+                                                </select>
+                                                @else
+                                                <input type="text" class="form-control" readonly value="{{ $bed_name }}">
+                                                @endempty
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -508,7 +534,40 @@
 @endsection
 
 @push('nyaa_scripts')
+<script>
+    const medicalNo = "{{ $pasien->MedicalNo ?? '' }}";
+    
+    element_visit_history = document.getElementById('visit-history')
+    $(document).ready(function(){
+        let urls = "{{ route('pasien.web.visit.history', ':medicalRecord') }}"
+        urls = urls.replace(':medicalRecord', medicalNo)
+        $.ajax({
+            url: urls,
+            type: "GET",
+            success: function(res){
+                element_visit_history.innerHTML = res
+            }
+        })
+    })
 
+    function filterVisitHistory(){
+        event.preventDefault()
+    
+        let urls = "{{ route('pasien.web.visit.history', ':medicalRecord') }}"
+        urls = urls.replace(':medicalRecord', medicalNo)
+
+        const start_date = document.getElementById('start_date').value
+        const end_date = document.getElementById('end_date').value
+        urls = urls + `?start_date=${start_date}&end_date=${end_date}`
+        $.ajax({
+            url: urls,
+            type: "GET",
+            success: function(res){
+                element_visit_history.innerHTML = res
+            }
+        })
+    }
+</script>
 <script>
     function checkWNI() {
         var kategori = $('#kategori').val()
