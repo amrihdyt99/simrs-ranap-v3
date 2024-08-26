@@ -56,149 +56,167 @@
                         onsubmit="return confirm('Pastikan data yang di input sudah benar!')">
                       @csrf
                       <div class="row">
-                          <div class="col-lg-6 left-side">
-                              <div id="readonly">
-                                  <div class="form-group row">
-                                      <div class="col-lg-2">
-                                          <label for="col-form-label" class="label-admisi">No. Medrec </label>
-                                      </div>
-                                      <select id="reg_medrec" name="reg_medrec"
-                                      class="form-control {{ $errors->has('reg_medrec') ? " is-invalid" : "" }}">
-                                  <option>{{ old('reg_medrec') }}</option>
-                              </select>
-                                      <div class="col-lg-2">
-                                          <label for="col-form-label" class="label-admisi">Nama </label>
-                                      </div>
-                                      <input type="text" name="nama" id="nama" class="form-control col-lg-4" placeholder="Nama Pasien">
-                                  </div>
-                                  <div class="form-group row">
-                                      <div class="col-lg-2 pr-0">
-                                          <label for="col-form-label" class="label-admisi">TTL </label>
-                                      </div>
-                                      <div class="col-lg-10 pl-0 pr-0">
-                                          <div class="row">
-                                              <div class="col-lg-6">
-                                                  <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Tempat Lahir">
-                                              </div>
-                                              <div class="col-lg-6">
-                                                  <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control">
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <div class="row">
-                                      <div class="col-lg-6">
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">Jenis Kelamin</label>
-                                              </div>
-                                              <select id="jenis_kelamin" name="jenis_kelamin" class="form-control col-lg-8"
-                                                      disabled>
-                                                  <option value=""></option>
-                                                  <option value="0001^M">Laki-laki</option>
-                                                  <option value="0001^F">Perempuan</option>
-                                              </select>
-                                          </div>
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">NIK</label>
-                                              </div>
-                                              <input type="text" name="ssn" id="ssn" class="form-control col-lg-8" placeholder="Nomor SSN">
-                                          </div>
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">Pekerjaan</label>
-                                              </div>
-                                              <select id="pekerjaan" name="pekerjaan" class="form-control col-lg-8">
-                                                  <option value="X0012^01">Karyawan Swasta</option>
-                                                  <option value="X0012^02">Pegawai Negeri</option>
-                                                  <option value="X0012^03">Lainnya</option>
-                                                  <option value="X0012^04">Tidak Kerja</option>
-                                                  <option value="X0012^06">Wiraswasta / Dagang / Jasa</option>
-                                                  <option value="X0012^07">Petani / Nelayan</option>
-                                              </select>
-                                          </div>
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">Agama</label>
-                                              </div>
-                                              <select id="agama" name="agama" class="form-control col-lg-8">
-                                                <option value=""></option>
-                                                <option value="0006^BUD">Buddhist</option>
-                                                <option value="0006^CHR">Christian</option>
-                                                <option value="0006^CNF">Confucian (Kong Fu Cu)</option>
-                                                <option value="0006^CTH">Catholic</option>
-                                                <option value="0006^HIN">Hindu</option>
-                                                <option value="0006^MOS">Muslim</option>
-                                                <option value="0006^OTH">Other</option>
-                                            </select>
-                                          </div>
-                                      </div>
-                                      <div class="col-lg-6">
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">Status Nikah</label>
-                                              </div>
-                                              <select id="status_nikah" name="status_nikah" class="form-control col-lg-8" disabled>
-                                                  <option value="0002^M">Menikah</option>
-                                                  <option value="0002^S">Belum Menikah</option>
-                                              </select>
-                                          </div>
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">Pendidikan</label>
-                                              </div>
-                                              <select id="pendidikan" name="pendidikan" class="form-control col-lg-8">
-                                                  <option value=""></option>
+                        <div class="col-lg-6 left-side">
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="mrn_category" class="label-admisi">Kategori MRN</label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <select id="mrn_category" name="mrn_category" class="form-control">
+                                        <option value="existing">MRN Dewasa</option>
+                                        <option value="newborn">MRN Bayi Baru Lahir</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="reg_medrec" class="label-admisi">No. MRN</label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <select id="reg_medrec" name="reg_medrec" class="form-control {{ $errors->has('reg_medrec') ? ' is-invalid' : '' }}">
+                                        <option>{{ old('reg_medrec') }}</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                                                  <option value="X0013^01">TK</option>
-                                                  <option value="X0013^02">SD</option>
-                                                  <option value="X0013^03">SMP</option>
-                                                  <option value="X0013^04">SMA</option>
-                                                  <option value="X0013^05">D-1</option>
-                                                  <option value="X0013^06">D-3</option>
-                                                  <option value="X0013^07">S-1</option>
-                                                  <option value="X0013^08">S-2</option>
-                                                  <option value="X0013^09">S-3</option>
-                                              </select>
-                                          </div>
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">No. Telepon</label>
-                                              </div>
-                                              <input type="text" name="telepon_1" id="telepon_1" class="form-control col-lg-8" placeholder="Nomor Telepon">
-                                          </div>
-                                          <div class="form-group row">
-                                              <div class="col-lg-4">
-                                                  <label for="col-form-label" class="label-admisi">Gol. Darah</label>
-                                              </div>
-                                              <select id="gol_darah" name="gol_darah" class="form-control col-lg-4" disabled>
-                                                <option value="X0009^N/A">Pilih Gol. Darah</option>
-                                                <option value="X0009^A">A</option>
-                                                <option value="X0009^B">B</option>
-                                                <option value="X0009^O">O</option>
-                                                <option value="X0009^AB">AB</option>
-                                            </select>
-                                            <select id="rhesus" name="rhesus" class="form-control col-lg-4">
-                                                <option value=""></option>
-                                                <option value="+">+</option>
-                                                <option value="-">-</option>
-                                            </select>
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <div class="row">
-                                      <div class="col">
-                                          <div class="form-group row">
-                                              <div class="col-lg-2">
-                                                  <label for="col-form-label" class="label-admisi">Alamat Lengkap</label>
-                                              </div>
-                                              <textarea name="alamat" rows="4" class="form-control col-lg-10"></textarea>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="nama" class="label-admisi">Nama</label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <input type="text" name="nama" id="nama" class="form-control" placeholder="Nama Pasien">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="tempat_lahir" class="label-admisi">TTL</label>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Tempat Lahir">
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="jenis_kelamin" class="label-admisi">Jenis Kelamin</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select id="jenis_kelamin" name="jenis_kelamin" class="form-control" disabled>
+                                        <option value=""></option>
+                                        <option value="0001^M">Laki-laki</option>
+                                        <option value="0001^F">Perempuan</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label for="ssn" class="label-admisi">NIK</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input type="text" name="ssn" id="ssn" class="form-control" placeholder="Nomor SSN">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="pekerjaan" class="label-admisi">Pekerjaan</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select id="pekerjaan" name="pekerjaan" class="form-control">
+                                        <option value="X0012^01">Karyawan Swasta</option>
+                                        <option value="X0012^02">Pegawai Negeri</option>
+                                        <option value="X0012^03">Lainnya</option>
+                                        <option value="X0012^04">Tidak Kerja</option>
+                                        <option value="X0012^06">Wiraswasta / Dagang / Jasa</option>
+                                        <option value="X0012^07">Petani / Nelayan</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label for="agama" class="label-admisi">Agama</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select id="agama" name="agama" class="form-control">
+                                        <option value=""></option>
+                                        <option value="0006^BUD">Buddhist</option>
+                                        <option value="0006^CHR">Christian</option>
+                                        <option value="0006^CNF">Confucian (Kong Fu Cu)</option>
+                                        <option value="0006^CTH">Catholic</option>
+                                        <option value="0006^HIN">Hindu</option>
+                                        <option value="0006^MOS">Muslim</option>
+                                        <option value="0006^OTH">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="status_nikah" class="label-admisi">Status Nikah</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select id="status_nikah" name="status_nikah" class="form-control" disabled>
+                                        <option value="0002^M">Menikah</option>
+                                        <option value="0002^S">Belum Menikah</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label for="pendidikan" class="label-admisi">Pendidikan</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select id="pendidikan" name="pendidikan" class="form-control">
+                                        <option value=""></option>
+                                        <option value="X0013^01">TK</option>
+                                        <option value="X0013^02">SD</option>
+                                        <option value="X0013^03">SMP</option>
+                                        <option value="X0013^04">SMA</option>
+                                        <option value="X0013^05">D-1</option>
+                                        <option value="X0013^06">D-3</option>
+                                        <option value="X0013^07">S-1</option>
+                                        <option value="X0013^08">S-2</option>
+                                        <option value="X0013^09">S-3</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="telepon_1" class="label-admisi">No. Telepon</label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <input type="text" name="telepon_1" id="telepon_1" class="form-control" placeholder="Nomor Telepon">
+                                </div>
+                                <div class="col-lg-2">
+                                    <label for="gol_darah" class="label-admisi">Gol. Darah</label>
+                                </div>
+                                <div class="col-lg-2">
+                                    <select id="gol_darah" name="gol_darah" class="form-control" disabled>
+                                        <option value="X0009^N/A">Pilih Gol. Darah</option>
+                                        <option value="X0009^A">A</option>
+                                        <option value="X0009^B">B</option>
+                                        <option value="X0009^O">O</option>
+                                        <option value="X0009^AB">AB</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <select id="rhesus" name="rhesus" class="form-control">
+                                        <option value=""></option>
+                                        <option value="+">+</option>
+                                        <option value="-">-</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-2">
+                                    <label for="alamat" class="label-admisi">Alamat Lengkap</label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <textarea name="alamat" id="alamat" rows="4" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
                           <div class="col-lg-6" id="readonly_">
                               <div class="row">
                                   <div class="col-lg-12 mb-2">
@@ -552,58 +570,121 @@
                 }
             });
 
+
             $("#reg_medrec").select2({
-                theme: "bootstrap4",
-                placeholder: "Cari MRN",
-                ajax: {
-                    delay: 500,
-                    url: "{{ url('api/get-pasien') }}",
-                    //type:"POST",
-                    // url:"http://rsud.sumselprov.go.id/master-simrs/api/pasien/data",
-                    // headers: {
-                    //     "x-username" : "rsud_fatimah",
-                    //     "x-password" : "RsUdF4T!mah"
-                    // },
-                    data: function (params) {
-                        return {
-                            search: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.map((d) => {
-                                d.id = d.MedicalNo
-                                d.text = d.MedicalNo
-                                return d
-                            })
-                        }
-                    },
-                    // success:function(r){
-                    //     console.log("{{ old('medrec') }}")
-                    //     console.log(r)
-                    //     $("#medrec").val("{{ old('medrec') }}").trigger('change')
-                    // }
-                },
-                templateResult: function (data) {
-                    if (data.loading) {
-                        return data.text;
-                    }
-                    return `${data.MedicalNo} ${data.PatientName}`
-                },
-                templateSelection: function (data) {
-                    setDetailPasien(data)
-                    return data.text
+        theme: "bootstrap4",
+        placeholder: "Cari MRN",
+        ajax: {
+            delay: 500,
+            url: "{{ url('api/get-pasien') }}",
+            data: function (params) {
+                return {
+                    search: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map((d) => {
+                        d.id = d.MedicalNo
+                        d.text = d.MedicalNo
+                        return d
+                    })
+                };
+            }
+        },
+        templateResult: function (data) {
+            if (data.loading) {
+                return data.text;
+            }
+            return `${data.MedicalNo} ${data.PatientName}`;
+        },
+        templateSelection: function (data) {
+            setDetailPasien(data);
+            return data.text;
+        }
+    });
+
+    // Mengatur ulang Select2 berdasarkan kategori MRN
+    $("#mrn_category").change(function () {
+        const selectedCategory = $(this).val();
+
+        if (selectedCategory === 'existing') {
+            $("#reg_medrec").prop("disabled", false);
+            $("#reg_medrec").select2('open');
+        } else if (selectedCategory === 'newborn') {
+            $("#reg_medrec").prop("disabled", true);
+            // Handle MRN bayi baru lahir logic here
+            $.ajax({
+                url: "{{ url('api/generate-newborn-mrn') }}",
+                success: function (result) {
+                    $("#reg_medrec").val(result).trigger('change');
                 }
             });
+        }
+    });
 
-            @if(old('reg_medrec'))
-            $.ajax({
-                url: "{{ url('api/get-pasien') }}?search={{ old('reg_medrec') }}",
-                success: function (result) {
-                    setDetailPasien(result[0])
-                }
-            })
-            @endif
+    @if(old('reg_medrec'))
+    $.ajax({
+        url: "{{ url('api/get-pasien') }}?search={{ old('reg_medrec') }}",
+        success: function (result) {
+            setDetailPasien(result[0]);
+        }
+    });
+    @endif
+
+
+            // $("#reg_medrec").select2({
+            //     theme: "bootstrap4",
+            //     placeholder: "Cari MRN",
+            //     ajax: {
+            //         delay: 500,
+            //         url: "{{ url('api/get-pasien') }}",
+            //         //type:"POST",
+            //         // url:"http://rsud.sumselprov.go.id/master-simrs/api/pasien/data",
+            //         // headers: {
+            //         //     "x-username" : "rsud_fatimah",
+            //         //     "x-password" : "RsUdF4T!mah"
+            //         // },
+            //         data: function (params) {
+            //             return {
+            //                 search: params.term
+            //             };
+            //         },
+            //         processResults: function (data) {
+            //             return {
+            //                 results: data.map((d) => {
+            //                     d.id = d.MedicalNo
+            //                     d.text = d.MedicalNo
+            //                     return d
+            //                 })
+            //             }
+            //         },
+            //         // success:function(r){
+            //         //     console.log("{{ old('medrec') }}")
+            //         //     console.log(r)
+            //         //     $("#medrec").val("{{ old('medrec') }}").trigger('change')
+            //         // }
+            //     },
+            //     templateResult: function (data) {
+            //         if (data.loading) {
+            //             return data.text;
+            //         }
+            //         return `${data.MedicalNo} ${data.PatientName}`
+            //     },
+            //     templateSelection: function (data) {
+            //         setDetailPasien(data)
+            //         return data.text
+            //     }
+            // });
+
+            // @if(old('reg_medrec'))
+            // $.ajax({
+            //     url: "{{ url('api/get-pasien') }}?search={{ old('reg_medrec') }}",
+            //     success: function (result) {
+            //         setDetailPasien(result[0])
+            //     }
+            // })
+            // @endif
 
 
             function setDetailPasien(data) {
