@@ -377,10 +377,14 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label class="label-admisi">Bed Ranap </label>
+                                            <label class="label-admisi">Bed Ranap</label>
+                                            @empty($registration->bed)
                                             <select name="bed_id" id="bed_id" class="select2bs4 form-control">
-                                                <option value="">-- Pilih Bed --</option>
-                                            </select>
+                                                    <option value="">-- Pilih Bed --</option>
+                                                </select>
+                                                @else
+                                                <input type="text" class="form-control" readonly value="{{ $bed_name }}">
+                                                @endempty
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
