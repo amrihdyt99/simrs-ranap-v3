@@ -206,128 +206,128 @@ class RegisterController extends Controller
     }
 
     public function generateMRN()
-{
-    // Ambil MRN tertinggi dari database
-    $latestMRN = DB::connection('mysql2')->table('m_pasien')->orderByDesc('MedicalNo')->first()->MedicalNo;
+    {
+        // Ambil MRN tertinggi dari database
+        $latestMRN = DB::connection('mysql2')->table('m_pasien')->orderByDesc('MedicalNo')->first()->MedicalNo;
 
-    // Pisahkan MRN menjadi 4 bagian
-    $parts = explode('-', $latestMRN);
+        // Pisahkan MRN menjadi 4 bagian
+        $parts = explode('-', $latestMRN);
 
-    // Tambahkan 1 pada bagian terakhir
-    $parts[3] = str_pad((int)$parts[3] + 1, 2, '0', STR_PAD_LEFT);
+        // Tambahkan 1 pada bagian terakhir
+        $parts[3] = str_pad((int)$parts[3] + 1, 2, '0', STR_PAD_LEFT);
 
-    // Gabungkan kembali menjadi format XX-XX-XX-XX
-    $newMRN = implode('-', $parts);
+        // Gabungkan kembali menjadi format XX-XX-XX-XX
+        $newMRN = implode('-', $parts);
 
-    return $newMRN;
-}
+        return $newMRN;
+    }
 
-public function storeRegisterInap(Request $request)
-{
-    try {
+    public function storeRegisterInap(Request $request)
+    {
+        try {
 
-        $pasien = DB::connection('mysql2')
-        ->table('m_pasien')
-        ->where(['MedicalNo' => $request->reg_medrec])
-        ->first();
-
-
-        if ($request->mrn_category === 'newborn') {
-            $request->merge(['reg_medrec' => $this->generateMRN()]);
-        }
-        //update data pasien
-        $paramspasien = array(
-            'SSN' => $request->ssn,
-            'PatientName' => $request->nama,
-            // 'PatientCity' => $request->kota,
-            // 'PatientProvince' => $request->provinsi,
-            'PatientAddress' => $request->alamat,
-            'GCBloodType' => $request->gol_darah,
-            'BloodRhesus' => $request->rhesus,
-            // 'GCNationality' => $request->kebangsaan,
-            // 'GCRace' => $request->suku,
-            'GCOccupation' => $request->pekerjaan,
-            'GCReligion' => $request->agama,
-            'MobilePhoneNo1' => $request->telepon_1,
-            'CityOfBirth' => $request->tempat_lahir,
-            'DateOfBirth' => $request->tanggal_lahir,
-            'GCSex' => $request->jenis_kelamin,
-            'GCMaritalStatus' => $request->status_nikah,
-            'GCEducation' => $request->pendidikan,
-            'PatientAddress' => $request->alamat,
-
-        );
-
-        
-        if ($pasien) {
-            // Update data pasien
-            DB::connection('mysql2')
+            $pasien = DB::connection('mysql2')
                 ->table('m_pasien')
                 ->where(['MedicalNo' => $request->reg_medrec])
-                ->update($paramspasien);
-        } else {
-            // Simpan pasien baru
-            DB::connection('mysql2')
-                ->table('m_pasien')
-                ->insert(array_merge($paramspasien, ['MedicalNo' => $request->reg_medrec]));
+                ->first();
+
+
+            if ($request->mrn_category === 'newborn') {
+                $request->merge(['reg_medrec' => $this->generateMRN()]);
+            }
+            //update data pasien
+            $paramspasien = array(
+                'SSN' => $request->ssn,
+                'PatientName' => $request->nama,
+                // 'PatientCity' => $request->kota,
+                // 'PatientProvince' => $request->provinsi,
+                'PatientAddress' => $request->alamat,
+                'GCBloodType' => $request->gol_darah,
+                'BloodRhesus' => $request->rhesus,
+                // 'GCNationality' => $request->kebangsaan,
+                // 'GCRace' => $request->suku,
+                'GCOccupation' => $request->pekerjaan,
+                'GCReligion' => $request->agama,
+                'MobilePhoneNo1' => $request->telepon_1,
+                'CityOfBirth' => $request->tempat_lahir,
+                'DateOfBirth' => $request->tanggal_lahir,
+                'GCSex' => $request->jenis_kelamin,
+                'GCMaritalStatus' => $request->status_nikah,
+                'GCEducation' => $request->pendidikan,
+                'PatientAddress' => $request->alamat,
+
+            );
+
+
+            if ($pasien) {
+                // Update data pasien
+                DB::connection('mysql2')
+                    ->table('m_pasien')
+                    ->where(['MedicalNo' => $request->reg_medrec])
+                    ->update($paramspasien);
+            } else {
+                // Simpan pasien baru
+                DB::connection('mysql2')
+                    ->table('m_pasien')
+                    ->insert(array_merge($paramspasien, ['MedicalNo' => $request->reg_medrec]));
+            }
+            $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => $request->bed_id])->first();
+
+            $tgl_lahir = DB::connection('mysql2')->table('m_pasien')->where('MedicalNo', $request->reg_medrec)->first()->DateOfBirth;
+            $date1 = date_create($tgl_lahir);
+            $date2 = date_create(date('Y-m-d'));
+            $diff = date_diff($date1, $date2);
+            $tahun = $diff->y;
+            $bulan = $diff->m;
+            $hari = $diff->d;
+            if ($tahun == 0 && $bulan == 0 && $hari <= 28) {
+                $kategori = "A";
+            } elseif ($tahun <= 17) {
+                $kategori = "R";
+            } else {
+                $kategori = "D";
+            }
+
+            $registerNumber = RegistrationInap::generateCode();
+            $registrasi['reg_no'] = $registerNumber;
+            $registrasi['reg_tgl'] = date('Y-m-d');
+            $registrasi['reg_jam'] = date('H:i:s');
+            $registrasi['bed'] = $data_bed->bed_id;
+            $registrasi['room_class'] = $data_bed->class_code;
+            $registrasi['service_unit'] = $data_bed->service_unit_id;
+            $registrasi['reg_cara_bayar'] = $request->reg_cara_bayar;
+            $registrasi['reg_dokter'] = $request->reg_dokter;
+            $registrasi['reg_no_dokumen'] = $request->reg_no_dokumen;
+            $registrasi['departemen_asal'] = $request->departemen_asal;
+            $registrasi['link_regis'] = $request->link_regis;
+            $registrasi['reg_lama'] = $request->link_regis;
+            $registrasi['reg_diagnosis'] = $request->reg_diagnosis;
+            $registrasi['reg_medrec'] = $request->reg_medrec;
+            $registrasi['reg_class'] = $request->reg_class;
+            $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat ?? '-';
+            $registrasi['reg_pjawab_nohp'] = $request->reg_pjawab_nohp;
+            $registrasi['reg_pjawab_hub'] = $request->reg_hub_pasien;
+            $registrasi['reg_ketersidaan_kamar'] = $request->reg_ketersidaan_kamar;
+            $registrasi['reg_info_kewajiban'] = $request->reg_info_hak_kewajiban;
+            $registrasi['reg_info_general_consent'] = $request->reg_info_general_consent;
+            $registrasi['reg_info_carabayar'] = $request->reg_info_carabayar;
+            // $registrasi['reg_kategori'] = $kategori; // belum ada kolom kategori di database
+            RegistrationInap::create($registrasi);
+
+            //update data ruangan
+            $paramruangan = array(
+                'registration_no' => $registerNumber,
+                'bed_status' => '0116^O'
+            );
+            $updateruangan = DB::connection('mysql2')
+                ->table('m_bed')
+                ->where(['bed_id' => $request->bed_id])
+                ->update($paramruangan);
+            return redirect()->route('register.ranap.index');
+        } catch (\Throwable $th) {
+            throw $th;
         }
-        $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => $request->bed_id])->first();
-
-        $tgl_lahir = DB::connection('mysql2')->table('m_pasien')->where('MedicalNo', $request->reg_medrec)->first()->DateOfBirth;
-        $date1 = date_create($tgl_lahir);
-        $date2 = date_create(date('Y-m-d'));
-        $diff = date_diff($date1, $date2);
-        $tahun = $diff->y;
-        $bulan = $diff->m;
-        $hari = $diff->d;
-        if ($tahun == 0 && $bulan == 0 && $hari <= 28) {
-            $kategori = "A";
-        } elseif ($tahun <= 17) {
-            $kategori = "R";
-        } else {
-            $kategori = "D";
-        }
-
-        $registerNumber = RegistrationInap::generateCode();
-        $registrasi['reg_no'] = $registerNumber;
-        $registrasi['reg_tgl'] = date('Y-m-d');
-        $registrasi['reg_jam'] = date('H:i:s');
-        $registrasi['bed'] = $data_bed->bed_id;
-        $registrasi['room_class'] = $data_bed->class_code;
-        $registrasi['service_unit'] = $data_bed->service_unit_id;
-        $registrasi['reg_cara_bayar'] = $request->reg_cara_bayar;
-        $registrasi['reg_dokter'] = $request->reg_dokter;
-        $registrasi['reg_no_dokumen'] = $request->reg_no_dokumen;
-        $registrasi['departemen_asal'] = $request->departemen_asal;
-        $registrasi['link_regis'] = $request->link_regis;
-        $registrasi['reg_lama'] = $request->link_regis;
-        $registrasi['reg_diagnosis'] = $request->reg_diagnosis;
-        $registrasi['reg_medrec'] = $request->reg_medrec;
-        $registrasi['reg_class'] = $request->reg_class;
-        $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat ?? '-';
-        $registrasi['reg_pjawab_nohp'] = $request->reg_pjawab_nohp;
-        $registrasi['reg_pjawab_hub'] = $request->reg_hub_pasien;
-        $registrasi['reg_ketersidaan_kamar'] = $request->reg_ketersidaan_kamar;
-        $registrasi['reg_info_kewajiban'] = $request->reg_info_hak_kewajiban;
-        $registrasi['reg_info_general_consent'] = $request->reg_info_general_consent;
-        $registrasi['reg_info_carabayar'] = $request->reg_info_carabayar;
-        // $registrasi['reg_kategori'] = $kategori; // belum ada kolom kategori di database
-        RegistrationInap::create($registrasi);
-
-        //update data ruangan
-        $paramruangan = array(
-            'registration_no' => $registerNumber,
-            'bed_status' => '0116^O'
-        );
-        $updateruangan = DB::connection('mysql2')
-            ->table('m_bed')
-            ->where(['bed_id' => $request->bed_id])
-            ->update($paramruangan);
-        return redirect()->route('register.ranap.index');
-    } catch (\Throwable $th) {
-        throw $th;
     }
-        }
     /*
 
     */
@@ -429,7 +429,6 @@ public function storeRegisterInap(Request $request)
     // }
 
     public function getPasien(Request $request)
-    
     {
         $search = $request->query("search", "");
         $pasien = Pasien::where("MedicalNo", "like", "%$search%")
@@ -851,7 +850,6 @@ public function storeRegisterInap(Request $request)
         }
     }
 
-}
     public function getVisitHistory($medicalNo)
     {
         return $this->getDataVisitHistoryPatient($medicalNo);
