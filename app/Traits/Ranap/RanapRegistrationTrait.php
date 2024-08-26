@@ -125,9 +125,10 @@ trait RanapRegistrationTrait
     public function getDataPostRegistrationRanap($reg_no = "")
     {
 
-        $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => request()->bed_id])->first();
+        $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
+        if ($data_registration->bed) $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => $data_registration->bed])->first();
+        else $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => request()->bed_id])->first();
         $tgl_lahir = DB::connection('mysql2')->table('m_pasien')->where('MedicalNo', request()->reg_medrec)->first()->DateOfBirth;
-        $data_regisration = RegistrationInap::where('reg_no', $reg_no)->first();
         $date1 = date_create($tgl_lahir);
         $date2 = date_create(date('Y-m-d'));
         $diff = date_diff($date1, $date2);
