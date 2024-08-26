@@ -851,6 +851,7 @@ public function storeRegisterInap(Request $request)
         }
     }
 
+}
     public function getVisitHistory($medicalNo)
     {
         return $this->getDataVisitHistoryPatient($medicalNo);
