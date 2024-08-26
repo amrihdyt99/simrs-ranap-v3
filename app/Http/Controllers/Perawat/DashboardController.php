@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Perawat;
 
 use App\Http\Controllers\Controller;
 use App\Models\RegistrationInap;
+use App\Traits\HttpRequestTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
+    use HttpRequestTraits;
 
     public function index(Request $request)
     {
@@ -21,6 +23,8 @@ class DashboardController extends Controller
 
     public function ajax_index($request)
     {
+        $business_partner = (object)$this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business')['data'] ?? [];
+
         $datamypatient = DB::connection('mysql2')
             ->table("m_registrasi")
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -48,6 +52,10 @@ class DashboardController extends Controller
 
         return DataTables()
             ->of($datamypatient)
+            ->editColumn('reg_cara_bayar', function ($query) use ($business_partner) {
+                $partner = collect($business_partner)->firstWhere('BusinessPartnerID', $query->reg_cara_bayar);
+                return $partner ? $partner['BusinessPartnerName'] : '-';
+            })
             ->editColumn('aksi_data', function ($query) use ($request) {
                 return ('<a href="'
                     . route('perawat.patient.summary-v2', ['reg_no' => $query->reg_no])
