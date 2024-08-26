@@ -4,6 +4,7 @@ namespace App\Traits\Master;
 
 use App\Models\Pasien;
 use App\Traits\HttpRequestTraits;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -93,5 +94,38 @@ trait MasterPasienTrait
             throw $th;
             // dd($th);
         }
+    }
+
+
+    public function getDataVisitHistoryPatient($medical_record_number)
+    {
+        $queryParams = request()->query();
+        $page = $queryParams['page'] ?? 1;
+        $limit = $queryParams['limit'] ?? 10;
+        $offset = ($page - 1) * $limit;
+        $start_date = $queryParams['start_date'] ?? Carbon::now()->subMonth()->format('Y-m-d');
+        $end_date = $queryParams['end_date'] ?? Carbon::now()->format('Y-m-d');
+
+        $data = DB::connection('mysql2')->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where('reg_medrec', $medical_record_number)
+            ->whereBetween('reg_tgl', [$start_date, $end_date]) // Added date filtering
+            ->select(
+                'm_registrasi.reg_no',
+                'm_registrasi.reg_medrec',
+                'm_registrasi.reg_lama',
+                'm_registrasi.reg_tgl',
+                'm_registrasi.reg_jam',
+                'm_registrasi.departemen_asal as asal_pasien',
+                // 'm_registrasi.reg_dokter',
+                'm_paramedis.ParamedicName as dokter',
+                'm_pasien.PatientName',
+            )
+            ->orderBy('reg_tgl', 'desc')
+            ->offset($offset) // Added pagination offset
+            ->limit($limit) // Added pagination limit
+            ->get();
+        return $data;
     }
 }

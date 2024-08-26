@@ -188,3 +188,7 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('icd10', [ApiMasterController::class, 'icd_10'])->name('sphaira.i10');
 	Route::get('tdd/{id}', [ApiMasterController::class, 'get_ttd'])->name('sphaira.ttd');
 });
+
+Route::prefix('pasien')->name('pasien.')->group(function () {
+	Route::get('visit-history/{medicalRecord}', [RegisterController::class, 'getVisitHistory'])->name('visit.history');
+});
