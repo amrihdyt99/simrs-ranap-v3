@@ -21,7 +21,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('master.practitioner.update', $paramedic->ParamedicID) }}" method="POST">
+                                <form action="{{ route('master.practitioner.update', $paramedic->ParamedicID) }}" method="POST" id="practitioner_form">
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
@@ -216,7 +216,7 @@
 
                                     <!-- Add remaining fields in similar manner -->
                                     
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" id="submit_button" class="btn btn-primary">Update</button>
                                 </form>
                             </div>
                         </div>
@@ -237,6 +237,12 @@
         // Initialize Select2 Elements
         $('.select2bs4').select2({
             theme: 'bootstrap4'
+        });
+
+        document.getElementById('practitioner_form').addEventListener('submit', function() {
+            let submitButton = document.getElementById('submit_button');
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Update...'; 
         });
     </script>
 @endpush

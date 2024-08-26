@@ -161,11 +161,11 @@
                             _token: $("meta[name='csrf-token']").attr('content')
                         },
                         success: function(response) {
-                            Swal.fire('Berhasil!', response.success, 'success');
+                            neko_d_custom_success(response.success);
                             $('#paramedic_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error, 'error');
+                            neko_d_custom_error(response.responseJSON.error);
                         }
                     });
                 }
@@ -194,15 +194,20 @@
                             _token: $("meta[name='csrf-token']").attr('content')
                         },
                         success: function(response) {
-                            Swal.fire('Berhasil!', response.success, 'success');
+                            neko_d_custom_success(response.success);
                             $('#paramedic_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error, 'error');
+                            neko_d_custom_error(response.responseJSON.error);
                         }
                     });
                 }
             });
         }
     </script>
+    @if (session('success'))
+        <script>
+            neko_notify('success', '{{ session('success') }}');
+        </script>
+    @endif
 @endpush

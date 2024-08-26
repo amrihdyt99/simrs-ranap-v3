@@ -88,7 +88,7 @@ class OrganizationController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'Organization data has been added successfully!'
+            'success' => 'Data berhasil ditambah!'
         ]);
     }
 
@@ -115,7 +115,7 @@ class OrganizationController extends Controller
         ]);
 
         return response()->json([
-            'success' => 'Organization data has been updated successfully!'
+            'success' => 'Data berhasil diubah!'
         ]);
     }
 
@@ -138,11 +138,11 @@ class OrganizationController extends Controller
         $organization = Organization::find($id);
 
         if (!$organization) {
-            return response()->json(['error' => 'Organization tidak ditemukan'], 404);
+            return response()->json(['error' => 'Data tidak ditemukan'], 404);
         }
 
         if ($organization->IsDeleted == 1) {
-            return response()->json(['error' => 'Data sudah di hapus tidak bisa di aktifkan'], 400);
+            return response()->json(['error' => 'Data sudah dihapus tidak bisa di aktifkan'], 400);
         }
 
         $newStatus = $organization->IsActive == 1 ? 0 : 1;

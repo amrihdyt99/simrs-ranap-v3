@@ -33,9 +33,9 @@ class BedController extends Controller
 
         if ($request->has('is_temporary') && $request->is_temporary !== '') {
             if ($request->is_temporary == '1') {
-                $bedQuery->whereNotNull('is_temporary');
+                $bedQuery->where('is_temporary',1);
             } else if ($request->is_temporary == '0') {
-                $bedQuery->whereNull('is_temporary');
+                $bedQuery->where('is_temporary',0);
             }
         }
 
@@ -53,6 +53,13 @@ class BedController extends Controller
                 $bedQuery->where('is_active', 1);
             } else if ($request->is_active == '0') {
                 $bedQuery->where('is_active', 0);
+            }
+        }
+        if ($request->has('bed_status') && $request->bed_status !== '') {
+            if ($request->bed_status == 'ready') {
+                $bedQuery->where('bed_status', 'ready');
+            } else if ($request->bed_status == '0116^O') {
+                $bedQuery->where('bed_status', '0116^O');
             }
         }
 
@@ -89,7 +96,7 @@ class BedController extends Controller
                 return $query->registration ? $query->registration->reg_no : '';
             })
             ->editColumn('medrec', function ($query) {
-                return $query->registration ? $query->registration->medrec : '';
+                return $query->registration ? $query->registration->reg_medrec : '';
             })
             ->editColumn('RoomName', function ($query) {
                 return $query->room ? $query->room->RoomName : '';
@@ -113,16 +120,16 @@ class BedController extends Controller
     public function store(Request $request)
     {
         $input = $request->validate([
-            'bed_id' => ['required'],
             'service_unit_id' => ['required'],
             'room_id' => ['required'],
             'class_code' => ['required'],
             'site_code' => ['required'],
         ]);
 
+        $input['is_temporary'] = '0';
         $input['is_active'] = '1';
         $input['bed_status'] = 'ready';
-        $input['bed_code'] = $request->bed_code;
+        $input['gc_type_of_bed'] = $request->gc_type_of_bed;
         $input['last_updated_by'] = auth()->user()->id;
         $input['last_updated_datetime'] = Carbon::now();
         $input['created_date_time'] = Carbon::now();
@@ -148,13 +155,14 @@ class BedController extends Controller
         $bed = Bed::where('bed_id', $id)->first();
 
         $input = $request->validate([
-            'bed_id' => 'required',
             'service_unit_id' => 'required',
             'room_id' => 'required',
             'class_code' => 'required',
+            'site_code' => 'required',
+            'is_temporary' => 'required',
         ]);
 
-        $input['bed_code'] = $request->bed_code;
+        $input['gc_type_of_bed'] = $request->gc_type_of_bed;
         $input['last_updated_by'] = auth()->user()->id;
         $input['last_updated_datetime'] = Carbon::now();
 
@@ -202,7 +210,7 @@ class BedController extends Controller
             return response()->json(['error' => 'Bed tidak ditemukan'], 404);
         }
 
-        if ($bed->IsDeleted == 1) {
+        if ($bed->is_deleted == 1) {
             return response()->json(['error' => 'Data sudah di hapus tidak bisa di aktifkan'], 404);
         }
 
