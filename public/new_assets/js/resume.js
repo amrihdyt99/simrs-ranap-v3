@@ -4,8 +4,6 @@ $.ajaxSetup({
     }
 });
 
-$dom = '';
-
 $('.btn-add-resume').click(function(){
     $('#modalResume').modal('show');
 });
