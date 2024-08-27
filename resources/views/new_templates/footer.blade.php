@@ -235,6 +235,27 @@
 
                         $('#btn-save-cpoe').attr('value', id);
                     }
+
+                    if (id == 'lab' || id == 'radiologi' || id == 'fisio' || id == 'lainnya') {
+                        $('[id="panel-'+id+'"] [class="row"]').hide()
+                        $('[id="panel-'+id+'"]').append(`
+                            <div id="row_loader">
+                                <div class="text-center">
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <div class="new_loader"></div>
+                                        </div>    
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h6 class="mt-2">Memuat data tindakan `+title+`</h6>     
+                                        </div>    
+                                    </div>   
+                                </div>    
+                            </div>
+                        `)
+                    }
+
                     //alert(id)
                     if (id == 'lab') {
                         //disini yang SOAP
@@ -246,10 +267,12 @@
                             data: {
                                 "type": "X0001^04",
                                 "class":classcode,
-
+                                "reg": regno
                             },
                             success: function(data) {
-                                // console.log(data.data);
+                                $('[id="panel-'+id+'"] [class="row"]').show()
+                                $('[id="panel-'+id+'"] #row_loader').remove()
+
                                 var dataJSON=data.data;
                                 for(var i=0;i<dataJSON.length;i++){
                                     $("#select-tindakan")
@@ -292,10 +315,12 @@
                             data: {
                                 "type": "X0001^05",
                                 "class":classcode,
-
+                                "reg": regno
                             },
 
                             success: function(data) {
+                                $('[id="panel-'+id+'"] [class="row"]').show()
+                                $('[id="panel-'+id+'"] #row_loader').remove()
 
                                 //console.log(data.data);
                                 var dataJSON=data.data;
@@ -322,7 +347,7 @@
                             data:{
                                 "id_cppt":id_cppt,
                                 "jenisorder":"radiologi",
-
+                                "reg": regno
                             },
                             success:function (data) {
                                 var dataJSON=data.data;
@@ -341,10 +366,12 @@
                             data: {
                                 "type": "X0001^08",
                                 "class":classcode,
-
+                                "reg": regno
                             },
 
                             success: function(data) {
+                                $('[id="panel-'+id+'"] [class="row"]').show()
+                                $('[id="panel-'+id+'"] #row_loader').remove()
                                 //console.log(data.data);
                                 var dataJSON=data.data;
                                 for(var i=0;i<dataJSON.length;i++){
@@ -387,10 +414,12 @@
                             data: {
                                 "type": "X0001^01",
                                 "class":classcode,
-
+                                "reg": regno
                             },
 
                             success: function(data) {
+                                $('[id="panel-'+id+'"] [class="row"]').show()
+                                $('[id="panel-'+id+'"] #row_loader').remove()
 
                                 //console.log(data.data);
                                 var dataJSON=data.data;
