@@ -4,8 +4,6 @@ $.ajaxSetup({
     }
 });
 
-$dom = '';
-
 //$('div[id*="panel-"]').hide();
 $('#panel-status-pasien').show();
 

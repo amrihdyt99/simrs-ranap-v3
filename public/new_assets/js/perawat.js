@@ -12,8 +12,6 @@ $('body').on('click', '#add-row-asuhan-dewasa', function() {
     $('#t_asuhan_gizi_dewasa').append($tr_);
 });
 
-$dom = '';
-
 $('body').on('click', '#remove-row-asuhan-dewasa', function(){
     $code = $(this).attr('value');
 

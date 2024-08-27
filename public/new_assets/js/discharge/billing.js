@@ -4,8 +4,6 @@ $.ajaxSetup({
     }
 });
 
-$dom = '';
-
 $table_billing = $('#table-billing');
 
 $('#detail_billing').hide();
