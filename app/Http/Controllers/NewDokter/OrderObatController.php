@@ -122,16 +122,14 @@ class OrderObatController extends Controller
             $paramedic = getDataKeyValue(DB::connection('mysql2')->table('m_paramedis'), 'ParamedicCode', $request->dokter);
             $get_room_master = getDataKeyValue(
                 DB::connection('mysql2')
-                    ->table('m_registrasi as a')
-                    ->leftJoin('m_bed as b', 'a.reg_no', '=', 'b.registration_no')
-                    ->leftJoin('m_unit_departemen as c', 'c.ServiceUnitID', '=', 'b.service_unit_id')
-                    ->leftJoin('m_unit as d', 'c.ServiceUnitCode', '=', 'd.ServiceUnitCode'), 
-                'b.service_unit_id', 
+                    ->table('m_unit as a'), 
+                'a.ServiceUnitCode', 
                 $request->service_unit,
-                ['b.room_id', 'd.*']
+                ['a.*', DB::raw("(select ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode) as ServiceUnitID")]
             );
+            
             $service_room = [
-                'RoomID' => $get_room_master->room_id,
+                'RoomID' => $get_room_master->ServiceUnitID,
                 'RoomCode' => $get_room_master->ServiceUnitCode,
                 'RoomName' => $get_room_master->ServiceUnitName,
                 'IP' => null,
@@ -143,6 +141,15 @@ class OrderObatController extends Controller
                 'created_at' => "2021-12-19T15:52:24.000000Z",
                 'updated_at' => "2021-12-19T16:07:11.000000Z",
             ];
+
+            if (!isset($get_room_master->ServiceUnitCode)) {
+                return response()->json([
+                    'code' => 404,
+                    'success' => false,
+                    'message' => 'Data ruangan tidak ditemukan',
+                    'data' => $get_room_master
+                ]);
+            }
 
             $patient = getDataKeyValue(DB::connection('mysql2')->table('m_pasien'), 'MedicalNo', $request->medrec);
             $patient->Since = null;
