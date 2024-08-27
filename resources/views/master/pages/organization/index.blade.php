@@ -154,6 +154,8 @@
             let url = form.attr('action');
             let formData = new FormData(form[0]);
 
+            $('#createOrganizationButton').prop('disabled', true);
+
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -166,12 +168,15 @@
                 success: function(response) {
                     $('#createOrganizationModal').modal('hide');
                     $('#organization_table').DataTable().ajax.reload();
-                    Swal.fire('Success!', response.success, 'success');
+                    neko_d_custom_success(response.success);
                 },
                 error: function(response) {
-                    Swal.fire('Error!', response.responseJSON.error || 'An error occurred.',
-                        'error');
+                    neko_d_custom_error(response.responseJSON.error);
+                },
+                complete: function() {
+                    $('#createOrganizationButton').prop('disabled', false);
                 }
+
             });
         });
 
@@ -197,6 +202,8 @@
                 '#editOrganizationId').val());
             let formData = new FormData(form[0]);
 
+            $('#editOrganizationButton').prop('disabled', true);
+
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -210,10 +217,13 @@
                 success: function(response) {
                     $('#editOrganizationModal').modal('hide');
                     $('#organization_table').DataTable().ajax.reload();
-                    Swal.fire('Success!', response.success, 'success');
+                    neko_d_custom_success(response.success);
                 },
                 error: function(response) {
-                    Swal.fire('Error!', 'An error occurred. Please try again.', 'error');
+                    neko_d_custom_error(response.responseJSON.error);
+                },
+                complete: function() {
+                    $('#editOrganizationButton').prop('disabled', false);
                 }
             });
         });
@@ -243,12 +253,11 @@
                             _token: $("meta[name='csrf-token']").attr('content')
                         },
                         success: function(response) {
-                            Swal.fire('Berhasil!', response.success, 'success');
+                            neko_d_custom_success(response.success);
                             $('#organization_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error || 'An error occurred.',
-                                'error');
+                            neko_d_custom_error(response.responseJSON.error);
                         }
                     });
                 }
@@ -277,12 +286,11 @@
                             _token: $("meta[name='csrf-token']").attr('content')
                         },
                         success: function(response) {
-                            Swal.fire('Berhasil!', response.success, 'success');
+                            neko_d_custom_success(response.success);
                             $('#organization_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error || 'An error occurred.',
-                                'error');
+                            neko_d_custom_error(response.responseJSON.error);
                         }
                     });
                 }

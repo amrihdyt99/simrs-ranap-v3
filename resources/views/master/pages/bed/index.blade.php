@@ -52,6 +52,15 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-2">
+                        <div class="form-group">
+                            <select id="status_bed" class="form-control">
+                                <option value="" selected>Semua</option>
+                                <option value="ready">Ready</option>
+                                <option value="0116^O">Tidak Ready</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -108,6 +117,9 @@
             $('#status_active').change(function() {
                 $('#bed_table').DataTable().draw();
             });
+            $('#status_bed').change(function() {
+                $('#bed_table').DataTable().draw();
+            });
         });
 
         function load_data() {
@@ -128,6 +140,7 @@
                         d.is_deleted = $('#status_hapus').val();
                         d.is_temporary = $('#status_temporary').val();
                         d.is_active = $('#status_active').val();
+                        d.bed_status = $('#status_bed').val();
                     }
                 },
                 columns: [{
@@ -156,26 +169,20 @@
                         name: "bed_status"
                     },
                     {
-                        data: "bed_code",
-                        name: "bed_code"
+                        data: "gc_type_of_bed",
+                        name: "gc_type_of_bed"
                     },
                     {
                         data: "reg_no",
                         name: "registration.reg_no",
-                        orderable: false,
-                        searchable: false
                     },
                     {
                         data: "medrec",
-                        name: "registration.medrec",
-                        orderable: false,
-                        searchable: false
+                        name: "registration.reg_medrec",
                     },
                     {
                         data: "PatientName",
                         name: "registration.pasien.PatientName",
-                        orderable: false,
-                        searchable: false
                     }
                 ],
             });
@@ -204,51 +211,16 @@
                             _token: $("meta[name='csrf-token']").attr('content')
                         },
                         success: function(response) {
-                            Swal.fire('Berhasil!', response.success, 'success');
+                            neko_d_custom_success(response.success);
                             $('#bed_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error, 'error');
+                            neko_d_custom_error(response.responseJSON.error);
                         }
                     });
                 }
             });
         }
-
-        // function changeStatus(element, status) {
-        //     const id = $(element).data('id');
-        //     const url = '{{ route('master.bed.changeStatusActive', ':id') }}'.replace(':id', id);
-
-        //     Swal.fire({
-        //         title: 'Apakah Anda yakin?',
-        //         text: `Status akan diubah ${status === 1 ? 'menjadi Aktif' : 'menjadi Nonaktif'}.`,
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Ya, ubah!',
-        //         cancelButtonText: 'Batal'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             $.ajax({
-        //                 url: url,
-        //                 type: "PATCH",
-        //                 data: {
-        //                     is_active: status,
-        //                     _token: $("meta[name='csrf-token']").attr('content')
-        //                 },
-        //                 success: function(response) {
-        //                     Swal.fire('Berhasil!', response.success, 'success');
-        //                     $('#bed_table').DataTable().ajax.reload();
-        //                 },
-        //                 error: function(response) {
-        //                     Swal.fire('Gagal!', response.responseJSON.error, 'error');
-
-        //                 }
-        //             });
-        //         }
-        //     });
-        // }
 
         function changeStatus(element) {
             const id = $(element).data('id');
@@ -272,15 +244,20 @@
                             _token: $("meta[name='csrf-token']").attr('content')
                         },
                         success: function(response) {
-                            Swal.fire('Berhasil!', response.success, 'success');
+                            neko_d_custom_success(response.success);
                             $('#bed_table').DataTable().ajax.reload();
                         },
                         error: function(response) {
-                            Swal.fire('Gagal!', response.responseJSON.error, 'error');
+                            neko_d_custom_error(response.responseJSON.error);
                         }
                     });
                 }
             });
         }
     </script>
+    @if (session('success'))
+        <script>
+            neko_notify('success', '{{ session('success') }}');
+        </script>
+    @endif
 @endpush

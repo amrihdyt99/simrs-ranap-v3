@@ -125,9 +125,10 @@ trait RanapRegistrationTrait
     public function getDataPostRegistrationRanap($reg_no = "")
     {
 
-        $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => request()->bed_id])->first();
+        $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
+        if ($data_registration->bed) $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => $data_registration->bed])->first();
+        else $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => request()->bed_id])->first();
         $tgl_lahir = DB::connection('mysql2')->table('m_pasien')->where('MedicalNo', request()->reg_medrec)->first()->DateOfBirth;
-        $data_regisration = RegistrationInap::where('reg_no', $reg_no)->first();
         $date1 = date_create($tgl_lahir);
         $date2 = date_create(date('Y-m-d'));
         $diff = date_diff($date1, $date2);
@@ -143,7 +144,7 @@ trait RanapRegistrationTrait
         }
 
         $registrasi['reg_no'] = $reg_no;
-        $registrasi['reg_lama'] = $data_regisration->reg_lama;
+        // $registrasi['reg_lama'] = $data_regisration->reg_lama;
         $registrasi['reg_tgl'] = date('Y-m-d');
         $registrasi['reg_jam'] = date('H:i:s');
         $registrasi['bed'] = $data_bed->bed_id;
@@ -201,5 +202,34 @@ trait RanapRegistrationTrait
         $data = $this->getDataPostRegistrationRanap($reg_no);
         RegistrationInap::where('reg_no', $reg_no)->update($data);
         $this->updateRuangan($reg_no);
+    }
+
+    /**
+     * Get data patient origin from registration number
+     * @param string $reg_no The registration number of the patient.
+     * @return string The patient origin.
+     */
+    public function getDepartemenAsalPasien($reg_no)
+    {
+        if (!$reg_no) return null;
+        $split_by_slash = explode("/", $reg_no);
+        $departemen_asal = $split_by_slash[1];
+
+        $asal = "";
+        switch ($departemen_asal) {
+            case 'RI':
+                $asal = "Directly To The Inpatient";
+                break;
+            case 'RJ':
+                $asal = "From Outpatient";
+                break;
+            case 'ER':
+                $asal = "From Emergency";
+                break;
+            default:
+                $asal = "-";
+                break;
+        }
+        return $asal;
     }
 }

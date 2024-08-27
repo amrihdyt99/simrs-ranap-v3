@@ -21,7 +21,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('master.practitioner.store') }}" method="POST">
+                                <form action="{{ route('master.practitioner.store') }}" method="POST" id="practitioner_form">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-4">
@@ -204,7 +204,7 @@
 
                                     <!-- Add remaining fields in similar manner -->
                                     
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" id="submit_button" class="btn btn-primary">Simpan</button>
                                 </form>
                             </div>
                         </div>
@@ -225,6 +225,12 @@
         // Initialize Select2 Elements
         $('.select2bs4').select2({
             theme: 'bootstrap4'
+        });
+
+        document.getElementById('practitioner_form').addEventListener('submit', function() {
+            let submitButton = document.getElementById('submit_button');
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Menyimpan...'; 
         });
     </script>
 @endpush

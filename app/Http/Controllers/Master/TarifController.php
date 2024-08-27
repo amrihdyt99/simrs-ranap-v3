@@ -77,21 +77,40 @@ class TarifController extends Controller
     {
         $type = $request->type;
         $class = $request->class;
+        $reg = $request->reg;
 
-        $dataItem = DB::connection('mysql')
-            ->table('rs_m_item')
-            ->leftJoin("rs_m_item_tarif", "rs_m_item.ItemID", '=', 'rs_m_item_tarif.ItemID')
-            ->where([
-                'rs_m_item.GCItemType' => $type,
-                'rs_m_item_tarif.ClassCategoryCode' => $class,
-                'rs_m_item.IsActive' => '1',
-                'rs_m_item.IsDeleted' => '0',
-                // 'rs_m_item.Remarks ' => '0',
-            ])->get();
+        $reg = preg_replace('/\//', '_', $reg);
+        
+        if ($type == 'X0001^04') {
+            $type = 'LAB';
+        } else if ($type == 'X0001^05') {
+            $type = 'RAD';
+        } else if ($type == 'X0001^08') {
+            $type = 'FISIO';
+        } else {
+            $type = 'LAIN';
+        }
+        
+        $data = getService(urlSimrs().'api/emr/cpoe/data_all_item/'.$type.'/'.$reg.'?classParams='.$class);
 
         return response()->json([
-            'data' => $dataItem
+            'data' => json_decode($data)
         ]);
+
+        // $dataItem = DB::connection('mysql')
+        //     ->table('rs_m_item')
+        //     ->leftJoin("rs_m_item_tarif", "rs_m_item.ItemID", '=', 'rs_m_item_tarif.ItemID')
+        //     ->where([
+        //         'rs_m_item.GCItemType' => $type,
+        //         'rs_m_item_tarif.ClassCategoryCode' => $class,
+        //         'rs_m_item.IsActive' => '1',
+        //         'rs_m_item.IsDeleted' => '0',
+        //         // 'rs_m_item.Remarks ' => '0',
+        //     ])->get();
+
+        // return response()->json([
+        //     'data' => $dataItem
+        // ]);
     }
 
     public function data_tindakan(Request $request)
