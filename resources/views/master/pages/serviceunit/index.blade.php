@@ -7,13 +7,18 @@
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-sm-6">
+                    <div class="col-sm-10">
                         <h1>
-                            Service Unit
+                            Service Unit Room
                             <a href="{{ route('master.serviceunit.create') }}" class="btn btn-success rounded-circle">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </h1>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="tarikDataServiceUnitRoom" class="btn btn-primary">
+                            Tarik Data Service Unit Room
+                        </button>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -47,13 +52,8 @@
                                 <table id="service_unit" class="w-100 table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Service Unit Code</th>
-                                            <th>Service Unit Name</th>
-                                            <th>Short Name</th>
-                                            <th>Initial</th>
-                                            <th>Is Using Job Order</th>
-                                            {{-- <th>Patient Service Interval</th> --}}
-                                            <th>Is Bor</th>
+                                            <th>RoomID</th>
+                                            <th>ServiceUnitID</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -80,7 +80,6 @@
             load_data();
         });
 
-
         function load_data() {
             $('#service_unit').DataTable({
                 processing: true,
@@ -96,44 +95,14 @@
                     }
                 },
                 columns: [{
-                        data: "ServiceUnitCode",
-                        name: "ServiceUnitCode",
+                        data: "RoomID",
+                        name: "RoomID",
                         orderable: true,
                         searchable: true,
                     },
                     {
-                        data: "ServiceUnitName",
-                        name: "ServiceUnitName",
-                        orderable: true,
-                        searchable: true,
-                    },
-                    {
-                        data: "ShortName",
-                        name: "ShortName",
-                        orderable: true,
-                        searchable: true,
-                    },
-                    {
-                        data: "Initial",
-                        name: "Initial",
-                        orderable: true,
-                        searchable: true,
-                    },
-                    {
-                        data: "IsUsingJobOrder",
-                        name: "IsUsingJobOrder",
-                        orderable: true,
-                        searchable: true,
-                    },
-                    // {
-                    //     data: "PatientServiceInterval",
-                    //     name: "PatientServiceInterval",
-                    //     orderable: true,
-                    //     searchable: true,
-                    // },
-                    {
-                        data: "IsBor",
-                        name: "IsBor",
+                        data: "ServiceUnitID",
+                        name: "ServiceUnitID",
                         orderable: true,
                         searchable: true,
                     },
@@ -145,5 +114,30 @@
                 ],
             });
         }
+
+        $(document).ready(function() {
+            $('#tarikDataServiceUnitRoom').click(function() {
+                var $button = $(this);
+                $button.prop('disabled', true); 
+
+                $.ajax({
+                    url: "{{ url('tarik/unit_room') }}",
+                    method: 'GET',
+                    success: function(response) {
+                        alert('Data berhasil ditarik!');
+                        console.log(response);
+                        $('#service_unit').DataTable().ajax.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Terjadi kesalahan saat menarik data.');
+                        console.log(error);
+                    },
+                    complete: function() {
+                        $button.prop('disabled',
+                        false);
+                    }
+                });
+            });
+        });
     </script>
 @endpush
