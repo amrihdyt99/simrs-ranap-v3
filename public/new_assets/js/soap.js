@@ -4,8 +4,6 @@ $.ajaxSetup({
     }
 });   
 
-$dom = '';
-
     $("#modalSOAP").on("hidden.bs.modal", function(){
         $('div[id*="panel-"]').hide();
         $('#panel-soap').show();
