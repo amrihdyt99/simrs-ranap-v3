@@ -747,6 +747,7 @@ class RegisterController extends Controller
     public function storeLengkapiPendaftaran()
     {
         try {
+            dd(request()->all());
             $pasien = $this->getPatientByMedicalRecord(request()->reg_medrec);
             if (!$pasien) $this->createNewPatient();
             else $this->updatePasien();
