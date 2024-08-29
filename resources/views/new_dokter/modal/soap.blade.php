@@ -1,3 +1,9 @@
+<style>
+    .table_diagnosa tr td, .table_diagnosa tr th {
+        padding: 2px
+    }
+</style>
+
 <div class="modal fade" id="modalSOAP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xxl" role="document">
       <div class="modal-content">
@@ -28,12 +34,37 @@
                             {{-- <textarea class="form-control" id="assesment" rows="8" name="soapdok_assesment"></textarea> --}}
                             <div class="row">
                                 <div class="col">
-                                    <select name="pasien_diagnosis" id="select-diagnosa" onchange="pilih_diag()" style="width: 100%" class="form-control select2">
-                                        <option value="">-- Pilih Diagnosa Assesment --</option>
-                                    </select>
-                                    <hr>
-                                    <h6>Diagnosa dipilih :</h6>
-                                    <ul id="selected_diagnosis"></ul>
+                                    <table class="table table-striped table_diagnosa">
+                                        <tbody>
+                                            <tr>
+                                                <th>Diagnosa Utama</th>
+                                                <td>
+                                                    <select name="pasien_diagnosis" id="select-diagnosa-utama" category="utama" onchange="pilih_diag($(this).attr('category'), this.value)" style="width: 100%" class="form-control select2">
+                                                        <option value="">-- Pilih Diagnosa Utama --</option>
+                                                    </select>
+                                                    <div id="selected-diagnosa-utama" class="my-3 font-weight-bold"></div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Diagnosa Sekunder</th>
+                                                <td>
+                                                    <select name="pasien_diagnosis" id="select-diagnosa-sekunder" category="sekunder" onchange="pilih_diag($(this).attr('category'), this.value)" style="width: 100%" class="form-control select2">
+                                                        <option value="">-- Pilih Diagnosa Sekunder --</option>
+                                                    </select>
+                                                    <div id="selected-diagnosa-sekunder" class="my-3 font-weight-bold"></div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Diagnosa Klausa</th>
+                                                <td>
+                                                    <select name="pasien_diagnosis" id="select-diagnosa-klausa" category="klausa" onchange="pilih_diag($(this).attr('category'), this.value)" style="width: 100%" class="form-control select2">
+                                                        <option value="">-- Pilih Diagnosa Klausa --</option>
+                                                    </select>
+                                                    <div id="selected-diagnosa-klausa" class="my-3 font-weight-bold"></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -228,11 +259,13 @@
 @push('myscripts')
     <script>
         $(document).ready(function () {
-          loadCPOE();
-          icd9()
-          icd10()
-          get_diag()
-          get_pro()
+            loadCPOE();
+            icd9()
+            icd10('#select-diagnosa-utama')
+            icd10('#select-diagnosa-sekunder')
+            icd10('#select-diagnosa-klausa')
+            get_diag()
+            get_pro()
           
        
         })
@@ -287,23 +320,19 @@
 
         function get_diag(){
             const reg = $("[name='soapdok_reg']").val()
+
+            $('[id*="selected-diagnosa-"]').html('')
+            
             $.ajax({
                 type: "get",
                 url: "{{url('api/getDiagnosa')}}/"+ reg.replaceAll("/","_"),
                 dataType: "json",
                 success: function (r) {
-                    var opt = '';
-                    let idx = 1;
 					$.each(r, function(index, row) {
-                        let txt = idx++
-                        if (txt == 1) {
-                            opt += '<li>[' + row.ID_ICD10 + '] ' + row.NM_ICD10 + ' <span class="badge badge-primary">Utama</span> <span class="badge badge-danger" onclick="hapus_diag('+row.pdiag_id+')" style="cursor:pointer">X</span></li>';
-                        }else{
-                            opt += '<li>[' + row.ID_ICD10 + '] ' + row.NM_ICD10 + ' <span class="badge badge-danger" onclick="hapus_diag('+row.pdiag_id+')" style="cursor:pointer">X</span></li>';
-                        }
-						
+                        $('[id="selected-diagnosa-'+row.pdiag_kategori+'"]').html(`
+                            `+row.ID_ICD10+` | `+row.NM_ICD10+` <span type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</span>
+                        `)
 					});
-					$('#selected_diagnosis').html(opt);
                 }
             });
         }
@@ -319,7 +348,7 @@
 					$.each(r, function(index, row) {
                         let txt = idx++
                         if (txt == 1) {
-                            opt += '<li>[' + row.ID_TIND + '] ' + row.NM_TINDAKAN + ' <span class="badge badge-primary">Utama</span> <span class="badge badge-danger" onclick="hapus_prosedur('+row.pprosedur_id+')" style="cursor:pointer">X</span></li>';
+                            opt += '<li>[' + row.ID_TIND + '] ' + row.NM_TINDAKAN + '<span class="badge badge-danger" onclick="hapus_prosedur('+row.pprosedur_id+')" style="cursor:pointer">X</span></li>';
                         }else{
                             opt += '<li>[' + row.ID_TIND + '] ' + row.NM_TINDAKAN + ' <span class="badge badge-danger" onclick="hapus_prosedur('+row.pprosedur_id+')" style="cursor:pointer">X</span></li>';
                         }
@@ -330,18 +359,19 @@
             });
         }
 
-        function pilih_diag() {
-            const id = $('#select-diagnosa').val()
+        function pilih_diag(category = '', value = '') {
+            const id = value
             const reg = $("[name='soapdok_reg']").val()
             const dokter = "{{ auth()->user()->dokter_id}}";
             $.ajax({
                 type: "post",
                 url: "{{url('api/addDiagnosa')}}",
                 data: {
-                        "reg": reg.replaceAll("/","_"),
-                        "diagnosa": id,
-                        "pdiag_dokter":dokter,
-                    },
+                    "reg": reg.replaceAll("/","_"),
+                    "diagnosa": id,
+                    "pdiag_dokter":dokter,
+                    'pdiag_kategori': category,
+                },
                 dataType: "json",
                 error:function(){
                     neko_d_custom_error('Kesalahan Gagal Ditambah')
@@ -350,7 +380,7 @@
                     if(r.success == true){
                         get_diag()
                     }else{
-                        neko_d_custom_error('Diagnosa Sudah Ada')
+                        neko_d_custom_error('Diagnosa '+category+' Sudah Ada')
                     }
                 }
             });
@@ -380,8 +410,8 @@
             });
         }
         
-        function icd10() {
-            $('#select-diagnosa').select2({
+        function icd10(_id = '') {
+            $(_id).select2({
                 ajax: {
                     url: "{{url('api/sphaira/icd10')}}",
                     type: 'GET',
@@ -438,7 +468,6 @@
                         "id_cppt": id_cppt,
                     },
                     success: function (data) {
-                        //console.log(data)
                         var dataLab= data.dataLab
                         var dataradiologi = data.dataradiologi
                         var datafisio=data.datafisio
@@ -469,7 +498,23 @@
     <script>
         function simpanCppt(){
             var form = $('#form-cppt')[0];
-            //var data = new FormData(form);
+
+            let assesment_to_store = ''
+
+            $('[id*="selected-diagnosa-"]').each(function(i, item){
+                let assesment_text =  $(item).clone()  // Clone the element
+                    .children('span').remove()          // Remove the <span>
+                    .end()                              // Return to the cloned element
+                    .text()                             // Get the text content
+                    .trim()
+
+                if (assesment_text) {
+                    assesment_to_store += assesment_text +' <br>'
+                }
+            })
+            
+            // var data = new FormData(form);
+
             $.ajax({
                 url: "{{ route('add.soap.dokter') }}",
                 type: "POST",
@@ -478,7 +523,7 @@
                     "soapdok_id": $('#soapdok_id').val(),
                     "soapdok_subject": $('#subject').val(),
                     "soapdok_object": $('#object').val(),
-                    "soapdok_assesment": $('#assesment').val(),
+                    "soapdok_assesment": assesment_to_store,
                     "soapdok_planning": $('#planning_').html(),
                     "soapdok_instruksi": $('#instruksi').val(),
                     "soapdok_dokter":"{{ auth()->user()->dokter_id}}",
@@ -487,7 +532,6 @@
 
                 },
                 success: function (data) {
-                    console.log(data)
                     if(data.success == true){
                         $('#modalSOAP').modal('hide');
                         getSoapDokter()

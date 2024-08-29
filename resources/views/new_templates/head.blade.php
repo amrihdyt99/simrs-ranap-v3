@@ -18,6 +18,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css"  id="app-stylesheet" />
     <link rel="stylesheet" href="{{asset('')}}new_assets/css/select2.min.css">
     <style>
+      body {
+        color: black !important;
+      }
       .col-sm-2.col-form-label{
         text-align: right;
       }
