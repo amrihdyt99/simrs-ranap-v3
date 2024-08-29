@@ -18,7 +18,7 @@
           <button type="button" onclick="sinkronregister()" class="btn btn-danger">Sinkron Register</button>
         </div> -->
         <div class="col">
-          <form id="formStore" action="{{ route('register.vclaim.store') }}" method="POST"
+          <form id="formStore" action="{{ $config['form']->action }}" method="POST"
             onsubmit="return confirm('Pastikan data yang di input sudah benar!')">
             @csrf
             <div class="card">
@@ -38,27 +38,26 @@
                   <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">Business Partner</label>
                     <div class="col-sm-10">
-                      <select id="reg_cara_bayar" name="business_partner_id"
-                        class="form-control">
-                      </select>
+                      <input type="text" class="form-control" value="BPJS Kesehatan" disabled>
+                      <input type="text" class="form-control" value="2" name="business_partner_id" hidden>
                     </div>
                   </div>
                   <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">Registration No.</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" name="reg_no">
+                      <input type="text" class="form-control" name="reg_no" value="{{ $data->reg_no ?? '' }}" {{ isset($data) ? 'readonly' : '' }}>
                     </div>
                   </div>
                   <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">Card No.</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" name="card_no">
+                      <input type="text" class="form-control" name="card_no" value="{{ $data->card_no ?? '' }}">
                     </div>
                   </div>
                   <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-2 col-form-label">SEP No.</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" name="sep_no">
+                      <input type="text" class="form-control" name="sep_no" value="{{ $data->sep_no ?? '' }}">
                     </div>
                   </div>
                 </div>

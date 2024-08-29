@@ -16,13 +16,13 @@
             <li class="breadcrumb-item active" aria-current="page">Assesment</li>
         </ol>
     </nav>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col">
             <div class="tab-resume float-right" id="tab-resume" onclick="clickTab('resume')">
                 Resume Pasien
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="row">
         <div class="col-lg-10 pr-0">
             <div class="row">
@@ -43,6 +43,11 @@
                         <div class="row">
                             <div class="left-tab" id="tab-edukasi" onclick="clickTab('edukasi')">
                                 Edukasi
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="left-tab" id="tab-pemulangan" onclick="clickTab('pemulangan')">
+                                Discharge Planning
                             </div>
                         </div>
                         <div class="row">
@@ -75,12 +80,12 @@
                                 Discharge
                             </div>
                         </div>
-
-                       <div class="row">
-                            <div class="left-tab" id="tab-pemulangan" onclick="clickTab('pemulangan')">
-                                Discharge Planning
+                        <div class="row">
+                            <div class="left-tab" id="tab-resume" onclick="clickTab('resume')">
+                                Resume Pasien
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
                                 Riwayat

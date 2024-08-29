@@ -8,6 +8,7 @@ use App\Models\ICD10;
 use App\Models\KelasKategori;
 use App\Models\Paramedic;
 use App\Models\Pasien;
+use App\Models\PasienVClaim;
 use App\Models\RegistrationInap;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
@@ -773,6 +774,7 @@ class RegisterController extends Controller
                 ->table('m_pasien_vclaim')
                 ->join('m_registrasi', 'm_registrasi.reg_no', '=', 'm_pasien_vclaim.reg_no')
                 ->join('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+                ->where('m_pasien_vclaim.is_deleted', 0)
                 ->select(
                     'm_pasien.PatientName',
                     'm_pasien_vclaim.*',
@@ -783,6 +785,17 @@ class RegisterController extends Controller
                 ->editColumn('business_partner', function ($query) use ($business_partner) {
                     $partner = collect($business_partner)->firstWhere('BusinessPartnerID', $query->business_partner_id);
                     return $partner ? $partner['BusinessPartnerName'] : '-';
+                })->addColumn('action', function ($row) {
+                    $actionBtn = '<div class="btn-group">
+                                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        Aksi
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="' . route('register.vclaim.edit', $row->reg_no) . '">Edit</a></li>
+                                        <li><a class="dropdown-item btn-delete" href="#" data-id ="' . $row->id . '" >Hapus</a></li>
+                                    </ul>
+                                </div>';
+                    return $actionBtn;
                 })
                 ->escapeColumns([])
                 ->toJson();
@@ -793,16 +806,103 @@ class RegisterController extends Controller
 
     public function viewFormVClaimManual()
     {
-        return  view('register.pages.ranap.vclaim_form');
+        $config['form'] = (object)[
+            'method' => 'POST',
+            'action' => route('register.vclaim.store')
+        ];
+
+        return  view('register.pages.ranap.vclaim_form', compact('config'));
+    }
+
+    public function viewFormEditVClaimManual(Request $request, $reg_no)
+    {
+
+        $data = PasienVClaim::where([
+            ['reg_no', $reg_no],
+            ['is_deleted', 0],
+        ])->first();
+
+        $config['form'] = (object)[
+            'method' => 'POST',
+            'action' => route('register.vclaim.update', $data->id),
+        ];
+
+
+        return  view('register.pages.ranap.vclaim_form', compact('data', 'config'));
     }
 
     public function storeVClaim(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'business_partner_id' => 'required',
+            'reg_no' => 'required',
+            'card_no' => 'required',
+            'sep_no' => 'required',
+        ]);
+
+
+        if ($validator->passes()) {
+            DB::beginTransaction();
+            try {
+
+                $check_reg = DB::connection('mysql2')->table('m_pasien_vclaim')->where([
+                    ['reg_no', $request->reg_no],
+                    ['is_deleted', 0],
+                ])->count();
+                if ($check_reg) {
+                    return response()->json([
+                        'status' => 'false',
+                        'message' => 'Nomor registrasi telah dipakai',
+                    ]);
+                }
+
+                $user = auth()->user()->username;
+
+                $vclaim = array(
+                    'business_partner_id' => $request->business_partner_id,
+                    'reg_no' => $request->reg_no,
+                    'card_no' => $request->card_no,
+                    'sep_no' => $request->sep_no,
+                    'created_by' => $user,
+                    'is_deleted' => 0,
+                );
+
+
+                PasienVClaim::create($vclaim);
+                // Update patient registration
+                RegistrationInap::find($request->reg_no)
+                    ->update(
+                        [
+                            'reg_no_kartu' => $request->card_no,
+                            'reg_sep_no' => $request->sep_no,
+                        ]
+                    );
+
+
+                DB::commit();
+                $response = response()->json([
+                    'status' => 'success',
+                    'message' => 'Data berhasil disimpan',
+                ]);
+            } catch (\Throwable $throw) {
+                //throw $th;
+                DB::rollBack();
+                //dd($th->getMessage());
+                abort(500, $throw->getMessage());
+            }
+        } else {
+            abort(402, json_encode($validator->errors()->all()));
+        }
+        return $response;
+    }
+
+    public function updateVclaim(Request $request, $id)
     {
         DB::beginTransaction();
         try {
 
             $validator = Validator::make($request->all(), [
-                'business_partner_id' => 'required',
                 'reg_no' => 'required',
                 'card_no' => 'required',
                 'sep_no' => 'required',
@@ -811,7 +911,11 @@ class RegisterController extends Controller
 
             if ($validator->passes()) {
 
-                $check_reg = DB::connection('mysql2')->table('m_pasien_vclaim')->where('reg_no', $request->reg_no)->count();
+                $check_reg = DB::connection('mysql2')->table('m_pasien_vclaim')->where([
+                    ['reg_no', $request->reg_no],
+                    ['id', '!=', $id],
+                    ['is_deleted', 0],
+                ])->count();
                 if ($check_reg) {
                     return response()->json([
                         'status' => 'false',
@@ -819,24 +923,71 @@ class RegisterController extends Controller
                     ]);
                 }
 
+                $user = auth()->user()->username;
+
                 $vclaim = array(
-                    'business_partner_id' => $request->business_partner_id,
-                    'reg_no' => $request->reg_no,
                     'card_no' => $request->card_no,
                     'sep_no' => $request->sep_no,
+                    'updated_by' => $user,
                 );
 
 
-                DB::connection('mysql2')->table('m_pasien_vclaim')->insert($vclaim);
+                PasienVClaim::find($id)->update($vclaim);
 
+                // Update patient registration
+                RegistrationInap::find($request->reg_no)
+                    ->update(
+                        [
+                            'reg_no_kartu' => $request->card_no,
+                            'reg_sep_no' => $request->sep_no,
+                        ]
+                    );
                 DB::commit();
                 $response = response()->json([
                     'status' => 'success',
-                    'message' => 'Data berhasil disimpan',
+                    'message' => 'Data berhasil diperbarui',
                 ]);
             } else {
                 abort(402, json_encode($validator->errors()->all()));
             }
+            return $response;
+        } catch (\Throwable $throw) {
+            //throw $th;
+            DB::rollBack();
+            //dd($th->getMessage());
+            abort(500, $throw->getMessage());
+        }
+    }
+
+    public function deleteVclaim(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $user = auth()->user()->username;
+
+            $vclaim = array(
+                'is_deleted' => 1,
+                'updated_by' => $user,
+            );
+
+            $data = PasienVClaim::find($id);
+
+            $data->update($vclaim);
+            // Update patient registration
+            RegistrationInap::find($data->reg_no)
+                ->update(
+                    [
+                        'reg_no_kartu' => "",
+                        'reg_sep_no' => "",
+                    ]
+                );
+
+            DB::commit();
+            $response = response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil dihapus',
+            ]);
+
             return $response;
         } catch (\Throwable $throw) {
             //throw $th;
