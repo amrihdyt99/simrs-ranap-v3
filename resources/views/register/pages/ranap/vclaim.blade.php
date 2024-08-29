@@ -58,7 +58,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="dt-vclaim" class="w-100 table table-bordered table-hover">
+              <table id="dt-vclaim" class="w-100 table table-bordered">
                 <thead>
                   <tr>
                     <th>No. Registrasi</th>
@@ -66,6 +66,7 @@
                     <th>Business Partner</th>
                     <th>No. Card</th>
                     <th>No. SEP</th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -89,11 +90,10 @@
 <!-- Page specific script -->
 <script>
   $(document).ready(function() {
-    $('#dt-vclaim').DataTable({
+    let dataTable = $('#dt-vclaim').DataTable({
       processing: true,
       serverSide: true,
       responsive: true,
-      scrollX: true,
       lengthMenu: [10, 25, 50, 100, 200, 500],
       ajax: {
         url: "{{ url()->current() }}",
@@ -125,8 +125,52 @@
           name: "sep_no",
           orderable: true,
           searchable: true,
+        }, {
+          data: 'action',
+          name: 'action',
+          className: 'text-center',
+          orderable: false,
+          searchable: false
         },
       ],
+      rowCallback: function(row, data) {
+        let api = this.api();
+        $(row).find('.btn-delete').click(function() {
+          let pk = $(this).data('id'),
+            url = `/ranap/vclaim-manual/delete/` + pk;
+          Swal.fire({
+            title: "Anda Yakin ?",
+            text: "Data tidak dapat dikembalikan setelah di hapus!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Hapus!",
+            cancelButtonText: "Tidak, Batalkan",
+          }).then((result) => {
+            if (result.value) {
+              $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                  _token: '{{ csrf_token() }}',
+                  _method: 'POST'
+                },
+                error: function(response) {
+                  neko_notify('Error', 'Data gagal dihapus !');
+                },
+                success: function(response) {
+                  if (response.status === "success") {
+                    neko_simpan_success();
+                    api.draw();
+                  } else {
+                    neko_notify('Error', 'Data gagal dihapus !');
+                  }
+                }
+              });
+            }
+          });
+        });
+      }
     });
   });
 </script>
