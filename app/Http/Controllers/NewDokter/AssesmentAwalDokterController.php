@@ -46,9 +46,12 @@ class AssesmentAwalDokterController extends Controller
     function get_diagnosa(Request $request, $reg)
     {
         $reg = str_replace("_", "/", $reg);
-        $data =  DB::connection('mysql')->table('rs_pasien_diagnosa')->select('NM_ICD10', 'pdiag_id', 'ID_ICD10')
+        $data =  DB::connection('mysql')->table('rs_pasien_diagnosa')
+            ->select('NM_ICD10', 'pdiag_id', 'ID_ICD10', 'pdiag_kategori')
             ->join('icd10_bpjs', 'ID_ICD10', 'pdiag_diagnosa')
-            ->where('pdiag_reg', $reg)->where('pdiag_deleted', 0)->orderBy('pdiag_id', 'asc')->get();
+            ->where('pdiag_reg', $reg)
+            ->where('pdiag_deleted', 0)
+            ->orderBy('pdiag_id', 'asc')->get();
 
         if (isset($request->plain_data)) {
             return $data;
@@ -68,27 +71,42 @@ class AssesmentAwalDokterController extends Controller
     {
         $param = array(
             'pdiag_reg' => str_replace("_", "/", $r->reg),
-            'pdiag_diagnosa' => $r->diagnosa,
-            'pdiag_dokter' => $r->pdiag_dokter,
-            'created_at' => now(),
+            'pdiag_kategori' => $r->pdiag_kategori,
             'pdiag_deleted' => 0,
         );
+
+        $main_params = [
+            'pdiag_dokter' => $r->pdiag_dokter,
+            'pdiag_diagnosa' => $r->diagnosa,
+            'created_at' => date('Y-m-d H:i:s'),
+        ];
+
+        $check_ = DB::table('rs_pasien_diagnosa')
+                    ->where($param)
+                    ->first();
+
+        $param = array_merge($param, $main_params);
+
         try {
-            $cek =  DB::connection('mysql')->table('rs_pasien_diagnosa')->where('pdiag_reg', str_replace("_", "/", $r->reg))
-                ->where('pdiag_diagnosa', $r->diagnosa)->where('pdiag_deleted', 0)->count();
-            if ($cek == 0) {
+            if (!isset($check_)) {
                 DB::connection('mysql')->table('rs_pasien_diagnosa')->insert($param);
+
                 return response()->json(
                     ['success' => true]
                 );
             } else {
+                DB::connection('mysql')
+                    ->table('rs_pasien_diagnosa')
+                    ->where('pdiag_id', $check_->pdiag_id)
+                    ->update($param);
+
                 return response()->json(
-                    ['success' => false]
+                    ['success' => true]
                 );
             }
         } catch (\Throwable $th) {
             return response()->json(
-                ['success' => false]
+                ['success' => false, 'msg' => $th]
             );
         }
     }
