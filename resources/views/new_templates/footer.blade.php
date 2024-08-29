@@ -65,6 +65,11 @@
             return data.replace(/\//g, '_')
         }
 
+        function addOption(elm, value, text) {
+            var newOption = new Option(text, value, false, false);
+            $(elm).append(newOption).trigger('change');
+        }
+
         $('#partial-panel').hide();
 
             function outputUpdateWithDesc(vol) {
@@ -1315,108 +1320,115 @@
                     "reg_no": regno,
                 },
                 success: function (data) {
-                    console.log(data)
                     var dataSoap = data.data_soap
 
-                    dataSoap.sort(function(a, b) {
-                        if (a.status_review !== b.status_review) {
-                            return a.status_review - b.status_review;
-                        }
-                        var dateA = new Date(a.soap_tanggal + ' ' + a.soap_waktu);
-                        var dateB = new Date(b.soap_tanggal + ' ' + b.soap_waktu);
-                        return dateB - dateA;
-                    });
+                    if (dataSoap.length > 0) {
+                        dataSoap.sort(function(a, b) {
+                            if (a.status_review !== b.status_review) {
+                                return a.status_review - b.status_review;
+                            }
+                            var dateA = new Date(a.soap_tanggal + ' ' + a.soap_waktu);
+                            var dateB = new Date(b.soap_tanggal + ' ' + b.soap_waktu);
+                            return dateB - dateA;
+                        });
 
-                    var table = ""
-                    for(var i=0; i<dataSoap.length; i++){
-                        var statusVerifikasi = dataSoap[i].status_review
-                        var soapdok_dokter = dataSoap[i].soapdok_dokter
-                        var reg_dokter = dataSoap[i].reg_dokter
-                        var is_dokter=dataSoap[i].is_dokter
-                        var utama=dataSoap[i].dpjp_utama
+                        var table = ""
+                        for(var i=0; i<dataSoap.length; i++){
+                            var statusVerifikasi = dataSoap[i].status_review
+                            var soapdok_dokter = dataSoap[i].soapdok_dokter
+                            var reg_dokter = dataSoap[i].reg_dokter
+                            var is_dokter=dataSoap[i].is_dokter
+                            var utama=dataSoap[i].dpjp_utama
 
-                        $row_lab = ''
-                        $row_radiologi = ''
-                        $row_obat = ''
-                        $row_lainnya = ''
-                        $row_diagnosa = ''
+                            $row_lab = ''
+                            $row_radiologi = ''
+                            $row_obat = ''
+                            $row_lainnya = ''
+                            $row_diagnosa = ''
 
-                        if (dataSoap[i].order_lab.length > 0) {
-                            $.each(dataSoap[i].order_lab, function(i_lab, item_lab){
-                                $row_lab += `
-                                    `+(i_lab == 0 ? '<br><b>Laboratorium</b><br>' : '')+`
-                                    - `+item_lab.item_name+`<br>    
-                                `
-                            })
-                        }
-                        if (dataSoap[i].order_radiologi.length > 0) {
-                            $.each(dataSoap[i].order_radiologi, function(i_lab, item_lab){
-                                $row_lab += `
-                                    `+(i_lab == 0 ? '<br><b>Radiologi</b><br>' : '')+`
-                                    - `+item_lab.item_name+`<br>    
-                                `
-                            })
-                        }
-                        if (dataSoap[i].order_obat.length > 0) {
-                            $.each(dataSoap[i].order_obat, function(i_lab, item_lab){
-                                $row_lab += `
-                                    `+(i_lab == 0 ? '<br><b>Obat</b><br>' : '')+`
-                                    - `+item_lab.item_name+`<br>    
-                                `
-                            })
-                        }
-                        if (dataSoap[i].order_lainnya.length > 0) {
-                            $.each(dataSoap[i].order_lainnya, function(i_lab, item_lab){
-                                $row_lab += `
-                                    `+(i_lab == 0 ? '<br><b>Tindakan Lainnya</b><br>' : '')+`
-                                    - `+item_lab.item_name+`<br>    
-                                `
-                            })
-                        }
-                        if (dataSoap[i].diagnosa.length > 0) {
-                            $.each(dataSoap[i].diagnosa, function(i_diagnosa, item_diagnosa){
-                                $row_diagnosa += `
-                                    `+item_diagnosa.ID_ICD10+` - `+item_diagnosa.NM_ICD10+`<br>    
-                                `
-                            })
-                        }
+                            if (dataSoap[i].order_lab.length > 0) {
+                                $.each(dataSoap[i].order_lab, function(i_lab, item_lab){
+                                    $row_lab += `
+                                        `+(i_lab == 0 ? '<br><b>Laboratorium</b><br>' : '')+`
+                                        - `+item_lab.item_name+`<br>    
+                                    `
+                                })
+                            }
+                            if (dataSoap[i].order_radiologi.length > 0) {
+                                $.each(dataSoap[i].order_radiologi, function(i_lab, item_lab){
+                                    $row_lab += `
+                                        `+(i_lab == 0 ? '<br><b>Radiologi</b><br>' : '')+`
+                                        - `+item_lab.item_name+`<br>    
+                                    `
+                                })
+                            }
+                            if (dataSoap[i].order_obat.length > 0) {
+                                $.each(dataSoap[i].order_obat, function(i_lab, item_lab){
+                                    $row_lab += `
+                                        `+(i_lab == 0 ? '<br><b>Obat</b><br>' : '')+`
+                                        - `+item_lab.item_name+`<br>    
+                                    `
+                                })
+                            }
+                            if (dataSoap[i].order_lainnya.length > 0) {
+                                $.each(dataSoap[i].order_lainnya, function(i_lab, item_lab){
+                                    $row_lab += `
+                                        `+(i_lab == 0 ? '<br><b>Tindakan Lainnya</b><br>' : '')+`
+                                        - `+item_lab.item_name+`<br>    
+                                    `
+                                })
+                            }
+                            if (dataSoap[i].diagnosa.length > 0) {
+                                $.each(dataSoap[i].diagnosa, function(i_diagnosa, item_diagnosa){
+                                    $row_diagnosa += `
+                                        `+item_diagnosa.ID_ICD10+` - `+item_diagnosa.NM_ICD10+`<br>    
+                                    `
+                                })
+                            }
 
-                        table = table + "<tr>"
-                        table = table + "<td>"+dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu+"</td>"
-                        table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+"</td>"
-                        table = table + `<td>
-                             (S) `+(dataSoap[i].soapdok_subject ?? '')+`<br/>
-                             (O) `+(dataSoap[i].soapdok_object ?? '')+`<br/>
-                             (A) `+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment+'<br><div class="pl-4">'+$row_diagnosa+'</div>' : '')+`<br/>
-                             (P) `
-                                +(dataSoap[i].soapdok_planning ?? '')+`<br/><br>
-                                <b>Tindakan Penunjang & Obat :</b>
-                                <span class="pl-3">`+$row_lab+'<br>'+$row_radiologi+'<br>'+$row_obat+'<br>'+$row_lainnya+`</span>
-                            </td>`
-                        table = table + "<td>"+(dataSoap[i].soapdok_instruksi ?? '')+"</td>"
-                        // if(is_dokter=="1"){
-                        //     table = table + "<td class='text-center'></td>"
-                        // }else{
-                            if(statusVerifikasi==0){
-                                if (reg_dokter != utama) {
-                                    table = table + "<td class='text-center'>" +
-                                    "<button class='btn btn-secondary''>Menunggu Verif DPJP Utama</button>" +
-                                    "</td>"
+                            table = table + "<tr>"
+                            table = table + "<td>"+dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu+"</td>"
+                            table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+"</td>"
+                            table = table + `<td>
+                                (S) `+(dataSoap[i].soapdok_subject ?? '')+`<br/><br/>
+                                (O) `+(dataSoap[i].soapdok_object ?? '')+`<br/><br/>
+                                (A) <div class="ml-3">`+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '')+`</div><br/><br/>
+                                (P) `
+                                    +(dataSoap[i].soapdok_planning ?? '')+`<br/><br><br>
+                                    <b>Tindakan Penunjang & Obat :</b>
+                                    <span class="pl-3">`+$row_lab+'<br>'+$row_radiologi+'<br>'+$row_obat+'<br>'+$row_lainnya+`</span>
+                                </td>`
+                            table = table + "<td>"+(dataSoap[i].soapdok_instruksi ?? '')+"</td>"
+                            // if(is_dokter=="1"){
+                            //     table = table + "<td class='text-center'></td>"
+                            // }else{
+                                if(statusVerifikasi==0){
+                                    if (reg_dokter != utama) {
+                                        table = table + "<td class='text-center'>" +
+                                        "<button class='btn btn-secondary''>Menunggu Verif DPJP Utama</button>" +
+                                        "</td>"
+                                    }else{
+                                        table = table + "<td class='text-center'>" +
+                                            "<button class='btn btn-danger' onclick='updateverifikasi("+dataSoap[i].soapdok_id+")'>Verifikasi</button>" +
+                                            "</td>"
+                                    }
                                 }else{
                                     table = table + "<td class='text-center'>" +
-                                        "<button class='btn btn-danger' onclick='updateverifikasi("+dataSoap[i].soapdok_id+")'>Verifikasi</button>" +
+                                        "<button class='btn btn-primary' >Sudah Diverifikasi</button>" +
                                         "</td>"
                                 }
-                            }else{
-                                table = table + "<td class='text-center'>" +
-                                    "<button class='btn btn-primary' >Sudah Diverifikasi</button>" +
-                                    "</td>"
-                            }
-                        // }
+                            // }
 
-                        table = table + "</tr>"
+                            table = table + "</tr>"
+                        }
+                        $('#table-cppt-dokter').html(table)
+                    } else {
+                        $('#table-cppt-dokter').html(`
+                            <tr>
+                                <td colspan="5" class="text-center">Tidak ada data</td>    
+                            </tr>
+                        `)
                     }
-                    $('#table-cppt-dokter').html(table)
                 }
             })
         }
