@@ -517,7 +517,10 @@ class RegisterController extends Controller
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
             ->get()->first();
 
+        $pj_pasien = RegistrasiPJawab::where('reg_no', $this->parseRegNoByUnderScore($regno))->get();
+
         $data['datapasien'] = $datamypatient;
+        $data['pj_pasien'] = $pj_pasien;
         return view('document.general_consentbaru', $data);
     }
     function gc2($regno)
