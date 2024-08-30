@@ -40,7 +40,7 @@ class RegisterDataController extends Controller
             ];
             Pasien::create($pasienData);
 
-            $keluargaData = array_map(function($key) use ($request, $newMRN) {
+            $keluargaData = array_map(function ($key) use ($request, $newMRN) {
                 return [
                     'MedicalNo' => $newMRN,
                     'GCRelationShip' => $request->GCRelationShip[$key],

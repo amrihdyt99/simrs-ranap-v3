@@ -9,6 +9,7 @@ use App\Models\KelasKategori;
 use App\Models\Paramedic;
 use App\Models\Pasien;
 use App\Models\PasienVClaim;
+use App\Models\RegistrasiPJawab;
 use App\Models\RegistrationInap;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
@@ -41,6 +42,7 @@ class RegisterController extends Controller
         $pasien = $this->getPatientByMedicalRecord($registration->reg_medrec);
         $asal_pasien = $this->getRegistrationOrigin($registration->reg_lama);
         $purpose = $registration->purpose;
+        $pjawab_pasien =    RegistrasiPJawab::where('reg_no', $this->parseRegNoByUnderScore($reg_no))->get();
         $context = [
             'pasien' => $pasien,
             'registration' => $registration,
@@ -54,6 +56,7 @@ class RegisterController extends Controller
             'icd10' => $data['icd10'],
             'cover_class' => $data['cover_class'],
             'purpose' => $purpose,
+            'pjawab_pasien' => $pjawab_pasien,
             'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-'
         ];
         //dd($context['registration']);
@@ -747,12 +750,17 @@ class RegisterController extends Controller
     public function storeLengkapiPendaftaran()
     {
         try {
-            dd(request()->all());
+            // dd(request()->pj_pasien);
             $pasien = $this->getPatientByMedicalRecord(request()->reg_medrec);
             if (!$pasien) $this->createNewPatient();
             else $this->updatePasien();
             DB::beginTransaction();
             $this->updateDataRegistration(request()->reg_no);
+
+            RegistrasiPJawab::where('reg_no', request()->reg_no)->delete();
+            // Add penanggung jawab pasien
+            RegistrasiPJawab::insert(request()->pj_pasien);
+
             // dd($param_pasien);
             DB::commit();
 

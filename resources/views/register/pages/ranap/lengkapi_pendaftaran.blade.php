@@ -441,7 +441,7 @@
                                         <hr>
                                         <h5><b>DATA PENANGGUNG JAWAB PASIEN</b></h5>
                                     </div>
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-12 mb-3">
                                         <div class="btn-group m-3">
                                             <button type="button" class="btn btn-warning btn-add-row" id="showModalPJ">
                                                 <i class="fa fa-plus"></i>
@@ -462,65 +462,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
-                                                <!-- <tfoot>
-                                                    <tr>
-                                                        <th colspan="4">
-                                                        </th>
-                                                        <th class="text-end"></th>
-                                                        <th>
-                                                            <div class="btn-group">
-                                                                <button type="button" class="btn btn-outline-secondary btn-add-row"><i class="fa fa-plus"></i></button>
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                </tfoot> -->
                                             </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Hubungan dengan pasien</label>
-                                            @php
-                                            $hubungan_pasien = [
-                                            'Diri sendiri',
-                                            'Orang tua',
-                                            'Anak',
-                                            'Suami/istri',
-                                            'Kerabat/saudara',
-                                            'Lain-lain',
-                                            ];
-                                            @endphp
-                                            <select name="reg_hub_pasien" id="reg_hub_pasien" class="form-control">
-                                                <option value="">-- Pilih hubungan dengan pasien --</option>
-                                                @foreach ($hubungan_pasien as $item)
-                                                <option value="{{ $item }}" {{ $item == $registration->reg_pjawab_hub ? 'selected' : '' }}>{{ $item }}</option>
-                                                @endforeach
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Nomor Telepon</label>
-                                            <input type="text" class="form-control" name="reg_pjawab_nohp" id="reg_pjawab_nohp" placeholder="No. telpon penanggungjawab pasien" value="{{ $registration->reg_pjawab_nohp ?? '-' }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">NIK Penanggungjawab</label>
-                                            <input type="text" class="form-control" name="reg_pjawab_nik" id="reg_pjawab_nik" placeholder="NIK penanggungjawab pasien" value="{{ $registration->reg_pjawab_nik ?? '-' }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Penanggungjawab Pembayaran</label>
-                                            <input type="text" class="form-control" name="reg_pjawab" id="reg_pjawab" placeholder="Penanggungjawab pembayaran pasien" value="{{ $registration->reg_pjawab }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Penanggungjawab Alamat</label>
-                                            <input type="text" class="form-control" name="reg_pjawab_alamat" id="reg_pjawab_alamat" placeholder="Penanggungjawab Alamat pasien" value="{{ $registration->reg_pjawab_alamat ?? '-' }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -633,7 +575,7 @@
                     </div>
                     <div class="form-group">
                         <label class="label-admisi">Penanggungjawab Pembayaran</label>
-                        <input type="text" class="form-control" name="reg_pjawab" id="reg_pjawab" placeholder="Penanggungjawab pembayaran pasien" required>
+                        <input type="text" class="form-control" name="reg_pjawab_bayar" id="reg_pjawab_bayar" placeholder="Penanggungjawab pembayaran pasien" required>
                     </div>
                     <div class="form-group">
                         <label class="label-admisi">Penanggungjawab Alamat</label>
@@ -667,7 +609,7 @@
     element_visit_history = document.getElementById('visit-history')
     $(document).ready(function() {
         let urls = "{{ route('pasien.web.visit.history', ':medicalRecord') }}"
-        let data_pj = [];
+        let data_pj = <?= isset($pjawab_pasien) ? json_encode($pjawab_pasien) : '[]'; ?>;
 
         urls = urls.replace(':medicalRecord', medicalNo)
         $.ajax({
@@ -697,41 +639,44 @@
             columns: [{
                     data: 'reg_pjawab_nama',
                     render: function(columnData, type, rowData, meta) {
-                        return `<input class="form-control" name="pj_pasien [` +
+                        return `
+                            <input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_no]" value="` + "{{ $registration->reg_no }}" + `" type="hidden" required >
+                            <input class="form-control" name="pj_pasien[` +
                             meta.row + `][reg_pjawab_nama]" value="` + columnData + `" required readonly>`;
                     }
                 }, {
                     data: 'reg_hub_pasien',
                     render: function(columnData, type, rowData, meta) {
-                        return `<input class="form-control" name="pj_pasien [` +
+                        return `<input class="form-control" name="pj_pasien[` +
                             meta.row + `][reg_hub_pasien]" value="` + columnData + `" required readonly>`;
                     }
                 },
                 {
                     data: 'reg_pjawab_nohp',
                     render: function(columnData, type, rowData, meta) {
-                        return `<input class="form-control" name="pj_pasien [` +
+                        return `<input class="form-control" name="pj_pasien[` +
                             meta.row + `][reg_pjawab_nohp]" value="` + columnData + `" required readonly>`;
                     }
                 },
                 {
                     data: 'reg_pjawab_nik',
                     render: function(columnData, type, rowData, meta) {
-                        return `<input class="form-control" name="pj_pasien [` +
+                        return `<input class="form-control" name="pj_pasien[` +
                             meta.row + `][reg_pjawab_nik]" value="` + columnData + `" required readonly>`;
                     }
                 },
                 {
-                    data: 'reg_pjawab',
+                    data: 'reg_pjawab_bayar',
                     render: function(columnData, type, rowData, meta) {
-                        return `<input class="form-control" name="pj_pasien [` +
-                            meta.row + `][reg_pjawab]" value="` + columnData + `" required readonly>`;
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_pjawab_bayar]" value="` + columnData + `" required readonly>`;
                     }
                 },
                 {
                     data: 'reg_pjawab_alamat',
                     render: function(columnData, type, rowData, meta) {
-                        return `<input class="form-control" name="pj_pasien [` +
+                        return `<input class="form-control" name="pj_pasien[` +
                             meta.row + `][reg_pjawab_alamat]" value="` + columnData + `" required readonly>`;
                     }
                 },
@@ -749,6 +694,7 @@
                 $(row).find('#id_' + index).click(function() {
                     var v = $(this).data('v')
                     api.row($(this).closest("tr").get(0)).remove().draw();
+                    data_pj.splice(index, 1);
                 });
             },
         });
