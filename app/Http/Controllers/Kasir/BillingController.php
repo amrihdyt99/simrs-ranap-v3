@@ -120,7 +120,7 @@ class BillingController extends Controller
             }
         }
 
-        $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $request->reg_rj));
+        $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $request->reg_ri));
 
         if (isset($lab->code) && $lab->code == 200) {
             foreach ($lab->data as $key => $value) {

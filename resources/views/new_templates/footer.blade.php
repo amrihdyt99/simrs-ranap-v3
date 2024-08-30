@@ -1029,7 +1029,6 @@
         function addorder(){
             if(window.confirm('apakah anda ingin mengirim tindakan?')){
                 var kategori=$('#btn-save-cpoe').attr('value')
-                console.log($('#form-cpoe-dokter').serialize()+"&jenisorder="+kategori)
 
                 $.ajax({
                     url: '{{route('order.tindakan')}}',
@@ -1319,7 +1318,16 @@
                 data: {
                     "reg_no": regno,
                 },
+                beforeSend: function(){
+                    $('#table-cppt-dokter').html(`
+                        <tr>
+                            <td colspan="5" class="text-center">Memuat data...</td>    
+                        </tr>
+                    `)
+                },  
                 success: function (data) {
+                    $('#table-cppt-dokter').html(``)
+                    
                     var dataSoap = data.data_soap
 
                     if (dataSoap.length > 0) {

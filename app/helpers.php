@@ -136,7 +136,7 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
                 
             } else {
                 if ($kode == 'FARM') {
-                    $gen_kode = json_decode(getService(urlPharmacy('get-no-order-insertable', '&location=rajal')));
+                    $gen_kode = json_decode(getService(urlPharmacy('get-no-order-insertable', '&location=ranap')));
     
                     if ($gen_kode->status_kode == 200) {
                         $gen_kode = $gen_kode->data->order_no;
@@ -147,10 +147,8 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
                     $kode_ = 'kontrol_nomor'; 
                 } else if ($kode == 'I.R.I') {
                     $kode_ = 'ranap_nomor'; 
-                } else if ($kode == 'REHAB') {
-                    $kode_ = 'prehab_kode'; 
                 } else {
-                    $kode_ = 'pvalidation_code';
+                    $kode_ = 'order_no';
                 }
                 
                 $check = $table->whereDate('created_at', Carbon::today())
@@ -162,7 +160,7 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
                     $subs = (int) substr($check, 16, 7);
                 }
 
-                $prefix = 'RJ/';
+                $prefix = 'RI/';
             }
             
             if ($subs == null || $subs < 1) {
