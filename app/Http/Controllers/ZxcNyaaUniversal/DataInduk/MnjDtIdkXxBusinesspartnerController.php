@@ -16,7 +16,7 @@ class MnjDtIdkXxBusinesspartnerController extends AaaBaseController
     protected $nama_model;
     public function __construct()
     {
-        $this->nama_model = DB::table('businesspartner');
+        $this->nama_model =  DB::connection('mysql2')->table('businesspartner');
     }
 
     // fungsi
@@ -115,6 +115,7 @@ class MnjDtIdkXxBusinesspartnerController extends AaaBaseController
             'form_list' => $this->form_list(),
             // config
             'add_button' => true,
+            'business_partner' => true,
         );
         return view('nyaa-universal.data-induk.general-noindex',$context)
         ->with(get_object_vars($this));
