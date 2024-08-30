@@ -29,7 +29,7 @@ class BedController extends Controller
             'class_category',
             'registration',
             'registration.pasien',
-        ])->orderBy('last_updated_datetime', 'desc');
+        ]);
 
         if ($request->has('is_temporary') && $request->is_temporary !== '') {
             if ($request->is_temporary == '1') {
@@ -41,9 +41,9 @@ class BedController extends Controller
 
         if ($request->has('is_deleted') && $request->is_deleted !== '') {
             if ($request->is_deleted == '1') {
-                $bedQuery->whereNotNull('is_deleted');
+                $bedQuery->where('is_deleted',1);
             } else if ($request->is_deleted == '0') {
-                $bedQuery->whereNull('is_deleted');
+                $bedQuery->where('is_deleted',0);
             }
         }
 

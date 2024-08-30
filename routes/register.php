@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(function () {
     Route::get('/', [Ranap\RegisterController::class, 'index'])->name('register.ranap.index');
     Route::get('batal/{no}', [Ranap\RegisterController::class, 'batal_ranap'])->name('register.ranap.batal');
-   
+
     Route::get('/api/generate-newborn-mrn', [RegisterController::class, 'generateNewbornMRN']);
 
     // Route::get('/formnew', [Ranap\RegisterController::class, 'formRegisterInap'])->name('register.ranap.newpatient');
@@ -29,6 +29,9 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
     Route::get('vclaim-manual', [Ranap\RegisterController::class, 'viewVClaimManual'])->name('register.vclaim');
     Route::get('vclaim-manual/create', [Ranap\RegisterController::class, 'viewFormVClaimManual'])->name('register.vclaim.form');
     Route::post('vclaim-manual', [Ranap\RegisterController::class, 'storeVClaim'])->name('register.vclaim.store');
+    Route::get('vclaim-manual/edit/{reg_no}', [Ranap\RegisterController::class, 'viewFormEditVClaimManual'])->where('reg_no', '(.*)')->name('register.vclaim.edit');
+    Route::post('vclaim-manual/update/{id}', [Ranap\RegisterController::class, 'updateVclaim'])->name('register.vclaim.update');
+    Route::post('vclaim-manual/delete/{id}', [Ranap\RegisterController::class, 'deleteVclaim'])->name('register.vclaim.delete');
 });
 
 Route::prefix('igd')->middleware(['auth', 'role:adminregister'])->group(function () {

@@ -1,19 +1,24 @@
-@extends('master.layouts.app')
+@extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
-@section('content')
+@section('nyaa_content_body')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-sm-6">
+                    <div class="col-sm-10">
                         <h1>
                             Class Management
                             <a href="{{ route('master.class.create') }}" class="btn btn-success rounded-circle">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </h1>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="tarikDataClass" class="btn btn-primary">
+                            Tarik Data Class Management
+                        </button>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -26,37 +31,15 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <table id="class_table" class="table table-bordered">
+                                <table id="class_table" class="table w-100 table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Kelas</th>
-                                            <th>Action</th>
+                                            <th style="width: 250px">Action</th>
+                                            <th>ClassCode</th>
+                                            <th>ClassName</th>
+                                            <th>Initial</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @foreach ($classes as $row)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $row->ClassName }}</td>
-                                                <td>
-                                                    <form action="{{ route('master.class.destroy', $row->ClassCode) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <a href="{{ route('master.class.edit', $row->ClassCode) }}"
-                                                            class="btn btn-sm">
-                                                            <i class="fas fa-edit text-info"></i>
-                                                        </a>
-                                                        <button class="btn btn-sm" type="submit"
-                                                            onclick="return confirm('Apakah yakin ingin menghapus?')">
-                                                            <i class="fas fa-trash text-danger"></i>
-                                                        </button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
                                 </table>
                             </div>
                             <!-- /.card-body -->
@@ -73,18 +56,73 @@
     </div>
 @endsection
 
-@push('addon-script')
+@push('nyaa_scripts')
     <!-- Page specific script -->
     <script>
         $(function() {
+            load_data();
+        });
+
+        function load_data() {
             $('#class_table').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                scrollX: true,
+                lengthMenu: [10, 25, 50, 100, 200, 500],
+                ajax: {
+                    url: "{{ url()->current() }}",
+                    type: "POST",
+                    headers: {
+                        "X-HTTP-Method-Override": "GET",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+                    },
+                },
+                columns: [{
+                        data: "aksi_data",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "ClassCode",
+                        name: "ClassCode"
+                    },
+                    {
+                        data: "ClassName",
+                        name: "ClassName"
+                    },
+                    {
+                        data: "Initial",
+                        name: "Initial"
+                    },
+                ],
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#tarikDataClass').click(function() {
+                var $button = $(this);
+                $button.prop('disabled', true); 
+
+                $.ajax({
+                    url: "{{ url('tarik/kelas') }}",
+                    method: 'GET',
+                    success: function(response) {
+                        alert('Data class berhasil ditarik!');
+                        console.log(response);
+                        $('#class_table').DataTable().ajax.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Terjadi kesalahan saat menarik data class.');
+                        console.log(error);
+                    },
+                    complete: function() {
+                        $button.prop('disabled',
+                        false);
+                    }
+                });
             });
         });
     </script>
