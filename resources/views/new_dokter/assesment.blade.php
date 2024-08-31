@@ -497,7 +497,6 @@
             },
             success: function(data){
                 if(data.success == true){
-                    console.log(data);
                     var tablePemeriksaanDokter = $('#table-pemeriksaan-dokter');
                     tablePemeriksaanDokter.empty();
                     data.data.forEach(function(item) {
@@ -534,6 +533,7 @@
 
     <script src="{{asset('new_assets/js/cpoe.js')}}"></script>
     <script src="{{asset('new_assets/js/prescribe.js')}}"></script>
+    <script src="{{asset('new_assets/js/resume_new.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/diagnosa.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/prosedur.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/billing.js')}}"></script>
