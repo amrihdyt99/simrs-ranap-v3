@@ -41,6 +41,7 @@ Route::post('/newstoreprosedur', [\App\Http\Controllers\NewDokter\NewDiagnoseCon
 
 Route::prefix('resume')->controller(ResumeController::class)->group(function () {
 	Route::get('/baseData', 'baseData');
+	Route::post('/storePerawatanSelanjutnya', 'storePerawatanSelanjutnya')->name('resume.storePerawatanSelanjutnya');
 });
 
 Route::post('/orderobatnew', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'orderobat'])->name('dokter.order.obat');
