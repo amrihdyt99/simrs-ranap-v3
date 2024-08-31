@@ -329,8 +329,8 @@
                 dataType: "json",
                 success: function (r) {
 					$.each(r, function(index, row) {
-                        $('[id="selected-diagnosa-'+row.pdiag_kategori+'"]').html(`
-                            `+row.ID_ICD10+` | `+row.NM_ICD10+` <span type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</span>
+                        $('[id="selected-diagnosa-'+row.pdiag_kategori+'"]').append(`
+                            `+row.ID_ICD10+` | `+row.NM_ICD10+` <div type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</div><br>
                         `)
 					});
                 }

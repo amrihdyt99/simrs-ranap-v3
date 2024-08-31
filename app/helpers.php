@@ -147,6 +147,8 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
                     $kode_ = 'kontrol_nomor'; 
                 } else if ($kode == 'I.R.I') {
                     $kode_ = 'ranap_nomor'; 
+                } else if ($kode == 'QARP') {
+                    $kode_ = 'pvalidation_code'; 
                 } else {
                     $kode_ = 'order_no';
                 }

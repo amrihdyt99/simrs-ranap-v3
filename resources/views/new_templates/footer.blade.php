@@ -1449,7 +1449,6 @@
                 type: "GET",
                 dataType: "JSON",
                 success: function (data) {
-                    console.log(data)
                     var table ="";
                     var tanggal = data.created_at
                     var dpjp = data.ranap_dpjp

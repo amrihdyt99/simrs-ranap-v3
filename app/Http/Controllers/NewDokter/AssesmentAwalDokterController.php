@@ -59,12 +59,22 @@ class AssesmentAwalDokterController extends Controller
 
         return response()->json($data);
     }
-    function get_prosedur($reg)
+    function get_prosedur(Request $request, $reg)
     {
         $reg = str_replace("_", "/", $reg);
-        $data =  DB::connection('mysql')->table('rs_pasien_prosedur')->select('NM_TINDAKAN', 'pprosedur_id', 'ID_TIND')
+
+        $data =  DB::table('rs_pasien_prosedur')
+            ->select('NM_TINDAKAN', 'pprosedur_id', 'ID_TIND')
             ->join('icd9cm_bpjs', 'ID_TIND', 'pprosedur_prosedur')
-            ->where('pprosedur_reg', $reg)->where('pprosedur_deleted', 0)->orderBy('pprosedur_id', 'asc')->get();
+            ->where('pprosedur_reg', $reg)
+            ->where('pprosedur_deleted', 0)
+            ->orderBy('pprosedur_id', 'asc')
+            ->get();
+
+        if (isset($request->plain_data)) {
+            return $data;
+        }
+
         return response()->json($data);
     }
     function add_diagnosa(Request $r)
@@ -89,21 +99,20 @@ class AssesmentAwalDokterController extends Controller
 
         try {
             if (!isset($check_)) {
-                DB::connection('mysql')->table('rs_pasien_diagnosa')->insert($param);
-
-                return response()->json(
-                    ['success' => true]
-                );
+                DB::table('rs_pasien_diagnosa')->insert($param);
             } else {
-                DB::connection('mysql')
-                    ->table('rs_pasien_diagnosa')
-                    ->where('pdiag_id', $check_->pdiag_id)
-                    ->update($param);
-
-                return response()->json(
-                    ['success' => true]
-                );
+                if ($r->pdiag_kategori != 'utama') {
+                    DB::table('rs_pasien_diagnosa')->insert($param);
+                } else {
+                    DB::table('rs_pasien_diagnosa')
+                        ->where('pdiag_id', $check_->pdiag_id)
+                        ->update($param);
+                }
             }
+
+            return response()->json(
+                ['success' => true]
+            );
         } catch (\Throwable $th) {
             return response()->json(
                 ['success' => false, 'msg' => $th]
@@ -201,10 +210,25 @@ class AssesmentAwalDokterController extends Controller
             ]);
         }
     }
+
+    function getAssesmentDokter(Request $request){
+        try {
+            $data = DB::table('assesment_awal_dokter')
+                ->where('no_reg', $request->reg_no)
+                ->where('dokter_id', $request->dokter_id)
+                ->first();
+
+            return $data;
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     function reset_assesment($id)
     {
         $reset = DB::connection('mysql')
-            ->table('assesment_awal_dokter')->where('id', $id)->delete();
+            ->table('assesment_awal_dokter')->where('id', $id)->update(['deleted' => 1]);
         if ($reset == true) {
             return response()->json(
                 ['success' => true]
@@ -251,7 +275,8 @@ class AssesmentAwalDokterController extends Controller
             'hasil_pemeriksaan_penunjang' => $request->asdok_pemeriksaan_penunjang,
             'tanggal_pemberian' => $request->asdok_rawat_inap_ket,
             'tata_laksana_awal' => $request->asdok_tata_laksana_awal,
-            'daftar_masalah_medik' => $request->asdok_diagnosis_medik
+            'daftar_masalah_medik' => $request->asdok_diagnosis_medik,
+            'dokter_id' => $request->dokter_id
         );
 
         $simpan = DB::connection('mysql')

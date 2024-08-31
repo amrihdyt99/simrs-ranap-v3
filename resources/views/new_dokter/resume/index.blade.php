@@ -20,6 +20,9 @@
 </div> -->
 
 <div id="export-resume">
+    <div class="float-right">
+        <button type="button" class="btn btn-success" onclick="getResumeBaseData()"><i class="fas fa-redo"></i> Muat ulang</button>
+    </div>
     <h3>RESUME PASIEN RAWAT JALAN | No Reg: {{$reg}}</h3>
     <div class="table-responsive">
         <form action="form-add-resume" method="POST">
@@ -58,7 +61,7 @@
             <div class="form-group row">
                 <label for="pemeriksaan_fisik" class="col-sm-3 col-form-label">Pemeriksaan Fisik:</label>
                 <div class="col-sm-9">
-                    <textarea class="form-control" id="pemeriksaan_fisik" name="pemeriksaan_fisik" rows="3"></textarea>
+                    <textarea class="form-control" id="pemeriksaan_fisik" name="pemeriksaan_fisik" rows="5"></textarea>
                 </div>
             </div>
 
@@ -182,7 +185,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">ICD-10:</label>
                 <div class="col-sm-9">
-                    <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICD10()">Tambah Diagnosa ICD-10</button>
+                    {{-- <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICD10()">Tambah Diagnosa ICD-10</button> --}}
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -201,11 +204,11 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">ICD-9:</label>
                 <div class="col-sm-9">
-                    <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICD9()">Tambah Diagnosa ICD-9</button>
+                    {{-- <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICD9()">Tambah Diagnosa ICD-9</button> --}}
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th class="font-weight-bold">Diagnosa Utama/Tindakan</th>
+                                <th class="font-weight-bold">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="icd9-table-body">
@@ -218,7 +221,7 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">ICD-O:</label>
                 <div class="col-sm-9">
-                    <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICDO()">Tambah Diagnosa ICD-O</button>
+                    {{-- <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICDO()">Tambah Diagnosa ICD-O</button> --}}
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -557,7 +560,7 @@
                     }
 
                     // Expose functions to global scope
-                    window.addDiagnosaICD10 = addDiagnosaICD10;
+                    // window.addDiagnosaICD10 = addDiagnosaICD10;
                     window.addDiagnosaICD9 = addDiagnosaICD9;
                     window.addDiagnosaICDO = addDiagnosaICDO;
                     window.removeRow = removeRow;
