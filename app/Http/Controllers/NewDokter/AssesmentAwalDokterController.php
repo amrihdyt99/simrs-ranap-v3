@@ -82,8 +82,8 @@ class AssesmentAwalDokterController extends Controller
         ];
 
         $check_ = DB::table('rs_pasien_diagnosa')
-                    ->where($param)
-                    ->first();
+            ->where($param)
+            ->first();
 
         $param = array_merge($param, $main_params);
 
@@ -839,4 +839,26 @@ class AssesmentAwalDokterController extends Controller
             'data_pemulangan' => $data_pemulangan
         ]);
     }
+
+    function getPengkajianAwalUmumPerawat(Request $request)
+    {
+        try {
+            $data = DB::connection('mysql')
+                ->table('pengkajian_awal_pasien_perawat as p')
+                ->leftJoin('rs_pasien_cppt as c', 'p.reg_no', '=', 'c.soapdok_reg')
+                // ->where('p.reg_no', 'c.soapdok_reg')
+                ->get();
+    
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+    
 }
