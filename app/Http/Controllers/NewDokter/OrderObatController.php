@@ -171,16 +171,7 @@ class OrderObatController extends Controller
             $patient->LastVisitDate = null;
             $patient->NumberOfVisit = null;
 
-            $nomor_now_data = JobOrders::all()->count();
-            $padding_length = 7;
-            $length = strlen((string)$nomor_now_data);
-            for ($i = $length; $i < $padding_length; $i++) {
-                $nomor_now_data = '0' . $nomor_now_data;
-            }
-            $countOrderNo = $nomor_now_data;
-
-            $newDateFormat = str_replace('-', '', now()->toDateString());
-            $orderNumberFormat = 'FARM/RI/' . $newDateFormat . $countOrderNo;
+            $orderNumberFormat = genKode(null, null, null, null, 'FARM');
 
             foreach ($data as $key => $value) {
                 $update_order = DB::table('job_orders_dt')
@@ -382,6 +373,7 @@ class OrderObatController extends Controller
                 ])
                 ->orderBy('order_no', 'asc')
                 ->where('deleted', 0)
+                ->where('jenis_order', 'obat')
                 ->get()
                 ->unique('code');
 
