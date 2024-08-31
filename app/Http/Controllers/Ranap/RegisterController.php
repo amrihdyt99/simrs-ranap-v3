@@ -166,12 +166,6 @@ class RegisterController extends Controller
         return view('register.pages.ranap.create', $data);
     }
 
-    public function newformRegisterInap()
-    {
-        $data = $this->getDataFormRegistration();
-        //return view('register.pages.baru.pilih_pasien',$data);
-        return view('register.pages.ranap.newpatient', $data);
-    }
 
     public function simpanDataPasien(Request $request)
     {

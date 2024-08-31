@@ -15,7 +15,7 @@ class CreateMKeluargaPasienTable extends Migration
     {
         Schema::connection('mysql2')->create('m_keluarga_pasien', function (Blueprint $table) {
             $table->string('MedicalNo');
-            $table->integer('SequenceNo');
+            $table->integer('SequenceNo')->nullable();
             $table->json('FamilyMedicalNo')->nullable();
             $table->string('FamilyName');
             $table->date('DateOfBirth');
