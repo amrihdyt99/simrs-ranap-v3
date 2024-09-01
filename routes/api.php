@@ -40,7 +40,9 @@ Route::post('/newstorediagnosa', [\App\Http\Controllers\NewDokter\NewDiagnoseCon
 Route::post('/newstoreprosedur', [\App\Http\Controllers\NewDokter\NewDiagnoseController::class, 'storeProcedure'])->name('newstore.prosedur');
 
 Route::prefix('resume')->controller(ResumeController::class)->group(function () {
+	Route::get('/data', 'data');
 	Route::get('/baseData', 'baseData');
+	Route::post('/store', 'store')->name('resume.store');
 	Route::post('/storePerawatanSelanjutnya', 'storePerawatanSelanjutnya')->name('resume.storePerawatanSelanjutnya');
 });
 
