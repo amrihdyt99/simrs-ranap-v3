@@ -26,7 +26,7 @@ function urlLabRadiology() {
 }
 
 function urlSimrs() {
-    return domain(1).'simrs-rajal/';
+    return domain(1).'simrs_ranap/';
 }
 
 function getService($url, $array = false) {
