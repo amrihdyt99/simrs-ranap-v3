@@ -65,6 +65,29 @@
             return data.replace(/\//g, '_')
         }
 
+        function randomString(len, charSet) {
+            charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var randomString = '';
+            for (var i = 0; i < len; i++) {
+                var randomPoz = Math.floor(Math.random() * charSet.length);
+                randomString += charSet.substring(randomPoz,randomPoz+1);
+            }
+            return randomString;
+        }
+
+        function needsJsonParse(variable) {
+            if (typeof variable !== 'string') {
+                return false;
+            }
+            
+            try {
+                JSON.parse(variable);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
         function addOption(elm, value, text) {
             var newOption = new Option(text, value, false, false);
             $(elm).append(newOption).trigger('change');
