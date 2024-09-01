@@ -374,13 +374,13 @@
                                         <div class="form-group">
                                             <label class="label-admisi">Purpose</label>
                                             @if($registration->purpose)
-                                                <input type="text" id="purpose" name="purpose" class="form-control" value="{{ $registration->purpose }}" readonly>
+                                            <input type="text" id="purpose" name="purpose" class="form-control" value="{{ $registration->purpose }}" readonly>
                                             @else
-                                                <select id="purpose" name="purpose" class="form-control select2bs4">
-                                                    <option value="Treatment">Treatment</option>
-                                                    <option value="Parturition">Parturition</option>
-                                                    <option value="New Born Baby">New Born Baby</option>
-                                                </select>
+                                            <select id="purpose" name="purpose" class="form-control select2bs4">
+                                                <option value="Treatment">Treatment</option>
+                                                <option value="Parturition">Parturition</option>
+                                                <option value="New Born Baby">New Born Baby</option>
+                                            </select>
                                             @endif
                                         </div>
                                     </div>
@@ -401,11 +401,11 @@
                                             <label class="label-admisi">Bed Ranap</label>
                                             @empty($registration->bed)
                                             <select name="bed_id" id="bed_id" class="select2bs4 form-control">
-                                                    <option value="">-- Pilih Bed --</option>
-                                                </select>
-                                                @else
-                                                <input type="text" class="form-control" readonly value="{{ $bed_name }}">
-                                                @endempty
+                                                <option value="">-- Pilih Bed --</option>
+                                            </select>
+                                            @else
+                                            <input type="text" class="form-control" readonly value="{{ $bed_name }}">
+                                            @endempty
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -441,50 +441,28 @@
                                         <hr>
                                         <h5><b>DATA PENANGGUNG JAWAB PASIEN</b></h5>
                                     </div>
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Hubungan dengan pasien</label>
-                                            @php
-                                            $hubungan_pasien = [
-                                            'Diri sendiri',
-                                            'Orang tua',
-                                            'Anak',
-                                            'Suami/istri',
-                                            'Kerabat/saudara',
-                                            'Lain-lain',
-                                            ];
-                                            @endphp
-                                            <select name="reg_hub_pasien" id="reg_hub_pasien" class="form-control">
-                                                <option value="">-- Pilih hubungan dengan pasien --</option>
-                                                @foreach ($hubungan_pasien as $item)
-                                                <option value="{{ $item }}" {{ $item == $registration->reg_pjawab_hub ? 'selected' : '' }}>{{ $item }}</option>
-                                                @endforeach
-
-                                            </select>
+                                    <div class="col-lg-12 mb-3">
+                                        <div class="btn-group m-3">
+                                            <button type="button" class="btn btn-warning btn-add-row" id="showModalPJ">
+                                                <i class="fa fa-plus"></i>
+                                                Tambah Penanggungjawab Pasien
+                                            </button>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Nomor Telepon</label>
-                                            <input type="text" class="form-control" name="reg_pjawab_nohp" id="reg_pjawab_nohp" placeholder="No. telpon penanggungjawab pasien" value="{{ $registration->reg_pjawab_nohp ?? '-' }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">NIK Penanggungjawab</label>
-                                            <input type="text" class="form-control" name="reg_pjawab_nik" id="reg_pjawab_nik" placeholder="NIK penanggungjawab pasien" value="{{ $registration->reg_pjawab_nik ?? '-' }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Penanggungjawab Pembayaran</label>
-                                            <input type="text" class="form-control" name="reg_pjawab" id="reg_pjawab" placeholder="Penanggungjawab pembayaran pasien" value="{{ $registration->reg_pjawab }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-admisi">Penanggungjawab Alamat</label>
-                                            <input type="text" class="form-control" name="reg_pjawab_alamat" id="reg_pjawab_alamat" placeholder="Penanggungjawab Alamat pasien" value="{{ $registration->reg_pjawab_alamat ?? '-' }}">
+                                        <div class="table-responsive">
+                                            <table id="dt-pj" class="table table-lg table-bordered nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Nama Penanggungjawab</th>
+                                                        <th>Hub dengan pasien</th>
+                                                        <th>Nomor Telepon</th>
+                                                        <th>NIK</th>
+                                                        <th>Penanggungjawab Pembayaran</th>
+                                                        <th>Penanggungjawab Alamat</th>
+                                                        <th>Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -551,29 +529,196 @@
     </div>
     <!-- /.content -->
 </div>
+
+<div class="modal" id="pjModal" tabindex="-1" role="dialog">
+    <form method="" action="" id="requestpjdata">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Penanggungjawab Pasien</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="label-admisi">Nama Penanggungjawab Pasien</label>
+                        <input type="text" class="form-control" name="reg_pjawab_nama" id="reg_pjawab_nama" placeholder="Nama penanggungjawab pasien" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">Hubungan dengan pasien</label>
+                        @php
+                        $hubungan_pasien = [
+                        'Diri sendiri',
+                        'Orang tua',
+                        'Anak',
+                        'Suami/istri',
+                        'Kerabat/saudara',
+                        'Lain-lain',
+                        ];
+                        @endphp
+                        <select name="reg_hub_pasien" id="reg_hub_pasien" class="form-control" required>
+                            <option value="">-- Pilih hubungan dengan pasien --</option>
+                            @foreach ($hubungan_pasien as $item)
+                            <option value="{{ $item }}" {{ $item == $registration->reg_pjawab_hub ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">Nomor Telepon</label>
+                        <input type="text" class="form-control" name="reg_pjawab_nohp" id="reg_pjawab_nohp" placeholder="No. telpon penanggungjawab pasien" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">NIK Penanggungjawab</label>
+                        <input type="text" class="form-control" name="reg_pjawab_nik" id="reg_pjawab_nik" placeholder="NIK penanggungjawab pasien" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">Penanggungjawab Pembayaran</label>
+                        <input type="text" class="form-control" name="reg_pjawab_bayar" id="reg_pjawab_bayar" placeholder="Penanggungjawab pembayaran pasien" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">Penanggungjawab Alamat</label>
+                        <input type="text" class="form-control" name="reg_pjawab_alamat" id="reg_pjawab_alamat" placeholder="Penanggungjawab Alamat pasien" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="newPJ">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 <!-- /.content-wrapper -->
 @endsection
 
 @push('nyaa_scripts')
 <script>
+    function objectifyForm(formArray) {
+        //serialize data function
+        var returnArray = {};
+        for (var i = 0; i < formArray.length; i++) {
+            returnArray[formArray[i]['name']] = formArray[i]['value'];
+        }
+        return returnArray;
+    }
+
     const medicalNo = "{{ $pasien->MedicalNo ?? '' }}";
-    
+
     element_visit_history = document.getElementById('visit-history')
-    $(document).ready(function(){
+    $(document).ready(function() {
         let urls = "{{ route('pasien.web.visit.history', ':medicalRecord') }}"
+        let data_pj = <?= isset($pjawab_pasien) ? json_encode($pjawab_pasien) : '[]'; ?>;
+
         urls = urls.replace(':medicalRecord', medicalNo)
         $.ajax({
             url: urls,
             type: "GET",
-            success: function(res){
+            success: function(res) {
                 element_visit_history.innerHTML = res
             }
-        })
-    })
+        });
 
-    function filterVisitHistory(){
+        $('#showModalPJ').click(function(e) {
+            e.preventDefault();
+            if (data_pj.length == 3) {
+                neko_notify('Error', 'Data Penanggung Jawab tidak boleh melebihi 3');
+            } else {
+                $('#pjModal').modal('show');
+            }
+        });
+
+        const dt_pj = $('#dt-pj').DataTable({
+            ordering: false,
+            info: false,
+            paging: false,
+            searching: false,
+            serverSide: false,
+            data: data_pj,
+            columns: [{
+                    data: 'reg_pjawab_nama',
+                    render: function(columnData, type, rowData, meta) {
+                        return `
+                            <input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_no]" value="` + "{{ $registration->reg_no }}" + `" type="hidden" required >
+                            <input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_pjawab_nama]" value="` + columnData + `" required readonly>`;
+                    }
+                }, {
+                    data: 'reg_hub_pasien',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_hub_pasien]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
+                    data: 'reg_pjawab_nohp',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_pjawab_nohp]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
+                    data: 'reg_pjawab_nik',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_pjawab_nik]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
+                    data: 'reg_pjawab_bayar',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_pjawab_bayar]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
+                    data: 'reg_pjawab_alamat',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][reg_pjawab_alamat]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
+                    data: null,
+                    className: 'text-center',
+                    width: '50px',
+                    render: function(columnData, type, rowData, meta) {
+                        return ` <button type="button" id="id_` + meta.row + `" class="btn btn-danger btn-delete-row" ><i class="fa fa-minus"></i></button>`;
+                    }
+                }
+            ],
+            rowCallback: function(row, data, displayNum, displayIndex, index) {
+                let api = this.api();
+                $(row).find('#id_' + index).click(function() {
+                    var v = $(this).data('v')
+                    api.row($(this).closest("tr").get(0)).remove().draw();
+                    data_pj.splice(index, 1);
+                });
+            },
+        });
+
+
+        $("#requestpjdata").submit(function(e) {
+            e.preventDefault();
+
+            var newPJ = $("#requestpjdata").serializeArray();
+            data_pj.push(objectifyForm(newPJ));
+            console.log(data_pj);
+            $("#requestpjdata").trigger('reset');
+
+            dt_pj.clear(); // Clear your data
+            dt_pj.rows.add(data_pj); // Add rows with newly updated data
+            dt_pj.draw(); //then draw it
+
+            $('#pjModal').modal('hide');
+        });
+    });
+
+    function filterVisitHistory() {
         event.preventDefault()
-    
+
         let urls = "{{ route('pasien.web.visit.history', ':medicalRecord') }}"
         urls = urls.replace(':medicalRecord', medicalNo)
 
@@ -583,7 +728,7 @@
         $.ajax({
             url: urls,
             type: "GET",
-            success: function(res){
+            success: function(res) {
                 element_visit_history.innerHTML = res
             }
         })
@@ -952,6 +1097,7 @@
             })
         }
     }
+
     function cariRMMaster() {
         sinkronData("tester")
         //ajax with header to get data from http://rsud.sumselprov.go.id/master-simrs/api/pasien/detail,

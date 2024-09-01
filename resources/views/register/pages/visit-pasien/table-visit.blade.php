@@ -13,13 +13,13 @@
         </thead>
         <tbody>
             @foreach ($data as $item)
-                <tr>
-                    <td>{{ $item->reg_no ?? "-" }}</td>
-                    <td>{{ $item->asal_pasien ?? "-" }}</td>
-                    <td>{{ $item->dokter ?? "-" }}</td>
-                    <td>{{ $item->reg_tgl ?? "-" }}</td>
-                    <td>{{ $item->reg_jam ?? "-" }}</td>
-                </tr>
+            <tr>
+                <td>{{ $item->reg_no ?? "-" }}</td>
+                <td>{{ $item->asal_pasien ?? "-" }}</td>
+                <td>{{ $item->dokter ?? "-" }}</td>
+                <td>{{ $item->reg_tgl ?? "-" }}</td>
+                <td>{{ $item->reg_jam ?? "-" }}</td>
+            </tr>
             @endforeach
         </tbody>
     </table>
