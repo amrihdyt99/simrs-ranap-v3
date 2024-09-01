@@ -55,8 +55,19 @@ Route::get("/pdf", function () {
 //informasi pasien
 // Rute yang langsung menampilkan view 'index' dari direktori 'register/informasi-pasien'
 //Route::view('/informasi-pasien', 'register.informasi-pasien.index')->name('register.informasi-pasien.index');
-Route::view('/informasi-pasien', 'register.pages.informasi-pasien.index')->name('register.pages.informasi-pasien.index');
-Route::view('/informasi-pasien/create', 'register.pages.informasi-pasien.create')->name('register.pages.informasi-pasien.create');
+//Route::view('/informasi-pasien', 'register.pages.informasi-pasien.index')->name('register.pages.informasi-pasien.index');
+//Route::view('/informasi-pasien/create', 'register.pages.informasi-pasien.create')->name('register.pages.informasi-pasien.create');
+// ... existing code ...
+
+Route::get('/register/informasi-pasien/create', [RegisterDataController::class, 'create'])->name('register.informasi-pasien.create'); //create
+Route::delete('/register/pages/informasi-pasien/{id}', [RegisterDataController::class, 'destroy'])->name('register.informasi-pasien.destroy'); //hapos
 Route::post('/register/informasi-pasien', [RegisterDataController::class, 'store'])->name('register.informasi-pasien.store');
+
+Route::get('/register/pages/informasi-pasien/{MedicalNo}/edit', [RegisterDataController::class, 'edit'])->name('register.informasi-pasien.edit');
+Route::put('/register/pages/informasi-pasien/{MedicalNo}', [RegisterDataController::class, 'update'])->name('register.informasi-pasien.update')
+; //edit
+Route::resource('informasi-pasien', RegisterDataController::class); // Route untuk menampilkan data pasien
+Route::get('register/informasi-pasien', [RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
+Route::get('register/informasi-pasien/getData', [RegisterDataController::class, 'getData'])->name('register.informasi-pasien.getData');
 //Route::get('/informasi-pasien/patientnew', 'register.pages.informasi-pasien.patientnew')->name('register.pages.informasi-pasien.patientnew');
 //Route::get('/informasi-pasien', [InformasiPasien\RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');

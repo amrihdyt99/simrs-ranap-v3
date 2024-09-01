@@ -7,13 +7,18 @@
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-sm-6">
+                    <div class="col-sm-10">
                         <h1>
                             Location
                             <a href="{{ route('master.location.create') }}" class="btn btn-success rounded-circle">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </h1>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="tarikDataLocation" class="btn btn-primary">
+                            Tarik Data Location
+                        </button>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -47,6 +52,7 @@
                                 <table id="location" class="w-100 table table-bordered">
                                     <thead>
                                         <tr>
+                                            <th>Aksi</th>
                                             <th>LocationID</th>
                                             <th>SiteCode</th>
                                             <th>LocationCode</th>
@@ -60,7 +66,6 @@
                                             <th>IsNettable</th>
                                             <th>IsHoldForTransaction</th>
                                             <th>IsDisplayStock</th>
-                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -100,7 +105,13 @@
                         "X-HTTP-Method-Override": "GET"
                     }
                 },
-                columns: [{
+                columns: [
+                    {
+                        data: "aksi_data",
+                        orderable: false,
+                        searchable: false,
+                    },    
+                {
                         data: "LocationID",
                         name: "LocationID",
                         orderable: true,
@@ -178,13 +189,29 @@
                         orderable: true,
                         searchable: true,
                     },
-                    {
-                        data: "aksi_data",
-                        orderable: false,
-                        searchable: false,
-                    },
+                    
                 ],
             });
         }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#tarikDataLocation').click(function() {
+                $.ajax({
+                    url: "{{ url('tarik/location') }}", 
+                    method: 'GET', 
+                    success: function(response) {
+                        alert('Data location berhasil ditarik!'); 
+                        console.log(response); 
+                        $('#location').DataTable().ajax.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert(
+                        'Terjadi kesalahan saat menarik data location.'); 
+                        console.log(error); 
+                    }
+                });
+            });
+        });
     </script>
 @endpush

@@ -75,48 +75,52 @@ class OrganizationController extends Controller
 
     public function store(Request $request)
     {
-        Organization::insert([
-            'OrganizationCode' => $request->OrganizationCode,
-            'OrganizationName' => $request->OrganizationName,
-            'OrganizationLevel' => $request->OrganizationLevel,
-            'ParentOrganization' => $request->ParentOrganization,
-            'OrganizationPercentage' => $request->OrganizationPercentage,
-            'IsActive' => 1,
-            'IsDeleted' => 0,
-            'LastUpdatedBy' => auth()->user()->id,
-            'LastUpdatedDateTime' => Carbon::now(),
-        ]);
+        try {
+            Organization::create([
+                'OrganizationCode' => $request->OrganizationCode,
+                'OrganizationName' => $request->OrganizationName,
+                'OrganizationLevel' => $request->OrganizationLevel,
+                'ParentOrganization' => $request->ParentOrganization,
+                'OrganizationPercentage' => $request->OrganizationPercentage,
+                'IsActive' => 1,
+                'IsDeleted' => 0,
+                'LastUpdatedBy' => auth()->user()->id,
+                'LastUpdatedDateTime' => Carbon::now(),
+            ]);
 
-        return response()->json([
-            'success' => 'Data berhasil ditambah!'
-        ]);
-    }
-
-    public function edit($id)
-    {
-        $organization = Organization::findOrFail($id);
-        return view('master.pages.organization.update', compact('organization'));
+            return response()->json([
+                'success' => 'Data berhasil ditambah!',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Data gagal ditambah! ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
         $organization = Organization::findOrFail($id);
 
-        $organization->update([
-            'OrganizationCode' => $request->OrganizationCode,
-            'OrganizationName' => $request->OrganizationName,
-            'OrganizationLevel' => $request->OrganizationLevel,
-            'ParentOrganization' => $request->ParentOrganization,
-            'OrganizationPercentage' => $request->OrganizationPercentage,
-            'IsActive' => 1,
-            'IsDeleted' => 0,
-            'LastUpdatedBy' => auth()->user()->id,
-            'LastUpdatedDateTime' => Carbon::now(),
-        ]);
+        try {
+            $organization->update([
+                'OrganizationCode' => $request->OrganizationCode,
+                'OrganizationName' => $request->OrganizationName,
+                'OrganizationLevel' => $request->OrganizationLevel,
+                'ParentOrganization' => $request->ParentOrganization,
+                'OrganizationPercentage' => $request->OrganizationPercentage,
+                'LastUpdatedBy' => auth()->user()->id,
+                'LastUpdatedDateTime' => Carbon::now(),
+            ]);
 
-        return response()->json([
-            'success' => 'Data berhasil diubah!'
-        ]);
+            return response()->json([
+                'success' => 'Data berhasil diubah!',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Data gagal diubah! ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function destroy($id)

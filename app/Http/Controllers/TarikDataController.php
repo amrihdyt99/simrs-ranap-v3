@@ -48,27 +48,56 @@ class TarikDataController extends Controller
         }
         echo 'Alhamdulillah';
     }
+
     public function kelas()
     {
         $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/kelas');
+
         DB::connection('mysql2')->table('m_room_class')->delete();
+
+        $insertData = [];
         foreach ($data['data'] as $kue) {
-            if ($cek == 0) {
-                DB::connection('mysql2')
-                    ->table('m_room_class')->insert([$kue]);
-            }
+            $insertData[] = [
+                'ClassCode' => $kue['ClassCode'],
+                'ClassName' => $kue['ClassName'],
+                'ShortName' => $kue['ShortName'],
+                'Initial' => $kue['Initial'],
+                'ClassCategoryCode' => $kue['ClassCategoryCode'],
+                'GCClassRL' => $kue['GCClassRL'],
+                'ClassLevel' => $kue['ClassLevel'],
+                'IsAdministrationChargeByClass' => (int) $kue['IsAdministrationChargeByClass'],
+                'MinAdministrationCharge' => $kue['MinAdministrationCharge'],
+                'MaxAdministrationCharge' => $kue['MaxAdministrationCharge'],
+                'PercentageAdministrationCharge' => $kue['PercentageAdministrationCharge'],
+                'PhysicianChargesItemID' => $kue['PhysicianChargesItemID'] ?? null,
+                'DisplayPrice' => $kue['DisplayPrice'] ?? null,
+                'PictureFileName' => $kue['PictureFileName'],
+                'PatientPerRoomQty' => (int) $kue['PatientPerRoomQty'],
+                'IsHasAC' => (int) $kue['IsHasAC'],
+                'IsHasPrivateBathRoom' => (int) $kue['IsHasPrivateBathRoom'],
+                'IsHasRefrigerator' => (int) $kue['IsHasRefrigerator'],
+                'IsHasTV' => (int) $kue['IsHasTV'],
+                'IsHasWifi' => (int) $kue['IsHasWifi'],
+                'Remarks' => $kue['Remarks'] ?? null,
+                'IsActive' => (int) $kue['IsActive'],
+                'IsDeleted' => (int) $kue['IsDeleted'],
+                'LastUpdatedBy' => $kue['LastUpdatedBy'],
+                'LastUpdatedDateTime' => $kue['LastUpdatedDateTime'],
+            ];
         }
+
+        DB::connection('mysql2')->table('m_room_class')->insert($insertData);
+
         echo 'Alhamdulillah';
     }
+
     public function room()
     {
         $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/room');
         DB::connection('mysql2')->table('m_ruangan')->delete();
         foreach ($data['data'] as $kue) {
-            if ($cek == 0) {
-                DB::connection('mysql2')
-                    ->table('m_ruangan')->insert([$kue]);
-            }
+            DB::connection('mysql2')
+                ->table('m_ruangan')->insert([$kue]);
         }
         echo 'Alhamdulillah';
     }
@@ -134,7 +163,7 @@ class TarikDataController extends Controller
                     'class_code' => $kue['ClassCode'],
                     'bed_code' => $kue['BedCode'],
                     'site_code' => $kue['SiteCode'],
-                    'registration_no' => $kue['RegistrationNo'],
+                    // 'registration_no' => $kue['RegistrationNo'],
                     'reservation_no' => $kue['ReservationNo'],
                     'phone_extension_no' => $kue['PhoneExtensionNo'],
                     'bed_status' => $kue['GCBedStatus'],
@@ -157,7 +186,7 @@ class TarikDataController extends Controller
                     'class_code' => $kue['ClassCode'],
                     'bed_code' => $kue['BedCode'],
                     'site_code' => $kue['SiteCode'],
-                    'registration_no' => $kue['RegistrationNo'],
+                    // 'registration_no' => $kue['RegistrationNo'],
                     'reservation_no' => $kue['ReservationNo'],
                     'phone_extension_no' => $kue['PhoneExtensionNo'],
                     'bed_status' => $kue['GCBedStatus'],

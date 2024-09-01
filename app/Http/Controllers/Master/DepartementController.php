@@ -18,30 +18,30 @@ class DepartementController extends Controller
 
     public function ajax_index($request)
     {
-        $departement = DB::connection('mysql')->table("rs_m_department");
+        $departement = DB::connection('mysql2')->table("m_unit_departemen");
         return DataTables()
             ->queryBuilder($departement)
             ->editColumn('aksi_data', function ($query) use ($request) {
                 return
                 ( '<a href="'
-                . route('master.departement.edit', [$query->DepartmentCode])
+                . route('master.departement.edit', [$query->ServiceUnitID])
                 . '" class="btn btn-sm"><i class="fas fa-edit text-info"></i></a>' )
                 .
                 '<form action="'
-                . route('master.departement.destroy', [$query->DepartmentCode])
+                . route('master.departement.destroy', [$query->ServiceUnitID])
                 . '" method="POST">'
                 . csrf_field()
                 . method_field('DELETE')
                 . '<button class="btn btn-sm" type="submit" onclick="return confirm(\'Apakah yakin ingin menghapus?\')"><i class="fas fa-trash text-danger"></i></button></form>';
             })
-            ->editColumn('IsHasRegistration', function ($query) use ($request) {
-                return app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->request_ya_tidak_parser($query->IsHasRegistration);
-            })
-            ->editColumn('IsHasPrescription', function ($query) use ($request) {
-                return app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->request_ya_tidak_parser($query->IsHasPrescription);
-            })
-            ->editColumn('IsGenerateMedicalNo', function ($query) use ($request) {
-                return app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->request_ya_tidak_parser($query->IsGenerateMedicalNo);
+            ->editColumn('LocationID', function ($query) use ($request) {
+                $location = DB::connection('mysql2')
+                    ->table("m_location")
+                    ->where('LocationID', $query->LocationID)
+                    ->select('LocationName')
+                    ->first();
+                
+                return $location->LocationName;
             })
             ->escapeColumns([])
             ->toJson();

@@ -7,13 +7,18 @@
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-sm-6">
+                    <div class="col-sm-10">
                         <h1>
                             Bed Management
                             <a href="{{ route('master.bed.create') }}" class="btn btn-success rounded-circle">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </h1>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="tarikDataBed" class="btn btn-primary">
+                            Tarik Data Bed
+                        </button>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -149,8 +154,8 @@
                         searchable: false
                     },
                     {
-                        data: "unit.ServiceUnitName",
-                        name: "unit.ServiceUnitName"
+                        data: "service_unit_id",
+                        name: "service_unit_id"
                     },
                     {
                         data: "RoomName",
@@ -255,6 +260,28 @@
             });
         }
     </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#tarikDataBed').click(function() {
+                $.ajax({
+                    url: "{{ url('tarik/bed') }}",
+                    method: 'GET',
+                    success: function(response) {
+                        alert('Data bed berhasil ditarik!');
+                        console.log(response);
+                        $('#bed_table').DataTable().ajax.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert(
+                            'Terjadi kesalahan saat menarik data bed.');
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
     @if (session('success'))
         <script>
             neko_notify('success', '{{ session('success') }}');

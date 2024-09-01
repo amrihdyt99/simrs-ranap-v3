@@ -169,12 +169,6 @@ class RegisterController extends Controller
         return view('register.pages.ranap.create', $data);
     }
 
-    public function newformRegisterInap()
-    {
-        $data = $this->getDataFormRegistration();
-        //return view('register.pages.baru.pilih_pasien',$data);
-        return view('register.pages.ranap.newpatient', $data);
-    }
 
     public function simpanDataPasien(Request $request)
     {
@@ -589,10 +583,14 @@ class RegisterController extends Controller
     {
         $ruangan = DB::connection('mysql2')
             ->table('m_bed')
-            ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-            ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->leftJoin('m_unit_departemen', function ($join) {
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode') 
+                     ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID'); 
+            })
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
             ->where(function ($query) {
@@ -615,7 +613,11 @@ class RegisterController extends Controller
         $ruangan = DB::connection('mysql2')
             ->table('m_bed')
             ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
+            // ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
+            ->join('m_unit_departemen', function ($join) {
+                $join->on('m_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id') 
+                    ->orOn('m_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id'); 
+            })
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
             ->where(function ($query) {

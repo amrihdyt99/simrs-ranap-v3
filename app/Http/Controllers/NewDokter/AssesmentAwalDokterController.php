@@ -59,12 +59,22 @@ class AssesmentAwalDokterController extends Controller
 
         return response()->json($data);
     }
-    function get_prosedur($reg)
+    function get_prosedur(Request $request, $reg)
     {
         $reg = str_replace("_", "/", $reg);
-        $data =  DB::connection('mysql')->table('rs_pasien_prosedur')->select('NM_TINDAKAN', 'pprosedur_id', 'ID_TIND')
+
+        $data =  DB::table('rs_pasien_prosedur')
+            ->select('NM_TINDAKAN', 'pprosedur_id', 'ID_TIND')
             ->join('icd9cm_bpjs', 'ID_TIND', 'pprosedur_prosedur')
-            ->where('pprosedur_reg', $reg)->where('pprosedur_deleted', 0)->orderBy('pprosedur_id', 'asc')->get();
+            ->where('pprosedur_reg', $reg)
+            ->where('pprosedur_deleted', 0)
+            ->orderBy('pprosedur_id', 'asc')
+            ->get();
+
+        if (isset($request->plain_data)) {
+            return $data;
+        }
+
         return response()->json($data);
     }
     function add_diagnosa(Request $r)
@@ -82,28 +92,27 @@ class AssesmentAwalDokterController extends Controller
         ];
 
         $check_ = DB::table('rs_pasien_diagnosa')
-                    ->where($param)
-                    ->first();
+            ->where($param)
+            ->first();
 
         $param = array_merge($param, $main_params);
 
         try {
             if (!isset($check_)) {
-                DB::connection('mysql')->table('rs_pasien_diagnosa')->insert($param);
-
-                return response()->json(
-                    ['success' => true]
-                );
+                DB::table('rs_pasien_diagnosa')->insert($param);
             } else {
-                DB::connection('mysql')
-                    ->table('rs_pasien_diagnosa')
-                    ->where('pdiag_id', $check_->pdiag_id)
-                    ->update($param);
-
-                return response()->json(
-                    ['success' => true]
-                );
+                if ($r->pdiag_kategori != 'utama') {
+                    DB::table('rs_pasien_diagnosa')->insert($param);
+                } else {
+                    DB::table('rs_pasien_diagnosa')
+                        ->where('pdiag_id', $check_->pdiag_id)
+                        ->update($param);
+                }
             }
+
+            return response()->json(
+                ['success' => true]
+            );
         } catch (\Throwable $th) {
             return response()->json(
                 ['success' => false, 'msg' => $th]
@@ -201,10 +210,25 @@ class AssesmentAwalDokterController extends Controller
             ]);
         }
     }
+
+    function getAssesmentDokter(Request $request){
+        try {
+            $data = DB::table('assesment_awal_dokter')
+                ->where('no_reg', $request->reg_no)
+                ->where('dokter_id', $request->dokter_id)
+                ->first();
+
+            return $data;
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     function reset_assesment($id)
     {
         $reset = DB::connection('mysql')
-            ->table('assesment_awal_dokter')->where('id', $id)->delete();
+            ->table('assesment_awal_dokter')->where('id', $id)->update(['deleted' => 1]);
         if ($reset == true) {
             return response()->json(
                 ['success' => true]
@@ -251,7 +275,8 @@ class AssesmentAwalDokterController extends Controller
             'hasil_pemeriksaan_penunjang' => $request->asdok_pemeriksaan_penunjang,
             'tanggal_pemberian' => $request->asdok_rawat_inap_ket,
             'tata_laksana_awal' => $request->asdok_tata_laksana_awal,
-            'daftar_masalah_medik' => $request->asdok_diagnosis_medik
+            'daftar_masalah_medik' => $request->asdok_diagnosis_medik,
+            'dokter_id' => $request->dokter_id
         );
 
         $simpan = DB::connection('mysql')
@@ -311,170 +336,208 @@ class AssesmentAwalDokterController extends Controller
 
     //add data soap
 
-    function get_ono_rad()
-    {
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'http://rsud.sumselprov.go.id/labor/api/last-order-radiologi-v2',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        $data = json_decode($response, true);
-        if ($data['code'] == 200) {
-            $no = $data['data']['NextNoOrder'];
-            return $no;
-        }
-    }
-    function get_ono_lab()
-    {
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'http://rsud.sumselprov.go.id/labor/api/last-order-v2',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        $data = json_decode($response, true);
-        if ($data['code'] == 200) {
-            $no = $data['data']['NextNoOrder'];
-            return $no;
-        }
-    }
-
     function kirim_rad($id, $user)
     {
-        $cek_rad = DB::connection('mysql')->table('job_orders')->where('id_cppt', $id)->where('order_no', 'like', 'RAD%')->first();
+        $cek_rad = DB::table('job_orders_dt as a')
+            ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
+            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR dikirim_ke_farmasi = 0", [$id])
+            ->where('jenis_order', 'radiologi')
+            ->select([
+                'a.*',
+                'dikirim_ke_farmasi',
+                'status_kirim'
+            ])
+            ->get();
 
-        if ($cek_rad) {
-            $reg = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $cek_rad->reg_no)->first();
-            $cito = 1;
-            $no_rad = $cek_rad->order_no;
-            $detail_rad = DB::connection('mysql')->table('job_orders_dt')->where('order_no', $no_rad)->first();
-            $get_item = DB::connection('mysql')->table('rs_m_item')->join('rs_m_item_tarif', 'rs_m_item_tarif.ItemID', '=', 'rs_m_item.ItemID')->where('ItemCode', $detail_rad->item_code)->where('ClassCategoryCode', $reg->reg_class)->select('ItemCode as item_id', 'PersonalPrice as personal_price')->first();
-            $item = [];
-            $i['item_id'] = $get_item->item_id;
-            $i['qty'] = 1;
-            $i['item_unit'] = "X";
-            $i['personal_price'] = $get_item->personal_price;
-            $i['corporate_price'] = 0;
-            array_push($item, $i);
-            $data_service_code = DB::connection('mysql2')->table('m_unit_departemen')->where('ServiceUnitID', $reg->service_unit)->first();
-            $diag_pasien = DB::connection('mysql')->table('rs_pasien_diagnosa')->where('pdiag_reg', $cek_rad->reg_no)->where('pdiag_deleted', 0)->orderBy('pdiag_id', 'asc')->first();
+        if (count($cek_rad) > 0) {
+            $ono = genKode(null, null, null, null, 'RLAB');
+
+            $reg = DB::connection('mysql2')
+                ->table('m_registrasi')
+                ->where('reg_no', $cek_rad[0]->reg_no)
+                ->select([
+                    'reg_no',
+                    'service_unit',
+                    'bed',
+                    'reg_cara_bayar',
+                    'reg_medrec',
+                ])
+                ->first();
+
+            $data_service_code = DB::connection('mysql2')
+                ->table('m_unit_departemen')
+                ->where('ServiceUnitCode', $reg->service_unit)
+                ->first();
+
+            $diag_pasien = DB::table('rs_pasien_diagnosa')
+                ->where('pdiag_reg', $reg->reg_no)
+                ->where('pdiag_kategori', 'utama')
+                ->where('pdiag_deleted', 0)
+                ->select([
+                    DB::raw("(select NM_ICD10 from icd10_bpjs where ID_ICD10 = pdiag_diagnosa) as NM_ICD10")
+                ])
+                ->first();
+
             if ($diag_pasien) {
-                $latin_icd10 =  DB::connection('mysql')->table('icd10_bpjs')->where('ID_ICD10', $diag_pasien->pdiag_diagnosa)->first()->NM_ICD10;
+                $latin_icd10 =  $diag_pasien->NM_ICD10;
             } else {
                 $latin_icd10 = '-';
             }
-            $room_code = DB::connection('mysql2')->table('m_ruangan')->join('m_bed', 'm_bed.room_id', '=', 'm_ruangan.RoomID')->where('bed_id', $reg->bed)->first();
-            $ono = $this->get_ono_rad();
 
-            $a = [];
-            $a['job_order_no'] = $ono;
-            $a['registration_no'] = $cek_rad->reg_no;
-            $a['transaction_no'] = 'JOR-RAD';
-            $a['paramedic_id'] = $cek_rad->kode_dokter;
-            $a['service_unit_id'] = $data_service_code->ServiceUnitCode;
-            $a['location_id'] = $data_service_code->LocationID;
-            $a['job_order_datetime'] = date('Y-m-d H:i:s');
-            $a['remarks'] = $latin_icd10;
-            $a['is_cito'] = $cito;
-            $a['user_id'] = $user;
-            $a['gc_order_type'] = 'X0151^004';
-            $a['is_testing'] = 1;
-            $a['payer_type'] = $reg->reg_cara_bayar;
-            $a['room_no'] = $room_code->RoomCode;
-            $a['items'] = json_encode($item);
-            $a['order_type'] = 'Imaging';
-            $a['medical_no'] = $reg->reg_medrec;
-            $a['scheduled_dttm'] = date('YmdHis');
+            $room_code = DB::connection('mysql2')
+                ->table('m_ruangan')
+                ->join('m_bed', 'm_bed.room_id', '=', 'm_ruangan.RoomID')
+                ->where('bed_id', $reg->bed)
+                ->first();
 
-            DB::connection('mysql')->table('job_orders')->where('order_no', $no_rad)->update([
-                'send_api' => json_encode($a)
-            ]);
-            $curl = curl_init();
+            $cito = 1;
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'http://rsud.sumselprov.go.id/labor/api/order-radiologi-sim',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $a,
-            ));
+            foreach ($cek_rad as $key => $value) {
+                $ono = genKode(null, null, null, null, 'RIMG');
 
-            $response = curl_exec($curl);
+                $item = [];
+                foreach ($cek_rad as $sub_key => $sub_value) {
+                    $i['item_id'] = $sub_value->item_code;
+                    $i['qty'] = 1;
+                    $i['item_unit'] = "X";
+                    $i['personal_price'] = $sub_value->harga_jual;
+                    $i['corporate_price'] = 0;
 
-            curl_close($curl);
-            $resp = json_decode($response);
-            if ($resp->success) {
-                DB::connection('mysql')->table('job_orders')->where('order_no', $no_rad)->update([
-                    'response_api' => json_encode($resp->data),
-                    'status_api' => 1
-                ]);
-            } else {
-                DB::connection('mysql')->table('job_orders')->where('order_no', $no_rad)->update([
-                    'response_api' => json_encode($resp->data),
-                    'status_api' => 0
-                ]);
+                    array_push($item, $i);
+                }
+
+                $a = [];
+                $a['job_order_no'] = $ono;
+                $a['registration_no'] = $value->reg_no;
+                $a['transaction_no'] = 'JOR-RAD';
+                $a['paramedic_id'] = $value->dokter_order;
+                $a['service_unit_id'] = $data_service_code->ServiceUnitCode;
+                $a['location_id'] = $data_service_code->LocationID;
+                $a['job_order_datetime'] = date('Y-m-d H:i:s');
+                $a['remarks'] = $latin_icd10;
+                $a['is_cito'] = $cito;
+                $a['user_id'] = $user;
+                $a['gc_order_type'] = 'X0151^004';
+                $a['is_testing'] = 1;
+                $a['payer_type'] = $reg->reg_cara_bayar;
+                $a['room_no'] = $room_code->RoomCode;
+                $a['items'] = json_encode($item);
+                $a['order_type'] = 'Imaging';
+                $a['medical_no'] = $reg->reg_medrec;
+                $a['scheduled_dttm'] = date('YmdHis');
+
+                $send_to_radiology = postService(urlLabRadiology().'/api/order-radiologi-sim', $a);
+
+                $resp = json_decode($send_to_radiology);
+
+                foreach ($cek_rad as $value_rad) {
+                    DB::table('job_orders_dt')
+                        ->where('id', $value_rad->id)
+                        ->update([
+                            'order_no' => $a['job_order_no']
+                        ]);
+                }
+
+                if ($resp->success) {
+                    $jobOrder['dikirim_ke_farmasi'] = 1;
+                } else {
+                    $jobOrder['dikirim_ke_farmasi'] = 0;
+                }
+
+                $jobOrder['order_no'] = $a['job_order_no'];
+                $jobOrder['reg_no'] = $reg->reg_no;
+                $jobOrder['kode_dokter'] = $value->dokter_order;
+                $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
+                $jobOrder['service_unit'] = $reg->service_unit;
+                $jobOrder['id_cppt'] = $id;
+                $jobOrder['status_kirim'] = $send_to_radiology;
+
+                $store_jor = DB::table('job_orders')
+                                ->insert($jobOrder);
+
+                if ($resp->success == false) {
+                    return [
+                        'code' => 500,
+                        'success'=> false,
+                        'message' => $resp->message,
+                        'data' => $resp->data
+                    ];
+                }
             }
         }
     }
     function kirim_lab($id, $user)
     {
-        $cek_lab = DB::connection('mysql')->table('job_orders')->where('id_cppt', $id)->where('order_no', 'like', 'LAB%')->first();
+        $cek_lab = DB::table('job_orders_dt as a')
+            ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
+            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR dikirim_ke_farmasi = 0", [$id])
+            ->where('jenis_order', 'lab')
+            ->select([
+                'a.*',
+                'dikirim_ke_farmasi',
+                'status_kirim'
+            ])
+            ->get();
 
-        if ($cek_lab) {
-            $reg = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $cek_lab->reg_no)->first();
+        if (count($cek_lab) > 0) {
+            $ono = genKode(null, null, null, null, 'RLAB');
+
+            $reg = DB::connection('mysql2')
+                ->table('m_registrasi')
+                ->where('reg_no', $cek_lab[0]->reg_no)
+                ->select([
+                    'reg_no',
+                    'service_unit',
+                    'bed',
+                    'reg_cara_bayar',
+                    'reg_medrec',
+                ])
+                ->first();
+
             $cito = 1;
-            $no_rad = $cek_lab->order_no;
-            $detail_rad = DB::connection('mysql')->table('job_orders_dt')->where('order_no', $no_rad)->first();
-            $get_item = DB::connection('mysql')->table('rs_m_item')->join('rs_m_item_tarif', 'rs_m_item_tarif.ItemID', '=', 'rs_m_item.ItemID')->where('ItemCode', $detail_rad->item_code)->where('ClassCategoryCode', $reg->reg_class)->select('ItemCode as item_id', 'PersonalPrice as personal_price')->get();
             $item = [];
-            foreach ($get_item as $a) {
-                $i['item_id'] = $a->item_id;
+
+            foreach ($cek_lab as $a) {
+                $i['item_id'] = $a->item_code;
                 $i['qty'] = 1;
                 $i['item_unit'] = "X";
-                $i['personal_price'] = $a->personal_price;
+                $i['personal_price'] = $a->harga_jual;
                 $i['corporate_price'] = 0;
+                
                 array_push($item, $i);
             }
-            $data_service_code = DB::connection('mysql2')->table('m_unit_departemen')->where('ServiceUnitID', $reg->service_unit)->first();
-            $diag_pasien = DB::connection('mysql')->table('rs_pasien_diagnosa')->where('pdiag_reg', $cek_lab->reg_no)->where('pdiag_deleted', 0)->orderBy('pdiag_id', 'asc')->first();
+
+            $data_service_code = DB::connection('mysql2')
+                ->table('m_unit_departemen')
+                ->where('ServiceUnitCode', $reg->service_unit)
+                ->first();
+
+            $diag_pasien = DB::table('rs_pasien_diagnosa')
+                ->where('pdiag_reg', $reg->reg_no)
+                ->where('pdiag_kategori', 'utama')
+                ->where('pdiag_deleted', 0)
+                ->select([
+                    DB::raw("(select NM_ICD10 from icd10_bpjs where ID_ICD10 = pdiag_diagnosa) as NM_ICD10")
+                ])
+                ->first();
+
             if ($diag_pasien) {
-                $latin_icd10 =  DB::connection('mysql')->table('icd10_bpjs')->where('ID_ICD10', $diag_pasien->pdiag_diagnosa)->first()->NM_ICD10;
+                $latin_icd10 =  $diag_pasien->NM_ICD10;
             } else {
                 $latin_icd10 = '-';
             }
-            $room_code = DB::connection('mysql2')->table('m_ruangan')->join('m_bed', 'm_bed.room_id', '=', 'm_ruangan.RoomID')->where('bed_id', $reg->bed)->first();
-            $ono = $this->get_ono_rad();
+
+            $room_code = DB::connection('mysql2')
+                ->table('m_ruangan')
+                ->join('m_bed', 'm_bed.room_id', '=', 'm_ruangan.RoomID')
+                ->where('bed_id', $reg->bed)
+                ->first();
 
             $a = [];
             $a['job_order_no'] = $ono;
-            $a['registration_no'] = $cek_lab->reg_no;
+            $a['registration_no'] = $reg->reg_no;
             $a['transaction_no'] = 'JOR-LAB';
-            $a['paramedic_id'] = $cek_lab->kode_dokter;
+            $a['paramedic_id'] = $cek_lab[0]->dokter_order;
             $a['service_unit_id'] = $data_service_code->ServiceUnitCode;
             $a['location_id'] = $data_service_code->LocationID;
             $a['job_order_datetime'] = date('Y-m-d H:i:s');
@@ -490,37 +553,42 @@ class AssesmentAwalDokterController extends Controller
             $a['medical_no'] = $reg->reg_medrec;
             $a['scheduled_dttm'] = date('YmdHis');
 
-            DB::connection('mysql')->table('job_orders')->where('order_no', $no_rad)->update([
-                'send_api' => json_encode($a)
-            ]);
-            $curl = curl_init();
+            $send_to_laboratory = postService(urlLabRadiology().'/api/order-radiologi-sim', $a);
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'http://rsud.sumselprov.go.id/labor/api/order-radiologi-sim',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $a,
-            ));
+            $resp = json_decode($send_to_laboratory);
 
-            $response = curl_exec($curl);
+            foreach ($cek_lab as $value_lab) {
+                DB::table('job_orders_dt')
+                    ->where('id', $value_lab->id)
+                    ->update([
+                        'order_no' => $a['job_order_no']
+                    ]);
+            }
 
-            curl_close($curl);
-            $resp = json_decode($response);
             if ($resp->success) {
-                DB::connection('mysql')->table('job_orders')->where('order_no', $no_rad)->update([
-                    'response_api' => json_encode($resp->data),
-                    'status_api' => 1
-                ]);
+                $jobOrder['dikirim_ke_farmasi'] = 1;
             } else {
-                DB::connection('mysql')->table('job_orders')->where('order_no', $no_rad)->update([
-                    'response_api' => json_encode($resp->data),
-                    'status_api' => 0
-                ]);
+                $jobOrder['dikirim_ke_farmasi'] = 0;
+            }
+
+            $jobOrder['order_no'] = $a['job_order_no'];
+            $jobOrder['reg_no'] = $reg->reg_no;
+            $jobOrder['kode_dokter'] = $cek_lab[0]->dokter_order;
+            $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
+            $jobOrder['service_unit'] = $reg->service_unit;
+            $jobOrder['id_cppt'] = $id;
+            $jobOrder['status_kirim'] = $send_to_laboratory;
+
+            $store_jor = DB::table('job_orders')
+                            ->insert($jobOrder);
+
+            if ($resp->success == false) {
+                return [
+                    'code' => 500,
+                    'success'=> false,
+                    'message' => $resp->message,
+                    'data' => $resp->data
+                ];
             }
         }
     }
@@ -585,8 +653,9 @@ class AssesmentAwalDokterController extends Controller
             ->update($paramscppt);
 
         if ($simpancppt == true) {
-            // $this->kirim_rad($request->soapdok_id, $request->id);
-            // $this->kirim_lab($request->soapdok_id, $request->id);
+            $this->kirim_rad($request->soapdok_id, $request->id);
+            $this->kirim_lab($request->soapdok_id, $request->id);
+            
             return response()->json([
                 'success' => true
             ]);
@@ -795,4 +864,26 @@ class AssesmentAwalDokterController extends Controller
             'data_pemulangan' => $data_pemulangan
         ]);
     }
+
+    function getPengkajianAwalUmumPerawat(Request $request)
+    {
+        try {
+            $data = DB::connection('mysql')
+                ->table('pengkajian_awal_pasien_perawat as p')
+                ->leftJoin('rs_pasien_cppt as c', 'p.reg_no', '=', 'c.soapdok_reg')
+                // ->where('p.reg_no', 'c.soapdok_reg')
+                ->get();
+    
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+    
 }

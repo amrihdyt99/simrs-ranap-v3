@@ -20,6 +20,12 @@
           <span>Data Pendaftaran IGD</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="{{ Request::segment(1) == "Informasi Pasien" ? "active text-bold text-primary" : "" }} nav-link" 
+          href="{{ route('register.informasi-pasien.index') }}">
+          <span>Data Pasien</span>
+        </a>
+      </li>
     </ul>
   </div>
 </nav>

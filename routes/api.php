@@ -3,6 +3,7 @@
 use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
 use App\Http\Controllers\Master\PasienController;
+use App\Http\Controllers\NewDokter\ResumeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +33,16 @@ Route::post('/newnursing/addvitalv2', [\App\Http\Controllers\NewPerawat\NewNursi
 Route::post('gettindakanbaru', [\App\Http\Controllers\Master\TarifController::class, 'data_tindakan_baru'])->name('tarif.tindakanbaru');
 Route::post('/asessment_dokter', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_assesment'])->name('assesment.dokter');
 Route::get('/reset_asessment_dokter/{id}', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'reset_assesment'])->name('reset.assesment.dokter');
+Route::get('/getAssesmentDokter', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAssesmentDokter'])->name('reset.assesment.dokter');
 Route::post('/edukasi_dokter', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_edukasi'])->name('edukasi.dokter');
 Route::get('/reset_edukasi_dokter/{id}', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'reset_edukasi'])->name('reset.edukasi.dokter');
 Route::post('/newstorediagnosa', [\App\Http\Controllers\NewDokter\NewDiagnoseController::class, 'storeDiagnose'])->name('newstore.diagnosa');
 Route::post('/newstoreprosedur', [\App\Http\Controllers\NewDokter\NewDiagnoseController::class, 'storeProcedure'])->name('newstore.prosedur');
+
+Route::prefix('resume')->controller(ResumeController::class)->group(function () {
+	Route::get('/baseData', 'baseData');
+	Route::post('/storePerawatanSelanjutnya', 'storePerawatanSelanjutnya')->name('resume.storePerawatanSelanjutnya');
+});
 
 Route::post('/orderobatnew', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'orderobat'])->name('dokter.order.obat');
 Route::post('/storeFinalOrder', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'storeFinalOrder'])->name('dokter.final.obat');
