@@ -17,6 +17,7 @@
         "laravel/framework": "^8.65",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "milon/barcode": "^11.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "yajra/laravel-datatables-oracle": "^9.21"
     },

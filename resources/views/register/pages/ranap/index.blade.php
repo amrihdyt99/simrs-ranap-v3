@@ -76,7 +76,7 @@
                     <th>Dokter</th>
                     <th>Pembayaran</th>
                     <th>Aksi</th>
-                    <th>Dok</th>
+                    {{-- <th>Dok</th> --}}
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -231,11 +231,11 @@
           orderable: false,
           searchable: false,
         },
-        {
-          data: "dok_data",
-          orderable: false,
-          searchable: false,
-        },
+        // {
+        //   data: "dok_data",
+        //   orderable: false,
+        //   searchable: false,
+        // },
         {
           data: "status",
           orderable: false,

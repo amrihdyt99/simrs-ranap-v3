@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(function () {
     Route::get('/', [Ranap\RegisterController::class, 'index'])->name('register.ranap.index');
+    Route::get('/barcode/{reg_no}', [Ranap\RegisterController::class, 'barcode'])->where('reg_no', '(.*)')->name('register.ranap.barcode');
     Route::get('batal/{no}', [Ranap\RegisterController::class, 'batal_ranap'])->name('register.ranap.batal');
 
     Route::get('/api/generate-newborn-mrn', [RegisterController::class, 'generateNewbornMRN']);
