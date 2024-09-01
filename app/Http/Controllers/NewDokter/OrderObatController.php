@@ -142,7 +142,7 @@ class OrderObatController extends Controller
                 'updated_at' => "2021-12-19T16:07:11.000000Z",
             ];
 
-            if (!isset($get_room_master->ServiceUnitCode)) {
+            if (!isset($get_room_master->ServiceUnitID)) {
                 return response()->json([
                     'code' => 404,
                     'success' => false,
