@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/', [\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class, 'nyaa_default_redirect_index_route'])->name('nyaa_default_redirect_index_route');
 Route::get('/halaman-utama', [\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class, 'nyaa_default_redirect_index_route'])->name('nyaa_default_redirect_index_route_halamanutama');
 
@@ -44,3 +45,9 @@ require __DIR__ . '/dietitian.php';
 // ZxcNyaaUniversal
 require __DIR__ . '/ZxcNyaaUniversal.php';
 require __DIR__ . '/tarik_haykal.php';
+
+// use \Milon\Barcode\Facades\DNS1DFacade;
+
+// Route::get('test-barcode', function () {
+//     return DNS1DFacade::getBarcodeSVG('QREG/RI/2024090100001', 'C128', 1, 48);
+// });
