@@ -73,7 +73,7 @@
             <td colspan="3">&nbsp;</td>
         </tr>
         <tr>
-            @if (count($pj_pasien) > 0)
+            @if (isset($pj_pasien) && (count($pj_pasien) > 0))
             @php
             $i = 1;
             @endphp
