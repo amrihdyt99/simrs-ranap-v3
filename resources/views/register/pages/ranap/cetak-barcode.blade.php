@@ -18,7 +18,7 @@
             height: 100px;
             margin: 0 auto;
             font-family: "Arial", sans-serif;
-            font-size: 1rem;
+            font-size: .8rem;
         }
         
     </style>
