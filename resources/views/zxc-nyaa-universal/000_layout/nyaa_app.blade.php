@@ -35,6 +35,18 @@
     #ddx-utama {
       scroll-margin: 100px;
     }
+    #data-master-dropdown {
+      min-width: 400px; 
+    }
+    #data-master-dropdown .row {
+      margin: 0;
+    }
+    #data-master-dropdown .col-6 {
+      padding: 0;
+    }
+    #data-master-dropdown .dropdown-item {
+      white-space: nowrap;
+    }
     </style>
     @yield('styles')
     @stack('nyaa_parent_styles')

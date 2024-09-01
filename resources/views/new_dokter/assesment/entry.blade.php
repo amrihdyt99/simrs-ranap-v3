@@ -1,5 +1,5 @@
 @php 
-    $cek = DB::connection('mysql')->table('assesment_awal_dokter')->where('no_reg',$reg); 
+    $cek = DB::connection('mysql')->table('assesment_awal_dokter')->where('no_reg',$reg)->where('deleted', 0); 
 @endphp 
 @if ($cek->count() == 0)
     <div class="text-black" style="font-size: 14px;">
@@ -313,7 +313,7 @@
         $.ajax({
             type: "POST",
             url: "{{ route('assesment.dokter') }}",
-            data: queryString,
+            data: queryString+'&dokter_id='+$user_dokter_,
 
             success: function (data) {
                 //console.log(data);

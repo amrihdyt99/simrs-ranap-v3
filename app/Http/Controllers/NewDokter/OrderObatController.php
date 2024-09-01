@@ -171,16 +171,7 @@ class OrderObatController extends Controller
             $patient->LastVisitDate = null;
             $patient->NumberOfVisit = null;
 
-            $nomor_now_data = JobOrders::all()->count();
-            $padding_length = 7;
-            $length = strlen((string)$nomor_now_data);
-            for ($i = $length; $i < $padding_length; $i++) {
-                $nomor_now_data = '0' . $nomor_now_data;
-            }
-            $countOrderNo = $nomor_now_data;
-
-            $newDateFormat = str_replace('-', '', now()->toDateString());
-            $orderNumberFormat = 'FARM/RI/' . $newDateFormat . $countOrderNo;
+            $orderNumberFormat = genKode(null, null, null, null, 'FARM');
 
             foreach ($data as $key => $value) {
                 $update_order = DB::table('job_orders_dt')
@@ -382,6 +373,7 @@ class OrderObatController extends Controller
                 ])
                 ->orderBy('order_no', 'asc')
                 ->where('deleted', 0)
+                ->where('jenis_order', 'obat')
                 ->get()
                 ->unique('code');
 
@@ -601,154 +593,105 @@ class OrderObatController extends Controller
 
     function ordertindakan(Request $request)
     {
-        $cekrad = 0;
-        for ($i = 0; $i < count($request->cpoe_jenis); $i++) {
-            if ($request->cpoe_jenis[$i] == 'radiologi') {
-                $cekrad += 1;
-            }
-        }
-        if ($cekrad > 0) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tindakan Radiologi Maksimal 1x Dalam 1 CPPT'
-            ]);
-        }
+        // $cekrad = 0;
+        // for ($i = 0; $i < count($request->cpoe_jenis); $i++) {
+        //     if ($request->cpoe_jenis[$i] == 'radiologi') {
+        //         $cekrad += 1;
+        //     }
+        // }
+        // if ($cekrad > 0) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Tindakan Radiologi Maksimal 1x Dalam 1 CPPT'
+        //     ]);
+        // }
+
         $data_pasien = DB::connection('mysql2')->table('m_bed')->where('registration_no', $request->cpoe_reg)->first();
-        // return $data_pasien;
+
         $jenisorder = $request->jenisorder;
         $countorder = DB::connection('mysql')
             ->table("job_orders")
             ->get()
             ->count();
-        $newDateFormat = str_replace('-', '', now()->toDateString());
+        
+        if ($request->cpoe_tindakan) {
+            $job_orders_dt = [];
 
-        if ($jenisorder == "lab") {
-            $orderNumberFormat = 'LAB/RI/' . $newDateFormat . $countorder;
-        } else if ($jenisorder == "radiologi") {
-            $orderNumberFormat = 'RAD/RI/' . $newDateFormat . $countorder;
-        } else if ($jenisorder == "fisio") {
-            $orderNumberFormat = 'FIS/RI/' . $newDateFormat . $countorder;
-        } else if ($jenisorder == "lainnya") {
-            $orderNumberFormat = 'ANY/RI/' . $newDateFormat . $countorder;
-        }
-        $jobOrder['reg_no'] = $request->cpoe_reg;
-        $jobOrder['kode_dokter'] = $request->kode_dokter;
-        $jobOrder['waktu_order'] = now()->toDateTimeString();
-        //$jobOrder['service_unit'] = $request->service_unit;
-        $jobOrder['order_no'] = $orderNumberFormat;
-        $jobOrder['service_unit'] = $data_pasien->service_unit_id ?? '';
-        $jobOrder['id_cppt'] = $request->cpoe_cppt;
-        $detailBatch = array();
-        $itemsToLab = array();
-        for ($i = 0; $i < count($request->cpoe_tindakan); $i++) {
-            $jobOrderDetail['jenis_order'] = $jenisorder;
-            $jobOrderDetail['reg_no'] = $request->cpoe_reg;
-            $jobOrderDetail['item_code'] = $request->cpoe_tindakan[$i];
-            $jobOrderDetail['qty'] = "1";
-            //$jobOrderDetail['dosis'] = $request->dosis[$i];
-            $jobOrderDetail['item_name'] = $request->cpoe_nama[$i];
-            //$jobOrderDetail['hari'] = $request->hari[$i];
-            //$jobOrderDetail['durasi_hari'] = $request->durasi_hari[$i];
-            //$jobOrderDetail['ket_dosis'] = $request->ket_dosis[$i];
-            $jobOrderDetail['harga_jual'] = $request->cpoe_tarif[$i];
-            $jobOrderDetail['order_no'] = $orderNumberFormat;
-            $jobOrderDetail['flag'] = 0;
-
-            $items['item_id'] = $request->cpoe_tindakan[$i];
-            $items['qty'] = "1";
-            $items['item_unit'] = "X";
-            $items['personal_price'] = $request->cpoe_tarif[$i];
-            $items['corporate_price'] = "0";
-
-            array_push($itemsToLab, $items);
-            array_push($detailBatch, $jobOrderDetail);
-        }
-        $simpan = DB::connection('mysql')
-            ->table('job_orders')
-            ->insert($jobOrder);
-
-        if ($simpan == TRUE) {
-            $simpandetail = DB::connection('mysql')
-                ->table('job_orders_dt')
-                ->insert($detailBatch);
-            if ($simpandetail == TRUE) {
-
-                // $mregistrasi = DB::connection('mysql2')
-                //     ->table('m_registrasi')
-                //     ->where(['reg_no' => $request->cpoe_reg])->first();
-
-                // //ambil data detail dari ruangan baru
-                // $ketersediaan_ruangan = DB::connection('mysql2')
-                //     ->table('ketersediaan_ruangan')
-                //     ->where(['id' => $mregistrasi->reg_ruangan])->first();
-
-                // //service room yang masih nyangkut
-                // $serviceRoom = DB::connection('mysql')
-                //     ->table('rs_m_service_room')
-                //     ->where(['RoomCode' => $ketersediaan_ruangan->room_code])->first();
-
-                if ($jenisorder == "lab") {
-
-
-                    $responselab = array();
-                    $responselab['job_order_no'] = $orderNumberFormat;
-                    $responselab['registration_no'] = $request->cpoe_reg;
-                    $responselab['job_order_datetime'] = now()->toDateTimeString();
-                    $responselab['paramedic_id'] = $request->kode_dokter;
-                    $responselab['items'] = $itemsToLab;
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'data berhasil disimpan',
-                        'data' => $responselab
-                    ]);
-                } else if ($jenisorder == "radiologi") {
-                    $pesanradiologi = DB::connection('mysql')
-                        ->table('pesan_radiologi')
-                        ->insert($detailBatch);
-                    if ($pesanradiologi == TRUE) {
-                        $responeradiologi = array();
-                        $responeradiologi['job_order_no'] = $orderNumberFormat;
-                        $responeradiologi['registration_no'] = $request->cpoe_reg;
-                        $responeradiologi['transaction_no'] = "JOR-RAD";
-                        $responeradiologi['job_order_datetime'] = now()->toDateTimeString();
-                        $responeradiologi['paramedic_id'] = $request->kode_dokter;
-                        $responeradiologi['items'] = $itemsToLab;
-                        // BELUM
-                        $responeradiologi['service_unit_id'] = "TEST";
-
-                        return response()->json([
-                            'success' => true,
-                            'message' => 'data berhasil disimpan'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'data gagal disimpan'
-                        ]);
-                    }
-                } else {
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'order berhasil'
-                    ]);
-                }
+            if ($jenisorder == 'lab') {
+                $kode = 'RLAB';
+            } else if ($jenisorder == 'radiologi') {
+                $kode = 'RIMG';
+            } else if ($jenisorder == 'fisio') {
+                $kode = 'REHAB';
             } else {
-                DB::connection('mysql')
-                    ->table('job_orders')
-                    ->where('order_no', '=', $orderNumberFormat)
-                    ->delete();
-                return response()->json([
-                    'success' => false,
-                    'message' => 'order gagal'
-                ]);
+                $kode = 'ANY';
             }
+
+            if ($jenisorder == 'lab' || $jenisorder == 'radiologi') {
+                $order_no = null;
+            } else {
+                $order_no = genKode(DB::table('job_orders_dt')->where('jenis_order', $jenisorder), null, null, null, $kode);
+            }
+
+            foreach ($request->cpoe_tindakan as $key => $value) {
+                $item_to_store = [
+                    'reg_no' => $request->cpoe_reg,
+                    'item_code' => $request->cpoe_tindakan[$key],
+                    'id_cppt' => $request->cpoe_cppt,
+                    'dokter_order' => $request->kode_dokter,
+                    'deleted' => 0,
+                ];
+
+                $sub_item = [
+                    'order_no' => $order_no,
+                    'jenis_order' => $request->jenisorder,
+                    'item_name' => $request->cpoe_nama[$key],
+                    'harga_jual' => $request->cpoe_tarif[$key],
+                    'qty' => 1,
+                ];
+
+                $check_existing_item = DB::table('job_orders_dt')
+                    ->where($item_to_store)
+                    ->first();
+
+                $item_to_store = array_merge($item_to_store, $sub_item);
+
+                if (!isset($check_existing_item)) {
+                    $job_orders_dt[] = $item_to_store;
+                }
+            }
+
+            
+            if ($jenisorder != 'lab' && $jenisorder != 'radiologi') {
+                $jobOrder['order_no'] = $order_no;
+                $jobOrder['reg_no'] = $request->cpoe_reg;
+                $jobOrder['kode_dokter'] = $request->kode_dokter;
+                $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
+                $jobOrder['service_unit'] = $data_pasien->service_unit_id;
+                $jobOrder['id_cppt'] = $request->cpoe_cppt;
+                
+                $store_jor = DB::table('job_orders')
+                                ->insert($jobOrder);
+            }
+
+            $job_orders_dt = array_chunk($job_orders_dt, 5);
+            foreach ($job_orders_dt as $init){
+                $store = DB::table('job_orders_dt')->insert($init);
+            }
+
+            return [
+                'code' => 200,
+                'success' => true,
+                'message' => 'Data berhasil disimpan'
+            ];
         } else {
-            return response()->json([
+            return [
+                'code' => 500,
                 'success' => false,
-                'message' => 'order gagal'
-            ]);
+                'message' => ''
+            ];
         }
+        
     }
 
     function del_order($id)
@@ -764,7 +707,8 @@ class OrderObatController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'kesalahan silakan refresh dan coba lagi'
+                'message' => 'kesalahan silakan refresh dan coba lagi',
+                'msg' => $th
             ]);
         }
     }
@@ -773,15 +717,16 @@ class OrderObatController extends Controller
     {
         $regno = $request->id_cppt;
         $jenisorder = $request->jenisorder;
+
         $joborderdetail = DB::connection('mysql')
             ->table('job_orders_dt')
             ->leftJoin('job_orders', 'job_orders_dt.order_no', '=', 'job_orders.order_no')
-            ->leftJoin('rs_m_paramedic', 'job_orders.kode_dokter', '=', 'rs_m_paramedic.ParamedicCode')
+            ->leftJoin('rs_m_paramedic', 'job_orders_dt.dokter_order', '=', 'rs_m_paramedic.ParamedicCode')
             ->where([
-                ['job_orders.id_cppt', '=', $regno],
+                ['job_orders_dt.id_cppt', '=', $regno],
                 ['job_orders_dt.jenis_order', '=', $jenisorder]
             ])
-            ->select('job_orders_dt.id', 'waktu_order', 'jenis_order', 'job_orders_dt.order_no', 'item_name', 'harga_jual', 'ParamedicName')
+            ->select('job_orders_dt.id', 'job_orders_dt.created_at as waktu_order', 'jenis_order', 'job_orders_dt.order_no', 'item_name', 'harga_jual', 'ParamedicName')
             ->get();
 
         if (isset($request->plain_data)) {
@@ -1006,4 +951,16 @@ class OrderObatController extends Controller
 
         return view('new_dokter.pemeriksaan_penunjang.hasil_radiologi', compact('response'));
     }
+
+    // $newDateFormat = str_replace('-', '', now()->toDateString());
+
+    // if ($jenisorder == "lab") {
+    //     $orderNumberFormat = 'LAB/RI/' . $newDateFormat . $countorder;
+    // } else if ($jenisorder == "radiologi") {
+    //     $orderNumberFormat = 'RAD/RI/' . $newDateFormat . $countorder;
+    // } else if ($jenisorder == "fisio") {
+    //     $orderNumberFormat = 'FIS/RI/' . $newDateFormat . $countorder;
+    // } else if ($jenisorder == "lainnya") {
+    //     $orderNumberFormat = 'ANY/RI/' . $newDateFormat . $countorder;
+    // }
 }

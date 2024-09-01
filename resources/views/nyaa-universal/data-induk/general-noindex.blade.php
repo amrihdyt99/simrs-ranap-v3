@@ -11,8 +11,15 @@
 @section('nyaa_content_body')
 <div class="row">
   @if($add_button)
-  <div class="col-sm-12 pb-3" style>
+  <div class="col-sm-10 pb-3" style>
     <button type="button" class="protecc btn btn-sm btn-info" onclick="nyaa_act(this)" nyaa-mode="add">Tambah Data Baru</button>
+  </div>
+  @endif
+  @if ($business_partner)
+  <div class="col-sm-2">
+    <button id="tarikDataBusiness" class="btn btn-primary">
+        Tarik Data Business Partner
+    </button>
   </div>
   @endif
   <div class="col-sm-12">
@@ -200,5 +207,25 @@ function nyaa_dlt(komponen){
     }
   });
 }
+</script>
+<script>
+  $(document).ready(function() {
+      $('#tarikDataBusiness').click(function() {
+          $.ajax({
+              url: "{{ url('tarik/bisnis') }}", 
+              method: 'GET', 
+              success: function(response) {
+                  alert('Data berhasil ditarik!'); 
+                  console.log(response); 
+                  $('#datatable1').DataTable().ajax.reload();
+              },
+              error: function(xhr, status, error) {
+                  alert(
+                  'Terjadi kesalahan saat menarik data location.'); 
+                  console.log(error); 
+              }
+          });
+      });
+  });
 </script>
 @endpush

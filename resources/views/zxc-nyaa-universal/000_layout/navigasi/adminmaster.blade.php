@@ -19,19 +19,30 @@
         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Data Master
         </a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="{{ route('master.bed.index') }}">Bed</a>
-          <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.businesspartner.get_handler') }}">Business Partner</a>
-          <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.corporate.get_handler') }}">Corporate</a>
-          <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.customercontract.get_handler') }}">Contract Management</a>
-          <a class="dropdown-item" href="{{ route('master.ketersediaanruangan.index') }}">Ketersediaan Ruangan</a>
-          <a class="dropdown-item" href="{{ route('master.user.index') }}">Manajemen User</a>
-          <a class="dropdown-item" href="{{ route('master.serviceunit.index') }}">Service Unit</a>
-          <a class="dropdown-item" href="{{ route('master.departement.index') }}">Departement</a>
-          <a class="dropdown-item" href="{{ route('master.location.index') }}">Location</a>
-          <a class="dropdown-item" href="{{ route('master.site.index') }}">Site</a>
-          <a class="dropdown-item" href="{{ route('master.practitioner.index') }}">Practitioner</a>
-          <a class="dropdown-item" href="{{ route('master.organization.index') }}">Organization</a>
+        <div class="dropdown-menu dropdown-menu-lg" id="data-master-dropdown">
+          <div class="row">
+            <div class="col-6">
+              {{-- <label class="font-weight-bold text-center d-block">Business Unit</label> --}}
+              <a class="dropdown-item" href="{{ route('master.site.index') }}">Site</a>
+              <a class="dropdown-item" href="{{ route('master.departement.index') }}">Departement</a>
+              <a class="dropdown-item" href="{{ route('master.serviceunit.index') }}">Service Unit Room</a>
+              <a class="dropdown-item" href="{{ route('master.unit.index') }}">Unit</a>
+              <a class="dropdown-item" href="{{ route('master.location.index') }}">Location</a>
+              <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">Room</a>
+              <a class="dropdown-item" href="{{ route('master.class.index') }}">Room Class</a>
+              <a class="dropdown-item" href="{{ route('master.bed.index') }}">Bed</a>
+            </div>
+            <div class="col-6">
+              <a class="dropdown-item" href="{{ route('master.ketersediaanruangan.index') }}">Ketersediaan Ruangan</a>
+              <a class="dropdown-item" href="{{ route('master.practitioner.index') }}">Practitioner</a>
+              <a class="dropdown-item" href="{{ route('master.organization.index') }}">Organization</a>
+              <a class="dropdown-item" href="{{ route('master.medicine.index') }}">Medicine</a>
+              <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.businesspartner.get_handler') }}">Business Partner</a>
+              <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.corporate.get_handler') }}">Corporate</a>
+              <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.customercontract.get_handler') }}">Contract Management</a>
+              <a class="dropdown-item" href="{{ route('master.user.index') }}">Manajemen User</a>
+            </div>
+          </div>
         </div>
       </li>
 

@@ -114,6 +114,7 @@ class MnjDtIdkXxCorporateController extends AaaBaseController
             'form_list' => $this->form_list(),
             // config
             'add_button' => true,
+            'business_partner' => false,
         );
         return view('nyaa-universal.data-induk.general-noindex',$context)
         ->with(get_object_vars($this));

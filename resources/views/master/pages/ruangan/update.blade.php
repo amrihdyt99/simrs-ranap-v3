@@ -1,6 +1,6 @@
-@extends('master.layouts.app')
+@extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
-@section('content')
+@section('nyaa_content_body')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -8,7 +8,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Update Data Ruangan</h1>
+                        <h1>Update Data Room</h1>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->

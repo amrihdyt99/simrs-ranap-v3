@@ -36,6 +36,7 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::resource('clinical_pathway.outcome', OutcomeController::class)->shallow();
     Route::resource('clinical_pathway.intervention', InterventionController::class)->shallow();
     Route::resource('ruangan', RuanganController::class);
+    Route::patch('ruangan/change-status-active/{id}', [RuanganController::class,'changeStatusActive'])->name('ruangan.changeStatusActive');
     Route::resource('unit', UnitController::class);
     Route::resource('tarif',\App\Http\Controllers\Master\TarifController::class);
     Route::resource('user',\App\Http\Controllers\Master\UserController::class);

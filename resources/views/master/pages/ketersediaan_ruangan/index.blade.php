@@ -9,7 +9,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>
-                            Room Management
+                            Ketersediaan Ruangan
                             <a href="{{ route('master.ketersediaanruangan.create') }}" class="btn btn-success rounded-circle">
                                 <i class="fas fa-plus"></i>
                             </a>
