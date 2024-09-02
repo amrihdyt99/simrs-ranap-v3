@@ -94,6 +94,17 @@ function baseTemplate(data){
     resumeDiagnosa = []
     resumeProsedur = []
 
+    let diagnosisUtama = data.diagnosa.filter(d => d.pdiag_kategori === 'utama');
+    if (diagnosisUtama.length > 0) {
+        let utama = diagnosisUtama[0];
+        $('[id="diagnosis-utama"]').html(`
+            <tr>
+                <td colspan="2">DIAGNOSIS UTAMA (Hanya ada Satu Diagnosis Utama) : ${utama.NM_ICD10}</td>
+                <td>KODE ICD-10: ${utama.ID_ICD10}</td>
+            </tr>
+        `);
+    }
+
     if (data.diagnosa.length > 0) {
         let diagnosa_category = ['utama', 'sekunder', 'klausa']
         let new_diagnosa = [];

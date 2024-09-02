@@ -16,18 +16,18 @@ class CreateMKeluargaPasienTable extends Migration
         Schema::connection('mysql2')->create('m_keluarga_pasien', function (Blueprint $table) {
             $table->string('MedicalNo');
             $table->integer('SequenceNo');
-            $table->string('FamilyMedicalNo')->nullable();
+            $table->json('FamilyMedicalNo')->nullable();
             $table->string('FamilyName');
             $table->date('DateOfBirth');
-            $table->string('Job')->nullable();
-            $table->text('Address')->nullable();
-            $table->string('PhoneNo')->nullable();
-            $table->string('MobilePhoneNo')->nullable();
-            $table->string('GCRelationShip')->nullable();
-            $table->string('SSN')->nullable();
-            $table->string('Picture')->nullable();
+            $table->json('Job')->nullable();
+            $table->json('Address')->nullable();
+            $table->json('PhoneNo')->nullable();
+            $table->json('MobilePhoneNo')->nullable();
+            $table->json('GCRelationShip')->nullable();
+            $table->json('SSN')->nullable();
+            $table->json('Picture')->nullable();
             $table->boolean('IsEmergencyContact')->default(false);
-            $table->timestamps(); // created_at and updated_at
+            $table->timestamps();
         });
     }
 

@@ -48,8 +48,8 @@
                 </div>
                 <div class="col d-flex justify-content-end gap-1">
                   <a href="{{ route('register.ranap.create') }}" class="btn btn-success btn-sm ml-auto">
-                Tambah Data
-                </a>
+                    Tambah Data
+                  </a>
                   <a href="{{route('register.vclaim')}}">
                     <button onclick="{{ route('register.vclaim') }}" class="btn btn-warning radius ml-3"><i class="fas fa-user-check"></i> Vclaim Manual</button>
                   </a>

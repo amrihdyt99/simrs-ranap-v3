@@ -5,6 +5,7 @@ use App\Http\Controllers\Ranap as Ranap;
 use App\Http\Controllers\IGD as IGD;
 use App\Http\Controllers\IGD\RegisterController;
 use App\Http\Controllers\Rajal\RegistrationRajalController;
+use App\Http\Controllers\InformasiPasien\RegisterDataController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(function () {
@@ -50,3 +51,12 @@ Route::prefix('rajal')->name('register.rajal.')->middleware(['auth', 'role:admin
 Route::get("/pdf", function () {
     return view('pdf');
 });
+
+//informasi pasien
+// Rute yang langsung menampilkan view 'index' dari direktori 'register/informasi-pasien'
+//Route::view('/informasi-pasien', 'register.informasi-pasien.index')->name('register.informasi-pasien.index');
+Route::view('/informasi-pasien', 'register.pages.informasi-pasien.index')->name('register.pages.informasi-pasien.index');
+Route::view('/informasi-pasien/create', 'register.pages.informasi-pasien.create')->name('register.pages.informasi-pasien.create');
+Route::post('/register/informasi-pasien', [RegisterDataController::class, 'store'])->name('register.informasi-pasien.store');
+//Route::get('/informasi-pasien/patientnew', 'register.pages.informasi-pasien.patientnew')->name('register.pages.informasi-pasien.patientnew');
+//Route::get('/informasi-pasien', [InformasiPasien\RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');

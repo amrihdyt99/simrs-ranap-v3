@@ -144,7 +144,7 @@ trait RanapRegistrationTrait
         }
 
         $registrasi['reg_no'] = $reg_no;
-        // $registrasi['reg_lama'] = $data_regisration->reg_lama;
+        $registrasi['reg_lama'] = $data_registration->reg_lama ?? request()->link_regis;
         $registrasi['reg_tgl'] = date('Y-m-d');
         $registrasi['reg_jam'] = date('H:i:s');
         $registrasi['bed'] = $data_bed->bed_id;
@@ -155,7 +155,6 @@ trait RanapRegistrationTrait
         $registrasi['reg_no_dokumen'] = request()->reg_no_dokumen;
         $registrasi['departemen_asal'] = request()->departemen_asal;
         $registrasi['link_regis'] = request()->link_regis;
-        $registrasi['reg_lama'] = request()->link_regis;
         $registrasi['reg_diagnosis'] = request()->reg_diagnosis;
         $registrasi['reg_medrec'] = request()->reg_medrec;
         $registrasi['reg_class'] = request()->reg_class;
