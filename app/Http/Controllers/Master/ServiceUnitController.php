@@ -28,14 +28,14 @@ class ServiceUnitController extends Controller
                 return
                 ( '<a href="'
                 . route('master.serviceunit.edit', [$query->RoomID])
-                . '" class="btn btn-sm"><i class="fas fa-edit text-info"></i></a>' )
+                . '" class="protecc btn btn-sm btn-info mr-2 mb-2">Edit</a>' )
                 .
                 '<form action="'
                 . route('master.serviceunit.destroy', [$query->RoomID])
                 . '" method="POST">'
                 . csrf_field()
                 . method_field('DELETE')
-                . '<button class="btn btn-sm" type="submit" onclick="return confirm(\'Apakah yakin ingin menghapus?\')"><i class="fas fa-trash text-danger"></i></button></form>';
+                . '<button class="protecc btn btn-sm btn-danger mr-2 mb-2" type="submit" onclick="return confirm(\'Apakah yakin ingin menghapus?\')">Hapus</button></form>';
             })
             ->editColumn('RoomID', function ($query) use ($request) {
                 $room = DB::connection('mysql2')
@@ -52,7 +52,7 @@ class ServiceUnitController extends Controller
 
     public function create(){
         
-        return view('master.pages.serviceunit.create', compact('serviceunit'));
+        return view('master.pages.serviceunit.create');
     }
 
     public function store(Request $request){
@@ -73,7 +73,7 @@ class ServiceUnitController extends Controller
 
     public function edit(Request $request, $id){
         $serviceunit = DB::connection('mysql2')
-        ->table("m_unit")
+        ->table("m_service_unit_room")
         ->where('ServiceUnitCode', $id)
         ->first();
         return view('master.pages.serviceunit.update', compact('serviceunit'));

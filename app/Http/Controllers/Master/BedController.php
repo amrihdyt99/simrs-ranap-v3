@@ -127,6 +127,7 @@ class BedController extends Controller
         ]);
 
         $input['is_temporary'] = '0';
+        $input['is_deleted'] = '0';
         $input['is_active'] = '1';
         $input['bed_status'] = 'ready';
         $input['gc_type_of_bed'] = $request->gc_type_of_bed;

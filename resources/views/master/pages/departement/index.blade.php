@@ -1,81 +1,64 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
-@section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-10">
-                        <h1>
-                            Departement
-                            <a href="{{ route('master.departement.create') }}" class="btn btn-success rounded-circle">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                    <div class="col-sm-2">
-                        <button id="tarikDataDepartemen" class="btn btn-primary">
-                            Tarik Data Departemen
-                        </button>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <strong>Berhasil!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Gagal!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="departement" class="w-100 table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>ServiceUnitID</th>
-                                            <th>SiteDepartmentID</th>
-                                            <th>ServiceUnitCode</th>
-                                            <th>ContactPerson1</th>
-                                            <th>ContactPerson2</th>
-                                            <th>LocationID</th>
-                                            <th>GcDefaultOrderType</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Departement</p>
+        </div>
     </div>
+@endsection
+
+@section('nyaa_content_body')
+    <div class="row mb-2">
+        <div class="col-sm-10 pb-3">
+            <a href="{{ route('master.departement.create') }}" class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+        <div class="col-sm-2">
+            <button id="tarikDataDepartemen" class="btn btn-primary">
+                Tarik Data Departemen
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Berhasil!</strong> {{ $message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Gagal!</strong> {{ $message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+
+            <table id="departement" class="w-100 table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Aksi</th>
+                        <th>ServiceUnitID</th>
+                        <th>SiteDepartmentID</th>
+                        <th>ServiceUnitCode</th>
+                        <th>ContactPerson1</th>
+                        <th>ContactPerson2</th>
+                        <th>LocationID</th>
+                        <th>GcDefaultOrderType</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
 @endsection
 
 @push('nyaa_scripts')
@@ -101,6 +84,11 @@
                     }
                 },
                 columns: [{
+                        data: "aksi_data",
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
                         data: "ServiceUnitID",
                         name: "ServiceUnitID",
                         orderable: true,
@@ -142,21 +130,55 @@
                         orderable: true,
                         searchable: true,
                     },
-                    {
-                        data: "aksi_data",
-                        orderable: false,
-                        searchable: false,
-                    },
+
                 ],
             });
         }
+
+        function confirmDelete(element) {
+            const id = $(element).data('id');
+            const url = '{{ route('master.departement.destroy', ':id') }}'.replace(':id', id);
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            _method: "DELETE",
+                            _token: $("meta[name='csrf-token']").attr('content')
+                        },
+                        success: function(response) {
+                            neko_d_custom_success(response.success);
+                            $('#departement').DataTable().ajax.reload();
+                        },
+                        error: function(response) {
+                            neko_d_custom_error(response.responseJSON.error);
+                        }
+                    });
+                }
+            });
+        }
+
+        @if (session('success'))
+            neko_notify('success', '{{ session('success') }}');
+        @endif
     </script>
 
     <script>
         $(document).ready(function() {
             $('#tarikDataDepartemen').click(function() {
                 var $button = $(this);
-                $button.prop('disabled', true); 
+                $button.prop('disabled', true);
 
                 $.ajax({
                     url: "{{ url('tarik/departemen') }}",
@@ -172,7 +194,7 @@
                     },
                     complete: function() {
                         $button.prop('disabled',
-                        false);
+                            false);
                     }
                 });
             });
