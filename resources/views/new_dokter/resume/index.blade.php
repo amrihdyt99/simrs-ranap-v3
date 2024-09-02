@@ -32,6 +32,9 @@
     <div class="float-right">
         <button type="button" class="btn btn-success" onclick="getResumeBaseData()"><i class="fas fa-redo"></i> Muat ulang</button>
     </div>
+    <button class="btn btn-info float-right ml-2" onclick="viewResume('{{ $reg }}')">
+        <i class="fas fa-file-alt"></i> View Resume
+    </button>
     <h3>RESUME PASIEN RAWAT JALAN | No Reg: {{$reg}}</h3>
     <div class="table-responsive">
         <form action="form-add-resume" id="form-add-resume">
@@ -730,4 +733,11 @@
             $(this).closest('tr').remove();
         });
     });
+</script>
+<script>
+    function viewResume(regNo) {
+        const url = `/resume/dokumen?reg_no=${regNo}`;
+        console.log(url);
+        window.location.href = url;
+    }
 </script>
