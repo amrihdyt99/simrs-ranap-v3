@@ -106,6 +106,7 @@ class RegisterController extends Controller
                 $url_general_consent =
                     $reg_no = $query->reg_no;
                 $url_barcode = route('register.ranap.barcode', ['reg_no' => $reg_no]);
+                $url_lengkapi_pendaftaran = route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $reg_no]);
                 $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
                 $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
 
@@ -115,6 +116,7 @@ class RegisterController extends Controller
                                         </button>
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item" href="' . $url_admisi . '" target="_blank">Admisi</a>
+                                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                                             <a href="#" class="dropdown-item" id="viewGcBtn-' . $reg_no . '">General Consent</a>'
                     . '<script>
                                                 document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
@@ -654,8 +656,8 @@ class RegisterController extends Controller
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
             ->leftJoin('m_unit_departemen', function ($join) {
-                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode') 
-                     ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID'); 
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
@@ -682,8 +684,8 @@ class RegisterController extends Controller
             ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             // ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
             ->join('m_unit_departemen', function ($join) {
-                $join->on('m_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id') 
-                    ->orOn('m_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id'); 
+                $join->on('m_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
+                    ->orOn('m_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id');
             })
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
