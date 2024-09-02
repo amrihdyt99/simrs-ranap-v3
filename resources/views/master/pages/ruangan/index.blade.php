@@ -1,86 +1,64 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Room</p>
+        </div>
+    </div>
+@endsection
+
 @section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-10">
-                        <h1>
-                            Room
-                            <a href="{{ route('master.ruangan.create') }}" class="btn btn-success rounded-circle">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                    <div class="col-sm-2">
-                        <button id="tarikDataRoom" class="btn btn-primary">
-                            Tarik Data Room
-                        </button>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+    <div class="row mb-2">
+        <div class="col-sm-10 pb-3">
+            <a href="{{ route('master.ruangan.create') }}" class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+        <div class="col-sm-2">
+            <button id="tarikDataRoom" class="btn btn-primary">
+                Tarik Data Room
+            </button>
+        </div>
+    </div>
 
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-12">
-                        <label for="">Filter Status:</label>
-                    </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_hapus" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1">Dihapus</option>
-                                <option value="0" selected>Tidak dihapus</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_active" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1" selected>Aktif</option>
-                                <option value="0">Tidak Aktif</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <label for="">Filter Status:</label>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <select id="status_hapus" class="form-control">
+                    <option value="">Semua</option>
+                    <option value="1">Dihapus</option>
+                    <option value="0" selected>Tidak dihapus</option>
+                </select>
             </div>
-        </section>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <select id="status_active" class="form-control">
+                    <option value="">Semua</option>
+                    <option value="1" selected>Aktif</option>
+                    <option value="0">Tidak Aktif</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="ruangan_table" class="table w-100 table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 250px">Aksi</th>
-                                            <th>Room Code</th>
-                                            <th>Room Name</th>
-                                            <th>IP</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+    <div class="row">
+        <div class="col-12">
+            <table id="ruangan_table" class="table w-100 table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 250px">Aksi</th>
+                        <th>Room Code</th>
+                        <th>Room Name</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 @endsection
 

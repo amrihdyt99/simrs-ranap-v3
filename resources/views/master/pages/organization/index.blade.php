@@ -1,84 +1,62 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Organization</p>
+        </div>
+    </div>
+@endsection
+
 @section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>
-                            Organization
-                            <a href="#" class="btn btn-success rounded-circle" data-toggle="modal"
-                                data-target="#createOrganizationModal">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <a data-toggle="modal" data-target="#createOrganizationModal"
+                class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+    </div>
 
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-12">
-                        <label for="">Filter Status:</label>
-                    </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_hapus" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1">Dihapus</option>
-                                <option value="0" selected>Tidak dihapus</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_active" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1" selected>Aktif</option>
-                                <option value="0">Tidak Aktif</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <label for="">Filter Status:</label>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <select id="status_hapus" class="form-control">
+                    <option value="">Semua</option>
+                    <option value="1">Dihapus</option>
+                    <option value="0" selected>Tidak dihapus</option>
+                </select>
             </div>
-        </section>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <select id="status_active" class="form-control">
+                    <option value="">Semua</option>
+                    <option value="1" selected>Aktif</option>
+                    <option value="0">Tidak Aktif</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="organization_table" class="w-100 table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Action</th>
-                                            <th>Organization Code</th>
-                                            <th>Organization Name</th>
-                                            <th>Organization Level</th>
-                                            <th>Parent Organization</th>
-                                            <th>Organization Percentage</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+    <div class="row">
+        <div class="col-12">
+            <table id="organization_table" class="w-100 table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Organization Code</th>
+                        <th>Organization Name</th>
+                        <th>Organization Level</th>
+                        <th>Parent Organization</th>
+                        <th>Organization Percentage</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 
     @include('master.pages.organization.create')
