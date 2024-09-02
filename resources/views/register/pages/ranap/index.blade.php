@@ -20,6 +20,12 @@
           <span>Data Pendaftaran IGD</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="{{ Request::segment(1) == "Informasi Pasien" ? "active text-bold text-primary" : "" }} nav-link" 
+          href="{{ route('register.informasi-pasien.index') }}">
+          <span>Data Pasien</span>
+        </a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -53,6 +59,7 @@
                   <a href="{{route('register.vclaim')}}">
                     <button onclick="{{ route('register.vclaim') }}" class="btn btn-warning radius ml-3"><i class="fas fa-user-check"></i> Vclaim Manual</button>
                   </a>
+                  
                   {{-- <button onclick="tarik_regis()" class="btn btn-primary radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button> --}}
                 </div>
               </div>
@@ -69,7 +76,7 @@
                     <th>Dokter</th>
                     <th>Pembayaran</th>
                     <th>Aksi</th>
-                    <th>Dok</th>
+                    {{-- <th>Dok</th> --}}
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -224,11 +231,11 @@
           orderable: false,
           searchable: false,
         },
-        {
-          data: "dok_data",
-          orderable: false,
-          searchable: false,
-        },
+        // {
+        //   data: "dok_data",
+        //   orderable: false,
+        //   searchable: false,
+        // },
         {
           data: "status",
           orderable: false,
