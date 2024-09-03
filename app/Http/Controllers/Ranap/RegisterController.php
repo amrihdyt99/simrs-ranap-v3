@@ -832,8 +832,11 @@ class RegisterController extends Controller
             $this->updateDataRegistration(request()->reg_no);
 
             RegistrasiPJawab::where('reg_no', request()->reg_no)->delete();
-            // Add penanggung jawab pasien
-            RegistrasiPJawab::insert(request()->pj_pasien);
+
+            if (isset(request()->pj_pasien) && count(request()->pj_pasien) > 0) {
+                // Add penanggung jawab pasien
+                RegistrasiPJawab::insert(request()->pj_pasien);
+            }
 
             // dd($param_pasien);
             DB::commit();
