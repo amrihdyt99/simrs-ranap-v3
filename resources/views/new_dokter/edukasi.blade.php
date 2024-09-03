@@ -411,7 +411,7 @@
 @push('myscripts')
     <script>
         function storeDoctorEdukasi(title,idform){
-            var queryString = $(idform).serialize();
+            var queryString = $(idform).serialize()+'&user_id='+$user_+'&reg_medrec='+$medrec;
             //alert(queryString[0]);
 
             $.ajax({
