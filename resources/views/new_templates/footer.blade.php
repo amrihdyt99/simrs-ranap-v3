@@ -302,17 +302,19 @@
                                 $('[id="panel-'+id+'"] #row_loader').remove()
 
                                 var dataJSON=data.data;
-                                for(var i=0;i<dataJSON.length;i++){
-                                    $("#select-tindakan")
-                                        .append($("<option></option>")
-                                            .attr("value", dataJSON[i]['ItemCode'] )
-                                            .attr("class", 'row_tindakan')
-                                            .attr("data-id", dataJSON[i]['ItemCode'] )
-                                            .attr("data-type", 'Laboratorium' )
-                                            .attr("data-name", dataJSON[i]['ItemName1'] )
-                                            .attr("data-price", dataJSON[i]['PersonalPrice'] )
-                                            .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
-                                    //console.log(dataJSON[i]['ItemName1'])
+                                if (dataJSON) {
+                                    for(var i=0;i<dataJSON.length;i++){
+                                        $("#select-tindakan")
+                                            .append($("<option></option>")
+                                                .attr("value", dataJSON[i]['ItemCode'] )
+                                                .attr("class", 'row_tindakan')
+                                                .attr("data-id", dataJSON[i]['ItemCode'] )
+                                                .attr("data-type", 'Laboratorium' )
+                                                .attr("data-name", dataJSON[i]['ItemName1'] )
+                                                .attr("data-price", dataJSON[i]['PersonalPrice'] )
+                                                .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
+                                        //console.log(dataJSON[i]['ItemName1'])
+                                    }
                                 }
                                 //let html = document.getElementById("panel-nursing").innerHTML = data;
                             },
