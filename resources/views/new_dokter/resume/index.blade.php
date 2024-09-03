@@ -736,8 +736,7 @@
 </script>
 <script>
     function viewResume(regNo) {
-        const url = `/resume/dokumen?reg_no=${regNo}`;
-        console.log(url);
-        window.location.href = url;
+        const url = `{{url("")}}/resume/dokumen?reg_no=${regNo}`;
+        window.open(url, '_blank');
     }
 </script>
