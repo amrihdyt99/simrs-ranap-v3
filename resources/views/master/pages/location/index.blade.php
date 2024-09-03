@@ -1,86 +1,68 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Location</p>
+        </div>
+    </div>
+@endsection
+
 @section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-10">
-                        <h1>
-                            Location
-                            <a href="{{ route('master.location.create') }}" class="btn btn-success rounded-circle">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                    <div class="col-sm-2">
-                        <button id="tarikDataLocation" class="btn btn-primary">
-                            Tarik Data Location
-                        </button>
-                    </div>
+    <div class="row mb-2">
+        <div class="col-sm-10 pb-3">
+            <a href="{{ route('master.location.create') }}" class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+        <div class="col-sm-2">
+            <button id="tarikDataLocation" class="btn btn-primary">
+                Tarik Data Location
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Berhasil!</strong> {{ $message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <strong>Berhasil!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Gagal!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="location" class="w-100 table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Aksi</th>
-                                            <th>LocationID</th>
-                                            <th>SiteCode</th>
-                                            <th>LocationCode</th>
-                                            <th>LocationName</th>
-                                            <th>ShortName</th>
-                                            <th>Initial</th>
-                                            <th>PermissionCode</th>
-                                            <th>ParentID</th>
-                                            <th>Remarks</th>
-                                            <th>IsAllowOverIssued</th>
-                                            <th>IsNettable</th>
-                                            <th>IsHoldForTransaction</th>
-                                            <th>IsDisplayStock</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Gagal!</strong> {{ $message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+            @endif
+
+            <table id="location" class="w-100 table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Aksi</th>
+                        <th>LocationID</th>
+                        <th>SiteCode</th>
+                        <th>LocationCode</th>
+                        <th>LocationName</th>
+                        <th>ShortName</th>
+                        <th>Initial</th>
+                        <th>PermissionCode</th>
+                        <th>ParentID</th>
+                        <th>Remarks</th>
+                        <th>IsAllowOverIssued</th>
+                        <th>IsNettable</th>
+                        <th>IsHoldForTransaction</th>
+                        <th>IsDisplayStock</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 @endsection
 
@@ -105,13 +87,12 @@
                         "X-HTTP-Method-Override": "GET"
                     }
                 },
-                columns: [
-                    {
+                columns: [{
                         data: "aksi_data",
                         orderable: false,
                         searchable: false,
-                    },    
-                {
+                    },
+                    {
                         data: "LocationID",
                         name: "LocationID",
                         orderable: true,
@@ -189,7 +170,7 @@
                         orderable: true,
                         searchable: true,
                     },
-                    
+
                 ],
             });
         }
@@ -198,17 +179,17 @@
         $(document).ready(function() {
             $('#tarikDataLocation').click(function() {
                 $.ajax({
-                    url: "{{ url('tarik/location') }}", 
-                    method: 'GET', 
+                    url: "{{ url('tarik/location') }}",
+                    method: 'GET',
                     success: function(response) {
-                        alert('Data location berhasil ditarik!'); 
-                        console.log(response); 
+                        alert('Data location berhasil ditarik!');
+                        console.log(response);
                         $('#location').DataTable().ajax.reload();
                     },
                     error: function(xhr, status, error) {
                         alert(
-                        'Terjadi kesalahan saat menarik data location.'); 
-                        console.log(error); 
+                            'Terjadi kesalahan saat menarik data location.');
+                        console.log(error);
                     }
                 });
             });

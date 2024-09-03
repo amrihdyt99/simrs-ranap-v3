@@ -12,7 +12,7 @@
 <div class="row">
   @if($add_button)
   <div class="col-sm-10 pb-3" style>
-    <button type="button" class="protecc btn btn-sm btn-info" onclick="nyaa_act(this)" nyaa-mode="add">Tambah Data Baru</button>
+    <button type="button" class="protecc btn btn-sm btn-success" onclick="nyaa_act(this)" nyaa-mode="add">Tambah Data Baru</button>
   </div>
   @endif
   @if ($business_partner)

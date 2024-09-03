@@ -1,73 +1,37 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Site</p>
+        </div>
+    </div>
+@endsection
+
 @section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>
-                            Site
-                            <a href="{{ route('master.site.create') }}" class="btn btn-success rounded-circle">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+    <div class="row mb-2">
+        <div class="col-sm-6 pb-3">
+            <a href="{{ route('master.site.create') }}" class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+    </div>
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <strong>Berhasil!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Gagal!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="site" class="w-100 table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>SiteCode</th>
-                                            <th>SiteName</th>
-                                            <th>ShortName</th>
-                                            <th>Initial</th>
-                                            <th>TaxRegistrantNo</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+    <div class="row">
+        <div class="col-12">
+            <table id="site" class="w-100 table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th>Aksi</th>
+                        <th>SiteCode</th>
+                        <th>SiteName</th>
+                        <th>ShortName</th>
+                        <th>Initial</th>
+                        <th>TaxRegistrantNo</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 @endsection
 
@@ -94,6 +58,11 @@
                     }
                 },
                 columns: [{
+                        data: "aksi_data",
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
                         data: "SiteCode",
                         name: "SiteCode",
                         orderable: true,
@@ -123,13 +92,49 @@
                         orderable: true,
                         searchable: true,
                     },
-                    {
-                        data: "aksi_data",
-                        orderable: false,
-                        searchable: false,
-                    },
                 ],
             });
         }
+
+        function confirmDelete(element) {
+            const id = $(element).data('id');
+            const url = '{{ route('master.site.destroy', ':id') }}'.replace(':id', id);
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data ini akan dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data: {
+                            _method: "DELETE",
+                            _token: $("meta[name='csrf-token']").attr('content')
+                        },
+                        success: function(response) {
+                            neko_d_custom_success(response.success);
+                            $('#site').DataTable().ajax.reload();
+                        },
+                        error: function(response) {
+                            neko_d_custom_error(response.responseJSON.error);
+                        }
+                    });
+                }
+            });
+        }
     </script>
+    
+
+    @if (session('success'))
+        <script>
+            neko_notify('success', '{{ session('success') }}');
+        </script>
+    @endif
 @endpush

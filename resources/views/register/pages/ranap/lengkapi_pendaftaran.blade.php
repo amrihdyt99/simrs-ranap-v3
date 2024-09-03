@@ -338,6 +338,12 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
+                                            <label class="label-admisi">No. SEP</label>
+                                            <input type="text" class="form-control" placeholder="Nomor SEP" name="reg_sep_no" id="reg_sep_no" value="{{ $registration->reg_sep_no ?? '-' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
                                             <label class="label-admisi">Cover Class</label>
                                             <select id="reg_class" name="reg_class" class="form-control select2bs4">
                                                 <option value="">-</option>

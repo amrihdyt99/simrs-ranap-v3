@@ -153,6 +153,8 @@ trait RanapRegistrationTrait
         $registrasi['reg_cara_bayar'] = request()->reg_cara_bayar;
         $registrasi['reg_dokter'] = request()->reg_dokter;
         $registrasi['reg_no_dokumen'] = request()->reg_no_dokumen;
+        $registrasi['reg_no_kartu'] = request()->reg_no_kartu;
+        $registrasi['reg_sep_no'] = request()->reg_sep_no;
         $registrasi['departemen_asal'] = request()->departemen_asal;
         $registrasi['link_regis'] = request()->link_regis;
         $registrasi['reg_diagnosis'] = request()->reg_diagnosis;

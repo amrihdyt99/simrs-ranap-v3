@@ -21,45 +21,39 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('master.departement.update', $departement->DepartmentCode) }}"
+                                <form action="{{ route('master.departement.update', $departement->ServiceUnitID) }}"
                                     method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="form-group">
-                                        <label>DepartmentCode</label>
-                                        <input type="text" class="form-control" id="DepartmentCode" name="DepartmentCode"
-                                            value="{{ $departement->DepartmentCode }}" />
+                                        <label>ServiceUnitID</label>
+                                        <input type="text" class="form-control" id="ServiceUnitID" name="ServiceUnitID"
+                                            value="{{ $departement->ServiceUnitID }}" readonly />
                                     </div>
                                     <div class="form-group">
-                                        <label>DepartmentName</label>
-                                        <input type="text" class="form-control" id="DepartmentName" name="DepartmentName"
-                                            value="{{ $departement->DepartmentName }}" />
+                                        <label>SiteDepartmentID</label>
+                                        <input type="text" class="form-control" id="SiteDepartmentID" name="SiteDepartmentID"
+                                            value="{{ $departement->SiteDepartmentID }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>Short Name</label>
-                                        <input type="text" class="form-control" id="ShortName" name="ShortName"
-                                            value="{{ $departement->ShortName }}" />
+                                        <label>ServiceUnitCode</label>
+                                        <input type="text" class="form-control" id="ServiceUnitCode" name="ServiceUnitCode"
+                                            value="{{ $departement->ServiceUnitCode }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>Initial</label>
-                                        <input  type="text" class="form-control" id="Initial" name="Initial"
-                                            value="{{ $departement->Initial }}" />
+                                        <label>Contact Person 1</label>
+                                        <input type="text" class="form-control" id="ContactPerson1" name="ContactPerson1"
+                                            value="{{ $departement->ContactPerson1 }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>IsHasRegistration</label>
-                                        <input type="number" class="form-control" id="IsHasRegistration" name="IsHasRegistration"
-                                            value="{{ $departement->IsHasRegistration }}" />
+                                        <label>Contact Person 2</label>
+                                        <input type="text" class="form-control" id="ContactPerson2" name="ContactPerson2"
+                                            value="{{ $departement->ContactPerson2 }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>IsHasPrescription</label>
-                                        <input class="form-control" id="IsHasPrescription"
-                                            name="IsHasPrescription"
-                                            value="{{ $departement->IsHasPrescription }}" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label>IsGenerateMedicalNo</label>
-                                        <input type="number" class="form-control" id="IsGenerateMedicalNo" name="IsGenerateMedicalNo"
-                                            value="{{ $departement->IsGenerateMedicalNo }}" />
+                                        <label>LocationID</label>
+                                        <input type="text" class="form-control" id="LocationID" name="LocationID"
+                                            value="{{ $departement->LocationID }}" />
                                     </div>
 
                                     <button type="submit" class="btn btn-primary">Submit</button>

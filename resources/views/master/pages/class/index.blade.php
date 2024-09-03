@@ -1,58 +1,40 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
-@section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-10">
-                        <h1>
-                            Class Management
-                            <a href="{{ route('master.class.create') }}" class="btn btn-success rounded-circle">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                    <div class="col-sm-2">
-                        <button id="tarikDataClass" class="btn btn-primary">
-                            Tarik Data Class Management
-                        </button>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Class Management</p>
+        </div>
+    </div>
+@endsection
 
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="class_table" class="table w-100 table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 250px">Action</th>
-                                            <th>ClassCode</th>
-                                            <th>ClassName</th>
-                                            <th>Initial</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+@section('nyaa_content_body')
+    <div class="row mb-2">
+        <div class="col-sm-10 pb-3">
+            <a href="{{ route('master.class.create') }}" class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+        <div class="col-sm-2">
+            <button id="tarikDataClass" class="btn btn-primary">
+                Tarik Data Class Management
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table id="class_table" class="table w-100 table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 250px">Action</th>
+                        <th>ClassCode</th>
+                        <th>ClassName</th>
+                        <th>Initial</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 @endsection
 
@@ -104,7 +86,7 @@
         $(document).ready(function() {
             $('#tarikDataClass').click(function() {
                 var $button = $(this);
-                $button.prop('disabled', true); 
+                $button.prop('disabled', true);
 
                 $.ajax({
                     url: "{{ url('tarik/kelas') }}",
@@ -120,7 +102,7 @@
                     },
                     complete: function() {
                         $button.prop('disabled',
-                        false);
+                            false);
                     }
                 });
             });

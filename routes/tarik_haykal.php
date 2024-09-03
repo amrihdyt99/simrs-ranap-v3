@@ -17,6 +17,7 @@ Route::prefix('tarik')->group(function () {
     Route::get('location', [TarikDataController::class, 'location']);
     Route::get('bisnis', [TarikDataController::class, 'bisnis_partner']);
     Route::get('nomed/{no}', [TarikDataController::class, 'nomed']);
+    Route::get('user_rajal', [TarikDataController::class, 'user_rajal']);
 });
 
 Route::get('kirim_rad/{no}', [AssesmentAwalDokterController::class, 'kirim_rad']);

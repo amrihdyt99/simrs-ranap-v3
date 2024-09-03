@@ -19,10 +19,13 @@ use App\Traits\Master\MasterBedTraits;
 use App\Traits\Master\MasterPasienTrait;
 use App\Traits\Ranap\RanapRegistrationTrait;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use \Milon\Barcode\Facades\DNS1DFacade;
+
 
 class RegisterController extends Controller
 {
@@ -87,36 +90,74 @@ class RegisterController extends Controller
         return DataTables()
             ->of($data)
             ->editColumn('aksi_data', function ($query) use ($request) {
-                $query->reg_no = str_replace("/", "_", $query->reg_no);
-                $btn_admisi = '<a href="'
-                    . route('register.ranap.slipadmisi', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>Admisi</a>';
-                $btn_lengkapi_pendaftaran = '<a href="'
-                    . route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary ml-1" target="_blank"><i class="mr-2 fa fa-edit"></i>Lengkapi Pendaftaran</a>';
-                return $btn_admisi . $btn_lengkapi_pendaftaran;
-            })
-            ->editColumn('dok_data', function ($query) use ($request) {
-                $reg_no = $query->reg_no;
+                // $query->reg_no = str_replace("/", "_", $query->reg_no);
+                // $btn_admisi = '<a href="'
+                //     . route('register.ranap.slipadmisi', ['reg_no' => $query->reg_no])
+                //     . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-print"></i>Admisi</a>';
+                // $btn_lengkapi_pendaftaran = '<a href="'
+                //     . route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $query->reg_no])
+                //     . '" class="btn btn-sm btn-outline-primary ml-1" target="_blank"><i class="mr-2 fa fa-edit"></i>Lengkapi Pendaftaran</a>';
+                // $btn_cetak_barcode = '
+                // <a href="' . route("register.ranap.barcode", $query->reg_no) . '" class="btn btn-sm btn-outline-primary ml-1" onclick="cetak_barcode(' . "'$query->reg_no'" . ')" target="_blank"><i class="mr-2 fa fa-print"></i>Cetak Barcode</a>
+                // ';
+                // return $btn_admisi . $btn_lengkapi_pendaftaran . $btn_cetak_barcode;
+
+                $url_admisi = route('register.ranap.slipadmisi', ['reg_no' => $query->reg_no]);
+                $url_general_consent =
+                    $reg_no = $query->reg_no;
+                $url_barcode = route('register.ranap.barcode', ['reg_no' => $reg_no]);
+                $url_lengkapi_pendaftaran = route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $reg_no]);
                 $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
                 $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
 
-                return ('<a href="#" class="btn btn-sm btn-outline-primary" id="viewGcBtn-' . $reg_no . '"><i class="mr-2 fa fa-print"></i>General Consent</a>'
+                $button_dropdown = '<div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="' . $url_admisi . '" target="_blank">Admisi</a>
+                                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
+                                            <a href="#" class="dropdown-item" id="viewGcBtn-' . $reg_no . '">General Consent</a>'
                     . '<script>
-                document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
-                    e.preventDefault();
-                    Promise.all([
-                        fetch("' . $gc1Url . '").then(response => response.text()),
-                        fetch("' . $gc2Url . '").then(response => response.text())
-                    ]).then(contents => {
-                        const combinedContent = contents.join("<hr>");
-                        const viewWindow = window.open("", "_blank");
-                        viewWindow.document.write(combinedContent);
-                        viewWindow.document.close();
-                    }).catch(error => console.error("Error:", error));
-                });
-            </script>');
+                                                document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
+                                                    e.preventDefault();
+                                                    Promise.all([
+                                                        fetch("' . $gc1Url . '").then(response => response.text()),
+                                                        fetch("' . $gc2Url . '").then(response => response.text())
+                                                    ]).then(contents => {
+                                                        const combinedContent = contents.join("<hr>");
+                                                        const viewWindow = window.open("", "_blank");
+                                                        viewWindow.document.write(combinedContent);
+                                                        viewWindow.document.close();
+                                                    }).catch(error => console.error("Error:", error));
+                                                });
+                                            </script>
+                                            <a class="dropdown-item" href="' . $url_barcode . '">Print Barcode</a>
+                                        </div>
+                                    </div>';
+                return $button_dropdown;
             })
+            // ->editColumn('dok_data', function ($query) use ($request) {
+            //     $reg_no = $query->reg_no;
+            //     $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
+            //     $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
+
+            //     return ('<a href="#" class="btn btn-sm btn-outline-primary" id="viewGcBtn-' . $reg_no . '"><i class="mr-2 fa fa-print"></i>General Consent</a>'
+            //         . '<script>
+            //     document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
+            //         e.preventDefault();
+            //         Promise.all([
+            //             fetch("' . $gc1Url . '").then(response => response.text()),
+            //             fetch("' . $gc2Url . '").then(response => response.text())
+            //         ]).then(contents => {
+            //             const combinedContent = contents.join("<hr>");
+            //             const viewWindow = window.open("", "_blank");
+            //             viewWindow.document.write(combinedContent);
+            //             viewWindow.document.close();
+            //         }).catch(error => console.error("Error:", error));
+            //     });
+            // </script>');
+            // })
             ->editColumn('status', function ($query) use ($request) {
                 if ($query->reg_status == null) {
                     $reg = str_replace("/", "_", $query->reg_no);
@@ -131,6 +172,34 @@ class RegisterController extends Controller
             })
             ->escapeColumns([])
             ->toJson();
+    }
+
+    /**
+     * @Param string $reg_no
+     * @exmaple $reg_no = "QREG_RI_2020408010001"
+     */
+    public function barcode($reg_no)
+    {
+        $reg_no = str_replace("_", "/", $reg_no);
+        $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
+        $data_pasien = [
+            'nama_lengkap' => $data_registration->pasien->PatientName,
+            'no_registrasi' => $data_registration->reg_no,
+            'medical_no' => $data_registration->reg_medrec,
+            'tgl_lahir' => $data_registration->pasien->DateOfBirth,
+            'jenis_kelamin' => $data_registration->pasien->GCSex,
+            'usia' => $this->formatUsia($data_registration->pasien->DateOfBirth),
+            'barcode' => DNS1DFacade::getBarcodeSVG($data_registration->reg_no, 'C128', 1, 48),
+            'tgl_registrasi' => Carbon::parse($data_registration->reg_tgl)->format('d F Y'),
+        ];
+        return view('register.pages.ranap.cetak-barcode', compact('data_pasien'));
+    }
+    private function formatUsia($dateOfBirth)
+    {
+        $date1 = new \DateTime($dateOfBirth);
+        $date2 = new \DateTime();
+        $diff = $date1->diff($date2);
+        return "{$diff->y} Y {$diff->m} m {$diff->d} d";
     }
 
 
@@ -169,12 +238,6 @@ class RegisterController extends Controller
         return view('register.pages.ranap.create', $data);
     }
 
-    public function newformRegisterInap()
-    {
-        $data = $this->getDataFormRegistration();
-        //return view('register.pages.baru.pilih_pasien',$data);
-        return view('register.pages.ranap.newpatient', $data);
-    }
 
     public function simpanDataPasien(Request $request)
     {
@@ -593,8 +656,8 @@ class RegisterController extends Controller
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
             ->leftJoin('m_unit_departemen', function ($join) {
-                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode') 
-                     ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID'); 
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
@@ -621,8 +684,8 @@ class RegisterController extends Controller
             ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             // ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
             ->join('m_unit_departemen', function ($join) {
-                $join->on('m_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id') 
-                    ->orOn('m_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id'); 
+                $join->on('m_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
+                    ->orOn('m_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id');
             })
             ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('m_bed.service_unit_id', 'ServiceUnitName as kelompok')
@@ -769,8 +832,11 @@ class RegisterController extends Controller
             $this->updateDataRegistration(request()->reg_no);
 
             RegistrasiPJawab::where('reg_no', request()->reg_no)->delete();
-            // Add penanggung jawab pasien
-            RegistrasiPJawab::insert(request()->pj_pasien);
+
+            if (isset(request()->pj_pasien) && count(request()->pj_pasien) > 0) {
+                // Add penanggung jawab pasien
+                RegistrasiPJawab::insert(request()->pj_pasien);
+            }
 
             // dd($param_pasien);
             DB::commit();
