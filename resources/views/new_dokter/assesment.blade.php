@@ -234,172 +234,174 @@
     <script src="{{asset('new_assets/sign/js/jquery.signature.js')}}"></script>
     <script>
 
-            $reg = "{{$reg}}";
-            $medrec = "{{$patient->reg_medrec}}";
-            $subs =  "";
-            var $service_unit = '{{$dataPasien->service_unit}}'
-            var $id_cppt = '{{$id_cppt}}' 
+        $reg = "{{$reg}}";
+        $medrec = "{{$patient->reg_medrec}}";
+        $subs =  "";
+        var $service_unit = '{{$dataPasien->service_unit}}'
+        var $id_cppt = '{{$id_cppt}}' 
 
-            $('div[id*="panel-"]').hide();
-            $('#panel-assesment').show();
+        getAlert($reg)
 
-            $('#odontogram_2').hide();
+        $('div[id*="panel-"]').hide();
+        $('#panel-assesment').show();
 
-            $('#btn-reset-asses').click(function(){
-                $('#form-entry-assesment textarea.form-control').val('');
-                $('#form-entry-assesment input.form-control').val('');
-                $('#form-entry-assesment input:checkbox').prop('checked', false);
-                $('#form-entry-assesment input:radio').prop('checked', false);
+        $('#odontogram_2').hide();
 
-                $('#last-asses').text('');
-            });
+        $('#btn-reset-asses').click(function(){
+            $('#form-entry-assesment textarea.form-control').val('');
+            $('#form-entry-assesment input.form-control').val('');
+            $('#form-entry-assesment input:checkbox').prop('checked', false);
+            $('#form-entry-assesment input:radio').prop('checked', false);
 
-            $('#btn-add-soap').click(function(){
-               
-                add_soap()
-            });
+            $('#last-asses').text('');
+        });
 
-            function add_soap() {
-                const reg = '{{$dataPasien->reg_no}}';
-                const rm = '{{$dataPasien->reg_medrec}}';
-                const bed = '{{$dataPasien->bed}}';
-                const utama = '{{$dataPasien->reg_dokter}}';
-                const soapdok_dokter = '{{ auth()->user()->dokter_id}}';
-                const nama_ppa = '{{auth()->user()->name}}';
-                $.ajax({
-                    type: "post",
-                    url: "{{url('api/addSoap')}}",
-                    data: {
-                        "reg_no": reg,
-                        "dpjp_utama": utama,
-                        "med_rec": rm,
-                        "soapdok_dokter": soapdok_dokter,
-                        "nama_ppa": nama_ppa,
-                        "bed": bed,
-                    },
-                    dataType: "json",
-                    success: function (r) {
-                        if (r.success) {
-                            $('#modalSOAP').modal('show');
-                            clickTab('lab', 'Laboratorium')
-                            //$('div[id*="panel-"]').hide();
-                            $('div[id*="tab-"]').removeClass('active');
-    
-                            $('#panel-lab').show();
-                            $('#tab-lab').addClass('active');
-                            $('#soapdok_id').val(r.kode)
-                            $('#cpoe_cppt').val(r.kode)
-    
-                            $('#title_cppt').text('Laboratorium');
-                        }else{
-                            alert('Kesalahan Hubungi IT')
-                        }
+        $('#btn-add-soap').click(function(){
+            
+            add_soap()
+        });
+
+        function add_soap() {
+            const reg = '{{$dataPasien->reg_no}}';
+            const rm = '{{$dataPasien->reg_medrec}}';
+            const bed = '{{$dataPasien->bed}}';
+            const utama = '{{$dataPasien->reg_dokter}}';
+            const soapdok_dokter = '{{ auth()->user()->dokter_id}}';
+            const nama_ppa = '{{auth()->user()->name}}';
+            $.ajax({
+                type: "post",
+                url: "{{url('api/addSoap')}}",
+                data: {
+                    "reg_no": reg,
+                    "dpjp_utama": utama,
+                    "med_rec": rm,
+                    "soapdok_dokter": soapdok_dokter,
+                    "nama_ppa": nama_ppa,
+                    "bed": bed,
+                },
+                dataType: "json",
+                success: function (r) {
+                    if (r.success) {
+                        $('#modalSOAP').modal('show');
+                        clickTab('lab', 'Laboratorium')
+                        //$('div[id*="panel-"]').hide();
+                        $('div[id*="tab-"]').removeClass('active');
+
+                        $('#panel-lab').show();
+                        $('#tab-lab').addClass('active');
+                        $('#soapdok_id').val(r.kode)
+                        $('#cpoe_cppt').val(r.kode)
+
+                        $('#title_cppt').text('Laboratorium');
+                    }else{
+                        alert('Kesalahan Hubungi IT')
                     }
-                });
-            }
-
-            $('[name="asdok_amnesis"]').change(function(){
-                if (this.checked && this.value == 'orang lain hubungan dengan pasien') {
-                    $('[name="asdok_amnesis_lain"]').attr('readonly', false);
-                } else {
-                    $('[name="asdok_amnesis_lain"]').attr('readonly', true);
                 }
             });
+        }
 
-            $('[name="asdok_multiorgan"]').change(function(){
-                $val = $(this).val();
+        $('[name="asdok_amnesis"]').change(function(){
+            if (this.checked && this.value == 'orang lain hubungan dengan pasien') {
+                $('[name="asdok_amnesis_lain"]').attr('readonly', false);
+            } else {
+                $('[name="asdok_amnesis_lain"]').attr('readonly', true);
+            }
+        });
 
-                if (this.checked) {
-                    $row_ = `
-                        <div class="row mt-2" id="r_multiorgan_`+$val+`">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="multi_organ"><input type="text" name="multi_name[]" value="`+$val+`" style="border: none" readonly></label>
-                                    <textarea class="form-control" id="multi_organ" rows="4" name="multi_desc[]"></textarea>
-                                </div>
+        $('[name="asdok_multiorgan"]').change(function(){
+            $val = $(this).val();
+
+            if (this.checked) {
+                $row_ = `
+                    <div class="row mt-2" id="r_multiorgan_`+$val+`">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="multi_organ"><input type="text" name="multi_name[]" value="`+$val+`" style="border: none" readonly></label>
+                                <textarea class="form-control" id="multi_organ" rows="4" name="multi_desc[]"></textarea>
                             </div>
-                            `+imageMultiOrgan($val)+`
                         </div>
-                    `;
+                        `+imageMultiOrgan($val)+`
+                    </div>
+                `;
 
-                    $('#desc-multiorgan').append($row_);
-                } else {
-                    $('#r_multiorgan_'+$val).remove();
-                }
-            });
-
-            $('body').on('click', '.img-multiorgan', function(){
-                $('#modalMultiOrgan').modal('show');
-
-                $img = $(this).attr('src')
-                $('#v-img-multiorgan').attr('src', $img);
-            })
-
-            $(".btn-export-riwayat-resume").click(function(e) {
-                let file = new Blob([$('#export-riwayat-resume').html()], {type:"application/vnd.ms-excel"});
-                let url = URL.createObjectURL(file);
-                let a = $("<a />", {
-                href: url,
-                download: "riwayat_resume_pasien_rj_"+$medrec+".xls"}).appendTo("body").get(0).click();
-                e.preventDefault();
-            });
-
-            $(".btn-export-resume").click(function(e) {
-                let file = new Blob([$('#export-resume').html()], {type:"application/vnd.ms-excel"});
-                let url = URL.createObjectURL(file);
-                let a = $("<a />", {
-                href: url,
-                download: "resume_pasien_rj_"+$reg+".xls"}).appendTo("body").get(0).click();
-                e.preventDefault();
-            });
-
-            function imageMultiOrgan($val) {
-                if ($val == 'kepala') {
-                    $img = `
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_depan.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_samping.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                    `;
-                } else if ($val == 'leher') {
-                    $img = `
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_depan.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_samping.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                    `;
-                } else if ($val == 'ekstrimitas') {
-                    $img = `
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_atas.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_bawah.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                    `;
-                } else if ($val == 'genitalia_{{$patient->pasien->GCSex == "0001^M" ? "pria" : "wanita"}}_anus') {
-                    $img = `
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/{{$patient->pasien->GCSex == "0001^M" ? "pria" : "wanita"}}_anus.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                    `;
-                } else {
-                    $img = `
-                        <div class="col-lg-3">
-                            <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
-                        </div>
-                    `;
-                }
-
-                return $img;
+                $('#desc-multiorgan').append($row_);
+            } else {
+                $('#r_multiorgan_'+$val).remove();
             }
+        });
+
+        $('body').on('click', '.img-multiorgan', function(){
+            $('#modalMultiOrgan').modal('show');
+
+            $img = $(this).attr('src')
+            $('#v-img-multiorgan').attr('src', $img);
+        })
+
+        $(".btn-export-riwayat-resume").click(function(e) {
+            let file = new Blob([$('#export-riwayat-resume').html()], {type:"application/vnd.ms-excel"});
+            let url = URL.createObjectURL(file);
+            let a = $("<a />", {
+            href: url,
+            download: "riwayat_resume_pasien_rj_"+$medrec+".xls"}).appendTo("body").get(0).click();
+            e.preventDefault();
+        });
+
+        $(".btn-export-resume").click(function(e) {
+            let file = new Blob([$('#export-resume').html()], {type:"application/vnd.ms-excel"});
+            let url = URL.createObjectURL(file);
+            let a = $("<a />", {
+            href: url,
+            download: "resume_pasien_rj_"+$reg+".xls"}).appendTo("body").get(0).click();
+            e.preventDefault();
+        });
+
+        function imageMultiOrgan($val) {
+            if ($val == 'kepala') {
+                $img = `
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_depan.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_samping.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                `;
+            } else if ($val == 'leher') {
+                $img = `
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_depan.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_samping.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                `;
+            } else if ($val == 'ekstrimitas') {
+                $img = `
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_atas.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`_bawah.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                `;
+            } else if ($val == 'genitalia_{{$patient->pasien->GCSex == "0001^M" ? "pria" : "wanita"}}_anus') {
+                $img = `
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/{{$patient->pasien->GCSex == "0001^M" ? "pria" : "wanita"}}_anus.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                `;
+            } else {
+                $img = `
+                    <div class="col-lg-3">
+                        <img class="img-multiorgan" style="cursor: pointer" src="{{asset('')}}new_assets/images/multi_organ/`+$val+`.jpg" alt="Gambar `+$val+`" width="150px" height="130px">
+                    </div>
+                `;
+            }
+
+            return $img;
+        }
     </script>
     <script>
         function addpemulanganpasien(){

@@ -886,4 +886,24 @@ class AssesmentAwalDokterController extends Controller
         }
     }
     
+    public function getAlert(Request $request){
+        try {
+            $pengkajian_awal = DB::connection('mysql')
+                ->table('pengkajian_awal_pasien_perawat')
+                ->select([
+                    'alergi',
+                    'nama_alergi',
+                    'reaksi_alergi',
+                    'asper_brjln_seimbang',
+                    'asper_hasil',
+                ])
+                ->where('reg_no', $request->reg_no)
+                ->first();
+
+            return $pengkajian_awal;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    
 }
