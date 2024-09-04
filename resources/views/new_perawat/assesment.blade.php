@@ -1048,6 +1048,8 @@
                     $('.bubble-resiko').hide();
                     $('.blink').hide();
 
+                    console.log(resp)
+
                     $resp1 = resp[1];
                     var resp = resp[0];
                     if (resp != '') {
