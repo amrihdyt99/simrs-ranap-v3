@@ -1,6 +1,6 @@
-<span class="badge badge-warning blink">alert</span>
-<div class="form-group-left text-center">
-    <p class="bubble-alergi"></p><p class="bubble-resiko"></p>
+<span class="badge badge-warning blink" id="alert_blink">alert</span>
+<div class="form-group-left text-center" id="alert_indikator">
+    
 </div>
 <div class="form-group-left">
     <h6>No Registrasi</h6>

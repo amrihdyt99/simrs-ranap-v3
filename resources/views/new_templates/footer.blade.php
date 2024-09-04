@@ -93,6 +93,32 @@
             $(elm).append(newOption).trigger('change');
         }
 
+        function getAlert(_reg){
+            $.ajax({
+                url: '{{url("")}}/api/getAlert',
+                data: {
+                    reg_no: _reg 
+                },
+                success: function(resp){
+                    $('#alert_indikator').html('')
+
+                    if (resp.alergi == 'Ya' && resp.asper_hasil) {
+                        $('[id="alert_blink"]').show()
+                    }
+                    
+                    if (resp.alergi == 'Ya') {
+                        $('#alert_indikator').append(`
+                            <p class="bubble-alergi" title="Alergi: `+resp.nama_alergi+`">Allergy</p>
+                        `)
+                    }
+
+                    if (resp.asper_hasil) {
+                        $('#alert_indikator').append('<p class="bubble-resiko" title="Resiko jatuh : '+resp.asper_hasil+'">Fall risk</p>')
+                    }
+                }
+            })
+        }
+
         $('#partial-panel').hide();
 
             function outputUpdateWithDesc(vol) {
