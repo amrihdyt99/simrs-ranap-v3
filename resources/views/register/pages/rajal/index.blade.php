@@ -47,8 +47,8 @@
                                                 <td>{{ $row['ranap_dpjp'] ?? '-' }}</td>
                                                 <td>-</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cancelRegModal" onclick="cancelRegistrationToRanap({{ json_encode($row) }})">
-                                                        Launch demo modal
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cancelRegModal" onclick="cancelRegistrationToRanap({{ json_encode($row) }})">
+                                                        Batalkan
                                                     </button>
                                                     <button class="btn btn-sm btn-primary" onclick="handleRegistrasiRanap({{ json_encode($row) }})">
                                                         <i class="fa fa-plus"></i>
