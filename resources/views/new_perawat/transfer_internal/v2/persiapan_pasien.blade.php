@@ -82,6 +82,10 @@
                     name="transfer_alergi" {{ $transfer_internal->transfer_alergi == 'Ya' ? 'checked' : '' }}>
                 <label class="custom-control-label" for="transfer_alergi_Ya">Ya</label>
             </div>
+            <div class="form-group mt-2">
+                <label for="transfer_alergi_text">Detail Alergi Jika Ya</label>
+                <input type="text" class="form-control" id="transfer_alergi_text" name="transfer_alergi_text" value="{{ $transfer_internal->transfer_alergi_text }}">
+            </div>
         </div>
     </div>
     <div class="row">

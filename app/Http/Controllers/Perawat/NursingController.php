@@ -656,6 +656,7 @@ class NursingController extends Controller
                 'transfer_diagnosis' => $request->transfer_diagnosis,
                 'transfer_temuan' => $request->transfer_temuan,
                 'transfer_alergi' => $request->transfer_alergi,
+                'transfer_alergi_text' => $request->transfer_alergi_text,
                 'transfer_kewaspaan' => $request->transfer_kewaspaan,
                 'transfer_gcs_e' => $request->transfer_gcs_e,
                 'transfer_gcs_m' => $request->transfer_gcs_m,
