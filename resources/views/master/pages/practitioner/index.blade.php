@@ -1,83 +1,62 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
-@section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>
-                            Practitioner
-                            <a href="{{ route('master.practitioner.create') }}" class="btn btn-success rounded-circle">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-12">
-                        <label for="">Filter Status:</label>
-                    </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_hapus" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1">Dihapus</option>
-                                <option value="0" selected>Tidak dihapus</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="form-group">
-                            <select id="status_active" class="form-control">
-                                <option value="">Semua</option>
-                                <option value="1" selected>Aktif</option>
-                                <option value="0">Tidak Aktif</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="paramedic_table" class="w-100 table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Action</th>
-                                            <th>Paramedic Name</th>
-                                            <th>SpecialtyCode</th>
-                                            <th>StartExperienceDate</th>
-                                            <th>LicenseExpiredDate</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Practitioner</p>
+        </div>
     </div>
+@endsection
+
+@section('nyaa_content_body')
+    <div class="row mb-2">
+        <div class="col-sm-6 pb-3">
+            <a href="{{ route('master.practitioner.create') }}" class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-12">
+            <label for="">Filter Status:</label>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <select id="status_hapus" class="form-control">
+                    <option value="">Semua</option>
+                    <option value="1">Dihapus</option>
+                    <option value="0" selected>Tidak dihapus</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <select id="status_active" class="form-control">
+                    <option value="">Semua</option>
+                    <option value="1" selected>Aktif</option>
+                    <option value="0">Tidak Aktif</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table id="paramedic_table" class="w-100 table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Paramedic Name</th>
+                        <th>SpecialtyCode</th>
+                        <th>StartExperienceDate</th>
+                        <th>LicenseExpiredDate</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+   
 @endsection
 
 @push('nyaa_scripts')

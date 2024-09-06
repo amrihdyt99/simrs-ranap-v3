@@ -11,11 +11,12 @@
         </div>
     @endif
     @php
-        $cek = DB::connection('mysql')->table('rs_m_resume_pasien')->where('reg_no',$reg);
+        // $cek = DB::connection('mysql')->table('rs_m_resume_pasien')->where('reg_no',$reg);
+        $cek = array();
         $cek2 = DB::connection('mysql')->table('rs_pasien_discharge')->where('pdischarge_reg',$reg);
    
     @endphp
-    @if ($cek->count()==0 && $cek2 ->count() == 0)
+    @if (count($cek)==0 && $cek2 ->count() == 0)
         <div class="row">
             <div class="col-lg-6">
                 <div class="row">

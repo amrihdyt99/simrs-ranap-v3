@@ -1,75 +1,58 @@
 @extends(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->detect_component_user()->view->container_extends)
 
+@section('nyaa_content_header')
+    <div class="row">
+        <div class="col-12">
+            <p>Data Master - Service Unit Room</p>
+        </div>
+    </div>
+@endsection
+
 @section('nyaa_content_body')
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-10">
-                        <h1>
-                            Service Unit Room
-                            <a href="{{ route('master.serviceunit.create') }}" class="btn btn-success rounded-circle">
-                                <i class="fas fa-plus"></i>
-                            </a>
-                        </h1>
-                    </div>
-                    <div class="col-sm-2">
-                        <button id="tarikDataServiceUnitRoom" class="btn btn-primary">
-                            Tarik Data Service Unit Room
-                        </button>
-                    </div>
+    <div class="row mb-2">
+        <div class="col-sm-10 pb-3">
+            <a href="{{ route('master.serviceunit.create') }}" class="protecc btn btn-sm btn-success">
+                Tambah Data Baru
+            </a>
+        </div>
+        <div class="col-sm-2">
+            <button id="tarikDataServiceUnitRoom" class="btn btn-primary">
+                Tarik Data Service Unit Room
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Berhasil!</strong> {{ $message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-
-                        @if ($message = Session::get('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <strong>Berhasil!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if ($message = Session::get('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>Gagal!</strong> {{ $message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
-                        <div class="card">
-                            <div class="card-body">
-                                <table id="service_unit" class="w-100 table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>RoomID</th>
-                                            <th>ServiceUnitID</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
+            @endif
+            @if ($message = Session::get('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Gagal!</strong> {{ $message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+            @endif
+
+            <table id="service_unit" class="w-100 table table-bordered">
+                <thead>
+                    <tr>
+                        <th>RoomID</th>
+                        <th>ServiceUnitID</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.card-body -->
     </div>
 @endsection
 
@@ -118,7 +101,7 @@
         $(document).ready(function() {
             $('#tarikDataServiceUnitRoom').click(function() {
                 var $button = $(this);
-                $button.prop('disabled', true); 
+                $button.prop('disabled', true);
 
                 $.ajax({
                     url: "{{ url('tarik/unit_room') }}",
@@ -134,7 +117,7 @@
                     },
                     complete: function() {
                         $button.prop('disabled',
-                        false);
+                            false);
                     }
                 });
             });

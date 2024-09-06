@@ -25,14 +25,14 @@ class LocationController extends Controller
                 return
                 ( '<a href="'
                 . route('master.location.edit', [$query->LocationID])
-                . '" class="btn btn-sm"><i class="fas fa-edit text-info"></i></a>' )
+                . '" class="protecc btn btn-sm btn-info mr-2 mb-2"">Edit</a>' )
                 .
                 '<form action="'
                 . route('master.location.destroy', [$query->LocationID])
                 . '" method="POST">'
                 . csrf_field()
                 . method_field('DELETE')
-                . '<button class="btn btn-sm" type="submit" onclick="return confirm(\'Apakah yakin ingin menghapus?\')"><i class="fas fa-trash text-danger"></i></button></form>';
+                . '<button class="protecc btn btn-sm btn-danger mr-2 mb-2" type="submit" onclick="return confirm(\'Apakah yakin ingin menghapus?\')">Hapus</button></form>';
             })
             ->editColumn('IsAllowOverIssued', function ($query) use ($request) {
                 return app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->request_ya_tidak_parser($query->IsAllowOverIssued);

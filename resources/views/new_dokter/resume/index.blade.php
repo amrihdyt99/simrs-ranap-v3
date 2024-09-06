@@ -19,13 +19,25 @@
     </div>
 </div> -->
 
+<style>
+    .table_resume tr td{
+        padding: 5px !important;
+    }
+    .table_resume {
+        color: black !important
+    }
+</style>
+
 <div id="export-resume">
     <div class="float-right">
         <button type="button" class="btn btn-success" onclick="getResumeBaseData()"><i class="fas fa-redo"></i> Muat ulang</button>
     </div>
+    <button class="btn btn-info float-right ml-2" onclick="viewResume('{{ $reg }}')">
+        <i class="fas fa-file-alt"></i> View Resume
+    </button>
     <h3>RESUME PASIEN RAWAT JALAN | No Reg: {{$reg}}</h3>
     <div class="table-responsive">
-        <form action="form-add-resume" method="POST">
+        <form action="form-add-resume" id="form-add-resume">
             @csrf
             <h4 class="mb-4">Ringkasan Perawatan Pasien</h4>
 
@@ -65,7 +77,7 @@
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4">Temuan Klinik Pemeriksaan Penunjang</h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Temuan Klinik Pemeriksaan Penunjang</h4>
 
             <div class="form-group row">
                 <label for="temuan_klinik" class="col-sm-3 col-form-label">Temuan Klinik Pemeriksaan Penunjang:</label>
@@ -180,13 +192,13 @@
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4">Diagnosa</h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Diagnosa</h4>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">ICD-10:</label>
                 <div class="col-sm-9">
                     {{-- <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICD10()">Tambah Diagnosa ICD-10</button> --}}
-                    <table class="table table-bordered">
+                    <table class="table table-striped table_resume">
                         <thead>
                             <tr>
                                 <th class="font-weight-bold">Diagnosa Utama</th>
@@ -205,7 +217,7 @@
                 <label class="col-sm-3 col-form-label">ICD-9:</label>
                 <div class="col-sm-9">
                     {{-- <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICD9()">Tambah Diagnosa ICD-9</button> --}}
-                    <table class="table table-bordered">
+                    <table class="table table-striped table_resume">
                         <thead>
                             <tr>
                                 <th class="font-weight-bold">Tindakan</th>
@@ -222,7 +234,7 @@
                 <label class="col-sm-3 col-form-label">ICD-O:</label>
                 <div class="col-sm-9">
                     {{-- <button type="button" class="btn btn-primary mb-2" onclick="addDiagnosaICDO()">Tambah Diagnosa ICD-O</button> --}}
-                    <table class="table table-bordered">
+                    <table class="table table-striped table_resume">
                         <thead>
                             <tr>
                                 <th class="font-weight-bold">Diagnosa Utama/Tindakan</th>
@@ -235,16 +247,18 @@
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4">Terapi Yang Sudah Diberikan <button type="button" class="btn btn-primary btn-sm ml-2" id="add-terapi">Tambah Terapi</button></h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Terapi Yang Sudah Diberikan 
+                {{-- <button type="button" class="btn btn-primary btn-sm ml-2" id="add-terapi">Tambah Terapi</button> --}}
+            </h4>
             <div class="form-group row">
                 <div class="col-sm-12">
-                    <div id="terapi-container">
-                        <!-- Data Terapi -->
-                    </div>
+                    <table class="table table-striped table_resume">
+                        <tbody id="terapi-container"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4">Nama Tindakan/Operasi <button type="button" class="btn btn-primary btn-sm ml-2" id="add-tindakan">Tambah Tindakan/Operasi</button></h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Nama Tindakan/Operasi <button type="button" class="btn btn-primary btn-sm ml-2 float-right" id="add-tindakan">Tambah Tindakan/Operasi</button></h4>
             <div class="form-group row">
                 <div class="col-sm-12">
                     <div id="tindakan-container">
@@ -257,18 +271,18 @@
                 <div class="col-lg-6">
                     <fieldset class="form-group">
                         <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
-                        <textarea class="form-control" rows="4"></textarea>
+                        <textarea class="form-control" name="penyebab_luar" rows="4"></textarea>
                     </fieldset>
                 </div>
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="">Kode ICD-10</label>
-                        <textarea class="form-control" rows="4"></textarea>
+                        <textarea class="form-control" name="penyebab_luar_icd" rows="4"></textarea>
                     </div>
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4">Alasan Pulang</h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Alasan Pulang</h4>
             <div class="form-group row">
                 <div class="col-sm-12">
                     <div class="row">
@@ -312,7 +326,7 @@
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4">Kondisi Pasien Pulang</h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Kondisi Pasien Pulang</h4>
             <div class="form-group row">
                 <div class="col-sm-12">
                     <div class="row">
@@ -359,7 +373,7 @@
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4">Obat Yang Dibawa Pulang <button type="button" class="btn btn-success mt-2" id="tambah-obat">Tambah Obat</button></h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Obat Yang Dibawa Pulang <button type="button" class="btn btn-primary mt-2 float-right" id="tambah-obat">Tambah Obat Pulang</button></h4>
             <div class="table-responsive">
                 <table class="table table-bordered" id="obat-pulang-table">
                     <thead>
@@ -383,85 +397,104 @@
                 </table>
             </div>
 
-            <h4 class="mb-3 mt-4">PERAWATAN SELANJUTNYA</h4>
-            <h4>Kontrol di RSUD Siti Fatimah</h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">PERAWATAN SELANJUTNYA</h4>
+            @php
+                $perawatan_lanjutan = [
+                    'Kontrol di RSUD Siti Fatimah',
+                    'Rujukan RS Lain',
+                    'Rujuk Balik',
+                ];
+            @endphp
+
+            <div class="row">
+                @foreach ($perawatan_lanjutan as $item_p)
+                    <div class="col-md-4">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" onchange="perawatanLanjutan(this.id)" id="{{strtolower(str_replace(' ', '_', $item_p))}}" name="tipe_perawatan_lanjutan" value="{{$item_p}}">
+                            <label class="custom-control-label" for="{{strtolower(str_replace(' ', '_', $item_p))}}">{{$item_p}}</label>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
             
-                    <div class="form-group">
-                        <label class="control-label">Klinik</label>
-                    <input type="text" name="klinik" id="klinik"placeholder=""class="form-control"/>
-                    </div>
+            
+            <div id="lanjutan_kontrol_di_rsud_siti_fatimah">
+                <div class="form-group">
+                    <label class="control-label">Klinik</label>
+                <input type="text" name="klinik" id="klinik"placeholder=""class="form-control"/>
+                </div>
 
-                    <div class="form-group">
-                        <label class="control-label">Dokter</label>
-                        <input type="text" name="dokter" id="dokter" placeholder="" class="form-control"/>
-                    </div>
+                <div class="form-group">
+                    <label class="control-label">Dokter</label>
+                    <input type="text" name="dokter" id="dokter" placeholder="" class="form-control"/>
+                </div>
 
-                    <div class="form-group">
-                        <label class="control-label">Tanggal Kontrol</label>
-                        <input type="date" name="tanggal_kontrol_rsud" id="tanggal_kontrol_rsud" class="form-control"/>
-                    </div>
-                    
-                    <h4>Rujukan RS Lain</h4>
-                    
-                    <div class="form-group">
-                        <label class="control-label">Tanggal</label>
-                        <input type="date" name="tanggal_rs_lain" id="tanggal_rs_lain" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Ke RS</label>
-                        <input type="text" name="nama_rs_lain" id="nama_rs_lain" placeholder="" class="form-control" />
-                    </div>
-                    
-                    
-                    <h4>Rujuk Balik</h4>
-                    
-                    <div class="form-group">
-                        <label class="control-label">Tanggal</label>
-                        <input type="date" name="tanggal_rujuk_balik" id="tanggal_rujuk_balik" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Ke RS</label>
-                        <input type="text" name="nama_rs_rujuk_balik" id="nama_rs_rujuk_balik" placeholder="" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Puskesmas</label>
-                        <input type="text" name="puskesmas" id="puskesmas" placeholder="" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Dokter Praktek Pribadi</label>
-                        <input type="text" name="dokter_pribadi" id="dokter_pribadi" placeholder="" class="form-control" />
-                    </div>
-                    
-                    <h4 class="mb-3 mt-4">HOME CARE</h4>
-                    <h4 class="mb-3">PERAWATAN YANG AKAN DILAKUKAN</h4>
                 <div class="form-group">
-                    <label for="pergantian_catheter">Pergantian Dower Catheter, NGT, Double Lumen</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="pergantian_catheter_detail" placeholder="Detail">
-                        <input type="date" class="form-control" name="tanggal_pergantian_catheter">
-                    </div>
+                    <label class="control-label">Tanggal Kontrol</label>
+                    <input type="date" name="tanggal_kontrol_rsud" id="tanggal_kontrol_rsud" class="form-control"/>
+                </div>
+            </div>
+
+            <div id="lanjutan_rujukan_rs_lain">
+                <div class="form-group">
+                    <label class="control-label">Tanggal</label>
+                    <input type="date" name="tanggal_rs_lain" id="tanggal_rs_lain" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label for="terapi_rehabilitan">Terapi Rehabilitasi:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control mt-1" name="terapi_rehabilitan_detail" placeholder="Detail">
-                        <input type="date" class="form-control mt-1" name="tanggal_terapi_rehabilitan">
-                    </div>
+                    <label class="control-label">Ke RS</label>
+                    <input type="text" name="nama_rs_lain" id="nama_rs_lain" placeholder="" class="form-control" />
+                </div>
+            </div>
+            
+            <div id="lanjutan_rujuk_balik">
+                <div class="form-group">
+                    <label class="control-label">Tanggal</label>
+                    <input type="date" name="tanggal_rujuk_balik" id="tanggal_rujuk_balik" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label for="rawat_luka">Rawat Luka:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control mt-1" name="rawat_luka_detail" placeholder="Detail">
-                        <input type="date" class="form-control mt-1" name="tanggal_rawat_luka">
-                    </div>
+                    <label class="control-label">Ke RS</label>
+                    <input type="text" name="nama_rs_rujuk_balik" id="nama_rs_rujuk_balik" placeholder="" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label for="perawatan_lainnya">Lainnya:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control mt-1" name="perawatan_lainnya_detail" placeholder="Detail">
-                        <input type="date" class="form-control mt-1" name="tanggal_perawatan_lainnya">
-                    </div>
+                    <label class="control-label">Puskesmas</label>
+                    <input type="text" name="puskesmas" id="puskesmas" placeholder="" class="form-control" />
                 </div>
+                <div class="form-group">
+                    <label class="control-label">Dokter Praktek Pribadi</label>
+                    <input type="text" name="dokter_pribadi" id="dokter_pribadi" placeholder="" class="form-control" />
+                </div>
+            </div>
+                
+                <h4 class="mb-3 mt-4 font-weight-bold">HOME CARE</h4>
+                <h4 class="mb-3">PERAWATAN YANG AKAN DILAKUKAN</h4>
+            <div class="form-group">
+                <label for="pergantian_catheter">Pergantian Dower Catheter, NGT, Double Lumen</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="pergantian_catheter_detail" placeholder="Detail">
+                    <input type="date" class="form-control" name="tanggal_pergantian_catheter">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="terapi_rehabilitan">Terapi Rehabilitasi:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control mt-1" name="terapi_rehabilitan_detail" placeholder="Detail">
+                    <input type="date" class="form-control mt-1" name="tanggal_terapi_rehabilitan">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="rawat_luka">Rawat Luka:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control mt-1" name="rawat_luka_detail" placeholder="Detail">
+                    <input type="date" class="form-control mt-1" name="tanggal_rawat_luka">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="perawatan_lainnya">Lainnya:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control mt-1" name="perawatan_lainnya_detail" placeholder="Detail">
+                    <input type="date" class="form-control mt-1" name="tanggal_perawatan_lainnya">
+                </div>
+            </div>
 
             <div class="form-group">
             <h4>Edukasi Pasien</h4>
@@ -482,7 +515,7 @@
 
             <div class="form-group row">
                 <div class="col-sm-9 offset-sm-3 text-right">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" onclick="simpanResume()" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
         </form>
@@ -493,77 +526,87 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script>
+    $('[id*="lanjutan_"]').hide()
+
+    function perawatanLanjutan(_id){
+        $('[id*="lanjutan_"]').hide()
+
+        // $('[id*="lanjutan_"] input').val('')
+
+        $('[id="lanjutan_'+_id+'"]').show()
+    }
+    
     $(document).ready(function() {
         function initializeSelect2(selector, url, placeholder) {
             $(selector).select2({
-                            placeholder: placeholder,
-                            allowClear: true,
-                            ajax: {
-                                url: url,
-                                dataType: 'json',
-                                delay: 250,
-                                processResults: function (data) {
-                                    return {
-                                        results: $.map(data, function (item) {
-                                            return {
-                                                text: item.code + ' - ' + item.name,
-                                                id: item.code
-                                            }
-                                        })
-                                    };
-                                },
-                                cache: true
-                            }
-                        });
-                    }
+                placeholder: placeholder,
+                allowClear: true,
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.code + ' - ' + item.name,
+                                    id: item.code
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
 
-                    function addDiagnosaICD10() {
-                        var icd10TableBody = document.getElementById('icd10-table-body');
-                        var newRow = icd10TableBody.insertRow();
-                        var cellContent = `
-                            <td><select class="form-control icd10-select-utama" name="diagnosa_utama[]"></select></td>
-                            <td><select class="form-control icd10-select-sekunder" name="diagnosa_sekunder[]"></select></td>
-                            <td><select class="form-control icd10-select-klausa" name="diagnosa_klausa[]"></select></td>
-                            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Hapus</button></td>
-                        `;
-                        newRow.innerHTML = cellContent;
-                        initializeSelect2('.icd10-select-utama', '/api/icd10', 'Pilih untuk diagnosa utama');
-                        initializeSelect2('.icd10-select-sekunder', '/api/icd10', 'Pilih untuk diagnosa sekunder');
-                        initializeSelect2('.icd10-select-klausa', '/api/icd10', 'Pilih untuk diagnosa klausa');
-                    }
+        function addDiagnosaICD10() {
+            var icd10TableBody = document.getElementById('icd10-table-body');
+            var newRow = icd10TableBody.insertRow();
+            var cellContent = `
+                <td><select class="form-control icd10-select-utama" name="diagnosa_utama[]"></select></td>
+                <td><select class="form-control icd10-select-sekunder" name="diagnosa_sekunder[]"></select></td>
+                <td><select class="form-control icd10-select-klausa" name="diagnosa_klausa[]"></select></td>
+                <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Hapus</button></td>
+            `;
+            newRow.innerHTML = cellContent;
+            initializeSelect2('.icd10-select-utama', '/api/icd10', 'Pilih untuk diagnosa utama');
+            initializeSelect2('.icd10-select-sekunder', '/api/icd10', 'Pilih untuk diagnosa sekunder');
+            initializeSelect2('.icd10-select-klausa', '/api/icd10', 'Pilih untuk diagnosa klausa');
+        }
 
-                    function addDiagnosaICD9() {
-                        var icd9TableBody = document.getElementById('icd9-table-body');
-                        var newRow = icd9TableBody.insertRow();
-                        var cellContent = `
-                            <td><select class="form-control icd9-select" name="tindakan[]"></select></td>
-                            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Hapus</button></td>
-                        `;
-                        newRow.innerHTML = cellContent;
-                        initializeSelect2('.icd9-select', '/api/icd9', 'Pilih ICD-9');
-                    }
+        function addDiagnosaICD9() {
+            var icd9TableBody = document.getElementById('icd9-table-body');
+            var newRow = icd9TableBody.insertRow();
+            var cellContent = `
+                <td><select class="form-control icd9-select" name="tindakan[]"></select></td>
+                <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Hapus</button></td>
+            `;
+            newRow.innerHTML = cellContent;
+            initializeSelect2('.icd9-select', '/api/icd9', 'Pilih ICD-9');
+        }
 
-                    function addDiagnosaICDO() {
-                        var icdoTableBody = document.getElementById('icdo-table-body');
-                        var newRow = icdoTableBody.insertRow();
-                        var cellContent = `
-                            <td><select class="form-control icdO-select" name="tindakan[]"></select></td>
-                            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Hapus</button></td>
-                        `;
-                        newRow.innerHTML = cellContent;
-                        initializeSelect2(newRow.querySelector('.icdO-select'), '/api/icdO', 'Pilih ICD-O');
-                    }
+        function addDiagnosaICDO() {
+            var icdoTableBody = document.getElementById('icdo-table-body');
+            var newRow = icdoTableBody.insertRow();
+            var cellContent = `
+                <td><select class="form-control icdO-select" name="tindakan[]"></select></td>
+                <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Hapus</button></td>
+            `;
+            newRow.innerHTML = cellContent;
+            initializeSelect2(newRow.querySelector('.icdO-select'), '/api/icdO', 'Pilih ICD-O');
+        }
 
-                    function removeRow(button) {
-                        var row = button.parentNode.parentNode;
-                        row.parentNode.removeChild(row);
-                    }
+        function removeRow(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
 
-                    // Expose functions to global scope
-                    // window.addDiagnosaICD10 = addDiagnosaICD10;
-                    window.addDiagnosaICD9 = addDiagnosaICD9;
-                    window.addDiagnosaICDO = addDiagnosaICDO;
-                    window.removeRow = removeRow;
+        // Expose functions to global scope
+        // window.addDiagnosaICD10 = addDiagnosaICD10;
+        window.addDiagnosaICD9 = addDiagnosaICD9;
+        window.addDiagnosaICDO = addDiagnosaICDO;
+        window.removeRow = removeRow;
     });
 
     $(document).ready(function() {
@@ -575,7 +618,7 @@
                 <div class="form-group terapi-input" data-terapi-id="${nextTerapiId}">
                     <label for="terapi_${nextTerapiId}">Terapi ${terapiInputs.length + 1}:</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="terapi_${nextTerapiId}" name="terapi[]">
+                        <input type="text" class="form-control" id="terapi_${nextTerapiId}">
                         <div class="input-group-append">
                             <button class="btn btn-danger remove-terapi" type="button">Hapus</button>
                         </div>
@@ -602,77 +645,98 @@
         function updateTerapiLabels() {
             $('.terapi-input').each(function(index) {
                 $(this).find('label').text(`Terapi ${index + 1}:`);
+                $(this).find('input').attr('name', 'terapi['+(index)+'][nama]')
             });
         }
 
         addTerapiInput();
     });
 
-    $(document).ready(function() {
-        let tindakanInputs = [];
-        let nextTindakanId = 1;
+    var tindakanInputs = [];
+    var nextTindakanId = 1;
+    
+    function addTindakanInput(data = {}) {
+        let random = randomString(5)
 
-        function addTindakanInput() {
-            const newInput = `
-                <div class="form-group tindakan-input" data-tindakan-id="${nextTindakanId}">
-                    <label>Tindakan ${tindakanInputs.length + 1}:</label>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" name="nama_tindakan[]" placeholder="Nama Tindakan/Operasi">
-                        </div>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control" name="tanggal_tindakan[]">
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" name="kode_icd9[]" placeholder="Kode ICD-9-CM">
-                        </div>
-                        <div class="col-md-1">
-                            <button class="btn btn-danger remove-tindakan" type="button">Hapus</button>
-                        </div>
+        const newInput = `
+            <div class="form-group tindakan-input" data-tindakan-id="${nextTindakanId}" data-tindakan-kode="`+random+`">
+                <label>Tindakan ${tindakanInputs.length + 1}:</label>
+                <div class="row">
+                    <div class="col-md-4">
+                        <select class="form-control nama_tindakan" id="resume-tindakan-`+random+`" onchange="getResumeTindakan(this.id, '`+random+`')"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control tanggal_tindakan" value="`+(data.tanggal_tindakan ?? '')+`">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="hidden" class="form-control nama_tindakan_icd9" value="`+(data.nama_tindakan_icd9 ?? '')+`" placeholder="Kode ICD-9-CM">
+                        <input type="text" class="form-control kode_icd9" value="`+(data.kode_icd9 ?? '')+`" placeholder="Kode ICD-9-CM">
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-danger remove-tindakan" type="button">Hapus</button>
                     </div>
                 </div>
-            `;
-            $('#tindakan-container').append(newInput);
-            tindakanInputs.push(nextTindakanId);
-            nextTindakanId++;
-            updateTindakanLabels();
+            </div>
+        `;
+
+        $('#tindakan-container').append(newInput);
+
+        tindakanInputs.push(nextTindakanId);
+        nextTindakanId++;
+        updateTindakanLabels();
+        
+        $(document).ready(function(){
+            icd9('[id="resume-tindakan-'+random+'"]')
+        })
+
+        if (data.nama_tindakan_icd9 != undefined) {
+            addOption('[id="resume-tindakan-'+random+'"]', data.kode_icd9, data.nama_tindakan_icd9)
         }
+    }
 
-        $('#add-tindakan').click(function() {
-            addTindakanInput();
-        });
-
-        $(document).on('click', '.remove-tindakan', function() {
-            const tindakanId = $(this).closest('.tindakan-input').data('tindakan-id');
-            tindakanInputs = tindakanInputs.filter(id => id !== tindakanId);
-            $(this).closest('.tindakan-input').remove();
-            updateTindakanLabels();
-        });
-
-        function updateTindakanLabels() {
-            $('.tindakan-input').each(function(index) {
-                $(this).find('label').text(`Tindakan ${index + 1}:`);
-            });
-        }
+    $('#add-tindakan').click(function() {
         addTindakanInput();
     });
 
-    $(document).ready(function() {
-                    $('#tambah-obat').click(function() {
-                        var newRow = `
-                            <tr>
-                                <td><input type="text" class="form-control" name="nama_obat[]"></td>
-                                <td><input type="text" class="form-control" name="jumlah_obat[]" placeholder="Contoh: 1x30 mg"></td>
-                                <td><input type="text" class="form-control" name="aturan_pakai[]"></td>
-                                <td><input type="text" class="form-control" name="keterangan_obat[]"></td>
-                                <td><button type="button" class="btn btn-danger btn-sm hapus-obat">Hapus</button></td>
-                            </tr>
-                        `;
-                        $('#obat-pulang-table tbody').append(newRow);
-                    });
+    $(document).on('click', '.remove-tindakan', function() {
+        const tindakanId = $(this).closest('.tindakan-input').data('tindakan-id');
+        tindakanInputs = tindakanInputs.filter(id => id !== tindakanId);
+        $(this).closest('.tindakan-input').remove();
+        updateTindakanLabels();
+    });
 
-                    $(document).on('click', '.hapus-obat', function() {
-                        $(this).closest('tr').remove();
+    function updateTindakanLabels() {
+        $('.tindakan-input').each(function(index) {
+            $(this).find('label').text(`Tindakan ${index + 1}:`);
+            $(this).find('input[class*="nama_tindakan"]').attr('name', 'tindakan['+index+'][nama_tindakan]')
+            $(this).find('input[class*="nama_tindakan_icd9"]').attr('name', 'tindakan['+index+'][nama_tindakan_icd9]')
+            $(this).find('input[class*="tanggal_tindakan"]').attr('name', 'tindakan['+index+'][tanggal_tindakan]')
+            $(this).find('input[class*="kode_icd9"]').attr('name', 'tindakan['+index+'][kode_icd9]')
+        });
+    }
+
+    $(document).ready(function() {
+        $('#tambah-obat').click(function() {
+            var newRow = `
+                <tr>
+                    <td><input type="text" class="form-control" name="nama_obat[]"></td>
+                    <td><input type="text" class="form-control" name="jumlah_obat[]" placeholder="Contoh: 1x30 mg"></td>
+                    <td><input type="text" class="form-control" name="aturan_pakai[]"></td>
+                    <td><input type="text" class="form-control" name="keterangan_obat[]"></td>
+                    <td><button type="button" class="btn btn-danger btn-sm hapus-obat">Hapus</button></td>
+                </tr>
+            `;
+            $('#obat-pulang-table tbody').append(newRow);
+        });
+
+        $(document).on('click', '.hapus-obat', function() {
+            $(this).closest('tr').remove();
         });
     });
+</script>
+<script>
+    function viewResume(regNo) {
+        const url = `{{url("")}}/resume/dokumen?reg_no=${regNo}`;
+        window.open(url, '_blank');
+    }
 </script>

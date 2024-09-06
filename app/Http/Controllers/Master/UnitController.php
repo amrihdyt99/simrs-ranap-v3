@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServiceUnit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -154,9 +155,26 @@ class UnitController extends Controller
      * @param  \App\Models\ServiceUnit  $serviceUnit
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ServiceUnit $unit)
+    public function destroy($id)
     {
-        $unit->delete();
-        return redirect()->route('master.unit.index');
+        $unit = DB::connection('mysql2')
+            ->table('m_unit')
+            ->where('ServiceUnitCode', $id)
+            ->first();
+
+        if (!$unit) {
+            return response()->json(['error' => 'Data tidak ditemukan'], 404);
+        }
+
+        DB::connection('mysql2')
+            ->table('m_unit')
+            ->where('ServiceUnitCode', $id)
+            ->update([
+                'IsDeleted' => 1,
+                'LastUpdatedBy' => auth()->user()->id,
+                'LastUpdatedDateTime' => Carbon::now(),
+            ]);
+
+        return response()->json(['success' => 'Data berhasil dihapus']);
     }
 }

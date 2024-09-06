@@ -433,8 +433,8 @@
                 }
             })
         }
-        function icd9() {
-            $('#select-prosedur').select2({
+        function icd9(_id = '#select-prosedur') {
+            $(_id).select2({
                 ajax: {
                     url: "{{url('api/sphaira/icd9')}}",
                     type: 'GET',

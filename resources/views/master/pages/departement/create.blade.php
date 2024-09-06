@@ -8,7 +8,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Input Data Departement</h1>
+                        <h1>Create New Service Unit</h1>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -24,39 +24,29 @@
                                 <form action="{{ route('master.departement.store') }}" method="POST">
                                     @csrf
                                     <div class="form-group">
-                                        <label>DepartmentCode</label>
-                                        <input type="text" class="form-control @error('DepartmentCode') is-invalid @enderror"
-                                        required id="DepartmentCode" name="DepartmentCode"/>
+                                        <label>SiteDepartmentID</label>
+                                        <input type="text" class="form-control" id="SiteDepartmentID" name="SiteDepartmentID"
+                                            value="{{ old('SiteDepartmentID') }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>DepartmentName</label>
-                                        <input type="text" class="form-control @error('DepartmentName') is-invalid @enderror"
-                                        required id="DepartmentName" name="DepartmentName"/>
+                                        <label>ServiceUnitCode</label>
+                                        <input type="text" class="form-control" id="ServiceUnitCode" name="ServiceUnitCode"
+                                            value="{{ old('ServiceUnitCode') }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>ShortName</label>
-                                        <input type="text" class="form-control @error('ShortName') is-invalid @enderror"
-                                        required id="ShortName" name="ShortName"/>
+                                        <label>Contact Person 1</label>
+                                        <input type="text" class="form-control" id="ContactPerson1" name="ContactPerson1"
+                                            value="{{ old('ContactPerson1') }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>Initial</label>
-                                        <input type="text" class="form-control @error('Initial') is-invalid @enderror"
-                                        required id="Initial" name="Initial"/>
+                                        <label>Contact Person 2</label>
+                                        <input type="text" class="form-control" id="ContactPerson2" name="ContactPerson2"
+                                            value="{{ old('ContactPerson2') }}" />
                                     </div>
                                     <div class="form-group">
-                                        <label>IsHasRegistration</label>
-                                        <input type="number" class="form-control @error('IsHasRegistration') is-invalid @enderror"
-                                        required id="IsHasRegistration" name="IsHasRegistration"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>IsHasPrescription</label>
-                                        <input class="form-control @error('IsHasPrescription') is-invalid @enderror"
-                                        required id="IsHasPrescription" name="IsHasPrescription"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>IsGenerateMedicalNo</label>
-                                        <input type="number" class="form-control @error('IsGenerateMedicalNo') is-invalid @enderror"
-                                        required id="IsGenerateMedicalNo" name="IsGenerateMedicalNo"/>
+                                        <label>LocationID</label>
+                                        <input type="text" class="form-control" id="LocationID" name="LocationID"
+                                            value="{{ old('LocationID') }}" />
                                     </div>
 
                                     <button type="submit" class="btn btn-primary">Submit</button>

@@ -65,9 +65,58 @@
             return data.replace(/\//g, '_')
         }
 
+        function randomString(len, charSet) {
+            charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var randomString = '';
+            for (var i = 0; i < len; i++) {
+                var randomPoz = Math.floor(Math.random() * charSet.length);
+                randomString += charSet.substring(randomPoz,randomPoz+1);
+            }
+            return randomString;
+        }
+
+        function needsJsonParse(variable) {
+            if (typeof variable !== 'string') {
+                return false;
+            }
+            
+            try {
+                JSON.parse(variable);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
         function addOption(elm, value, text) {
             var newOption = new Option(text, value, false, false);
             $(elm).append(newOption).trigger('change');
+        }
+
+        function getAlert(_reg){
+            $.ajax({
+                url: '{{url("")}}/api/getAlert',
+                data: {
+                    reg_no: _reg 
+                },
+                success: function(resp){
+                    $('#alert_indikator').html('')
+
+                    if (resp.alergi == 'Ya' && resp.asper_hasil) {
+                        $('[id="alert_blink"]').show()
+                    }
+                    
+                    if (resp.alergi == 'Ya') {
+                        $('#alert_indikator').append(`
+                            <p class="bubble-alergi" title="Alergi: `+resp.nama_alergi+`">Allergy</p>
+                        `)
+                    }
+
+                    if (resp.asper_hasil) {
+                        $('#alert_indikator').append('<p class="bubble-resiko" title="Resiko jatuh : '+resp.asper_hasil+'">Fall risk</p>')
+                    }
+                }
+            })
         }
 
         $('#partial-panel').hide();
@@ -279,17 +328,19 @@
                                 $('[id="panel-'+id+'"] #row_loader').remove()
 
                                 var dataJSON=data.data;
-                                for(var i=0;i<dataJSON.length;i++){
-                                    $("#select-tindakan")
-                                        .append($("<option></option>")
-                                            .attr("value", dataJSON[i]['ItemCode'] )
-                                            .attr("class", 'row_tindakan')
-                                            .attr("data-id", dataJSON[i]['ItemCode'] )
-                                            .attr("data-type", 'Laboratorium' )
-                                            .attr("data-name", dataJSON[i]['ItemName1'] )
-                                            .attr("data-price", dataJSON[i]['PersonalPrice'] )
-                                            .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
-                                    //console.log(dataJSON[i]['ItemName1'])
+                                if (dataJSON) {
+                                    for(var i=0;i<dataJSON.length;i++){
+                                        $("#select-tindakan")
+                                            .append($("<option></option>")
+                                                .attr("value", dataJSON[i]['ItemCode'] )
+                                                .attr("class", 'row_tindakan')
+                                                .attr("data-id", dataJSON[i]['ItemCode'] )
+                                                .attr("data-type", 'Laboratorium' )
+                                                .attr("data-name", dataJSON[i]['ItemName1'] )
+                                                .attr("data-price", dataJSON[i]['PersonalPrice'] )
+                                                .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
+                                        //console.log(dataJSON[i]['ItemName1'])
+                                    }
                                 }
                                 //let html = document.getElementById("panel-nursing").innerHTML = data;
                             },

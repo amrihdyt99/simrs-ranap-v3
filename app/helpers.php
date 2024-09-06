@@ -25,6 +25,10 @@ function urlLabRadiology() {
     return domain(1).'labor';
 }
 
+function urlSimrsRanap() {
+    return domain(1).'simrs_ranap/';
+}
+
 function urlSimrs() {
     return domain(1).'simrs-rajal/';
 }

@@ -286,6 +286,30 @@ class TarikDataController extends Controller
         }
     }
 
+    public function user_rajal()
+    {
+        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs-rajal/api/master/users');
+        foreach ($data as $kue) {
+            DB::connection('mysql2')
+                ->table('users')->insert([
+                    // 'id' => $kue['id'],
+                    'level_user' => $kue['level_user'],
+                    'name' => $kue['name'],
+                    'username' => $kue['username'],
+                    'email_verified_at' => $kue['email_verified_at'],
+                    'password' => $kue['password'],
+                    'dokter_id' => $kue['dokter_id'],
+                    'perawat_id' => $kue['perawat_id'],
+                    'is_active' => $kue['is_active'],
+                    'remember_token' => $kue['remember_token'],
+                    'created_at' => $kue['created_at'],
+                    'updated_at' => $kue['updated_at'],
+                    // 'signature' => $kue['signature'],
+                ]);
+        }
+        echo 'Alhamdulillah';
+    }
+
     public function curl_nih($url)
     {
         ini_set('max_execution_time', 3600);
