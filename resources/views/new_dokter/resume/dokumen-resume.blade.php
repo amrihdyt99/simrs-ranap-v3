@@ -273,26 +273,18 @@
             <tr>
                 <th class="align-middle text-center">No</th>
                 <th class="align-middle">TERAPI YANG SUDAH DIBERIKAN</th>
-                <th class="align-middle">TERAPI YANG SUDAH DIBERIKAN</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
+            @if (isset($data->terapi) && $data->terapi)
+                @foreach ($data->terapi as $item_terapi)
+                    <tr>
+                        <td>{{$loop->iteration}}</td>
+                        <td>{{$item_terapi->nama}} {{$item_terapi->dosis}} {{$item_terapi->hari}}</td>
+                    </tr>
+                @endforeach
+            @endif
         </tbody>
     </table>
-    <!-- <table>
+    {{-- <!-- <table>
         <tbody>
             <tr>
                 <th class="align-middle text-center">No</th>
@@ -308,7 +300,7 @@
             </tr>
             @endforeach
         </tbody>
-    </table> -->
+    </table> --> --}}
 
     <table>
         <tbody>
@@ -519,7 +511,7 @@
         <tr>
             <td style="width: 50%; text-align: center;">
                 Pasien/Keluarga<br><br>
-                @if($data->ttd_pasien)
+                @if(isset($data->ttd_pasien) && $data->ttd_pasien)
                     <img src="{{ $data->ttd_pasien }}" alt="Signature Pasien" style="width: 100px; height: auto;">
                 @else
                     <canvas id="signature-pad-pasien" style="border: 1px solid #000; width: 300px; height: 150px;"></canvas>
@@ -529,7 +521,7 @@
             </td>
             <td style="width: 50%; text-align: center;">
                 Dokter Penanggung Jawab Pelayanan (DPJP)<br><br>
-                @if($data->ttd_dokter)
+                @if(isset($data->ttd_dokter) && $data->ttd_dokter)
                     <img src="{{ $data->ttd_dokter }}" alt="Signature Dokter" style="width: 100px; height: auto;">
                 @else
                     <canvas id="signature-pad" style="border: 1px solid #000; width: 300px; height: 150px;"></canvas>
@@ -580,13 +572,13 @@
         }
     });
 </script>
-<!-- 
+{{-- <!-- 
     @if($data->ttd_dokter)
         <img src="{{ $data->ttd_dokter }}" alt="Signature Dokter">
     @endif
     @if($data->ttd_pasien)
         <img src="{{ $data->ttd_pasien }}" alt="Signature Pasien">
-    @endif -->
+    @endif --> --}}
 
 </body>
 </html>

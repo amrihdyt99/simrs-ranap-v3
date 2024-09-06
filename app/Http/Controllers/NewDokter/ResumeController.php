@@ -256,6 +256,7 @@ class ResumeController extends Controller
         if ($perawatanSelanjutnya) {
             $data = (object) array_merge((array) $data, (array) $perawatanSelanjutnya);
         }
+
         $data->signature_exists = !empty($resumeData->ttd_dokter) && !empty($resumeData->ttd_pasien);
         $diagnosisUtama = collect(json_decode($data->diagnosa))->firstWhere('pdiag_kategori', 'utama');
         $diagnosisSekunder = collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'sekunder');
@@ -270,6 +271,7 @@ class ResumeController extends Controller
         $data->tindakan = $tindakan;
         $data->prosedur = $prosedur; 
         $data->terapi = $terapi;
+
         return view('new_dokter.resume.dokumen-resume', compact('data'));
     }
 

@@ -74,6 +74,7 @@ Route::get('hapus/discharge/{id}', [\App\Http\Controllers\NewDokter\NewDischarge
 Route::post('addPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'addpemulanganpasien'])->name('add.pemulangan.pasien');
 Route::post('getPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getpemulanganpasien'])->name('get.pemulangan.pasien');
 Route::post('/verifikasicppt', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'verifikasi_soap_dokter'])->name('dokter.verifikasicppt');
+Route::get('/getAlert', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlert'])->name('dokter.getAlert');
 //api perawat
 Route::post('addSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'addsoap'])->name('add.soap.new.perawat');
 Route::post('getSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'getsoapbyreg'])->name('get.soap.new.perawat');

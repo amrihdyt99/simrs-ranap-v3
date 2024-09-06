@@ -463,14 +463,21 @@ background: #555;
 .bubble-alergi {
     background-color: red;
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: fit-content;
+    padding: 10px;
+    font-size: 14px;
+    height: fit-content;
+    color: white;
+    cursor: pointer;
 }
 .bubble-resiko {
     background-color: rgb(255, 208, 0);
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: fit-content;
+    padding: 10px;
+    font-size: 14px;
+    height: fit-content;
+    cursor: pointer;
 }
 .form-group-left p {
     display: inline-block;
