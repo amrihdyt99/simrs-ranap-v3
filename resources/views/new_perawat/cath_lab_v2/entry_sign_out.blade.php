@@ -74,8 +74,24 @@
         <input type="text" class="form-control" name="cath_signout_dokter_anastesi" value="{{$sign_out->cath_signout_dokter_anastesi}}">
     </div>
     <div class="form-group">
+        <label>Perawat Anastesi</label>
+        <input type="text" class="form-control" name="cath_signout_dokter_anastesi" value="{{$sign_out->cath_signout_dokter_anastesi}}">
+    </div>
+    <div class="form-group">
         <label>Perawat Sirkuler</label>
         <input type="text" class="form-control" name="cath_signout_perawat" value="{{$sign_out->cath_signout_perawat}}">
+    </div>
+    <div class="form-group">
+        <label>Perawat Scrub</label>
+        <input type="text" class="form-control" name="cath_signout_perawat_scrub" value="">
+    </div>
+    <div class="form-group">
+        <label>Perawat Hemodinamic</label>
+        <input type="text" class="form-control" name="cath_signout_perawat_hemodinamic" value="">
+    </div>
+    <div class="form-group">
+        <label>Petugas Lainnya</label>
+        <input type="text" class="form-control" name="cath_timeout_tim_petugas_lain" value="">
     </div>
     <button type="button" id="btn_cathlab" class="btn btn-success float-left" onclick="simpanCathlabSignOut()">Simpan</button>
 </form>

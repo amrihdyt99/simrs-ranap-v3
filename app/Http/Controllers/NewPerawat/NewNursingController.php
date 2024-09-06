@@ -502,30 +502,30 @@ class NewNursingController extends Controller
             'user_id' => $request->user_id,
         );
 
-        $paramsawalsearch2 = array(
-            'reg_no' => $request->reg_no,
-            'med_rec' => $request->medrec,
-        );
+        // $paramsawalsearch2 = array(
+        //     'reg_no' => $request->reg_no,
+        //     'med_rec' => $request->medrec,
+        // );
 
-        $paramsawalsearch3 = array(
-            'reg_no' => $request->reg_no,
-            'med_rec' => $request->medrec,
-        );
+        // $paramsawalsearch3 = array(
+        //     'reg_no' => $request->reg_no,
+        //     'med_rec' => $request->medrec,
+        // );
 
-        $paramsawalsearch4 = array(
-            'reg_no' => $request->reg_no,
-            'med_rec' => $request->medrec,
-        );
+        // $paramsawalsearch4 = array(
+        //     'reg_no' => $request->reg_no,
+        //     'med_rec' => $request->medrec,
+        // );
 
-        $paramsawalsearch5 = array(
-            'reg_no' => $request->reg_no,
-            'med_rec' => $request->medrec,
-        );
+        // $paramsawalsearch5 = array(
+        //     'reg_no' => $request->reg_no,
+        //     'med_rec' => $request->medrec,
+        // );
 
-        $paramsawalsearch6 = array(
-            'reg_no' => $request->reg_no,
-            'med_rec' => $request->medrec,
-        );
+        // $paramsawalsearch6 = array(
+        //     'reg_no' => $request->reg_no,
+        //     'med_rec' => $request->medrec,
+        // );
 
         //     $bahasa = implode(",", $request->bahasa);
         //     $pendidikan_pasien = implode(",", $request->pendidikan_pasien);
@@ -579,111 +579,147 @@ class NewNursingController extends Controller
                 "kesediaan_pasien" => $request->kesediaan_pasien,
             ]);
 
-        $simpan_dokter = DB::connection('mysql')
-            ->table('rs_edukasi_pasien_dokter')
-            ->updateOrInsert($paramsawalsearch2, [
-                "edukasi_diagnosa_penyebab_dokter" => $request->edukasi_diagnosa_penyebab_dokter,
-                "edukasi_penatalaksanaan_dokter" => $request->edukasi_penatalaksanaan_dokter,
-                "edukasi_prosedur_diagnostik_dokter" => $request->edukasi_prosedur_diagnostik_dokter,
-                "edukasi_manajemen_nyeri_dokter" => $request->edukasi_manajemen_nyeri_dokter,
-                "edukasi_lain_lain_dokter" => $request->edukasi_lain_lain_dokter,
-                "tgl_diagnosa_penyebab_dokter" => $request->tgl_diagnosa_penyebab_dokter,
-                "tgl_penatalaksanaan_dokter" => $request->tgl_penatalaksanaan_dokter,
-                "tgl_prosedur_diagnostik_dokter" => $request->tgl_prosedur_diagnostik_dokter,
-                "tgl_manajemen_nyeri_dokter" => $request->tgl_manajemen_nyeri_dokter,
-                "tgl_lain_lain_dokter" => $request->tgl_lain_lain_dokter,
-                "tingkat_paham_diagnosa_penyebab_dokter" => $request->tingkat_paham_diagnosa_penyebab_dokter,
-                "tingkat_paham_penatalaksanaan_dokter" => $request->tingkat_paham_penatalaksanaan_dokter,
-                "tingkat_paham_prosedur_diagnostik_dokter" => $request->tingkat_paham_prosedur_diagnostik_dokter,
-                "tingkat_paham_manajemen_nyeri_dokter" => $request->tingkat_paham_manajemen_nyeri_dokter,
-                "tingkat_paham_lain_lain_dokter" => $request->tingkat_paham_lain_lain_dokter,
-                "tingkat_paham_lain_lain_text_dokter" => $request->tingkat_paham_lain_lain_text_dokter,
-                "metode_edukasi_diagnosa_penyebab_dokter" => $request->metode_edukasi_diagnosa_penyebab_dokter,
-                "metode_edukasi_penatalaksanaan_dokter" => $request->metode_edukasi_penatalaksanaan_dokter,
-                "metode_edukasi_prosedur_diagnostik_dokter" => $request->metode_edukasi_prosedur_diagnostik_dokter,
-                "metode_edukasi_manajemen_nyeri_dokter" => $request->metode_edukasi_manajemen_nyeri_dokter,
-                "edukasi_lain_lain_dokter" => $request->edukasi_lain_lain_dokter,
-            ]);
+        // $simpan_dokter = DB::connection('mysql')
+        //     ->table('rs_edukasi_pasien_dokter')
+        //     ->updateOrInsert($paramsawalsearch2, [
+        //         "edukasi_diagnosa_penyebab_dokter" => $request->edukasi_diagnosa_penyebab_dokter,
+        //         "edukasi_penatalaksanaan_dokter" => $request->edukasi_penatalaksanaan_dokter,
+        //         "edukasi_prosedur_diagnostik_dokter" => $request->edukasi_prosedur_diagnostik_dokter,
+        //         "edukasi_manajemen_nyeri_dokter" => $request->edukasi_manajemen_nyeri_dokter,
+        //         "edukasi_lain_lain_dokter" => $request->edukasi_lain_lain_dokter,
+        //         "tgl_diagnosa_penyebab_dokter" => $request->tgl_diagnosa_penyebab_dokter,
+        //         "tgl_penatalaksanaan_dokter" => $request->tgl_penatalaksanaan_dokter,
+        //         "tgl_prosedur_diagnostik_dokter" => $request->tgl_prosedur_diagnostik_dokter,
+        //         "tgl_manajemen_nyeri_dokter" => $request->tgl_manajemen_nyeri_dokter,
+        //         "tgl_lain_lain_dokter" => $request->tgl_lain_lain_dokter,
+        //         "tingkat_paham_diagnosa_penyebab_dokter" => $request->tingkat_paham_diagnosa_penyebab_dokter,
+        //         "tingkat_paham_penatalaksanaan_dokter" => $request->tingkat_paham_penatalaksanaan_dokter,
+        //         "tingkat_paham_prosedur_diagnostik_dokter" => $request->tingkat_paham_prosedur_diagnostik_dokter,
+        //         "tingkat_paham_manajemen_nyeri_dokter" => $request->tingkat_paham_manajemen_nyeri_dokter,
+        //         "tingkat_paham_lain_lain_dokter" => $request->tingkat_paham_lain_lain_dokter,
+        //         "tingkat_paham_lain_lain_text_dokter" => $request->tingkat_paham_lain_lain_text_dokter,
+        //         "metode_edukasi_diagnosa_penyebab_dokter" => $request->metode_edukasi_diagnosa_penyebab_dokter,
+        //         "metode_edukasi_penatalaksanaan_dokter" => $request->metode_edukasi_penatalaksanaan_dokter,
+        //         "metode_edukasi_prosedur_diagnostik_dokter" => $request->metode_edukasi_prosedur_diagnostik_dokter,
+        //         "metode_edukasi_manajemen_nyeri_dokter" => $request->metode_edukasi_manajemen_nyeri_dokter,
+        //         "edukasi_lain_lain_dokter" => $request->edukasi_lain_lain_dokter,
+        //     ]);
 
-        $simpan_perawat = DB::connection('mysql')
-            ->table('rs_edukasi_pasien_perawat')
-            ->updateOrInsert($paramsawalsearch3, [
-                "edukasi_penggunaan_peralatan_perawat" => $request->edukasi_penggunaan_peralatan_perawat,
-                "edukasi_pencegahan_perawat" => $request->edukasi_pencegahan_perawat,
-                "edukasi_manajemen_nyeri_ringan_perawat" => $request->edukasi_manajemen_nyeri_ringan_perawat,
-                "edukasi_lain_lain_perawat" => $request->edukasi_lain_lain_perawat,
-                "tgl_penggunaan_peralatan_perawat" => $request->tgl_penggunaan_peralatan_perawat,
-                "tgl_pencegahan_perawat" => $request->tgl_pencegahan_perawat,
-                "tgl_manajemen_nyeri_ringan_perawat" => $request->tgl_manajemen_nyeri_ringan_perawat,
-                "tgl_lain_lain_perawat" => $request->tgl_lain_lain_perawat,
-                "tingkat_paham_penggunaan_peralatan_perawat" => $request->tingkat_paham_penggunaan_peralatan_perawat,
-                "tingkat_paham_pencegahan_perawat" => $request->tingkat_paham_pencegahan_perawat,
-                "tingkat_paham_manajemen_nyeri_ringan_perawat" => $request->tingkat_paham_manajemen_nyeri_ringan_perawat,
-                "tingkat_paham_lain_lain_perawat" => $request->tingkat_paham_lain_lain_perawat,
-                "tingkat_paham_lain_lain_text_perawat" => $request->tingkat_paham_lain_lain_text_perawat,
-                "metode_edukasi_penggunaan_peralatan_perawat" => $request->metode_edukasi_penggunaan_peralatan_perawat,
-                "metode_edukasi_pencegahan_perawat" => $request->metode_edukasi_pencegahan_perawat,
-                "metode_edukasi_manajemen_nyeri_ringan_perawat" => $request->metode_edukasi_manajemen_nyeri_ringan_perawat,
-                "metode_edukasi_lain_lain_perawat" => $request->metode_edukasi_lain_lain_perawat,
-            ]);
+        // $simpan_perawat = DB::connection('mysql')
+        //     ->table('rs_edukasi_pasien_perawat')
+        //     ->updateOrInsert($paramsawalsearch3, [
+        //         "edukasi_penggunaan_peralatan_perawat" => $request->edukasi_penggunaan_peralatan_perawat,
+        //         "edukasi_pencegahan_perawat" => $request->edukasi_pencegahan_perawat,
+        //         "edukasi_manajemen_nyeri_ringan_perawat" => $request->edukasi_manajemen_nyeri_ringan_perawat,
+        //         "edukasi_lain_lain_perawat" => $request->edukasi_lain_lain_perawat,
+        //         "tgl_penggunaan_peralatan_perawat" => $request->tgl_penggunaan_peralatan_perawat,
+        //         "tgl_pencegahan_perawat" => $request->tgl_pencegahan_perawat,
+        //         "tgl_manajemen_nyeri_ringan_perawat" => $request->tgl_manajemen_nyeri_ringan_perawat,
+        //         "tgl_lain_lain_perawat" => $request->tgl_lain_lain_perawat,
+        //         "tingkat_paham_penggunaan_peralatan_perawat" => $request->tingkat_paham_penggunaan_peralatan_perawat,
+        //         "tingkat_paham_pencegahan_perawat" => $request->tingkat_paham_pencegahan_perawat,
+        //         "tingkat_paham_manajemen_nyeri_ringan_perawat" => $request->tingkat_paham_manajemen_nyeri_ringan_perawat,
+        //         "tingkat_paham_lain_lain_perawat" => $request->tingkat_paham_lain_lain_perawat,
+        //         "tingkat_paham_lain_lain_text_perawat" => $request->tingkat_paham_lain_lain_text_perawat,
+        //         "metode_edukasi_penggunaan_peralatan_perawat" => $request->metode_edukasi_penggunaan_peralatan_perawat,
+        //         "metode_edukasi_pencegahan_perawat" => $request->metode_edukasi_pencegahan_perawat,
+        //         "metode_edukasi_manajemen_nyeri_ringan_perawat" => $request->metode_edukasi_manajemen_nyeri_ringan_perawat,
+        //         "metode_edukasi_lain_lain_perawat" => $request->metode_edukasi_lain_lain_perawat,
+        //     ]);
 
-        $simpan_gizi = DB::connection('mysql')
-            ->table('rs_edukasi_pasien_gizi')
-            ->updateOrInsert($paramsawalsearch4, [
-                "edukasi_pentingnya_nutrisi_gizi" => $request->edukasi_pentingnya_nutrisi_gizi,
-                "edukasi_diet_gizi" => $request->edukasi_diet_gizi,
-                "edukasi_lain_lain_gizi" => $request->edukasi_lain_lain_gizi,
-                "tgl_pentingnya_nutrisi_gizi" => $request->tgl_pentingnya_nutrisi_gizi,
-                "tgl_diet_gizi" => $request->tgl_diet_gizi,
-                "tgl_lain_lain_gizi" => $request->tgl_lain_lain_gizi,
-                "tingkat_paham_pentingnya_nutrisi_gizi" => $request->tingkat_paham_pentingnya_nutrisi_gizi,
-                "tingkat_paham_diet_gizi" => $request->tingkat_paham_diet_gizi,
-                "tingkat_paham_lain_lain_gizi" => $request->tingkat_paham_lain_lain_gizi,
-                "tingkat_paham_lain_lain_text_gizi" => $request->tingkat_paham_lain_lain_text_gizi,
-                "metode_edukasi_pentingnya_nutrisi_gizi" => $request->metode_edukasi_pentingnya_nutrisi_gizi,
-                "metode_edukasi_diet_gizi" => $request->metode_edukasi_diet_gizi,
-                "metode_edukasi_lain_lain_gizi" => $request->metode_edukasi_lain_lain_gizi,
+        // $simpan_gizi = DB::connection('mysql')
+        //     ->table('rs_edukasi_pasien_gizi')
+        //     ->updateOrInsert($paramsawalsearch4, [
+        //         "edukasi_pentingnya_nutrisi_gizi" => $request->edukasi_pentingnya_nutrisi_gizi,
+        //         "edukasi_diet_gizi" => $request->edukasi_diet_gizi,
+        //         "edukasi_lain_lain_gizi" => $request->edukasi_lain_lain_gizi,
+        //         "tgl_pentingnya_nutrisi_gizi" => $request->tgl_pentingnya_nutrisi_gizi,
+        //         "tgl_diet_gizi" => $request->tgl_diet_gizi,
+        //         "tgl_lain_lain_gizi" => $request->tgl_lain_lain_gizi,
+        //         "tingkat_paham_pentingnya_nutrisi_gizi" => $request->tingkat_paham_pentingnya_nutrisi_gizi,
+        //         "tingkat_paham_diet_gizi" => $request->tingkat_paham_diet_gizi,
+        //         "tingkat_paham_lain_lain_gizi" => $request->tingkat_paham_lain_lain_gizi,
+        //         "tingkat_paham_lain_lain_text_gizi" => $request->tingkat_paham_lain_lain_text_gizi,
+        //         "metode_edukasi_pentingnya_nutrisi_gizi" => $request->metode_edukasi_pentingnya_nutrisi_gizi,
+        //         "metode_edukasi_diet_gizi" => $request->metode_edukasi_diet_gizi,
+        //         "metode_edukasi_lain_lain_gizi" => $request->metode_edukasi_lain_lain_gizi,
 
-            ]);
+        //     ]);
 
-        $simpan_farmasi = DB::connection('mysql')
-            ->table('rs_edukasi_pasien_farmasi')
-            ->updateOrInsert($paramsawalsearch5, [
-                "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
-                "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
-                "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
-                "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
-                "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
-                "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
-                "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
-                "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
-                "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
-                "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
-                "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
-                "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
-                "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
-                "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
-                "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
-                "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
-                "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
-            ]);
+        // $simpan_farmasi = DB::connection('mysql')
+        //     ->table('rs_edukasi_pasien_farmasi')
+        //     ->updateOrInsert($paramsawalsearch5, [
+        //         "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
+        //         "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
+        //         "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
+        //         "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
+        //         "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
+        //         "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
+        //         "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
+        //         "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
+        //         "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
+        //         "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
+        //         "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
+        //         "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
+        //         "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
+        //         "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
+        //         "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
+        //         "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
+        //         "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
+        //     ]);
 
-        $simpan_rehab = DB::connection('mysql')
-            ->table('rs_edukasi_pasien_rehab')
-            ->updateOrInsert($paramsawalsearch6, [
-                "edukasi_tehnik_rehabilitasi" => $request->edukasi_tehnik_rehabilitasi,
-                "edukasi_lain_lain_rehabilitasi" => $request->edukasi_lain_lain_rehabilitasi,
-                "tgl_tehnik_rehabilitasi" => $request->tgl_tehnik_rehabilitasi,
-                "tgl_lain_lain_rehabilitasi" => $request->tgl_lain_lain_rehabilitasi,
-                "tingkat_paham_tehnik_rehabilitasi" => $request->tingkat_paham_tehnik_rehabilitasi,
-                "tingkat_paham_lain_lain_rehabilitasi" => $request->tingkat_paham_lain_lain_rehabilitasi,
-                "tingkat_paham_lain_lain_text_rehabilitasi" => $request->tingkat_paham_lain_lain_text_rehabilitasi,
-                "metode_edukasi_tehnik_rehabilitasi" => $request->metode_edukasi_tehnik_rehabilitasi,
-                "metode_edukasi_lain_lain_rehabilitasi" => $request->metode_edukasi_lain_lain_rehabilitasi,
-            ]);
+        // $simpan_rehab = DB::connection('mysql')
+        //     ->table('rs_edukasi_pasien_rehab')
+        //     ->updateOrInsert($paramsawalsearch6, [
+        //         "edukasi_tehnik_rehabilitasi" => $request->edukasi_tehnik_rehabilitasi,
+        //         "edukasi_lain_lain_rehabilitasi" => $request->edukasi_lain_lain_rehabilitasi,
+        //         "tgl_tehnik_rehabilitasi" => $request->tgl_tehnik_rehabilitasi,
+        //         "tgl_lain_lain_rehabilitasi" => $request->tgl_lain_lain_rehabilitasi,
+        //         "tingkat_paham_tehnik_rehabilitasi" => $request->tingkat_paham_tehnik_rehabilitasi,
+        //         "tingkat_paham_lain_lain_rehabilitasi" => $request->tingkat_paham_lain_lain_rehabilitasi,
+        //         "tingkat_paham_lain_lain_text_rehabilitasi" => $request->tingkat_paham_lain_lain_text_rehabilitasi,
+        //         "metode_edukasi_tehnik_rehabilitasi" => $request->metode_edukasi_tehnik_rehabilitasi,
+        //         "metode_edukasi_lain_lain_rehabilitasi" => $request->metode_edukasi_lain_lain_rehabilitasi,
+        //     ]);
 
         return response()->json([
             'success' => $simpan
+        ]);
+    }
+
+    function addEdukasiPasienPerawat(Request $request){
+        $paramsawalsearch3 = array(
+            'reg_no' => $request->reg_no,
+            'med_rec' => $request->medrec,
+        );
+
+        DB::connection('mysql')
+        ->table('rs_edukasi_pasien_perawat')
+        ->updateOrInsert($paramsawalsearch3, [
+            "edukasi_penggunaan_peralatan_perawat" => $request->edukasi_penggunaan_peralatan_perawat,
+            "edukasi_pencegahan_perawat" => $request->edukasi_pencegahan_perawat,
+            "edukasi_manajemen_nyeri_ringan_perawat" => $request->edukasi_manajemen_nyeri_ringan_perawat,
+            "edukasi_lain_lain_perawat" => $request->edukasi_lain_lain_perawat,
+            "tgl_penggunaan_peralatan_perawat" => $request->tgl_penggunaan_peralatan_perawat,
+            "tgl_pencegahan_perawat" => $request->tgl_pencegahan_perawat,
+            "tgl_manajemen_nyeri_ringan_perawat" => $request->tgl_manajemen_nyeri_ringan_perawat,
+            "tgl_lain_lain_perawat" => $request->tgl_lain_lain_perawat,
+            "tingkat_paham_penggunaan_peralatan_perawat" => $request->tingkat_paham_penggunaan_peralatan_perawat,
+            "tingkat_paham_pencegahan_perawat" => $request->tingkat_paham_pencegahan_perawat,
+            "tingkat_paham_manajemen_nyeri_ringan_perawat" => $request->tingkat_paham_manajemen_nyeri_ringan_perawat,
+            "tingkat_paham_lain_lain_perawat" => $request->tingkat_paham_lain_lain_perawat,
+            "tingkat_paham_lain_lain_text_perawat" => $request->tingkat_paham_lain_lain_text_perawat,
+            "metode_edukasi_penggunaan_peralatan_perawat" => $request->metode_edukasi_penggunaan_peralatan_perawat,
+            "metode_edukasi_pencegahan_perawat" => $request->metode_edukasi_pencegahan_perawat,
+            "metode_edukasi_manajemen_nyeri_ringan_perawat" => $request->metode_edukasi_manajemen_nyeri_ringan_perawat,
+            "metode_edukasi_lain_lain_perawat" => $request->metode_edukasi_lain_lain_perawat,
+            "ttd_sasaran" => $request->ttd_sasaran,
+            "ttd_edukator" => $request->ttd_edukator,
+            "user_id" => $request->user_id,
+        ]);
+
+        return response()->json([
+            'success' => true
         ]);
     }
 
@@ -753,6 +789,11 @@ class NewNursingController extends Controller
             $dua = json_encode($r->dua);
             $tiga = json_encode($r->tiga);
             $empat = json_encode($r->empat);
+            $nama_pihak_pasien = $r->nama_pihak_pasien;
+            $sebagai_pihak_pasien = $r->sebagai_pihak_pasien;
+            $ttdPerawat = $r->ttd_perawat;
+            $ttdPasien = $r->ttd_pasien;
+
             // dd($regno);
             $simpan = DB::table('rm3')->updateOrInsert($paramsawalsearch, [
                 // 'reg_no' => $regno,
@@ -773,7 +814,11 @@ class NewNursingController extends Controller
                 'satu' => $satu,
                 'dua' => $dua,
                 'tiga' => $tiga,
-                'empat' => $empat
+                'empat' => $empat,
+                'nama_pihak_pasien' => $nama_pihak_pasien,
+                'sebagai_pihak_pasien' => $sebagai_pihak_pasien,
+                'ttd_perawat' => $ttdPerawat,
+                'ttd_pasien' => $ttdPasien,
             ]);
             return response()->json([
                 'success' => $simpan
