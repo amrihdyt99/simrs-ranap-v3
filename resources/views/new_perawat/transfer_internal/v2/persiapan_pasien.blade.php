@@ -265,7 +265,10 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        Alergi : {{ $transfer_internal->transfer_alergi }} <br>
+                        Alergi : {{ $transfer_internal->transfer_alergi }} <br> 
+                        @if($transfer_internal->transfer_alergi == 'Ya')
+                            Detail Alergi : {{ $transfer_internal->transfer_alergi_text }}
+                        @endif <br>
                         Kewaspadaan : {{ $transfer_internal->transfer_kewaspaan }}
                     </td>
                     <td class="noborder">
