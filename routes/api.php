@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('get-pasien', [RegisterController::class, "getPasien"]);
 Route::get('get-icd10', [RegisterController::class, "getICD10"]);
+Route::get('get-pasien-keluarga', [RegisterController::class, "getPasienKeluarga"])->name('api.get-pasien-keluarga');
 Route::get('get-registrasi-inap', [RegisterController::class, "getRegistrasiInap"]);
 Route::post('gettindakan', [\App\Http\Controllers\Master\TarifController::class, 'data_tindakan'])->name('tarif.tindakan');
 Route::post('storesoapapi', [\App\Http\Controllers\Dokter\DiagnoseController::class, 'storeSoapApi'])->name('soap.api.store');

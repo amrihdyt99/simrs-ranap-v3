@@ -386,6 +386,18 @@ class RegisterController extends Controller
                 ->table('m_bed')
                 ->where(['bed_id' => $request->bed_id])
                 ->update($paramruangan);
+
+            //ADD PENANGGUNG JAWAB PASIEN
+            $pj_pasien = request()->pj_pasien;
+
+            foreach ($pj_pasien as $pj) {
+                $pj['reg_no'] = $registerNumber;
+                RegistrasiPJawab::created($pj);
+            }
+
+            // dd($pj_pasien);
+
+
             return redirect()->route('register.ranap.index');
         } catch (\Throwable $th) {
             throw $th;
@@ -1086,5 +1098,23 @@ class RegisterController extends Controller
     public function getVisitHistory($medicalNo)
     {
         return $this->getDataVisitHistoryPatient($medicalNo);
+    }
+
+    public function getPasienKeluarga(Request $request)
+    {
+        $query = $request->q;
+        $mrn = $request->mrn;
+
+        $data = Pasien::leftJoin('m_keluarga_pasien as pasien', "m_pasien.MedicalNo", "=", "pasien.MedicalNo")
+            ->select('m_pasien.PatientName', 'm_pasien.SSN', 'keluarga.GCRelationShip', 'keluarga.PhoneNo', 'keluarga.Address')
+            ->where('m_pasien.PatientName', 'LIKE', "%" . $query . "%")
+            ->when($mrn, function ($query, $mrn) {
+                $query->leftJoin('m_keluarga_pasien as keluarga', function ($join) use ($mrn) {
+                    $join->on('m_pasien.MedicalNo', '=', 'keluarga.FamilyMedicalNo')->where('keluarga.MedicalNo', $mrn);
+                });
+            })
+            ->get();
+
+        return response()->json($data);
     }
 }
