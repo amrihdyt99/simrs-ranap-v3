@@ -334,6 +334,7 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.checklist_pasien')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        ttd_checklist();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -377,22 +378,22 @@
                 });
             },
 
-            'edukasi': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
+            // 'edukasi': function() {
+            //     $.ajax({
+            //         type: "POST",
+            //         data: {
+            //             "reg_no": regno,
+            //             "medrec": medrec,
+            //         },
+            //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+            //         success: function(data) {
+            //             inject_view_data(data);
+            //         },
+            //         error: function(data) {
+            //             clear_show_error();
+            //         },
+            //     });
+            // },
 
             'edukasi': function() {
                 $.ajax({
@@ -404,6 +405,7 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        ttd_edukasi_perawat();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1540,4 +1542,87 @@
             $('.checkbox-checklist').prop('checked', false);
         }
     }
+
+    function ttd_edukasi_perawat() {
+        // SASARAN
+        let $wrapperSasaran = $("#signature-pad-sasaran");
+        let $clearButtonSasaran = $wrapperSasaran.find("#clear_btn_sasaran");
+        let $canvasSasaran = $wrapperSasaran.find("canvas")[0];
+
+        signaturePadSasaran = new SignaturePad($canvasSasaran);
+
+        // Load signature if available
+        let signatureSasaranDataURL = $("#signature_sasaran").val();
+        if (signatureSasaranDataURL) {
+            signaturePadSasaran.fromDataURL(signatureSasaranDataURL);
+        }
+
+        $clearButtonSasaran.on("click", function(event) {
+            signaturePadSasaran.clear();
+        });
+
+        // EDUKATOR
+        let $wrapperEdukator = $("#signature-pad-edukator");
+        let $clearButtonEdukator = $wrapperEdukator.find("#clear_btn_edukator");
+        let $canvasEdukator = $wrapperEdukator.find("canvas")[0];
+
+        signaturePadEdukator = new SignaturePad($canvasEdukator);
+
+        // Load signature if available
+        let signatureEdukatorDataURL = $("#signature_edukator").val();
+        if (signatureEdukatorDataURL) {
+            signaturePadEdukator.fromDataURL(signatureEdukatorDataURL);
+        }
+
+        $clearButtonEdukator.on("click", function(event) {
+            signaturePadEdukator.clear();
+        });
+
+        $('#simpan-edukasi-pasien-perawat').on('click', function() {
+            addedukasipasienperawat();
+        });
+    }
+
+
+    function ttd_checklist() {
+        // checklist Perawat
+        let $wrapperPerawat = $("#signature-pad-perawat");
+        let $clearButtonPerawat = $wrapperPerawat.find("#clear_btn_perawat");
+        let $canvasPerawat = $wrapperPerawat.find("canvas")[0];
+
+        signaturePadPerawat = new SignaturePad($canvasPerawat);
+
+        // Load signature if available
+        let signaturePerawatDataURL = $("#signature_perawat").val();
+        if (signaturePerawatDataURL) {
+            signaturePadPerawat.fromDataURL(signaturePerawatDataURL);
+        }
+
+        $clearButtonPerawat.on("click", function(event) {
+            signaturePadPerawat.clear();
+        });
+
+        // checklist Pasien
+        let $wrapperPasien = $("#signature-pad-pasien");
+        let $clearButtonPasien = $wrapperPasien.find("#clear_btn_pasien");
+        let $canvasPasien = $wrapperPasien.find("canvas")[0];
+
+        signaturePadPasien = new SignaturePad($canvasPasien);
+
+        // Load signature if available
+        let signaturePasienDataURL = $("#signature_pasien").val();
+        if (signaturePasienDataURL) {
+            signaturePadPasien.fromDataURL(signaturePasienDataURL);
+        }
+
+        $clearButtonPasien.on("click", function(event) {
+            signaturePadPasien.clear();
+        });
+
+        $('#save-checklist-orientasi').click(function() {
+            simpanchecklist();
+        });
+    }
+
+
 </script>

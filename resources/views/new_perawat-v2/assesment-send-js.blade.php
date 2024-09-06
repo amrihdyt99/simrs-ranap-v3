@@ -90,7 +90,39 @@
                 neko_simpan_error_noreq();
             },
         })
+    
     }
+
+    // edukasi pasien perawat
+    function addedukasipasienperawat() {
+        var ttdSasaran = signaturePadSasaran.toDataURL();
+        var ttdEdukator = signaturePadEdukator.toDataURL();
+
+        neko_proses();
+
+        var formData = new FormData($('#entry-edukasi-pasien-perawat')[0]);
+        formData.append('reg_no', regno); 
+        formData.append('medrec', medrec); 
+        formData.append('ttd_sasaran', ttdSasaran); 
+        formData.append('ttd_edukator', ttdEdukator); 
+        formData.append('user_id', "{{auth()->user()->id}}");
+        
+        $.ajax({
+            url: "{{route('add.edukasi_pasien_perawat')}}", 
+            type: "POST",
+            data: formData,
+            contentType: false, 
+            processData: false,
+            success: function(data) {
+                neko_simpan_success();
+                $('.left-tab.active').click();
+            },
+            error: function(data) {
+                neko_simpan_error_noreq();
+            },
+        });
+    }
+
 
     // resiko-jatuh
     function addresikojatuh() {
@@ -683,21 +715,35 @@
         });
     }
 
-    // ceklist
     function simpanchecklist() {
+        var ttdPerawat = signaturePadPerawat.toDataURL();
+        var ttdPasien = signaturePadPasien.toDataURL();
+
         neko_proses();
+
+        var formData = new FormData($('#entry-checklist')[0]);
+        formData.append('reg_no', regno);
+        formData.append('medrec', medrec);
+        formData.append('ttd_perawat', ttdPerawat);
+        formData.append('ttd_pasien', ttdPasien);
+
         $.ajax({
-            url: "{{route('add.checklist')}}",
+            url: "{{ route('add.checklist') }}",
             type: "POST",
-            data: $('#entry-checklist').serialize() + "&reg_no=" + regno + "&medrec=" + medrec,
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
             },
-            error: function(data) {
+            error: function(xhr, status, error) {
+                console.log();
+                
+                console.error("Error occurred:", status, error);
                 neko_simpan_error_noreq();
             },
-        })
+        });
     }
 
     // Pra Tindakan

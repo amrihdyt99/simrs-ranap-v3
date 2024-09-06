@@ -60,7 +60,10 @@
         this.clear();
         this._handleMouseDown = function (event) {
             if (event.which === 1) {
-                document.getElementById("note").innerHTML="";
+                var noteElement = document.getElementById("note") || document.getElementById("note_petugas") || document.getElementById("note_pasien");
+                if (noteElement) {
+                    noteElement.innerHTML = "";
+                }
                 self._mouseButtonDown = true;
                 self._strokeBegin(event);
             }
