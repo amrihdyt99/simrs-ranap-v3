@@ -76,6 +76,12 @@
             transform: rotate(360deg);
         }
       }
+      .checkbig {
+        transform: scale(1.5)
+      }
+      .checkmedium {
+        transform: scale(1.2)
+      }
     </style>
     @yield('styles')
 

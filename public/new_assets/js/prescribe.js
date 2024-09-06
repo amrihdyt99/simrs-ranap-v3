@@ -7,6 +7,7 @@ $.ajaxSetup({
 var req = '<span class="text-danger"> *<span>';
 var dataArrayTemp = []
 var dataArrayFinal = []
+var dataArrayCopy = []
 
 // vendors = [{
 //     Name: 'Magenic',
@@ -45,9 +46,18 @@ $('#btn-reload-prescribe').click(function(){
 
 $("#modalPrescribeNew").on("hidden.bs.modal", function(){
     resetSelect2('#prescribe_item');
-    $('#modalSOAP').modal('show');
-    $('#tab-prescribe').addClass('active');
-    $('#panel-prescribe').show();
+    
+    let check_obat_pulang = $('[id="modalPrescribeNew"]').attr('obat-pulang') == undefined ? 0 : 1
+
+    if (check_obat_pulang == 0) {
+        $('#modalSOAP').modal('show');
+        $('#tab-prescribe').addClass('active');
+        $('#panel-prescribe').show();
+    } else {
+        $('[id="modalPrescribeNew"]').removeAttr('obat-pulang')
+        $('[id="modalPrescribeNew"] [name="obat_pulang"]').remove()
+        $('[id="modalPrescribeNew"] [id="prescribeAdditionalButton"]').html('')
+    }
 });
 
 $("#modalEditPrescribe").on("hidden.bs.modal", function(){
@@ -118,7 +128,8 @@ function getPrescribeFormSelect(category) {
             <div class="row row_header_`+category+` d-flex justify-content-end"></div>
             <div id="row_select_prescribe"></div>
             <button class="btn btn-success float-right" id="store-row-prescribe" data-category="`+category+`" type="button"><i class="fas fa-arrow-down"></i> Simpan ke tabel</button>
-            <button class="btn btn-secondary float-right mr-1" id="cancel-row-prescribe" data-category="`+category+`" type="button">batal</button>
+            <button class="btn btn-secondary float-right mr-1" id="cancel-row-prescribe" data-category="`+category+`" type="button"><i class="fas fa-times"></i> batal</button>
+            <span id="prescribeAdditionalButton" class="float-right px-1"></span>
         </form>
     `
 
@@ -145,6 +156,12 @@ function getPrescribeFormSelect(category) {
         $('.row_header_'+category).html($row_header)
 
         getPrescribeHeader(category)
+    }
+
+    let check_obat_pulang = $('[id="modalPrescribeNew"]').attr('obat-pulang') == undefined ? 0 : 1
+
+    if (check_obat_pulang == 1) {
+        additionalPrescribeButton()
     }
 }
 
@@ -326,11 +343,6 @@ function accumulateItemAmount(category, serial) {
             } else {
                 $amout_per_day = amount_per_day * dosage
                 amount_item = $amout_per_day * amount_day
-
-                console.log(amount_per_day)
-                console.log(dosage)
-                console.log($amout_per_day)
-                console.log(amount_item)
             }
 
             amount_item = parseFloat(amount_item).toFixed(2)
@@ -419,8 +431,9 @@ $('body').on('click', '#remove-row-prescribe', function(){
 })
 
 $('.prescribe-temp-loading').hide();
-$('body').on('click', '#store-row-prescribe', function(){
+$('body').on('click', '[id="store-row-prescribe"]', function(){
     $category = $(this).data('category');
+    $obat_pulang = $('[id="modalPrescribeNew"] [name="obat_pulang"]').val() == undefined ? '' : 1
 
     $.ajax({
         url: $dom+'/api/orderobatnew',
@@ -429,6 +442,7 @@ $('body').on('click', '#store-row-prescribe', function(){
         data: $('#temp-form-obat-'+$category).serialize()+
                 `&id_cppt=`+$('[id="soapdok_id"]').val()+
                 `&dokter_order=`+$user_dokter_+
+                `&obat_pulang=`+$obat_pulang+
                 `&service_unit=`+$service_unit
                 ,
         success: function(resp){
@@ -461,80 +475,97 @@ function orderPrescribeTemp(){
             dokter: $user_dokter_,
             type: 'temp',
         },
+        beforeSend: function(resp){
+            $('[id="table-row-prescribe"]').html(`
+                <tr>
+                    <td class="text-center" colspan="7">
+                        <i class="fas fa-spinnder fa-spin"></i>
+                        Memuat data...
+                    </td>
+                </tr>    
+            `)
+        },
         success: function(resp){
-            $('.row_prescribe_temp').remove()
-            $('[id="table-row-prescribe"]').html('')
+            setTimeout(() => {
+                $('.row_prescribe_temp').remove()
+                $('[id="table-row-prescribe"]').html('')
 
-            if (resp.data.length > 0) {
-                dataArrayTemp = []
+                if (resp.data.length > 0) {
+                    dataArrayTemp = []
 
-                $.each(resp.data, function(i, data){
-                    $bg = 'warning'
-                    $flag_temp = ''
-                    $flag = data.flag
+                    $.each(resp.data, function(i, data){
+                        $bg = 'warning'
+                        $flag_temp = ''
+                        $flag = data.flag
 
-                    if (data.flag == 1) {
-                        $jenis_resep = 'racikan'
-                    } else {
-                        $jenis_resep = 'satuan'
-                    }
-                    
-                    if ($jenis_resep == 'racikan') {
-                        $bg = 'info';
-                        $flag_temp = `(ke `+data.flag_racikan+`)`
-                        $flag = data.flag_racikan   
-                    }
-
-                    $row_temp_flag =  `<tr class="tr_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                <td class="text-center text-uppercase cat_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                    <span class="btn btn-warning btn-sm ml-1" id="btn-edit-row-temp" title="Edit row obat" data-id="`+$flag+`" data-category="`+$jenis_resep+`">
-                                                        <i class="fas fa-edit" style="font-size: 12px"></i> Edit
-                                                    </span>
-                                                </td>
-                                                <td class="bg-`+$bg+` text-dark text-center text-uppercase cat_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                    <b>OBAT<br>`+$jenis_resep+`</br>
-                                                    `+$flag_temp+`<br>
-                                                </td>
-                                            </tr>`;
-                    
-                    $('[id="table-row-prescribe"]').append($row_temp_flag);
-
-                    $.each(data.obat, function(i, item){
-                        dataArrayTemp.push(item)
-
-                        $row_prescribe_temp_obat = `<tr class="tr_`+$jenis_resep+`_`+data.flag_racikan+`">
-                                                        <td>`+item.item_code+`</td>
-                                                        <td>
-                                                            `+item.item_name+`
-                                                            <span type="button" class="float-right text-danger mr-1" title="Hapus Item Obat" id="btn-delete-row-temp" data-id="`+item.id+`"><i class="fas fa-trash"></i></span>
-                                                        </td>
-                                                        <td>`+item.qty+`</td>
-                                                        <td class="text-right">Rp. `+formatNumber(parseFloat(parseFloat(item.harga_awal) * parseFloat(item.qty)).toFixed(2))+`</td>
-                                                        <td>dosis `+item.dosis+`; `+item.jumlah_perhari+` `+item.hari+' '+item.ket_dosis+', selama '+item.durasi_hari+` hari</td>
-                                                        <td></td>
-                                                    </tr>`;
-                                                    
-                        $('[id="table-row-prescribe"]').append($row_prescribe_temp_obat);
-                        
-                        if (item.harga_awal != 0) {
-                            sum_temp += parseFloat(item.harga_awal * item.qty)
+                        if (data.flag == 1) {
+                            $jenis_resep = 'racikan'
+                        } else {
+                            $jenis_resep = 'satuan'
                         }
+                        
+                        if ($jenis_resep == 'racikan') {
+                            $bg = 'info';
+                            $flag_temp = `(ke `+data.flag_racikan+`)`
+                            $flag = data.flag_racikan   
+                        }
+
+                        $row_temp_flag =  `<tr class="tr_`+$jenis_resep+`_`+data.flag_racikan+`">
+                                                    <td class="text-center text-uppercase cat_`+$jenis_resep+`_`+data.flag_racikan+`">
+                                                        <span class="btn btn-warning btn-sm ml-1" id="btn-edit-row-temp" title="Edit row obat" data-id="`+$flag+`" data-category="`+$jenis_resep+`">
+                                                            <i class="fas fa-edit" style="font-size: 12px"></i> Edit
+                                                        </span>
+                                                    </td>
+                                                    <td class="bg-`+$bg+` text-dark text-center text-uppercase cat_`+$jenis_resep+`_`+data.flag_racikan+`">
+                                                        <b>OBAT<br>`+$jenis_resep+`</br>
+                                                        `+$flag_temp+`<br>
+                                                    </td>
+                                                </tr>`;
+                        
+                        $('[id="table-row-prescribe"]').append($row_temp_flag);
+
+                        $.each(data.obat, function(i, item){
+                            dataArrayTemp.push(item)
+
+                            $row_prescribe_temp_obat = `<tr class="tr_`+$jenis_resep+`_`+data.flag_racikan+`">
+                                                            <td>`+item.item_code+`</td>
+                                                            <td>
+                                                                `+item.item_name+`
+                                                                <span type="button" class="float-right text-danger mr-1" title="Hapus Item Obat" id="btn-delete-row-temp" data-id="`+item.id+`"><i class="fas fa-trash"></i></span>
+                                                            </td>
+                                                            <td>`+item.qty+`</td>
+                                                            <td class="text-right">Rp. `+formatNumber(parseFloat(parseFloat(item.harga_awal) * parseFloat(item.qty)).toFixed(2))+`</td>
+                                                            <td>dosis 
+                                                                `+item.dosis+`; `+item.jumlah_perhari+` `+item.hari+' '+item.ket_dosis+', selama '+item.durasi_hari+` hari
+                                                                `+
+                                                                    (item.obat_pulang == 1 ? '<span class="badge badge-info">Obat pulang</span>' : '')
+                                                                +`
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>`;
+                                                        
+                            $('[id="table-row-prescribe"]').append($row_prescribe_temp_obat);
+                            
+                            if (item.harga_awal != 0) {
+                                sum_temp += parseFloat(item.harga_awal * item.qty)
+                            }
+                        });
+
+                        $temp_price = formatNumber(parseFloat(sum_temp).toFixed(2))
+                        $('#sub_harga_prescribe').text($temp_price)
+
+                        var rowCountPrescribe = $('.table_detail_order .tr_'+$jenis_resep+'_'+data.flag_racikan).length;
+                        
+                        $('.cat_'+$jenis_resep+'_'+data.flag_racikan).attr('rowspan', rowCountPrescribe);
                     });
-
-                    $temp_price = formatNumber(parseFloat(sum_temp).toFixed(2))
-                    $('#sub_harga_prescribe').text($temp_price)
-
-                    var rowCountPrescribe = $('.table_detail_order .tr_'+$jenis_resep+'_'+data.flag_racikan).length;
-                    
-                    $('.cat_'+$jenis_resep+'_'+data.flag_racikan).attr('rowspan', rowCountPrescribe);
-                });
-            } else {
-                $('[id="table-row-prescribe"]').html(`
-                    <tr>
-                        <td class="text-center" colspan="7">Tidak ada data</td>
-                    </tr>    
-                `)
-            }
+                } else {
+                    $('[id="table-row-prescribe"]').html(`
+                        <tr>
+                            <td class="text-center" colspan="7">Tidak ada data</td>
+                        </tr>    
+                    `)
+                }
+            }, 1000);
         }, error: function(){
             console.log(error);
         }
@@ -920,6 +951,7 @@ function orderPrescribe(){
         data: {
             reg_no: $reg,
             type: 'final',
+            dokter: $user_dokter_
         },
         success: function(resp){
             if (Object.keys(resp).length>0) {
@@ -1352,3 +1384,210 @@ $('body').on('keypress', '[name="prescribe_dosis[]"], [name="prescribe_quantity[
         return false; //<-- prevent
     }
 })
+
+function copyPreviousPrescribe(){
+    let check_obat_pulang = $('[id="modalPrescribeNew"]').attr('obat-pulang') == undefined ? 0 : 1
+
+    // $('[id="modalPrescribeNew"]').modal('hide')
+
+    if (check_obat_pulang == 1) {
+        $('[id="modalCopyPrescribe"]').attr('obat-pulang', 1).modal('show')
+    }
+
+    $.ajax({
+        url: $dom+'/api/getorderobatnew',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            reg_no: $reg,
+            type: 'final',
+        },
+        beforeSend: function(){
+            $('[id="row_previous_prescribe"]').html(`
+                <div class="col-lg-12 text-center">
+                    <p class="text-center">Memuat data...</p>
+                </div>    
+            `)
+        },
+        success: function(resp){
+            dataArrayCopy = []
+            let prescribe_main_content = ''
+
+            $.each(resp, function(i, item){
+
+                let row_items = ''
+                $.each(item.job_order_dt, function(sub_i, sub_item){
+                    dataArrayCopy.push(sub_item)
+
+                    row_items += `
+                        <div class="row sub_row_items" order-code="`+item.order_no+`">
+                            <div class="col-4">
+                                `+sub_item.item.item_name+`
+                            </div>
+                            <div class="col-8">
+                                `+sub_item.dosis+` `+sub_item.hari+` `+sub_item.dosis_unitcode+`, 
+                                selama `+sub_item.durasi_hari+` hari;
+                                `+sub_item.ket_dosis+`
+                                `+sub_item.spesial_instruksi+`
+                                <input type="checkbox" class="float-right checkmedium" onclick="checkItemCopy(`+sub_item.id+`, '`+item.order_no+`', this)" order-id="`+sub_item.id+`" order-code="`+item.order_no+`">
+                                <br><br>
+                            </div>
+                        </div>
+                    `
+                })
+                
+                prescribe_main_content += `
+                    <div class="col-lg-12">
+                        <div class="card main_row_items" order-code="`+item.order_no+`">
+                            <div class="card-header">
+                                No. Order : `+item.order_no+`<br>
+                                Tanggal : `+item.waktu_order+`
+                                <input type="checkbox" class="float-right checkbig" onclick="checkHeaderCopy('`+item.order_no+`', this)" order-code="`+item.order_no+`">
+                            </div>
+                            <div class="card-body">
+                                `+row_items+`
+                            </div>
+                        </div>
+                    </div>
+                `
+            })
+
+            $('[id="row_previous_prescribe"]').html(prescribe_main_content)
+        }
+    })
+}
+
+function takeHomePrescribe(){
+    let check_obat_pulang = $('[id="modalPrescribeNew"]').attr('obat-pulang') == undefined ? 0 : 1
+
+    // $('[id="modalPrescribeNew"]').modal('hide')
+
+    if (check_obat_pulang == 1) {
+        $('[id="modalCopyPrescribe"]').attr('obat-pulang', 1).modal('show')
+    }
+
+    $.ajax({
+        url: $dom+'/api/getorderobatnew',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            reg_no: $reg,
+            type: 'take_home',
+            dokter: $user_dokter_
+        },
+        beforeSend: function(){
+            $('[id="obat-pulang-table"] tbody').html(`
+                <tr>
+                    <td colspan="5" class="text-center">Memuat data...</td>
+                </tr>  
+            `)
+        },
+        success: function(resp){
+            if (resp.data.length > 0) {
+                let row_items = ''
+
+                $.each(resp.data, function(i, item){
+                    $.each(item.obat, function(sub_i, sub_item){
+                        row_items += `
+                            <tr>
+                                <td>`+sub_item.ItemName1+`</td>
+                                <td>`+sub_item.qty+`</td>
+                                <td>`+sub_item.temp_per_hari+` `+sub_item.temp_hari+` `+sub_item.dosis_kode+`, selama `+sub_item.temp_durasi_hari+` hari, `+sub_item.temp_special_instruction+` `+sub_item.temp_ket_dosis+`</td>
+                                <td>`+
+                                    (sub_item.flag == 1 ? 'Racikan'+' '+sub_item.flag_racikan : 'Satuan')
+                                +`</td>
+                            </tr>
+                        `
+                    })
+                })
+
+                $('[id="obat-pulang-table"] tbody').html(row_items)
+            } else {
+                $('[id="obat-pulang-table"] tbody').html(`
+                    <tr>
+                        <td colspan="5" class="text-center">Tidak ada data</td>
+                    </tr>  
+                `)
+            }
+        }
+    })
+}
+
+// $("#modalCopyPrescribe").on("hidden.bs.modal", function(){
+//     let check_obat_pulang = $('[id="modalCopyPrescribe"]').attr('obat-pulang') == undefined ? 0 : 1
+    
+//     $('[id="modalPrescribeNew"]').modal('show')
+
+
+//     if (check_obat_pulang == 1) {
+//         openPanelObatPulang()
+//     }
+
+//     $('[id="modalCopyPrescribe"]').removeAttr('obat-pulang')
+// })
+
+function checkItemCopy(_id, _code, _elm){
+    let data = {}
+
+    data = dataArrayCopy.find((obj) => obj.id == _id)
+    let category = data.temp_flag == 1 ? 'racikan' : 'satuan'
+
+    if (_elm.checked) {
+        let data_ = {
+            'temp_kode' : data.item.item_id,
+            'temp_id' : data.id,
+            'temp_order' : null,
+            'temp_reg' : $reg,
+            'temp_quantity' : data.quantity,
+            'temp_dosis' : data.dosis,
+            'temp_hari' : data.hari,
+            'temp_durasi_hari' : data.durasi_hari,
+            'temp_ket_dosis' : data.ket_dosis,
+            'temp_harga_jual' : data.quantity * data.harga_jual,
+            'temp_flag' : data.temp_flag,
+            'temp_flag_racikan' : data.temp_flag_racikan,
+            'temp_dokter' : $user_dokter_,
+            'temp_poli' : null,
+            'temp_deleted' : null,
+            'temp_sent' : null,
+            'temp_special_instruction' : data.spesial_instruksi,
+            'temp_form' : data.bentukan_sediaan,
+            'temp_route' : data.medication_route,
+            'temp_per_hari': data.quantity / (data.dosis * data.durasi_hari),
+            'created_at' : data.waktu_order,
+            'updated_at' : data.waktu_order,
+            'ItemName1' : data.item.item_name,
+            'ItemPrice' : data.harga_jual,
+            'ItemStock' : null,
+            'ItemUnit' : data.dosis_unitcode,
+            'ItemDosageUnit' : data.dosis_unitcode,
+            'ItemBasicUnit' : data.dosis_unitcode,
+            'ItemNotes' : null,
+        }
+
+        getPrescribeRowSelect(data_, category, data.id)
+    } else {
+        $('[class*="row_'+category+'_'+data.id+'"]').remove()
+    } 
+}
+
+function checkHeaderCopy(_code, _elm){
+    let data = dataArrayCopy.filter((obj) => obj.order_no == _code)
+
+    if (_elm.checked) {
+        $.each(data, function(i, item){
+            checkItemCopy(item.id, item.order_no, _elm)
+        })
+
+        $('[order-code="'+_code+'"]').attr('checked', true)
+    } else {
+        $.each(data, function(i, item){
+            let category = item.temp_flag == 1 ? 'racikan' : 'satuan'
+
+            $('[class*="row_'+category+'_'+item.id+'"]').remove()
+        })
+
+        $('[order-code="'+_code+'"]').attr('checked', false)
+
+    }
+}
