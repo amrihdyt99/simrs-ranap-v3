@@ -48,6 +48,8 @@ class OrderObatController extends Controller
                         'flag' => $request->prescribe_flag,
                         'flag_racikan' => $flag_racikan,
                         'id_cppt' => $request->id_cppt,
+                        'obat_pulang' => isset($request->obat_pulang) ? 1 : null,
+                        'deleted' => 0,
                     ];
 
                     $main_items = [
@@ -64,22 +66,24 @@ class OrderObatController extends Controller
                         'instruksi_khusus' => $request->prescribe_special_instruction[$key] ?? null,
                         'bentuk_obat' => $request->prescribe_form ?? null,
                         'rute' => $request->prescribe_route ?? null,
-                        'deleted' => 0,
                     ];
 
                     $check_ = DB::table('job_orders_dt')
                                 ->where($items)
+                                ->whereDate('created_at', date('Y-m-d'))
                                 ->first();
 
                     $items = array_merge($items, $main_items);
 
-                    if (!isset($check_)) {
-                        // array_push($data_to_store, $items);
-                        DB::table('job_orders_dt')->insert($items);
-                    } else {
-                        DB::table('job_orders_dt')
-                            ->where('id', $check_->id)
-                            ->update($items);
+                    if ($request->prescribe_item[$key] != null) {
+                        if (!isset($check_)) {
+                            // array_push($data_to_store, $items);
+                            DB::table('job_orders_dt')->insert($items);
+                        } else {
+                            DB::table('job_orders_dt')
+                                ->where('id', $check_->id)
+                                ->update($items);
+                        }
                     }
                 }
 
@@ -238,6 +242,7 @@ class OrderObatController extends Controller
                 $jobOrder['id_cppt'] = $request->id_cppt;
                 $jobOrder['dikirim_ke_farmasi'] = 1;
                 $jobOrder['status_kirim'] = $response_pharmacy;
+                $jobOrder['obat_pulang'] = isset($request->obat_pulang) ? 1 : null;
                 
                 $store_jor = DB::table('job_orders')
                                 ->insert($jobOrder);
@@ -254,112 +259,148 @@ class OrderObatController extends Controller
     }
 
     function getOrderObat(Request $request){
-        $reg_no = $request->reg_no;
+        try {
+            $reg_no = $request->reg_no;
 
-        $joborderdetail = DB::connection('mysql')
-            ->table('job_orders_dt as a')
-            ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no');
+            $joborderdetail = DB::connection('mysql')
+                ->table('job_orders_dt as a')
+                ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no');
 
-        if ($request->type == 'temp') {
-            $joborderdetail = $joborderdetail->where('dikirim_ke_farmasi', null)
-                ->where('a.dokter_order', $request->dokter)
-                ;
-        } else {
-            return $this->getFinalOrder($request);
-
-            $joborderdetail = $joborderdetail->where('dikirim_ke_farmasi', 1);
-        }
-
-        if (isset($request->params)) {
-            foreach ($request->params as $key => $value) {
-                $joborderdetail = $joborderdetail->where($value['key'], $value['value']);
+            if ($request->type == 'temp') {
+                $joborderdetail = $joborderdetail->where('dikirim_ke_farmasi', null)
+                    // ->where('a.obat_pulang', null)
+                    ;
+            } else if ($request->type == 'take_home') {
+                $joborderdetail = $joborderdetail
+                    ->where('a.obat_pulang', 1)
+                    ;
+            } else {
+                return $this->getFinalOrder($request);
             }
-        }
 
-        $joborderdetail = $joborderdetail->where([
-                ['a.reg_no', '=', $reg_no],
-                ['jenis_order', 'LIKE', 'obat%']
-            ])
-            ->select([
-                'a.*'
-            ])
-            ->get()
-            ->unique('flag_racikan');
+            if (isset($request->params)) {
+                foreach ($request->params as $key => $value) {
+                    $joborderdetail = $joborderdetail->where($value['key'], $value['value']);
+                }
+            }
 
-        $array_data = [];
+            $joborderdetail = $joborderdetail
+                    ->where('a.dokter_order', $request->dokter)
+                    ->where([
+                        ['a.reg_no', '=', $reg_no],
+                        ['jenis_order', 'LIKE', '%obat%']
+                    ])
+                    ->select([
+                        'a.*'
+                    ])
+                    ->get()
+                    ;
 
-        if (count($joborderdetail) > 0) {
-            foreach ($joborderdetail as $key => $value) {
-                $item['flag'] = $value->flag;
-                $item['flag_racikan'] = $value->flag_racikan;
-                $item['dosis'] = $value->dosis;
-                $item['hari'] = $value->hari;
-                $item['deleted'] = $value->deleted;
-                $item['durasi_hari'] = $value->durasi_hari;
+            $groupedData = [];
+            foreach ($joborderdetail as $itemToGroup) {
+                $flag = $itemToGroup->flag;
+                $flag_racikan = $itemToGroup->flag_racikan ?? null; // gunakan 'null' untuk nilai null
+                
+                // Ambil satu item per grup (flag dan flag_racikan)
+                if (!isset($groupedData[$flag][$flag_racikan])) {
+                    $groupedData[$flag][$flag_racikan] = $itemToGroup;
+                }
+            }
 
-                $item['obat'] = DB::table('job_orders_dt as a')
-                                    ->where([
-                                        ['a.reg_no', $value->reg_no],
-                                        ['a.jenis_order', 'LIKE', 'obat%'],
-                                        ['a.flag', $value->flag],
-                                        ['a.flag_racikan', $value->flag_racikan],
-                                        ['a.deleted', 0],
-                                    ])
-                                    ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no');
+            // Flatten the array to get a single array of objects
+            $result = [];
+            foreach ($groupedData as $itemsByFlag) {
+                foreach ($itemsByFlag as $itemToGroup) {
+                    $result[] = $itemToGroup;
+                }
+            }
 
-                if ($request->type == 'temp') {
-                    $item['obat'] = $item['obat']->where('dikirim_ke_farmasi', null)
-                            ->where('a.dokter_order', $request->dokter)
+            $joborderdetail = $result;
+
+            // return $joborderdetail;
+
+            $array_data = [];
+
+            if (count($joborderdetail) > 0) {
+                foreach ($joborderdetail as $key => $value) {
+                    $item['flag'] = $value->flag;
+                    $item['flag_racikan'] = $value->flag_racikan;
+                    $item['dosis'] = $value->dosis;
+                    $item['hari'] = $value->hari;
+                    $item['deleted'] = $value->deleted;
+                    $item['durasi_hari'] = $value->durasi_hari;
+
+                    $item['obat'] = DB::table('job_orders_dt as a')
+                                        ->where([
+                                            ['a.reg_no', $value->reg_no],
+                                            ['a.jenis_order', 'LIKE', 'obat%'],
+                                            ['a.flag', $value->flag],
+                                            ['a.flag_racikan', $value->flag_racikan],
+                                            ['a.deleted', 0],
+                                        ])
+                                        ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no');
+
+                    if ($request->type == 'temp') {
+                        $item['obat'] = $item['obat']->where('dikirim_ke_farmasi', null)
                             ;
-                } else {
-                    $item['obat'] = $item['obat']->where('dikirim_ke_farmasi', 1);
-                }
+                    } else if ($request->type == 'take_home') {
+                        $item['obat'] = $item['obat']
+                            ->where('a.obat_pulang', 1)
+                            ;
+                    } else {
+                        $item['obat'] = $item['obat']->where('dikirim_ke_farmasi', 1);
+                    }
 
-                $item['obat'] = $item['obat']->select([
-                                        'a.*',
+                    $item['obat'] = $item['obat']
+                                        ->where('a.dokter_order', $request->dokter)
+                                        ->select([
+                                            'a.*',
 
-                                        // Use for edit temporary data
-                                        'a.flag as temp_flag',
-                                        'a.id as temp_id',
-                                        'a.item_code as temp_kode',
-                                        'a.item_name as ItemName1',
-                                        'a.harga_awal as ItemPrice',
-                                        'a.harga_jual as temp_harga_jual',
-                                        'a.qty as temp_quantity',
+                                            // Use for edit temporary data
+                                            'a.flag as temp_flag',
+                                            'a.id as temp_id',
+                                            'a.item_code as temp_kode',
+                                            'a.item_name as ItemName1',
+                                            'a.harga_awal as ItemPrice',
+                                            'a.harga_jual as temp_harga_jual',
+                                            'a.qty as temp_quantity',
 
-                                        'a.hari as temp_hari',
-                                        'a.jumlah_perhari as temp_per_hari',
-                                        'a.dosis as temp_dosis',
-                                        'a.dosis_kode as ItemDosageUnit',
-                                        DB::raw("(select satuan_dasar from ".env('DB_DATABASE2').".m_medicine where item_id = a.item_code) as ItemBasicUnit"),
-                                        'a.durasi_hari as temp_durasi_hari',
-                                        DB::raw("(select dosis from ".env('DB_DATABASE2').".m_medicine where item_id = a.item_code) as ItemUnit"),
-                                        'a.ket_dosis as temp_ket_dosis',
-                                        'a.instruksi_khusus as temp_special_instruction',
-                                        DB::raw("(select total from ".env('DB_DATABASE2').".m_medicine where item_id = a.item_code) as ItemStock"),
-                                    ])
-                                    ->get();
+                                            'a.hari as temp_hari',
+                                            'a.jumlah_perhari as temp_per_hari',
+                                            'a.dosis as temp_dosis',
+                                            'a.dosis_kode as ItemDosageUnit',
+                                            DB::raw("(select satuan_dasar from ".env('DB_DATABASE2').".m_medicine where item_id = a.item_code) as ItemBasicUnit"),
+                                            'a.durasi_hari as temp_durasi_hari',
+                                            DB::raw("(select dosis from ".env('DB_DATABASE2').".m_medicine where item_id = a.item_code) as ItemUnit"),
+                                            'a.ket_dosis as temp_ket_dosis',
+                                            'a.instruksi_khusus as temp_special_instruction',
+                                            DB::raw("(select total from ".env('DB_DATABASE2').".m_medicine where item_id = a.item_code) as ItemStock"),
+                                        ])
+                                        ->get();
 
-                $item['count'] = count($item['obat']);
+                    $item['count'] = count($item['obat']);
 
-                if (count($item['obat']) > 0) {
-                    array_push($array_data, $item);
+                    if (count($item['obat']) > 0) {
+                        array_push($array_data, $item);
+                    }
                 }
             }
-        }
 
-        if (count($joborderdetail) > 0) {
-            return response()->json([
-                'success' => true,
-                'message' => 'ada data obat',
-                'data' => $array_data
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'tidak ada order obat',
-                'data' => [],
-            ]);
+            if (count($joborderdetail) > 0) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'ada data obat',
+                    'data' => $array_data
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'tidak ada order obat',
+                    'data' => [],
+                ]);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

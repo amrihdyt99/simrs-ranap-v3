@@ -244,6 +244,7 @@
 
         $('div[id*="panel-"]').hide();
         $('#panel-assesment').show();
+        clickTab('resume')
 
         $('#odontogram_2').hide();
 
