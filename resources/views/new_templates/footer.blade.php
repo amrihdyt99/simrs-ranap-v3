@@ -100,6 +100,7 @@
                     reg_no: _reg 
                 },
                 success: function(resp){
+                    console.log(resp)
                     $('#alert_indikator').html('')
 
                     if (resp.alergi == 'Ya' && resp.asper_hasil) {

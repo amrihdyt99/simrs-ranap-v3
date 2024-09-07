@@ -122,6 +122,26 @@
   <script src="{{ asset('neko/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
   <script src="{{ asset('assets/plugins/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js') }}"></script>
   <script src="{{ asset('neko/custom/nyaa.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
+
+  <script>
+      $level_ = "{{auth()->user()->level_user}}";
+      $user_dokter_ = "{{auth()->user()->dokter_id}}";
+      $user_ = "{{auth()->user()->id}}";
+      $user_perawat_ = "{{auth()->user()->perawat_id}}";
+
+      $host = location.hostname
+
+      if ($host == '127.0.0.1' || $host == 'rj.id') {
+          $dom = ''
+      } else {
+          $dom = '/simrs_ranap'
+      }
+
+    function addOption(elm, value, text) {
+        var newOption = new Option(text, value, false, false);
+        $(elm).append(newOption).trigger('change');
+    }
+  </script>
   @stack('nyaa_parent_scripts')
   <script src="{{ asset('neko/custom/nyaa-bottom.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
 

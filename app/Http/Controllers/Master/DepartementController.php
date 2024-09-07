@@ -112,13 +112,19 @@ class DepartementController extends Controller
         }
     }
 
-    public function getServiceUnitLantai() {
+    public function getServiceUnitLantai(Request $request) {
         $data = DB::connection('mysql2')
-            ->table('m_unit_departemen')
-            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
-            ->whereIn('m_unit_departemen.ServiceUnitCode', ['P029', 'P066', 'RI06', 'RI07', 'lt09', 'pavvip'])
+            ->table('m_unit');
+            
+        if (isset($request->serviceCode)) {
+            $data = $data->whereIn('ServiceUnitCode', [$request->serviceCode]);
+        } else {
+            $data = $data->whereIn('ServiceUnitCode', ['P029', 'P066', 'RI06', 'RI07', 'lt09', 'pavvip']);
+        }
+
+        $data = $data->distinct('m_unit.ServiceUnitCode')
             ->get();
         
-        return response()->json($data);
+        return $data;
     }
 }

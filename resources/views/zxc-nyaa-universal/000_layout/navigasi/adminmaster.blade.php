@@ -41,6 +41,7 @@
               <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.corporate.get_handler') }}">Corporate</a>
               <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.customercontract.get_handler') }}">Contract Management</a>
               <a class="dropdown-item" href="{{ route('master.user.index') }}">Manajemen User</a>
+              <a class="dropdown-item" href="{{ url('') }}/master/aksesRuangan">Manajemen Akses Ruangan</a>
             </div>
           </div>
         </div>
