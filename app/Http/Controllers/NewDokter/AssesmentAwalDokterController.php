@@ -47,10 +47,15 @@ class AssesmentAwalDokterController extends Controller
     {
         $reg = str_replace("_", "/", $reg);
         $data =  DB::connection('mysql')->table('rs_pasien_diagnosa')
-            ->select('NM_ICD10', 'pdiag_id', 'ID_ICD10', 'pdiag_kategori')
+            ->select('NM_ICD10', 'pdiag_id', 'ID_ICD10', 'pdiag_kategori', 'pdiag_dokter')
             ->join('icd10_bpjs', 'ID_ICD10', 'pdiag_diagnosa')
-            ->where('pdiag_reg', $reg)
-            ->where('pdiag_deleted', 0)
+            ->where('pdiag_reg', $reg);
+
+        // if (isset($request->dokter)) {
+        //     $data = $data->where('pdiag_dokter', $request->dokter);
+        // }
+
+        $data = $data->where('pdiag_deleted', 0)
             ->orderBy('pdiag_id', 'asc')->get();
 
         if (isset($request->plain_data)) {
@@ -59,15 +64,21 @@ class AssesmentAwalDokterController extends Controller
 
         return response()->json($data);
     }
+
     function get_prosedur(Request $request, $reg)
     {
         $reg = str_replace("_", "/", $reg);
 
         $data =  DB::table('rs_pasien_prosedur')
-            ->select('NM_TINDAKAN', 'pprosedur_id', 'ID_TIND')
+            ->select('NM_TINDAKAN', 'pprosedur_id', 'ID_TIND', 'pprosedur_dokter')
             ->join('icd9cm_bpjs', 'ID_TIND', 'pprosedur_prosedur')
-            ->where('pprosedur_reg', $reg)
-            ->where('pprosedur_deleted', 0)
+            ->where('pprosedur_reg', $reg);
+
+        if (isset($request->dokter)) {
+            $data = $data->where('pprosedur_dokter', $request->dokter);
+        }
+        
+        $data = $data->where('pprosedur_deleted', 0)
             ->orderBy('pprosedur_id', 'asc')
             ->get();
 
@@ -98,16 +109,22 @@ class AssesmentAwalDokterController extends Controller
         $param = array_merge($param, $main_params);
 
         try {
-            if (!isset($check_)) {
-                DB::table('rs_pasien_diagnosa')->insert($param);
-            } else {
-                if ($r->pdiag_kategori != 'utama') {
+            if ($r->pprosedur_dokter == $r->dpjp_utama) {
+                if (!isset($check_)) {
                     DB::table('rs_pasien_diagnosa')->insert($param);
                 } else {
-                    DB::table('rs_pasien_diagnosa')
-                        ->where('pdiag_id', $check_->pdiag_id)
-                        ->update($param);
+                    if ($r->pdiag_kategori != 'utama') {
+                        DB::table('rs_pasien_diagnosa')->insert($param);
+                    } else {
+                        DB::table('rs_pasien_diagnosa')
+                            ->where('pdiag_id', $check_->pdiag_id)
+                            ->update($param);
+                    }
                 }
+            } else {
+                return response()->json(
+                    ['success' => false, 'msg' => 'Diagnosa hanya bisa diubah/ditambahkan oleh DPJP utama']
+                );
             }
 
             return response()->json(
