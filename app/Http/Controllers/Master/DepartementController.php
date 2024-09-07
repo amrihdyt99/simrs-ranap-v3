@@ -115,7 +115,8 @@ class DepartementController extends Controller
     public function getServiceUnitLantai() {
         $data = DB::connection('mysql2')
             ->table('m_unit_departemen')
-            ->whereIn('ServiceUnitCode', ['P029', 'P066', 'RI06', 'RI07', 'lt09', 'pavvip'])
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->whereIn('m_unit_departemen.ServiceUnitCode', ['P029', 'P066', 'RI06', 'RI07', 'lt09', 'pavvip'])
             ->get();
         
         return response()->json($data);
