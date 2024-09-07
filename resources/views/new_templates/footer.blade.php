@@ -100,7 +100,6 @@
                     reg_no: _reg 
                 },
                 success: function(resp){
-                    console.log(resp)
                     $('#alert_indikator').html('')
 
                     if (resp.alergi == 'Ya' && resp.asper_hasil) {
@@ -663,6 +662,7 @@
                 if (namatable == 'table-cpoe-radiologi' && total_tind == 1) {
                     $('.tmbh_rad').hide()
                 }
+
                 for(var i=0;i<dataJSON.length;i++){
                     var tr=document.createElement('tr');
                     var col1=document.createElement('td');
@@ -672,9 +672,12 @@
                     var col5=document.createElement('td');
                     var col6=document.createElement('td');
                     var col7=document.createElement('td');
+
                     var buttonDelete=document.createElement('button');
                     buttonDelete.setAttribute('class','btn btn-danger btn-sm');
-                    buttonDelete.setAttribute('onclick','hapus_item('+dataJSON[i]['id']+')')
+                    buttonDelete.setAttribute('onclick','hapus_item('+dataJSON[i]['id']+', this)')
+                    buttonDelete.setAttribute('value', dataJSON[i]['jenis_order'])
+
                     col1.innerHTML=dataJSON[i]['waktu_order']
                     col2.innerHTML=dataJSON[i]['jenis_order']
                     col3.innerHTML=dataJSON[i]['order_no']
@@ -1100,10 +1103,12 @@
                                 // orderToLab(resp.data)
                                 clickTab('lab', 'Laboratorium')
                             }else if(kategori=="radiologi"){
-                                alert('Tindakan radiologi berhasil ditambah, segera dikirim apabila cppt sudah di simpan')
+                                // alert('Tindakan radiologi berhasil ditambah, segera dikirim apabila cppt sudah di simpan')
                                 clickTab('radiologi', 'Radiologi')
                                 //kirim saat save cppt
                                 // orderToRadiologi(resp.data)
+                            } else {
+                                clickTab(kategori, kategori)
                             }
                             
                             $('#table-item-cpoe').html('')
@@ -1135,7 +1140,6 @@
             };
 
             $.ajax(settings).done(function (response) {
-                console.log(response)
                 var form = new FormData();
                 form.append("job_order_no", response.data.NextNoOrder);
                 form.append("registration_no", datajson.registration_no);
@@ -1450,10 +1454,10 @@
                             table = table + "<td>"+dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu+"</td>"
                             table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+"</td>"
                             table = table + `<td>
-                                (S) `+(dataSoap[i].soapdok_subject ?? '')+`<br/><br/>
-                                (O) `+(dataSoap[i].soapdok_object ?? '')+`<br/><br/>
-                                (A) <div class="ml-3">`+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '')+`</div><br/><br/>
-                                (P) `
+                                (SUBJECT)<br>`+(dataSoap[i].soapdok_subject ?? '')+`<br/><br/>
+                                (OBJECT)<br>`+(dataSoap[i].soapdok_object ?? '')+`<br/><br/>
+                                (ASSESMENT)<br><div class="ml-3">`+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '')+`</div><br/><br/>
+                                (PLANNING)<br>`
                                     +(dataSoap[i].soapdok_planning ?? '')+`<br/><br><br>
                                     <b>Tindakan Penunjang & Obat :</b>
                                     <span class="pl-3">`+$row_lab+'<br>'+$row_radiologi+'<br>'+$row_obat+'<br>'+$row_lainnya+`</span>
