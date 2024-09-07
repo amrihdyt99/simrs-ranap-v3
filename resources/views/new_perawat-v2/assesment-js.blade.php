@@ -318,6 +318,31 @@
         });
     }
 
+    function getAlert(_reg){
+        $.ajax({
+            url: '{{url("")}}/api/getAlert',
+            data: {
+                reg_no: _reg 
+            },
+            success: function(resp){
+                $('#alert_indikator').html('')
+
+                if (resp.alergi == 'Ya' && resp.asper_hasil) {
+                    $('[id="alert_blink"]').show()
+                }
+                
+                if (resp.alergi == 'Ya') {
+                    $('#alert_indikator').append(`
+                        <p class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: `+resp.nama_alergi+`">Allergy</p>
+                    `)
+                }
+
+                if (resp.asper_hasil) {
+                    $('#alert_indikator').append(`<p class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Resiko jatuh : `+resp.asper_hasil+`">Fall risk</p>`)
+                }
+            }
+        })
+    }
 
     // =================================================================================================================================
 
@@ -354,6 +379,8 @@
                         inject_view_data(data);
                         $('div[id*="assesment_"]').hide();
                         $('#assesment_1').show();
+
+                        getAlert(regno)
                     },
                     error: function(data) {
                         clear_show_error();

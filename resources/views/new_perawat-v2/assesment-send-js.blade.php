@@ -8,6 +8,8 @@
             data: $('#entry_asesmen').serialize() + "&medrec=" + medrec,
             success: function(data) {
                 neko_simpan_success();
+
+                getAlert(regno)
             },
             error: function(data) {
                 neko_simpan_error_noreq();

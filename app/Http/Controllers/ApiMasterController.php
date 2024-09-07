@@ -392,4 +392,25 @@ class ApiMasterController extends Controller
 		}
 		return response()->json($json, $json['code']);
 	}
+
+	public function paramedic(Request $request)
+	{
+		// X0055^003
+		// X0055^001
+		$dat = DB::connection('mysql2')
+			->table('m_paramedis');
+
+		if (isset($request->params)) {
+			$dat = $dat
+				->whereRaw("
+					GCParamedicType = ? 
+					and (lower(FirstName) like ? or lower(LastName) like ? or ParamedicCode like ?)", 
+					[$request->paramedic_type, '%'.$request->params.'%', '%'.$request->params.'%', '%'.$request->params.'%']
+				);
+		}
+
+		$dat = $dat->get();
+
+		return $dat;
+	}
 }

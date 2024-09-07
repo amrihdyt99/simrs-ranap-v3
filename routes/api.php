@@ -4,6 +4,7 @@ use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
+use App\Http\Controllers\Master\DepartementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('get-pasien', [RegisterController::class, "getPasien"]);
 Route::get('get-icd10', [RegisterController::class, "getICD10"]);
+Route::get('get-pasien-keluarga', [RegisterController::class, "getPasienKeluarga"])->name('api.get-pasien-keluarga');
 Route::get('get-registrasi-inap', [RegisterController::class, "getRegistrasiInap"]);
 Route::post('gettindakan', [\App\Http\Controllers\Master\TarifController::class, 'data_tindakan'])->name('tarif.tindakan');
 Route::post('storesoapapi', [\App\Http\Controllers\Dokter\DiagnoseController::class, 'storeSoapApi'])->name('soap.api.store');
@@ -90,6 +92,8 @@ Route::post('addPersetujuanTindakanMedis', [\App\Http\Controllers\NewPerawat\New
 Route::post('addPenolakanTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPenolakanTindakanMedis'])->name('add.PenolakanTindakanMedis');
 Route::post('addRujukanPersiapanPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanPersiapanPasien'])->name('add.RujukanPersiapanPasien');
 Route::post('addRujukanSerahTerima', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanSerahTerima'])->name('add.RujukanSerahTerima');
+Route::get('getResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh'])->name('get.resiko.jatuh');
+
 //baru
 Route::post('addassesmetawalanak', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPengkajianPasienAnak'])->name('add.assesmentawalanak');
 Route::post('addmonitoringtransfusidarah', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addMonitoringTransfusiDarah'])->name('add.monitoringtransfusidarah');
@@ -178,6 +182,8 @@ Route::post('getRegency', [RegisterController::class, 'getRegency'])->name('get.
 Route::post('getDistrict', [RegisterController::class, 'getDistricts'])->name('get.district');
 Route::post('getVillage', [RegisterController::class, 'getVillages'])->name('get.village');
 
+//api datamaster
+Route::get('getserviceunitlantai', [DepartementController::class, 'getServiceUnitLantai'])->name('get.service.unit.lantai');
 
 // api data master
 Route::group(['prefix' => 'sphaira'], function () {
