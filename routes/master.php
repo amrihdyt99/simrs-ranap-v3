@@ -1,5 +1,7 @@
 ﻿<?php
 
+use App\Http\Controllers\ApiMasterController;
+use App\Http\Controllers\Master\AksesRuanganController;
 use App\Http\Controllers\Master\PatientController;
 use App\Http\Controllers\Master\BedController;
 use App\Http\Controllers\Master\ClinicalPathwayController;
@@ -17,7 +19,7 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\PractitionerController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister'])->group(function () {
+Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter'])->group(function () {
     /*
     Route::get('/', function () {
         return redirect()->route('master.bed.index');
@@ -50,5 +52,16 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::patch('practitioner/change-status-active/{id}', [PractitionerController::class,'changeStatusActive'])->name('practitioner.changeStatusActive');
     Route::resource('organization', OrganizationController::class);
     Route::patch('organization/change-status-active/{id}', [OrganizationController::class,'changeStatusActive'])->name('organization.changeStatusActive');
+
+    Route::prefix('aksesRuangan')->group(function () {
+        Route::get('/', [AksesRuanganController::class, 'index']);
+        Route::get('/data', [AksesRuanganController::class, 'data']);
+        Route::post('/store', [AksesRuanganController::class, 'store']);
+        Route::post('/delete', [AksesRuanganController::class, 'delete']);
+    });
+    
+    Route::prefix('base')->group(function () {
+        Route::get('/paramedic', [ApiMasterController::class, 'paramedic']);
+    });
 
 });

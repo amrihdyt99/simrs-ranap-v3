@@ -97,3 +97,23 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalCopyPrescribe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xxl" role="document">
+        <div class="modal-content" style="width: 30%">
+            <div class="modal-header">
+                <h4><b>Resep Obat Sebelumnya</b></h4>
+            </div>
+            <div class="modal-body" style="background-color: #f1f3f6;">
+                <div class="tab-pane fade show active" id="satuan" role="tabpanel" aria-labelledby="satuan-tab">
+                    <form>
+                        @csrf
+                        <input type="hidden" name="prescribe_reg" value="{{$reg}}">
+                        <div id="row_previous_prescribe" class="row"></div>
+                    </form>
+                </div>
+                <button type="button" class="btn btn-secondary float-right mt-3 mr-1" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

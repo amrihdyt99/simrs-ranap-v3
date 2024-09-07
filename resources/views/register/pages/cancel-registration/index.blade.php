@@ -24,17 +24,7 @@
             <div class="card-header">
               <div class="row">
                 <div class="col">
-                  <h3 class="card-title">Pendaftaraan Rawat Inap </h3>
-                </div>
-                <div class="col d-flex justify-content-end gap-1">
-                  <a href="{{ route('register.ranap.create') }}" class="btn btn-success btn-sm ml-auto">
-                    Tambah Data
-                  </a>
-                  <a href="{{route('register.vclaim')}}">
-                    <button onclick="{{ route('register.vclaim') }}" class="btn btn-warning radius ml-3"><i class="fas fa-user-check"></i> Vclaim Manual</button>
-                  </a>
-                  
-                  {{-- <button onclick="tarik_regis()" class="btn btn-primary radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button> --}}
+                  <h3 class="card-title">Batal Registrasi </h3>
                 </div>
               </div>
             </div>
@@ -47,10 +37,7 @@
                     <th>No. Registerasi</th>
                     <th>MRN</th>
                     <th>Nama Pasien</th>
-                    <th>Dokter</th>
-                    <th>Pembayaran</th>
-                    <th>Aksi</th>
-                    <th>Status</th>
+                    <th>Alasan</th>
                   </tr>
                 </thead>
               </table>
@@ -132,55 +119,32 @@
         }
       },
       columns: [{
-          data: "reg_tgl",
-          name: "m_registrasi.reg_tgl",
+          data: "cancelation_date",
+          name: "cancelation_date",
           orderable: true,
           searchable: true,
         },
         {
           data: "reg_no",
-          name: "m_registrasi.reg_no",
+          name: "reg_no",
           orderable: true,
           searchable: true,
         },
         {
-          data: "reg_medrec",
-          name: "m_registrasi.reg_medrec",
+          data: "medrec_no",
+          name: "medrec_no",
           orderable: true,
           searchable: true,
         },
         {
-          data: "PatientName",
-          name: "m_pasien.PatientName",
+          data: "patient_name",
+          name: "patient_name",
           orderable: true,
           searchable: true,
         },
         {
-          data: "ParamedicName",
-          name: "m_paramedis.ParamedicName",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "reg_cara_bayar",
-          name: "m_registrasi.reg_cara_bayar",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "aksi_data",
-          orderable: false,
-          searchable: false,
-        },
-        // {
-        //   data: "dok_data",
-        //   orderable: false,
-        //   searchable: false,
-        // },
-        {
-          data: "status",
-          orderable: false,
-          searchable: false,
+          data: "cancelation_reason",
+          name: "cancelation_reason",
         },
       ],
     });

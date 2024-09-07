@@ -45,7 +45,7 @@ class PatientController extends Controller
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
             ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode')
             ->where('m_registrasi.reg_discharge', '!=', '3')
-            ->where('m_bed.service_unit_id', $ruang)
+            ->whereRaw("(m_bed.service_unit_id = '".$ruang."' or m_registrasi.service_unit = '".$ruang."')")
             ->where(function ($query) {
                 $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id) // Dokter utama
                       ->orWhereExists(function ($subQuery) {
@@ -60,7 +60,8 @@ class PatientController extends Controller
                 'm_registrasi.reg_medrec',
                 'm_registrasi.reg_no',
                 'm_paramedis.ParamedicName',
-                'ServiceUnitName as nama_ruangan',
+                // 'ServiceUnitName as nama_ruangan',
+                DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '".$ruang."') as nama_ruangan"),
                 'businesspartner.BusinessPartnerName as reg_cara_bayar',
                 'm_registrasi.reg_tgl',
                 DB::raw('GROUP_CONCAT(physician.ParamedicName SEPARATOR "| ") as physician_team')
@@ -91,7 +92,7 @@ class PatientController extends Controller
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
             ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode')
             ->where('m_registrasi.reg_discharge', '!=', '3')
-            ->where('m_bed.service_unit_id', $ruang)
+            ->whereRaw("(m_bed.service_unit_id = '".$ruang."' or m_registrasi.service_unit = '".$ruang."')")
             ->where(function ($query) {
                 $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
                       ->orWhereExists(function ($subQuery) {

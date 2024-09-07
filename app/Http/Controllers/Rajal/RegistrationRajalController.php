@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Rajal;
 
 use App\Http\Controllers\Controller;
+use App\Models\RegistrationCancelation;
 use App\Models\RegistrationInap;
 use App\Traits\Master\MasterPasienTrait;
 use App\Traits\Ranap\RanapRegistrationTrait;
@@ -19,11 +20,12 @@ class RegistrationRajalController extends Controller
      */
     public function indexRajal()
     {
+        // dd(auth()->user());
         $response = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran');
         $data = json_decode($response->body(), true);
 
         $non_exist_data_reg = collect($data)->filter(function ($value, $key) {
-            return !$this->findExistRegistrationData($value['ranap_reg']);
+            return !$this->findExistRegistrationData($value['ranap_reg']) && !$this->findExistRegistrationCancelation($value['ranap_reg']);
         })->values()->all();
 
         // dd($non_exist_data_reg);
@@ -89,5 +91,11 @@ class RegistrationRajalController extends Controller
     {
         $register_ranap = RegistrationInap::where('reg_lama', $reg_no)->first();
         return $register_ranap;
+    }
+
+    private function findExistRegistrationCancelation($reg_no)
+    {
+        $cancelation_registration = RegistrationCancelation::where('reg_no', $reg_no)->first();
+        return $cancelation_registration;
     }
 }
