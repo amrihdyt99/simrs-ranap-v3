@@ -15,6 +15,9 @@
                     @if (auth()->user()->level_user == 'dokter' && Request::is('dokter'))
                     <button class="btn btn-secondary" onclick="mod_pilih_ruang()" id="title_ruang">RUANG RAWAT</button>
                     @endif
+                    @if (auth()->user()->level_user == 'perawat')
+                        <button class="btn btn-secondary" id="trigger_shift_modal">SHIFT PERAWAT</button>
+                    @endif
                     <li class="nav-item dropdown" title="Ubah pengaturan akun">
                         <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" id="notificationDropdown" href="#" data-toggle="dropdown">
                             <i class="fas fa-cogs mx-0 text-dark"></i>
@@ -46,7 +49,7 @@
                             @endif
                         </span>
                     </li>
-                    <a class="dropdown-itemx" href="{{ url('/logout') }}" title="Logout">
+                    <a class="dropdown-itemx" href="{{ url('/logout') }}" id="user_logout" title="Logout">
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </ul>
@@ -90,5 +93,6 @@
         </div>
     </nav>
 </div>
+@include('new_perawat.modal.shift')
 
 {{-- @include('auth.modal.pengaturan_akun') --}}

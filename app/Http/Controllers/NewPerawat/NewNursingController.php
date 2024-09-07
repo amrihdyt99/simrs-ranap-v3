@@ -1039,35 +1039,39 @@ class NewNursingController extends Controller
         }
     }
 
-    function addresikojatuh(Request $request)
+    public function addresikojatuh(Request $request)
     {
-        $params_dx = [
+        // $params_dx = [
+        //     'reg_medrec' => $request->medrec,
+        //     'reg_no' => $request->regno,
+        //     'user_id' => $request->user_id,
+        // ];
+    
+        $total_resiko_jatuh_dewasa = 
+            $request->resiko_jatuh_bulan_terakhir +
+            $request->resiko_jatuh_medis_sekunder +
+            $request->resiko_jatuh_alat_bantu_jalan +
+            $request->resiko_jatuh_infus +
+            $request->resiko_jatuh_berjalan +
+            $request->resiko_jatuh_mental;
+    
+        $total_resiko_jatuh_geriatri =
+            $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan +
+            $request->resiko_jatuh_geriatri_pusing +
+            $request->resiko_jatuh_geriatri_kebingungan +
+            $request->resiko_jatuh_geriatri_nokturia +
+            $request->resiko_jatuh_geriatri_kebingungan_intermiten +
+            $request->resiko_jatuh_geriatri_kelemahan_umum +
+            $request->resiko_jatuh_geriatri_obat_beresiko_tinggi +
+            $request->resiko_jatuh_geriatri_riwayat_jatuh_12_bulan +
+            $request->resiko_jatuh_geriatri_osteoporosis +
+            $request->resiko_jatuh_geriatri_pendengaran_dan_pengeliatan +
+            $request->resiko_jatuh_geriatri_70_tahun_keatas;
+    
+        $params = [
             'reg_medrec' => $request->medrec,
             'reg_no' => $request->regno,
-        ];
-
-        $total_resiko_jatuh_dewasa = 
-        $request->resiko_jatuh_bulan_terakhir +
-        $request->resiko_jatuh_medis_sekunder +
-        $request->resiko_jatuh_alat_bantu_jalan +
-        $request->resiko_jatuh_infus +
-        $request->resiko_jatuh_berjalan +
-        $request->resiko_jatuh_mental;
-
-        $total_resiko_jatuh_geriatri =
-        $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan +
-        $request->resiko_jatuh_geriatri_pusing +
-        $request->resiko_jatuh_geriatri_kebingungan +
-        $request->resiko_jatuh_geriatri_nokturia +
-        $request->resiko_jatuh_geriatri_kebingungan_intermiten +
-        $request->resiko_jatuh_geriatri_kelemahan_umum +
-        $request->resiko_jatuh_geriatri_obat_beresiko_tinggi +
-        $request->resiko_jatuh_geriatri_riwayat_jatuh_12_bulan +
-        $request->resiko_jatuh_geriatri_osteoporosis +
-        $request->resiko_jatuh_geriatri_pendengaran_dan_pengeliatan +
-        $request->resiko_jatuh_geriatri_70_tahun_keatas;
-
-        $params = [
+            'user_id' => $request->user_id,
             'resiko_jatuh_bulan_terakhir' => $request->resiko_jatuh_bulan_terakhir,
             'resiko_jatuh_medis_sekunder' => $request->resiko_jatuh_medis_sekunder,
             'resiko_jatuh_alat_bantu_jalan' => $request->resiko_jatuh_alat_bantu_jalan,
@@ -1075,8 +1079,6 @@ class NewNursingController extends Controller
             'resiko_jatuh_berjalan' => $request->resiko_jatuh_berjalan,
             'resiko_jatuh_mental' => $request->resiko_jatuh_mental,
             'total_resiko_jatuh_dewasa' => $total_resiko_jatuh_dewasa,
-
-            // default
             'resiko_jatuh_geriatri_gangguan_gaya_berjalan' => $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan,
             'resiko_jatuh_geriatri_pusing' => $request->resiko_jatuh_geriatri_pusing,
             'resiko_jatuh_geriatri_kebingungan' => $request->resiko_jatuh_geriatri_kebingungan,
@@ -1089,16 +1091,25 @@ class NewNursingController extends Controller
             'resiko_jatuh_geriatri_pendengaran_dan_pengeliatan' => $request->resiko_jatuh_geriatri_pendengaran_dan_pengeliatan,
             'resiko_jatuh_geriatri_70_tahun_keatas' => $request->resiko_jatuh_geriatri_70_tahun_keatas,
             'total_resiko_jatuh_geriatri' => $total_resiko_jatuh_geriatri,
+            'shift' => $request->shift,
+            'created_at' => now(),
         ];
-
+    
         $simpan = DB::connection('mysql')
             ->table('skrining_resiko_jatuh')
-            ->updateOrInsert($params_dx, $params);
+            // ->where('reg_medrec', $request->medrec)
+            // ->where('reg_no', $request->regno)
+            // ->where('user_id', $request->user_id)
+            ->insert($params);
 
+    
         return response()->json([
             'success' => $simpan
         ]);
     }
+    
+
+
 
 
     function getSkrinningJatuh(Request $request)
@@ -2619,4 +2630,34 @@ class NewNursingController extends Controller
             ->table('rs_rujukan_serah_terima')
             ->updateOrInsert($paramsawalsearch, $params);
     }
+
+    public function getResikoJatuh(Request $request)
+    {
+        $resiko_jatuh = DB::connection('mysql')
+            ->table('skrining_resiko_jatuh')
+            ->where('reg_no', $request->regno)
+            ->where('reg_medrec', $request->medrec)
+            ->where('user_id', $request->user_id)
+            ->get();
+
+        return response()->json([
+            'data' => $resiko_jatuh
+        ]);
+    }
+
+    public function getResikoJatuh2(Request $request)
+    {
+        $resiko_jatuh = DB::connection('mysql')
+            ->table('skrining_resiko_jatuh')
+            ->where('reg_no', $request->regno)
+            ->where('reg_medrec', $request->medrec)
+            ->where('user_id', $request->user_id)
+            ->where('id', $request->id)
+            ->first();
+
+        return response()->json([
+            'data' => $resiko_jatuh
+        ]);
+    }
+
 }

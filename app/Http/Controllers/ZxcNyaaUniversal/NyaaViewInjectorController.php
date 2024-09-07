@@ -149,9 +149,12 @@ class NyaaViewInjectorController extends AaaBaseController
     function assesment_resiko_jatuh(Request $request)
     {
         $skrining_resiko_jatuh = DB::connection('mysql')
-            ->table('skrining_resiko_jatuh')
-            ->where('reg_no', $request->reg_no)
-            ->first();
+        ->table('skrining_resiko_jatuh')
+        ->where('reg_no', $request->reg_no)
+        ->where('user_id', $request->user_id)
+        ->orderBy('created_at', 'desc')  
+        ->first();  
+
 
         $context = array(
             'reg' => $request->reg_no,

@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/perawat/patient/save_signature', [NursingController::class, 'saveSignature'])->name('saveSignature');
 Route::post('/perawat/save-signature', [NursingController::class, 'saveSignature'])->name('perawat.saveSignature');
-Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi'])->group(function () {
+Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi','shift'])->group(function () {
 
     Route::get('/perawat/dashboard', [DashboardController::class, 'index'])->name('perawat.dashboard');
+    Route::post('/save-shift', [DashboardController::class, 'saveShift'])->name('save.shift');
     // Route::get('/perawat/ketersediaanruangan', [KetersediaanRuanganController::class, 'index'])->name('perawat.ketersediaanruangan.index');
     Route::get('/perawat/detail_pasien', [DetailPasienPerawatController::class, 'index'])->name('perawat.detail_pasien_list');
     Route::get('/perawat/detail_pasien/{MedicalNo}', [DetailPasienPerawatController::class, 'show'])->where('MedicalNo', '(.*)')->name('perawat.patient_detail');

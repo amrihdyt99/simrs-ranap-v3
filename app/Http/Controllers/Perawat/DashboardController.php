@@ -79,4 +79,18 @@ class DashboardController extends Controller
     //         ->get();
     //     return view('perawat.pages.dashboard',['myPatient' => $datamypatient, 'myArea' => $datamypatient]);
     // }
+
+    public function saveShift(Request $request)
+    {
+        $request->validate([
+            'shift' => 'required|string',
+        ]);
+
+        session()->forget('user_shift');
+        
+        session(['user_shift' => $request->shift]);
+
+        return response()->json(['success' => true]);
+    }
+
 }

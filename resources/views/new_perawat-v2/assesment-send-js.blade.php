@@ -128,12 +128,18 @@
 
     // resiko-jatuh
     function addresikojatuh() {
+        var userId = "{{ auth()->user()->id }}";
+        var userShift = "{{ session('user_shift') }}";
         neko_proses();
         $.ajax({
             url: "{{route('add.resikojatuh')}}",
             type: "POST",
-            data: $('#entry-resiko-jatuh').serialize() + "&medrec=" + medrec + "&regno=" + regno,
-            success: function(data) {
+            data: $('#entry-resiko-jatuh').serialize() +
+                "&medrec=" + medrec +
+                "&regno=" + regno +
+                "&user_id=" + userId +
+                "&shift=" + userShift,
+                success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
             },
