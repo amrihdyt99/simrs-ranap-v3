@@ -43,7 +43,7 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="">Pilih Ruangan</label>
-              <select name="pilru" id="pilru" class="form-control select2-mod" style="width: 100%" onchange="filter_ruang()"></select>
+              <select name="pilru" id="pilru" class="form-control select2-mod" style="width: 100%" onclick="list_ruang()" onchange="filter_ruang()"></select>
             </div>
             <button type="button" onclick="$('#modal_pil').modal('hide')" class="btn btn-secondary float-right" aria-label="Close">Close</button>
           </div>
@@ -116,22 +116,33 @@
 
     function list_ruang() {
       $.ajax({
+        url: "{{url('')}}/master/aksesRuangan/data",
         type: "get",
-        url: "{{url('api/listruangranap')}}",
-        dataType: "json",
+        data: {
+          params: [
+            {key: 'ParamedicCode', value: $user_dokter_}
+          ]
+        },
         success: function (r) {
-          var opt = '<option value="x,x" >Pilih Ruang</option>';
-          $.each(r.data, function(index, row) {
-              opt += '<option value="' + row.service_unit_id +','+row.kelompok +'">' + row.kelompok + '</option>';
-          });
-          $('#pilru').html(opt);
+          var opt = '<option value="x,x" >Pilih Ruang</option>'
+
+          $.each(r, function(index, row) {
+            $.each(row.ParamedicAccessRoom, function(sub_i, sub_item){
+              opt += '<option value="' + sub_item.ServiceId +','+sub_item.ServiceName +'">' + sub_item.ServiceName + '</option>'
+            })
+          })
+
+          $('#pilru').html(opt)
         }
-      });
-      }
+      })
+    }
 
 function mod_pilih_ruang() {
   $('#modal_pil').modal('show')
-  }
+
+  list_ruang()  
+}
+
 function load_data(tipe,ruang){
  $.ajax({
   type: "get",
