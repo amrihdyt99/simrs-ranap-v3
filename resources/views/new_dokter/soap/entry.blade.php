@@ -19,7 +19,6 @@
 <script>
     $(document).ready(function() {
        getSoapDokter()
-
     });
 
     function updateverifikasi(id){
