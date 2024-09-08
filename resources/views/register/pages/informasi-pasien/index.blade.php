@@ -116,9 +116,6 @@
         });
       }
     });
-
-    // Debug statement to check the generated URL
-    console.log('{{ route('register.informasi-pasien.edit', ['id' => 1]) }}');
   });
 </script>
 @endpush
