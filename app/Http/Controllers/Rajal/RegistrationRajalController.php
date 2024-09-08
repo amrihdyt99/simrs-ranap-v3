@@ -98,4 +98,20 @@ class RegistrationRajalController extends Controller
         $cancelation_registration = RegistrationCancelation::where('reg_no', $reg_no)->first();
         return $cancelation_registration;
     }
+
+    public function slipRegister($reg_no)
+    {
+        $reg_no = str_replace('/', '_', $reg_no);
+
+        $data_reg = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/' . $reg_no);
+        $data = json_decode($data_reg->body(), true);
+        $data_pasien = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/master/getPasien?medrec=' . $data['reg_medrec']);
+        $data_pasien = json_decode($data_pasien->body(), true);
+        $data['pasien'] = $data_pasien[0] ?? null;
+        $data['pasien']['date_of_birth'] = date('d-m-Y', strtotime($data['pasien']['DateOfBirth']));
+        // dd($data);
+        return response()->view('register.pages.rajal.slip-pernyataan-ranap', [
+            'data' => $data
+        ]);
+    }
 }
