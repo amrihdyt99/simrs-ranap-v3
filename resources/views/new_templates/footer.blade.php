@@ -100,6 +100,7 @@
                     reg_no: _reg 
                 },
                 success: function(resp){
+                    console.log(resp)
                     $('#alert_indikator').html('')
 
                     if (resp.alergi == 'Ya' && resp.asper_hasil) {
@@ -108,12 +109,12 @@
                     
                     if (resp.alergi == 'Ya') {
                         $('#alert_indikator').append(`
-                            <p class="bubble-alergi" title="Alergi: `+resp.nama_alergi+`">Allergy</p>
+                            <p class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: `+resp.nama_alergi+`">Allergy</p>
                         `)
                     }
 
                     if (resp.asper_hasil) {
-                        $('#alert_indikator').append('<p class="bubble-resiko" title="Resiko jatuh : '+resp.asper_hasil+'">Fall risk</p>')
+                        $('#alert_indikator').append(`<p class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Resiko jatuh : `+resp.asper_hasil+`">Fall risk</p>`)
                     }
                 }
             })

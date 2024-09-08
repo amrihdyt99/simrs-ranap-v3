@@ -73,5 +73,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         'role' => Role::class,
+        'shift' => \App\Http\Middleware\ShiftSession::class,
+
     ];
 }

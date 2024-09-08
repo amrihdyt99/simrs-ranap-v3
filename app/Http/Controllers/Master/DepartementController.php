@@ -111,4 +111,20 @@ class DepartementController extends Controller
             return response()->json(['error' => 'Gagal menghapus data.'], 500);
         }
     }
+
+    public function getServiceUnitLantai(Request $request) {
+        $data = DB::connection('mysql2')
+            ->table('m_unit');
+            
+        if (isset($request->serviceCode)) {
+            $data = $data->whereIn('ServiceUnitCode', [$request->serviceCode]);
+        } else {
+            $data = $data->whereIn('ServiceUnitCode', ['P029', 'P066', 'RI06', 'RI07', 'lt09', 'pavvip']);
+        }
+
+        $data = $data->distinct('m_unit.ServiceUnitCode')
+            ->get();
+        
+        return $data;
+    }
 }

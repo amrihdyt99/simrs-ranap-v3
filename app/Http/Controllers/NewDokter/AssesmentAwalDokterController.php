@@ -907,5 +907,31 @@ class AssesmentAwalDokterController extends Controller
             throw $th;
         }
     }
-    
+
+    public function checkPemeriksaan(Request $request){
+        try {
+            $cppt = DB::table('rs_pasien_cppt')
+                ->where('soapdok_reg', $request->reg_no)
+                ->first();
+
+            $tindakan = DB::table('job_orders_dt')
+                ->where('reg_no', $request->reg_no)
+                ->first();
+
+            $data = [
+                'cppt' => [
+                    'status' => isset($cppt) ? 200 : 404,
+                    'msg' => (isset($cppt) ? 'Sudah' : 'Belum'). ' ada pemeriksaan dari dokter atau perawat'
+                ],
+                'tindakan' => [
+                    'status' => isset($tindakan) ? 200 : 404,
+                    'msg' => (isset($tindakan) ? 'Sudah' : 'Belum'). ' ada pemeriksaan dari dokter atau perawat'
+                ],
+            ];
+
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

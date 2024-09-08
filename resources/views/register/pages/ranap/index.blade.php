@@ -2,33 +2,7 @@
 
 @section('nyaa_content_body')
 
-<nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav ">
-      <li class="nav-item">
-        <a class="{{ Request::segment(1) == "ranap" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.ranap.index') }}>
-          <span>Pendaftaran Rawat Inap</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="{{ Request::segment(1) == "rajal" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.rajal.index') }}>
-          <span>Data Pendaftaran Rajal</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="{{ Request::segment(1) == "igd" ? "active text-bold text-primary" : "" }} nav-link " href={{ route('register.igd.index') }}>
-          <span>Data Pendaftaran IGD</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="{{ Request::segment(1) == "Informasi Pasien" ? "active text-bold text-primary" : "" }} nav-link" 
-          href="{{ route('register.informasi-pasien.index') }}">
-          <span>Data Pasien</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</nav>
+@include('register.layouts.menu')
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -76,42 +50,9 @@
                     <th>Dokter</th>
                     <th>Pembayaran</th>
                     <th>Aksi</th>
-                    {{-- <th>Dok</th> --}}
                     <th>Status</th>
                   </tr>
                 </thead>
-                {{-- <tbody>
-                                        @foreach ($inap as $row)
-                                            <tr>
-                                                <td>{{ $row->reg_tgl }}</td>
-                <td>{{ $row->reg_no }}</td>
-                <td>{{ $row->reg_medrec }}</td>
-                <td>{{ $row->PatientName }}</td>
-                <td>{{ $row->ParamedicName }}</td>
-                <td>{{ $row->reg_cara_bayar }}</td>
-                <td> --}}
-                  {{-- <a href="{{route('register.ranap.cetak',['reg_no'=>$row->reg_no])}}" class="btn btn-sm btn-info" target="_blank">
-                  <i class="fa fa-print"></i>
-                  </a>--}}
-
-                  {{-- <a href="{{route('register.ranap.slipadmisi',['reg_no'=>$row->reg_no])}}" class="btn btn-sm btn-info" target="_blank">
-                  <i class="fa fa-print">Admisi</i>
-                  </a>
-                </td>
-                <td>
-                  <a href="{{route('register.ranap.gc1',['reg_no'=>$row->reg_no])}}" class="btn btn-sm btn-info" target="_blank">
-                    General Consent Hal 1
-                  </a>
-                  <a href="{{route('register.ranap.gc2',['reg_no'=>$row->reg_no])}}" class="btn btn-sm btn-info" target="_blank">
-                    General Consent Hal 2
-                  </a>
-
-
-                </td>
-                </tr>
-                @endforeach
-
-                </tbody> --}}
               </table>
             </div>
             <!-- /.card-body -->

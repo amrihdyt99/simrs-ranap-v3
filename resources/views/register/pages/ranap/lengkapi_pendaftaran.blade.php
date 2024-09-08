@@ -705,6 +705,52 @@
             },
         });
 
+        let autocomplete = $('#reg_pjawab_nama').easyAutocomplete({
+            adjustWidth: false,
+            url: `{{ route('api.get-pasien-keluarga') }}`,
+            getValue: function(element) {
+                return element.PatientName;
+            },
+            ajaxSettings: {
+                dataType: "json",
+                method: "GET",
+                data: {
+                    _token: '{{ csrf_token() }}'
+                }
+            },
+            preparePostData: function(data) {
+                data.q = $('#reg_pjawab_nama').val();
+                data.mrn = "{{ $registration->reg_medrec }}";
+                data._token = '{{ csrf_token() }}';
+                return data;
+            },
+            list: {
+                onClickEvent: function() {
+                    var e = $.Event("keyup", {
+                        keyCode: 13
+                    });
+                    autocomplete.trigger(e);
+                }
+            }
+        }).on('keyup', function(e) {
+            e.stopPropagation();
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                if ($(this).val() !== '') {
+                    let name = autocomplete.getSelectedItemData().PatientName;
+                    let hub = autocomplete.getSelectedItemData().GCRelationShip;
+                    let ssn = autocomplete.getSelectedItemData().SSN;
+                    let phone = autocomplete.getSelectedItemData().PhoneNo;
+                    let address = autocomplete.getSelectedItemData().Address;
+
+                    // $('#pjModal').modal('show');
+                    $('#reg_hub_pasien').val(hub).trigger("change");
+                    $('#pjModal').find('input[name="reg_pjawab_nohp"]').val(phone);
+                    $('#pjModal').find('input[name="reg_pjawab_nik"]').val(ssn);
+                    $('#pjModal').find('input[name="reg_pjawab_alamat"]').val(address);
+                }
+            }
+        });
 
         $("#requestpjdata").submit(function(e) {
             e.preventDefault();

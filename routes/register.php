@@ -6,6 +6,7 @@ use App\Http\Controllers\IGD as IGD;
 use App\Http\Controllers\IGD\RegisterController;
 use App\Http\Controllers\Rajal\RegistrationRajalController;
 use App\Http\Controllers\InformasiPasien\RegisterDataController;
+use App\Http\Controllers\RegistrationCancelationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(function () {
@@ -65,10 +66,18 @@ Route::delete('/register/pages/informasi-pasien/{id}', [RegisterDataController::
 Route::post('/register/informasi-pasien', [RegisterDataController::class, 'store'])->name('register.informasi-pasien.store');
 
 Route::get('/register/pages/informasi-pasien/{MedicalNo}/edit', [RegisterDataController::class, 'edit'])->name('register.informasi-pasien.edit');
-Route::put('/register/pages/informasi-pasien/{MedicalNo}', [RegisterDataController::class, 'update'])->name('register.informasi-pasien.update')
-; //edit
+Route::put('/register/pages/informasi-pasien/{MedicalNo}', [RegisterDataController::class, 'update'])->name('register.informasi-pasien.update'); //edit
 Route::resource('informasi-pasien', RegisterDataController::class); // Route untuk menampilkan data pasien
 Route::get('register/informasi-pasien', [RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
 Route::get('register/informasi-pasien/getData', [RegisterDataController::class, 'getData'])->name('register.informasi-pasien.getData');
 //Route::get('/informasi-pasien/patientnew', 'register.pages.informasi-pasien.patientnew')->name('register.pages.informasi-pasien.patientnew');
 //Route::get('/informasi-pasien', [InformasiPasien\RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
+
+Route::get('/register/cancelation', [RegistrationCancelationController::class, 'index'])->name('cancelation.index');
+Route::post('/register/cancelation/{reg_no}', [RegistrationCancelationController::class, 'cancelRegistration'])->name('cancel_registration');
+
+Route::prefix('register')->name('register.')->group(function () {
+    Route::prefix('slip-register')->name('slip-register.')->group(function () {
+        Route::get('/rajal/{reg_no}', [RegistrationRajalController::class, 'slipRegister'])->where('reg_no', '(.*)')->name('rajal');
+    });
+});

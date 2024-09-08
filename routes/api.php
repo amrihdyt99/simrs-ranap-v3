@@ -4,6 +4,7 @@ use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
+use App\Http\Controllers\Master\DepartementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('get-pasien', [RegisterController::class, "getPasien"]);
 Route::get('get-icd10', [RegisterController::class, "getICD10"]);
+Route::get('get-pasien-keluarga', [RegisterController::class, "getPasienKeluarga"])->name('api.get-pasien-keluarga');
 Route::get('get-registrasi-inap', [RegisterController::class, "getRegistrasiInap"]);
 Route::post('gettindakan', [\App\Http\Controllers\Master\TarifController::class, 'data_tindakan'])->name('tarif.tindakan');
 Route::post('storesoapapi', [\App\Http\Controllers\Dokter\DiagnoseController::class, 'storeSoapApi'])->name('soap.api.store');
@@ -75,6 +77,7 @@ Route::post('addPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwa
 Route::post('getPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getpemulanganpasien'])->name('get.pemulangan.pasien');
 Route::post('/verifikasicppt', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'verifikasi_soap_dokter'])->name('dokter.verifikasicppt');
 Route::get('/getAlert', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlert'])->name('dokter.getAlert');
+Route::get('/checkPemeriksaan', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'checkPemeriksaan'])->name('dokter.checkPemeriksaan');
 //api perawat
 Route::post('addSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'addsoap'])->name('add.soap.new.perawat');
 Route::post('getSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'getsoapbyreg'])->name('get.soap.new.perawat');
@@ -90,6 +93,9 @@ Route::post('addPersetujuanTindakanMedis', [\App\Http\Controllers\NewPerawat\New
 Route::post('addPenolakanTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPenolakanTindakanMedis'])->name('add.PenolakanTindakanMedis');
 Route::post('addRujukanPersiapanPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanPersiapanPasien'])->name('add.RujukanPersiapanPasien');
 Route::post('addRujukanSerahTerima', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanSerahTerima'])->name('add.RujukanSerahTerima');
+Route::post('getResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh'])->name('getResikoJatuhData');
+Route::post('getResikoJatuh2', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh2'])->name('getResikoJatuhData2');
+
 //baru
 Route::post('addassesmetawalanak', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPengkajianPasienAnak'])->name('add.assesmentawalanak');
 Route::post('addmonitoringtransfusidarah', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addMonitoringTransfusiDarah'])->name('add.monitoringtransfusidarah');
@@ -101,6 +107,7 @@ Route::post('addskrinninggizianak', [\App\Http\Controllers\NewPerawat\NewNursing
 Route::post('addMasalah', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addMasalah'])->name('add.Masalah');
 Route::post('addskrinningnyeri', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addSkrinningNyeri'])->name('add.skrinningnyeri');
 Route::post('addEdukasiPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addedukasipasien'])->name('add.edukasipasien');
+Route::post('addEdukasiPasienPerawat', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addEdukasiPasienPerawat'])->name('add.edukasi_pasien_perawat');
 Route::post('getRsEdukasiPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getRsEdukasiPasien'])->name('get.edukasipasien');
 Route::post('checklistpasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'checklist'])->name('checklist.pasien');
 Route::post('getNursingNote', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getNursingNote'])->name('get.nursing.note');
@@ -177,6 +184,8 @@ Route::post('getRegency', [RegisterController::class, 'getRegency'])->name('get.
 Route::post('getDistrict', [RegisterController::class, 'getDistricts'])->name('get.district');
 Route::post('getVillage', [RegisterController::class, 'getVillages'])->name('get.village');
 
+//api datamaster
+Route::get('getserviceunitlantai', [DepartementController::class, 'getServiceUnitLantai'])->name('get.service.unit.lantai');
 
 // api data master
 Route::group(['prefix' => 'sphaira'], function () {

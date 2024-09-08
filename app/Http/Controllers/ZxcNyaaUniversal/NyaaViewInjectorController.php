@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\ZxcNyaaUniversal;
 
 use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
+use App\Models\Pasien;
+use App\Models\RegistrationInap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -147,9 +149,12 @@ class NyaaViewInjectorController extends AaaBaseController
     function assesment_resiko_jatuh(Request $request)
     {
         $skrining_resiko_jatuh = DB::connection('mysql')
-            ->table('skrining_resiko_jatuh')
-            ->where('reg_no', $request->reg_no)
-            ->first();
+        ->table('skrining_resiko_jatuh')
+        ->where('reg_no', $request->reg_no)
+        ->where('user_id', $request->user_id)
+        ->orderBy('created_at', 'desc')  
+        ->first();  
+
 
         $context = array(
             'reg' => $request->reg_no,
@@ -172,28 +177,45 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function assesment_awal_dewasa(Request $request)
     {
-        $context = array(
-            'reg' => $request->reg_no,
-            'medrec' => $request->medrec,
-        );
-        return view('new_perawat.assesment.index_dewasa')
-            ->with($context);
+        $reg = RegistrationInap::find($request->reg_no);
+        $pasien = Pasien::find($reg->reg_medrec);
+        $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
+
+        if ($dateDiff->y > 18) {
+            $context = array(
+                'reg' => $request->reg_no,
+                'medrec' => $request->medrec,
+            );
+            return view('new_perawat.assesment.index_dewasa')
+                ->with($context);
+        } else {
+            return view('new_perawat.assesment.error.assesment_dewasa');
+        }
     }
 
     function assesment_awal_anak(Request $request)
     {
-        $assesment_awal_anak = DB::connection('mysql')
-            ->table('pengkajian_awal_anak_perawat')
-            ->where('reg_no', $request->reg_no)
-            ->first();
 
-        $context = array(
-            'reg' => $request->reg_no,
-            'medrec' => $request->medrec,
-            'assesment_awal_anak' => optional($assesment_awal_anak),
-        );
-        return view('new_perawat.assesment.index_anak')
-            ->with($context);
+        $reg = RegistrationInap::find($request->reg_no);
+        $pasien = Pasien::find($reg->reg_medrec);
+        $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
+        // dd($dateDiff->y . ' Year ' . $dateDiff->m . ' Month ' . $dateDiff->d . ' Day');
+        if (($dateDiff->y > 0 && $dateDiff->y <= 18) ||  $dateDiff->m > 0 || $dateDiff->d >= 28) {
+            $assesment_awal_anak = DB::connection('mysql')
+                ->table('pengkajian_awal_anak_perawat')
+                ->where('reg_no', $request->reg_no)
+                ->first();
+
+            $context = array(
+                'reg' => $request->reg_no,
+                'medrec' => $request->medrec,
+                'assesment_awal_anak' => optional($assesment_awal_anak),
+            );
+            return view('new_perawat.assesment.index_anak')
+                ->with($context);
+        } else {
+            return view('new_perawat.assesment.error.assesment_anak');
+        }
     }
 
     function assesment_gizi_dewasa(Request $request)
