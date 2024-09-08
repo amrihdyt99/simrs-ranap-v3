@@ -42,6 +42,7 @@
     var $poli_ = "{{session()->get('poli_kode')}}";
     var regno = "{{$reg}}";
     var medrec = "{{$dataPasien->MedicalNo}}";
+    var tgl_lahir_pasien = "{{$dataPasien->DateOfBirth}}";
     var classcode = "{{$dataPasien->reg_class}}";
 
     // =================================================================================================================================
@@ -1653,46 +1654,42 @@
         });
     }
 
-    function resetFormResikoJatuh() {
-        const form = document.getElementById('entry-resiko-jatuh');
-
-        const radioButtons = form.querySelectorAll('input[type="radio"]');
-        radioButtons.forEach(function(radio) {
-            radio.checked = false;
-        });
-
-        const inputs = form.querySelectorAll('input[type="text"], input[type="number"]');
-        inputs.forEach(function(input) {
-            input.value = '';
-        });
-    }
-
     function modal_resiko_jatuh() {
-        $('#resikoJatuhModal').on('show.bs.modal', function (e) {
-            var requestData = {
-                regno: regno,
-                medrec: medrec,
-                user_id: "{{ auth()->user()->id }}"
-            };
-
+        $('#resikoJatuhModal').on('show.bs.modal', function () {
             $.ajax({
-                url: "{{ route('getResikoJatuhData') }}",
+                url: "{{ route('getListResikoJatuh') }}",
                 method: 'POST',
-                data: requestData,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Add CSRF token
+                data: {
+                    regno: regno,
+                    medrec: medrec,
+                    user_id: "{{ auth()->user()->id }}",
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
                     var tbody = $('#resiko_jatuh_table tbody');
                     tbody.empty();
                     response.data.forEach(function(item) {
-                        var row = '<tr>' +
-                            '<td>' + (item.created_at || 'N/A') + '</td>' +  // Display created_at
-                            '<td>' + (item.shift || 'N/A') + '</td>' +  // Display shift
-                            '<td><button class="btn btn-primary lihat-btn" data-id="' + item.id + '">Lihat</button></td>' +
-                            '</tr>';
+                        var row = `
+                            <tr>
+                                <td>${formatDateTime(item.created_at) || 'N/A'}</td>
+                                <td><button class="btn btn-primary lihat-btn" data-id="${item.id}">Lihat</button></td>
+                            </tr>`;
                         tbody.append(row);
                     });
+
+                    initializeDataTable('#resiko_jatuh_table', {
+                        searching: true,
+                        paging: true,
+                        info: true,
+                        columnDefs: [
+                        {
+                            targets: 1,  
+                            orderable: false,  
+                            searchable: false 
+                        }
+                    ]
+                    });
+                    handleLihatButtonClick();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', status, error);
@@ -1700,120 +1697,75 @@
                 }
             });
         });
+    }
 
-        $(document).on('click', '.lihat-btn', function () {
-            var id = $(this).data('id');  
+    function initializeDataTable(selector, options) {
+            if ($.fn.DataTable.isDataTable(selector)) {
+                $(selector).DataTable().destroy();
+            }
+            $(selector).DataTable({
+                ...options,
+                pageLength: 10 
+            });
+        }
 
-            var requestData = {
-                regno: regno,
-                medrec: medrec,
-                user_id: "{{ auth()->user()->id }}",
-                id: id  
-            };
-
+        function fetchResikoJatuhDetail(id) {
             $.ajax({
-                url: "{{ route('getResikoJatuhData2') }}",
+                url: "{{ route('getDetailResikoJatuh') }}",
                 method: 'POST',
-                data: requestData,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  
+                data: {
+                    regno: regno,
+                    medrec: medrec,
+                    user_id: "{{ auth()->user()->id }}",
+                    id: id,
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(item) {
-                    console.log(item); 
-                    console.log('x', typeof item.resiko_jatuh_geriatri_gangguan_gaya_berjalan);
+                success: function(response) {
+                    const tgl_lahir = response.data_pasien.DateOfBirth;
+                    const age = calculateAge(tgl_lahir);
+                    let rows = '';
+                    let text = '';
                     
-                    // Build the table rows dynamically
-                    var detailTableBody = $('#detailTableBody');
-                    var rows = `
-                        <tr>
-                            <td colspan="2"><b>Resiko Jatuh Dewasa<b></td>
-                        </tr>
-                        <tr>
-                            <td>Riwayat Jatuh</td>
-                            <td>${item.data.resiko_jatuh_bulan_terakhir == '25' ? 'Ya' : 'Tidak'}</td>
-                        </tr>
-                        <tr>
-                            <td>Diagnosa Sekunder</td>
-                            <td>${item.data.resiko_jatuh_medis_sekunder == '15' ? 'Ya' : 'Tidak'}</td>
-                        </tr>
-                        <tr>
-                            <td>Bantuan Ambulasi</td>
-                            <td>${item.data.resiko_jatuh_alat_bantu_jalan == '0' ? 'Tidak ada/ bed rest/ bantuan perawat' :
-                                item.data.resiko_jatuh_alat_bantu_jalan == '15' ? 'Kruk/ tongkat/ alat bantu berjalan' :
-                                'Meja/ kursi'}</td>
-                        </tr>
-                        <tr>
-                            <td>Terpasang Infus</td>
-                            <td>${item.data.resiko_jatuh_infus == '25' ? 'Ya' : 'Tidak'}</td>
-                        </tr>
-                        <tr>
-                            <td>Cara/ gaya berjalan</td>
-                            <td>${item.data.resiko_jatuh_berjalan == '0' ? 'Normal/ bed rest/ kursi roda' :
-                                item.data.resiko_jatuh_berjalan == '15' ? 'Lemah' : 'Terganggu'}</td>
-                        </tr>
-                        <tr>
-                            <td>Status Mental</td>
-                            <td>${item.data.resiko_jatuh_mental == '0' ? 'Berorientasi pada kemampuannya' :
-                                'Lupa akan keterbatasannya'}</td>
-                        </tr>
-                        <tr>
-                            <td>Total Skor Dewasa</td>
-                            <td>${item.data.total_resiko_jatuh_dewasa}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><b>Risiko Jatuh Pasien Geriatri > 60 Tahun<b></td>
-                        </tr>
-                        <tr>
-                            <td>Gangguan gaya berjalan</td>
-                            <td>${item.data.resiko_jatuh_geriatri_gangguan_gaya_berjalan}</td>
-                        </tr>
-                        <tr>
-                            <td>Pusing / pingsan pada posisi tegak</td>
-                            <td>${item.data.resiko_jatuh_geriatri_pusing}</td>
-                        </tr>
-                        <tr>
-                            <td>Kebingungan setiap saat</td>
-                            <td>${item.data.resiko_jatuh_geriatri_kebingungan}</td>
-                        </tr>
-                        <tr>
-                            <td>Nokturia / Inkontinen</td>
-                            <td>${item.data.resiko_jatuh_geriatri_nokturia}</td>
-                        </tr>
-                        <tr>
-                            <td>Kebingungan Intermiten</td>
-                            <td>${item.data.resiko_jatuh_geriatri_kebingungan_intermiten}</td>
-                        </tr>
-                        <tr>
-                            <td>Kelemahan Umum</td>
-                            <td>${item.data.resiko_jatuh_geriatri_kelemahan_umum}</td>
-                        </tr>
-                        <tr>
-                            <td>Obat-obat berisiko tinggi</td>
-                            <td>${item.data.resiko_jatuh_geriatri_obat_beresiko_tinggi}</td>
-                        </tr>
-                        <tr>
-                            <td>Riwayat jatuh dalam waktu 12 bulan sebelumnya</td>
-                            <td>${item.data.resiko_jatuh_geriatri_riwayat_jatuh_12_bulan}</td>
-                        </tr>
-                        <tr>
-                            <td>Osteoporosis</td>
-                            <td>${item.data.resiko_jatuh_geriatri_osteoporosis}</td>
-                        </tr>
-                        <tr>
-                            <td>Gangguan pendengaran dan atau penglihatan</td>
-                            <td>${item.data.resiko_jatuh_geriatri_pendengaran_dan_pengeliatan}</td>
-                        </tr>
-                        <tr>
-                            <td>Usia 70 tahun keatas</td>
-                            <td>${item.data.resiko_jatuh_geriatri_70_tahun_keatas}</td>
-                        </tr>
-                        <tr>
-                            <td>Total Skor Risiko Jatuh Pasien Geriatri > 60 Tahun </td>
-                            <td>${item.data.total_resiko_jatuh_geriatri}</td>
-                        </tr>
-                    `;
-                    detailTableBody.html(rows);
+                    if (age >= 18 && age < 60){
+                        text = 'Dewasa Hall Morse Scale '
+                    }else{
+                        text = 'Pasien Geriatri > 60 Tahun '
+                    }
 
+                    $('#resikoJatuhDetailModalLabel').text('Detail Risiko Jatuh ' + text + 'Pada ' + formatDateTime(response.data.created_at));
+
+                    if (age >= 18 && age < 60) {
+                        rows = `
+                            <tr><td><b>Penilaian Risiko Jatuh Dewasa</b></td></tr>
+                            <tr><td>Riwayat Jatuh</td><td>${response.data.resiko_jatuh_bulan_terakhir === '25' ? 'Ya' : 'Tidak'}</td></tr>
+                            <tr><td>Diagnosa Sekunder</td><td>${response.data.resiko_jatuh_medis_sekunder === '15' ? 'Ya' : 'Tidak'}</td></tr>
+                            <tr><td>Bantuan Ambulasi</td><td>
+                                ${response.data.resiko_jatuh_alat_bantu_jalan === '0' ? 'Tidak ada/ bed rest/ bantuan perawat' :
+                                response.data.resiko_jatuh_alat_bantu_jalan === '15' ? 'Kruk/ tongkat/ alat bantu berjalan' : 'Meja/ kursi'}
+                            </td></tr>
+                            <tr><td>Terpasang Infus</td><td>${response.data.resiko_jatuh_infus === '25' ? 'Ya' : 'Tidak'}</td></tr>
+                            <tr><td>Cara/ Gaya Berjalan</td><td>
+                                ${response.data.resiko_jatuh_berjalan === '0' ? 'Normal/ bed rest/ kursi roda' :
+                                response.data.resiko_jatuh_berjalan === '15' ? 'Lemah' : 'Terganggu'}
+                            </td></tr>
+                            <tr><td>Status Mental</td><td>${response.data.resiko_jatuh_mental === '0' ? 'Berorientasi' : 'Lupa akan keterbatasannya'}</td></tr>
+                            <tr><td>Total Skor Dewasa</td><td>${response.data.total_resiko_jatuh_dewasa}</td></tr>
+                        `;
+                    } else {
+                        rows = `
+                            <tr><td><b>Penilaian Risiko Jatuh Pasien Geriatri > 60 Tahun</b></td></tr>
+                            <tr><td>Gangguan Gaya Berjalan</td><td>${response.data.resiko_jatuh_geriatri_gangguan_gaya_berjalan}</td></tr>
+                            <tr><td>Pusing / Pingsan</td><td>${response.data.resiko_jatuh_geriatri_pusing}</td></tr>
+                            <tr><td>Kebingungan Setiap Saat</td><td>${response.data.resiko_jatuh_geriatri_kebingungan}</td></tr>
+                            <tr><td>Nokturia / Inkontinen</td><td>${response.data.resiko_jatuh_geriatri_nokturia}</td></tr>
+                            <tr><td>Kebingungan Intermiten</td><td>${response.data.resiko_jatuh_geriatri_kebingungan_intermiten}</td></tr>
+                            <tr><td>Kelemahan Umum</td><td>${response.data.resiko_jatuh_geriatri_kelemahan_umum}</td></tr>
+                            <tr><td>Obat-obat Berisiko Tinggi</td><td>${response.data.resiko_jatuh_geriatri_obat_beresiko_tinggi}</td></tr>
+                            <tr><td>Total Skor Geriatri</td><td>${response.data.total_resiko_jatuh_geriatri}</td></tr>
+                        `;
+                    }
+
+                    $('#detailTableBody').html(rows);
                     $('#resikoJatuhDetailModal').modal('show');
                 },
                 error: function(xhr, status, error) {
@@ -1821,23 +1773,14 @@
                     alert('Failed to fetch data for the selected item.');
                 }
             });
+        }
+
+    function handleLihatButtonClick() {
+        $(document).on('click', '.lihat-btn', function () {
+            var id = $(this).data('id');
+            fetchResikoJatuhDetail(id);
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </script>
