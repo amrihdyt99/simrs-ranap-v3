@@ -88,22 +88,6 @@
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-lg-2">
-                                                    <label for="age" class="label-admisi">Umur</label>
-                                                </div>
-                                                <div class="col-lg-10">
-                                                    <input type="number" name="age" id="age" class="form-control" value="{{ $pasien->Age }}">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="col-lg-2">
-                                                    <label for="old_mrn" class="label-admisi">MRN Lama</label>
-                                                </div>
-                                                <div class="col-lg-10">
-                                                    <input type="number" name="old_mrn" id="old_mrn" class="form-control" value="{{ $pasien->OldMRN }}">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="col-lg-2">
                                                     <label for="agama" class="label-admisi">Agama</label>
                                                 </div>
                                                 <div class="col-lg-4">
@@ -117,6 +101,12 @@
                                                         <option value="0006^MOS" {{ $pasien->GCReligion == '0006^MOS' ? 'selected' : '' }}>Muslim</option>
                                                         <option value="0006^OTH" {{ $pasien->GCReligion == '0006^OTH' ? 'selected' : '' }}>Other</option>
                                                     </select>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <label for="age" class="label-admisi">Umur</label>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <input type="number" name="age" id="age" class="form-control" value="{{ $pasien->Age }}" readonly>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -202,6 +192,16 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
+                                                            <div class="col-lg-6">
+                                                                <label class="label-admisi">Tanggal Lahir</label>
+                                                                <input type="date" class="form-control" name="DateOfBirth[]" value="{{ $kel->DateOfBirth }}">
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <label class="label-admisi">Pekerjaan</label>
+                                                                <input type="text" class="form-control" name="Job[]" value="{{ $kel->Job }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
                                                             <div class="col-lg-12 text-left">
                                                                 <button type="button" class="btn btn-danger remove-family-form">Hapus</button>
                                                             </div>
@@ -239,6 +239,17 @@
                                                             <div class="col-lg-6">
                                                                 <label class="label-admisi">Nama Keluarga Pasien</label>
                                                                 <input type="text" class="form-control" name="FamilyName[]">
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="form-group row">
+                                                            <div class="col-lg-6">
+                                                                <label class="label-admisi">Tanggal Lahir</label>
+                                                                <input type="date" class="form-control" name="DateOfBirth[]">
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <label class="label-admisi">Pekerjaan</label>
+                                                                <input type="text" class="form-control" name="Job[]">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -342,5 +353,17 @@
         }
     });
     updateRemoveButtons();
+
+    function calculateAge() {
+        const birthDate = new Date(document.getElementById('tanggal_lahir').value);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        document.getElementById('age').value = age;
+    }
+    document.getElementById('tanggal_lahir').addEventListener('change', calculateAge);
 </script>
 @endpush

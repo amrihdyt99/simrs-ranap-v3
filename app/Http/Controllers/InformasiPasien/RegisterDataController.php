@@ -16,10 +16,12 @@ class RegisterDataController extends Controller
     {
         return view('register.pages.informasi-pasien.index');
     }
+
     public function store(Request $request)
     {
         try {
             $newMRN = $this->generateMRN();
+            
             $pasienData = [
                 'MedicalNo' => $newMRN,
                 'SSN' => $request->ssn,
@@ -41,7 +43,7 @@ class RegisterDataController extends Controller
 
             $keluargaData = array_map(function ($key) use ($request, $newMRN) {
                 return [
-                    'MedicalNo' => $newMRN,
+                    'MedicalNo' => $request->MedicalNo[$key] ?? '',
                     'GCRelationShip' => $request->GCRelationShip[$key],
                     'PhoneNo' => $request->PhoneNo[$key] ?? null,
                     'SSN' => $request->SSN[$key] ?? null,
@@ -61,6 +63,7 @@ class RegisterDataController extends Controller
             return back()->withErrors('Terjadi kesalahan: ' . $th->getMessage());
         }
     }
+
     private function generateMRN()
     {
         $latestMRN = DB::connection('mysql2')->table('m_pasien')->orderByDesc('MedicalNo')->first()->MedicalNo;
@@ -68,9 +71,37 @@ class RegisterDataController extends Controller
         $parts[3] = str_pad((int)$parts[3] + 1, 2, '0', STR_PAD_LEFT);
         $newMRN = implode('-', $parts);
 
+        while (DB::connection('mysql2')->table('m_pasien')->where('MedicalNo', $newMRN)->exists()) {
+            $parts[3] = str_pad((int)$parts[3] + 1, 2, '0', STR_PAD_LEFT);
+            $newMRN = implode('-', $parts);
+        }
+
         return $newMRN;
     }
 
+    public function checkMRN(Request $request)
+    {
+        $mrn = $request->query('mrn');
+        Log::info('Checking MRN:', ['mrn' => $mrn]); // Debug log
+
+        $pasienData = DB::connection('mysql2')->table('m_pasien')
+            ->where('MedicalNo', 'like', "%{$mrn}%")
+            ->select('MedicalNo', 'PatientName')
+            ->get()
+            ->toArray();
+
+        $keluargaData = DB::connection('mysql2')->table('m_keluarga_pasien')
+            ->where('MedicalNo', 'like', "%{$mrn}%")
+            ->select('MedicalNo', 'FamilyName as PatientName')
+            ->get()
+            ->toArray();
+
+        $data = array_merge($pasienData, $keluargaData);
+
+        Log::info('MRNs found:', ['data' => $data]); // Debug log
+
+        return response()->json($data);
+    }
 
     public function getData()
     {
@@ -78,14 +109,19 @@ class RegisterDataController extends Controller
         return DataTables::of($pasien)
             ->addColumn('action', function ($row) {
                 return '
-                    <a href="' . route('register.informasi-pasien.edit', $row->MedicalNo) . '" class="btn btn-primary btn-sm">Edit</a>
-                    <a href="' . route('register.ranap.create', $row->MedicalNo) . '" class="btn btn-warning btn-sm">Registrasi Ranap</a>
-                    <button class="btn btn-danger btn-sm btn-delete" data-id="' . $row->MedicalNo . '">Hapus</button>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Aksi
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="' . route('register.informasi-pasien.edit', $row->MedicalNo) . '">Edit</a>
+                            <button class="dropdown-item btn-delete" data-id="' . $row->MedicalNo . '">Hapus</button>
+                        </div>
+                    </div>
                 ';
             })
             ->make(true);
     }
-    
 
     public function edit($id)
     {
@@ -138,7 +174,6 @@ class RegisterDataController extends Controller
             return back()->withErrors('Terjadi kesalahan: ' . $th->getMessage());
         }
     }
-    
 
     public function destroy($id)
     {

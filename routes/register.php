@@ -13,7 +13,7 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
     Route::get('/', [Ranap\RegisterController::class, 'index'])->name('register.ranap.index');
     Route::get('/barcode/{reg_no}', [Ranap\RegisterController::class, 'barcode'])->where('reg_no', '(.*)')->name('register.ranap.barcode');
     Route::get('batal/{no}', [Ranap\RegisterController::class, 'batal_ranap'])->name('register.ranap.batal');
-
+    Route::get('/rawat-intensif/{reg_no}', [Ranap\RegisterController::class, 'rawatIntensif'])->where('reg_no', '(.*)')->name('register.ranap.rawat-intensif');
     Route::get('/api/generate-newborn-mrn', [RegisterController::class, 'generateNewbornMRN']);
 
     // Route::get('/formnew', [Ranap\RegisterController::class, 'formRegisterInap'])->name('register.ranap.newpatient');
@@ -54,13 +54,6 @@ Route::get("/pdf", function () {
     return view('pdf');
 });
 
-//informasi pasien
-// Rute yang langsung menampilkan view 'index' dari direktori 'register/informasi-pasien'
-//Route::view('/informasi-pasien', 'register.informasi-pasien.index')->name('register.informasi-pasien.index');
-//Route::view('/informasi-pasien', 'register.pages.informasi-pasien.index')->name('register.pages.informasi-pasien.index');
-//Route::view('/informasi-pasien/create', 'register.pages.informasi-pasien.create')->name('register.pages.informasi-pasien.create');
-// ... existing code ...
-
 Route::get('/register/informasi-pasien/create', [RegisterDataController::class, 'create'])->name('register.informasi-pasien.create'); //create
 Route::delete('/register/pages/informasi-pasien/{id}', [RegisterDataController::class, 'destroy'])->name('register.informasi-pasien.destroy'); //hapos
 Route::post('/register/informasi-pasien', [RegisterDataController::class, 'store'])->name('register.informasi-pasien.store');
@@ -70,6 +63,8 @@ Route::put('/register/pages/informasi-pasien/{MedicalNo}', [RegisterDataControll
 Route::resource('informasi-pasien', RegisterDataController::class); // Route untuk menampilkan data pasien
 Route::get('register/informasi-pasien', [RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
 Route::get('register/informasi-pasien/getData', [RegisterDataController::class, 'getData'])->name('register.informasi-pasien.getData');
+Route::get('register/informasi-pasien/generateMRN', [RegisterDataController::class, 'generateMRN'])->name('register.informasi-pasien.generateMRN');
+Route::get('register/informasi-pasien/checkMRN', [RegisterDataController::class, 'checkMRN'])->name('register.informasi-pasien.checkMRN');
 //Route::get('/informasi-pasien/patientnew', 'register.pages.informasi-pasien.patientnew')->name('register.pages.informasi-pasien.patientnew');
 //Route::get('/informasi-pasien', [InformasiPasien\RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
 
