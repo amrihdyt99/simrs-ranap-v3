@@ -75,3 +75,9 @@ Route::get('register/informasi-pasien/getData', [RegisterDataController::class, 
 
 Route::get('/register/cancelation', [RegistrationCancelationController::class, 'index'])->name('cancelation.index');
 Route::post('/register/cancelation/{reg_no}', [RegistrationCancelationController::class, 'cancelRegistration'])->name('cancel_registration');
+
+Route::prefix('register')->name('register.')->group(function () {
+    Route::prefix('slip-register')->name('slip-register.')->group(function () {
+        Route::get('/rajal/{reg_no}', [RegistrationRajalController::class, 'slipRegister'])->where('reg_no', '(.*)')->name('rajal');
+    });
+});

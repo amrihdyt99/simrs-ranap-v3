@@ -12,7 +12,7 @@
         #note{position:absolute;left:50px;top:35px;padding:0px;margin:0px;cursor:default;}
         .container {
             display: flex;
-            justify-content: center
+            justify-content: center;
         }
     </style>
 </head>
