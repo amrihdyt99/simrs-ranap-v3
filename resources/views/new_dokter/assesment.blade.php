@@ -237,7 +237,6 @@
         $reg = "{{$reg}}";
         $medrec = "{{$patient->reg_medrec}}";
         $subs =  "";
-        var $dpjp_utama = '{{$dataPasien->reg_dokter}}'
         var $service_unit = '{{$dataPasien->service_unit}}'
         var $id_cppt = '{{$id_cppt}}' 
 
@@ -245,8 +244,7 @@
 
         $('div[id*="panel-"]').hide();
         $('#panel-assesment').show();
-
-        // clickTab('resume')
+        clickTab('resume')
 
         $('#odontogram_2').hide();
 

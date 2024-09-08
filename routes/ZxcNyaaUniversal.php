@@ -43,7 +43,7 @@ Route::prefix('nyx-sistem')
         });
 
         Route::prefix('view-injector')->name('view_injector.')->group(function () {
-            Route::prefix('perawat')->name('perawat.')->middleware(['auth'])->group(function () {
+            Route::prefix('perawat')->name('perawat.')->middleware(['auth','shift'])->group(function () {
                 Route::post('checklistpasien', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'checklist'])->name('checklist_pasien');
                 Route::post('assesment_perawat', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_perawat'])->name('assesment_perawat');
                 Route::post('assesment_entry_skrinning_nyeri', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_entry_skrinning_nyeri'])->name('assesment_entry_skrinning_nyeri');

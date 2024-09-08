@@ -51,12 +51,12 @@
             <label>Dokter Operator</label>
             <input type="text" class="form-control" name="cath_timeout_tim_dokter" value="{{$time_out->cath_timeout_tim_dokter}}">
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label>Dokter Operator</label>
             <input type="text" class="form-control" name="cath_timeout_tim_scrub" value="{{$time_out->cath_timeout_tim_scrub}}">
-        </div>
+        </div> --}}
         <div class="form-group">
-            <label>Circulating Nurse</label>
+            <label>Perawat Sirkuler</label>
             <input type="text" class="form-control" name="cath_timeout_tim_circulating" value="{{$time_out->cath_timeout_tim_circulating}}">
         </div>
         <div class="form-group">
@@ -66,6 +66,14 @@
         <div class="form-group">
             <label>Perawat Anastesi</label>
             <input type="text" class="form-control" name="cath_timeout_tim_perawat_anastesi" value="{{$time_out->cath_timeout_tim_perawat_anastesi}}">
+        </div>
+        <div class="form-group">
+            <label>Perawat Scrub</label>
+            <input type="text" class="form-control" name="cath_timeout_perawat_scrub" value="">
+        </div>
+        <div class="form-group">
+            <label>Perawat Hemodinamic</label>
+            <input type="text" class="form-control" name="cath_timeout_perawat_hemodinamic" value="">
         </div>
         <div class="form-group">
             <label>Petugas Lainnya</label>
@@ -119,9 +127,6 @@
     </li>
 </ol>
 <hr>
-<div class="form-group">
-    <label>Perawat Sirkuler</label>
-    <input type="text" class="form-control" name="cath_timeout_perawat" value="{{$time_out->cath_timeout_perawat}}">
-</div>
+
 <button type="button" id="btn_cathlab" class="btn btn-success float-left" onclick="simpanCathlabTimeOut()">Simpan</button>
 </form>

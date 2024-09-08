@@ -359,6 +359,7 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.checklist_pasien')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        ttd_checklist();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -404,22 +405,22 @@
                 });
             },
 
-            'edukasi': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
+            // 'edukasi': function() {
+            //     $.ajax({
+            //         type: "POST",
+            //         data: {
+            //             "reg_no": regno,
+            //             "medrec": medrec,
+            //         },
+            //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+            //         success: function(data) {
+            //             inject_view_data(data);
+            //         },
+            //         error: function(data) {
+            //             clear_show_error();
+            //         },
+            //     });
+            // },
 
             'edukasi': function() {
                 $.ajax({
@@ -431,6 +432,7 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        ttd_edukasi_perawat();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -444,10 +446,12 @@
                     data: {
                         "reg_no": regno,
                         "medrec": medrec,
+                        "user_id": $user_,
                     },
                     url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        modal_resiko_jatuh();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1567,4 +1571,273 @@
             $('.checkbox-checklist').prop('checked', false);
         }
     }
+
+    function ttd_edukasi_perawat() {
+        // SASARAN
+        let $wrapperSasaran = $("#signature-pad-sasaran");
+        let $clearButtonSasaran = $wrapperSasaran.find("#clear_btn_sasaran");
+        let $canvasSasaran = $wrapperSasaran.find("canvas")[0];
+
+        signaturePadSasaran = new SignaturePad($canvasSasaran);
+
+        // Load signature if available
+        let signatureSasaranDataURL = $("#signature_sasaran").val();
+        if (signatureSasaranDataURL) {
+            signaturePadSasaran.fromDataURL(signatureSasaranDataURL);
+        }
+
+        $clearButtonSasaran.on("click", function(event) {
+            signaturePadSasaran.clear();
+        });
+
+        // EDUKATOR
+        let $wrapperEdukator = $("#signature-pad-edukator");
+        let $clearButtonEdukator = $wrapperEdukator.find("#clear_btn_edukator");
+        let $canvasEdukator = $wrapperEdukator.find("canvas")[0];
+
+        signaturePadEdukator = new SignaturePad($canvasEdukator);
+
+        // Load signature if available
+        let signatureEdukatorDataURL = $("#signature_edukator").val();
+        if (signatureEdukatorDataURL) {
+            signaturePadEdukator.fromDataURL(signatureEdukatorDataURL);
+        }
+
+        $clearButtonEdukator.on("click", function(event) {
+            signaturePadEdukator.clear();
+        });
+
+        $('#simpan-edukasi-pasien-perawat').on('click', function() {
+            addedukasipasienperawat();
+        });
+    }
+
+
+    function ttd_checklist() {
+        // checklist Perawat
+        let $wrapperPerawat = $("#signature-pad-perawat");
+        let $clearButtonPerawat = $wrapperPerawat.find("#clear_btn_perawat");
+        let $canvasPerawat = $wrapperPerawat.find("canvas")[0];
+
+        signaturePadPerawat = new SignaturePad($canvasPerawat);
+
+        // Load signature if available
+        let signaturePerawatDataURL = $("#signature_perawat").val();
+        if (signaturePerawatDataURL) {
+            signaturePadPerawat.fromDataURL(signaturePerawatDataURL);
+        }
+
+        $clearButtonPerawat.on("click", function(event) {
+            signaturePadPerawat.clear();
+        });
+
+        // checklist Pasien
+        let $wrapperPasien = $("#signature-pad-pasien");
+        let $clearButtonPasien = $wrapperPasien.find("#clear_btn_pasien");
+        let $canvasPasien = $wrapperPasien.find("canvas")[0];
+
+        signaturePadPasien = new SignaturePad($canvasPasien);
+
+        // Load signature if available
+        let signaturePasienDataURL = $("#signature_pasien").val();
+        if (signaturePasienDataURL) {
+            signaturePadPasien.fromDataURL(signaturePasienDataURL);
+        }
+
+        $clearButtonPasien.on("click", function(event) {
+            signaturePadPasien.clear();
+        });
+
+        $('#save-checklist-orientasi').click(function() {
+            simpanchecklist();
+        });
+    }
+
+    function resetFormResikoJatuh() {
+        const form = document.getElementById('entry-resiko-jatuh');
+
+        const radioButtons = form.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(function(radio) {
+            radio.checked = false;
+        });
+
+        const inputs = form.querySelectorAll('input[type="text"], input[type="number"]');
+        inputs.forEach(function(input) {
+            input.value = '';
+        });
+    }
+
+    function modal_resiko_jatuh() {
+        $('#resikoJatuhModal').on('show.bs.modal', function (e) {
+            var requestData = {
+                regno: regno,
+                medrec: medrec,
+                user_id: "{{ auth()->user()->id }}"
+            };
+
+            $.ajax({
+                url: "{{ route('getResikoJatuhData') }}",
+                method: 'POST',
+                data: requestData,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Add CSRF token
+                },
+                success: function(response) {
+                    var tbody = $('#resiko_jatuh_table tbody');
+                    tbody.empty();
+                    response.data.forEach(function(item) {
+                        var row = '<tr>' +
+                            '<td>' + (item.created_at || 'N/A') + '</td>' +  // Display created_at
+                            '<td>' + (item.shift || 'N/A') + '</td>' +  // Display shift
+                            '<td><button class="btn btn-primary lihat-btn" data-id="' + item.id + '">Lihat</button></td>' +
+                            '</tr>';
+                        tbody.append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
+                    alert('Failed to load data.');
+                }
+            });
+        });
+
+        $(document).on('click', '.lihat-btn', function () {
+            var id = $(this).data('id');  
+
+            var requestData = {
+                regno: regno,
+                medrec: medrec,
+                user_id: "{{ auth()->user()->id }}",
+                id: id  
+            };
+
+            $.ajax({
+                url: "{{ route('getResikoJatuhData2') }}",
+                method: 'POST',
+                data: requestData,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  
+                },
+                success: function(item) {
+                    console.log(item); 
+                    console.log('x', typeof item.resiko_jatuh_geriatri_gangguan_gaya_berjalan);
+                    
+                    // Build the table rows dynamically
+                    var detailTableBody = $('#detailTableBody');
+                    var rows = `
+                        <tr>
+                            <td colspan="2"><b>Resiko Jatuh Dewasa<b></td>
+                        </tr>
+                        <tr>
+                            <td>Riwayat Jatuh</td>
+                            <td>${item.data.resiko_jatuh_bulan_terakhir == '25' ? 'Ya' : 'Tidak'}</td>
+                        </tr>
+                        <tr>
+                            <td>Diagnosa Sekunder</td>
+                            <td>${item.data.resiko_jatuh_medis_sekunder == '15' ? 'Ya' : 'Tidak'}</td>
+                        </tr>
+                        <tr>
+                            <td>Bantuan Ambulasi</td>
+                            <td>${item.data.resiko_jatuh_alat_bantu_jalan == '0' ? 'Tidak ada/ bed rest/ bantuan perawat' :
+                                item.data.resiko_jatuh_alat_bantu_jalan == '15' ? 'Kruk/ tongkat/ alat bantu berjalan' :
+                                'Meja/ kursi'}</td>
+                        </tr>
+                        <tr>
+                            <td>Terpasang Infus</td>
+                            <td>${item.data.resiko_jatuh_infus == '25' ? 'Ya' : 'Tidak'}</td>
+                        </tr>
+                        <tr>
+                            <td>Cara/ gaya berjalan</td>
+                            <td>${item.data.resiko_jatuh_berjalan == '0' ? 'Normal/ bed rest/ kursi roda' :
+                                item.data.resiko_jatuh_berjalan == '15' ? 'Lemah' : 'Terganggu'}</td>
+                        </tr>
+                        <tr>
+                            <td>Status Mental</td>
+                            <td>${item.data.resiko_jatuh_mental == '0' ? 'Berorientasi pada kemampuannya' :
+                                'Lupa akan keterbatasannya'}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Skor Dewasa</td>
+                            <td>${item.data.total_resiko_jatuh_dewasa}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><b>Risiko Jatuh Pasien Geriatri > 60 Tahun<b></td>
+                        </tr>
+                        <tr>
+                            <td>Gangguan gaya berjalan</td>
+                            <td>${item.data.resiko_jatuh_geriatri_gangguan_gaya_berjalan}</td>
+                        </tr>
+                        <tr>
+                            <td>Pusing / pingsan pada posisi tegak</td>
+                            <td>${item.data.resiko_jatuh_geriatri_pusing}</td>
+                        </tr>
+                        <tr>
+                            <td>Kebingungan setiap saat</td>
+                            <td>${item.data.resiko_jatuh_geriatri_kebingungan}</td>
+                        </tr>
+                        <tr>
+                            <td>Nokturia / Inkontinen</td>
+                            <td>${item.data.resiko_jatuh_geriatri_nokturia}</td>
+                        </tr>
+                        <tr>
+                            <td>Kebingungan Intermiten</td>
+                            <td>${item.data.resiko_jatuh_geriatri_kebingungan_intermiten}</td>
+                        </tr>
+                        <tr>
+                            <td>Kelemahan Umum</td>
+                            <td>${item.data.resiko_jatuh_geriatri_kelemahan_umum}</td>
+                        </tr>
+                        <tr>
+                            <td>Obat-obat berisiko tinggi</td>
+                            <td>${item.data.resiko_jatuh_geriatri_obat_beresiko_tinggi}</td>
+                        </tr>
+                        <tr>
+                            <td>Riwayat jatuh dalam waktu 12 bulan sebelumnya</td>
+                            <td>${item.data.resiko_jatuh_geriatri_riwayat_jatuh_12_bulan}</td>
+                        </tr>
+                        <tr>
+                            <td>Osteoporosis</td>
+                            <td>${item.data.resiko_jatuh_geriatri_osteoporosis}</td>
+                        </tr>
+                        <tr>
+                            <td>Gangguan pendengaran dan atau penglihatan</td>
+                            <td>${item.data.resiko_jatuh_geriatri_pendengaran_dan_pengeliatan}</td>
+                        </tr>
+                        <tr>
+                            <td>Usia 70 tahun keatas</td>
+                            <td>${item.data.resiko_jatuh_geriatri_70_tahun_keatas}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Skor Risiko Jatuh Pasien Geriatri > 60 Tahun </td>
+                            <td>${item.data.total_resiko_jatuh_geriatri}</td>
+                        </tr>
+                    `;
+                    detailTableBody.html(rows);
+
+                    $('#resikoJatuhDetailModal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
+                    alert('Failed to fetch data for the selected item.');
+                }
+            });
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>

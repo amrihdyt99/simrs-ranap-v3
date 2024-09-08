@@ -93,7 +93,8 @@ Route::post('addPersetujuanTindakanMedis', [\App\Http\Controllers\NewPerawat\New
 Route::post('addPenolakanTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPenolakanTindakanMedis'])->name('add.PenolakanTindakanMedis');
 Route::post('addRujukanPersiapanPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanPersiapanPasien'])->name('add.RujukanPersiapanPasien');
 Route::post('addRujukanSerahTerima', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanSerahTerima'])->name('add.RujukanSerahTerima');
-Route::get('getResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh'])->name('get.resiko.jatuh');
+Route::post('getResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh'])->name('getResikoJatuhData');
+Route::post('getResikoJatuh2', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh2'])->name('getResikoJatuhData2');
 
 //baru
 Route::post('addassesmetawalanak', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPengkajianPasienAnak'])->name('add.assesmentawalanak');
@@ -106,6 +107,7 @@ Route::post('addskrinninggizianak', [\App\Http\Controllers\NewPerawat\NewNursing
 Route::post('addMasalah', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addMasalah'])->name('add.Masalah');
 Route::post('addskrinningnyeri', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addSkrinningNyeri'])->name('add.skrinningnyeri');
 Route::post('addEdukasiPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addedukasipasien'])->name('add.edukasipasien');
+Route::post('addEdukasiPasienPerawat', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addEdukasiPasienPerawat'])->name('add.edukasi_pasien_perawat');
 Route::post('getRsEdukasiPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getRsEdukasiPasien'])->name('get.edukasipasien');
 Route::post('checklistpasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'checklist'])->name('checklist.pasien');
 Route::post('getNursingNote', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getNursingNote'])->name('get.nursing.note');
