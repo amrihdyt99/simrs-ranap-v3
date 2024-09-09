@@ -1,10 +1,10 @@
 @php
-    $get_tindakan_medis_data_penolakan=DB::connection('mysql')
+    $get_tindakan_medis_data_persetujuan=DB::connection('mysql')
             ->table('rs_tindakan_medis_persetujuan')
             ->where('kode_tindakan_medis_setuju_tolak', $informasi->kode_tindakan_medis_setuju_tolak)
             ->first();
-            if (!$get_tindakan_medis_data_penolakan) {
-                $get_tindakan_medis_data_penolakan=optional((object)[]);
+            if (!$get_tindakan_medis_data_persetujuan) {
+                $get_tindakan_medis_data_persetujuan=optional((object)[]);
             }
 @endphp
 <form id="PersetujuanTindakanMedis">
@@ -21,7 +21,7 @@
                         Nama
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_nama_1" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_nama_1}}">
+                        <input type="text" name="persetujuan_nama_1" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_nama_1}}">
                     </td>
                 </tr>
                 <tr>
@@ -29,10 +29,10 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki" {{$get_tindakan_medis_data_persetujuan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : ''}}>
                         <label for="persetujuan_jenis_kelamin_1_laki_laki">Laki-laki</label>
                     
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan" {{$get_tindakan_medis_data_persetujuan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : ''}}>
                         <label for="persetujuan_jenis_kelamin_1_perempuan">Perempuan</label>
                     </td>
                     
@@ -42,7 +42,7 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        <input type="date" name="persetujuan_tanggal_lahir_1" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_tanggal_lahir_1}}">
+                        <input type="date" name="persetujuan_tanggal_lahir_1" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_tanggal_lahir_1}}">
                     </td>
                 </tr>
                 <tr>
@@ -50,7 +50,7 @@
                         Alamat
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_alamat_1" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_alamat_1}}">
+                        <input type="text" name="persetujuan_alamat_1" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_alamat_1}}">
                     </td>
                 </tr>
                 <tr>
@@ -58,7 +58,7 @@
                         Dengan ini menyatakan SETUJU untuk dilakukan tindakan.
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_pernyataan" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_pernyataan}}">
+                        <input type="text" name="persetujuan_pernyataan" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_pernyataan}}">
                     </td>
                 </tr>
                 <tr>
@@ -66,15 +66,15 @@
                         Terhadap
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_1" value="Saya sendiri" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Saya sendiri' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_1" value="Saya sendiri" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Saya sendiri' ? 'checked' : ''}}>
                         <label for="persetujuan_terhadap_1">Saya sendiri</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_2" value="Anak" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Anak' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_2" value="Anak" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Anak' ? 'checked' : ''}}>
                         <label for="persetujuan_terhadap_2">Anak</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_3" value="Ayah" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Ayah' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_3" value="Ayah" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Ayah' ? 'checked' : ''}}>
                         <label for="persetujuan_terhadap_3">Ayah</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_4" value="Ibu" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Ibu' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_4" value="Ibu" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Ibu' ? 'checked' : ''}}>
                         <label for="persetujuan_terhadap_4">Ibu</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_5" value="Saudara" {{$get_tindakan_medis_data_penolakan->persetujuan_terhadap=='Saudara' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_5" value="Saudara" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Saudara' ? 'checked' : ''}}>
                         <label for="persetujuan_terhadap_5">Saudara</label>
                     </td>
                 </tr>
@@ -83,7 +83,7 @@
                         Nama
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_nama_2" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_nama_2}}">
+                        <input type="text" name="persetujuan_nama_2" id="" class="form-control" value="{{$dataPasien->PatientName}}">
                     </td>
                 </tr>
                 <tr>
@@ -91,9 +91,9 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_laki_laki" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_2=='Laki-laki' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_laki_laki" value="0001^M" {{$dataPasien->GCSex=='0001^M' ? 'checked' : ''}}>
                         <label for="persetujuan_jenis_kelamin_2_laki_laki">Laki-laki</label>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_perempuan" value="Perempuan" {{$get_tindakan_medis_data_penolakan->persetujuan_jenis_kelamin_2=='Perempuan' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_perempuan" value="0001^F" {{$dataPasien->GCSex=='0001^F' ? 'checked' : ''}}>
                         <label for="persetujuan_jenis_kelamin_2_perempuan">Perempuan</label>
                     </td>
                 </tr>
@@ -102,7 +102,7 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        <input type="date" name="persetujuan_tanggal_lahir_2" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_tanggal_lahir_2}}">
+                        <input type="date" name="persetujuan_tanggal_lahir_2" id="" class="form-control" value="{{$dataPasien->DateOfBirth}}">
                     </td>
                 </tr>
                 <tr>
@@ -110,7 +110,7 @@
                         Alamat
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_alamat_2" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_alamat_2}}">
+                        <input type="text" name="persetujuan_alamat_2" id="" class="form-control" value="{{$dataPasien->PatientAddress}}">
                     </td>
                 </tr>
             </table>
@@ -133,7 +133,7 @@
                         </td>
                         <td>
                             <input type="datetime-local" name="persetujuan_tanggal_waktu_ttd" id=""
-                                class="form-control" value="{{$get_tindakan_medis_data_penolakan->persetujuan_tanggal_waktu_ttd}}">
+                                class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_tanggal_waktu_ttd}}">
                         </td>
                     </tr>
                 </tbody>
@@ -143,43 +143,91 @@
         <table style="width: 100%; border: none; text-align:center;">
             <tbody>
                 <tr>
-                    <td colspan="3" style="text-align: right;">
-                        <h5>Saksi</h5>
+                    <td>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px">Yang menyatakan</div>
+                            <div id="signature-pad-persetujuan-penerima" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_persetujuan_penerima" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_persetujuan_penerima" name="persetujuan_ttd_yg_menyatakan" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_yg_menyatakan}}">
+                                    <button type="button" id="clear_btn_persetujuan_penerima" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px">Dokter</div>
+                            <div id="signature-pad-persetujuan-dokter" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_persetujuan_dokter" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_persetujuan_dokter" name="persetujuan_ttd_dokter" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_dokter ??auth()->user()->signature}}">
+                                    <button type="button" id="clear_btn_persetujuan_dokter" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <h5>
-                            Yang menyatakan
-                        </h5>
-                    </td>
-                    <td>
-                        <h5>Dokter</h5>
-                    </td>
-                    <td>
-                        <h5>1. Keluarga</h5>
-                    </td>
-                    <td>
-                        <h5>2. Perawat</h5>
-                    </td>
+                    <td colspan="2" style="font-size:17px">SAKSI</td>
                 </tr>
                 <tr>
                     <td>
-                        (..................)
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px">1. Keluarga</div>
+                            <div id="signature-pad-persetujuan-keluarga" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_persetujuan_keluarga" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_persetujuan_keluarga" name="persetujuan_ttd_keluarga" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_keluarga}}">
+                                    <button type="button" id="clear_btn_persetujuan_keluarga" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        (..................)
-                    </td>
-                    <td>
-                        (..................)
-                    </td>
-                    <td>
-                        (..................)
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px">2. Perawat</div>
+                            <div id="signature-pad-persetujuan-perawat" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_persetujuan_perawat" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_persetujuan_perawat" name="persetujuan_ttd_perawat" value="{{$get_tindakan_medis_data_persetujuan->get_tindakan_medis_data_persetujuan ?? auth()->user()->signature}}">
+                                    <button type="button" id="clear_btn_persetujuan_perawat" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+        
     </div>
-    <button class="btn btn-success float-right mt-4" type="button"
-        onclick="simpanPersetujuanTindakanMedis()">Simpan</button>
+    <button class="btn btn-success float-left mt-4" id="save-persetujuan-tindakan-medis" type="button">Simpan</button>
 </form>

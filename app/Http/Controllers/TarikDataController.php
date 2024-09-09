@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -292,7 +293,6 @@ class TarikDataController extends Controller
         foreach ($data as $kue) {
             DB::connection('mysql2')
                 ->table('users')->insert([
-                    // 'id' => $kue['id'],
                     'level_user' => $kue['level_user'],
                     'name' => $kue['name'],
                     'username' => $kue['username'],
@@ -300,11 +300,14 @@ class TarikDataController extends Controller
                     'password' => $kue['password'],
                     'dokter_id' => $kue['dokter_id'],
                     'perawat_id' => $kue['perawat_id'],
+                    'signature' => $kue['signature'],
                     'is_active' => $kue['is_active'],
                     'remember_token' => $kue['remember_token'],
-                    'created_at' => $kue['created_at'],
+                    'created_at' => Carbon::now(),
                     'updated_at' => $kue['updated_at'],
-                    // 'signature' => $kue['signature'],
+                    'user_active_by' => $kue['updated_at'],
+                    'user_active_at' => Carbon::now(),
+                    'is_deleted' => 0,
                 ]);
         }
         echo 'Alhamdulillah';

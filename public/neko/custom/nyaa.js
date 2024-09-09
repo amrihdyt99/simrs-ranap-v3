@@ -918,3 +918,37 @@ function neko_lightbox(elem){
   });
 }
 
+function calculateAge(dateOfBirth) {
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+
+  return age;
+}
+
+function formatDateTime(dateInput) {
+  // Pastikan input adalah objek Date
+  let date = new Date(dateInput);
+
+  if (isNaN(date.getTime())) {
+      throw new Error('Invalid date input');
+  }
+
+  // Mendapatkan tanggal, bulan, dan tahun
+  let day = String(date.getDate()).padStart(2, '0');
+  let month = String(date.getMonth() + 1).padStart(2, '0');
+  let year = date.getFullYear();
+
+  // Mendapatkan jam, menit, dan detik
+  let hours = String(date.getHours()).padStart(2, '0');
+  let minutes = String(date.getMinutes()).padStart(2, '0');
+  let seconds = String(date.getSeconds()).padStart(2, '0');
+
+  // Menggabungkan format tanggal dan waktu
+  return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+}

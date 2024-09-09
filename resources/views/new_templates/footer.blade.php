@@ -93,6 +93,33 @@
             $(elm).append(newOption).trigger('change');
         }
 
+        function getAlert(_reg){
+            $.ajax({
+                url: '{{url("")}}/api/getAlert',
+                data: {
+                    reg_no: _reg 
+                },
+                success: function(resp){
+                    console.log(resp)
+                    $('#alert_indikator').html('')
+
+                    if (resp.alergi == 'Ya' && resp.asper_hasil) {
+                        $('[id="alert_blink"]').show()
+                    }
+                    
+                    if (resp.alergi == 'Ya') {
+                        $('#alert_indikator').append(`
+                            <p class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: `+resp.nama_alergi+`">Allergy</p>
+                        `)
+                    }
+
+                    if (resp.asper_hasil) {
+                        $('#alert_indikator').append(`<p class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Resiko jatuh : `+resp.asper_hasil+`">Fall risk</p>`)
+                    }
+                }
+            })
+        }
+
         $('#partial-panel').hide();
 
             function outputUpdateWithDesc(vol) {
@@ -302,17 +329,19 @@
                                 $('[id="panel-'+id+'"] #row_loader').remove()
 
                                 var dataJSON=data.data;
-                                for(var i=0;i<dataJSON.length;i++){
-                                    $("#select-tindakan")
-                                        .append($("<option></option>")
-                                            .attr("value", dataJSON[i]['ItemCode'] )
-                                            .attr("class", 'row_tindakan')
-                                            .attr("data-id", dataJSON[i]['ItemCode'] )
-                                            .attr("data-type", 'Laboratorium' )
-                                            .attr("data-name", dataJSON[i]['ItemName1'] )
-                                            .attr("data-price", dataJSON[i]['PersonalPrice'] )
-                                            .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
-                                    //console.log(dataJSON[i]['ItemName1'])
+                                if (dataJSON) {
+                                    for(var i=0;i<dataJSON.length;i++){
+                                        $("#select-tindakan")
+                                            .append($("<option></option>")
+                                                .attr("value", dataJSON[i]['ItemCode'] )
+                                                .attr("class", 'row_tindakan')
+                                                .attr("data-id", dataJSON[i]['ItemCode'] )
+                                                .attr("data-type", 'Laboratorium' )
+                                                .attr("data-name", dataJSON[i]['ItemName1'] )
+                                                .attr("data-price", dataJSON[i]['PersonalPrice'] )
+                                                .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
+                                        //console.log(dataJSON[i]['ItemName1'])
+                                    }
                                 }
                                 //let html = document.getElementById("panel-nursing").innerHTML = data;
                             },

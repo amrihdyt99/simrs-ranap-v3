@@ -86,7 +86,13 @@
         this.clear();
         this._handleMouseDown = function (event) {
             if (event.which === 1) {
-                if (document.getElementById("note")) {
+                var noteElement =
+                    document.getElementById("note") ||
+                    document.getElementById("note_petugas") ||
+                    document.getElementById("note_pasien");
+                if (noteElement) {
+                    noteElement.innerHTML = "";
+                } else if (document.getElementById("note")) {
                     document.getElementById("note").innerHTML = "";
                 }
                 self._mouseButtonDown = true;

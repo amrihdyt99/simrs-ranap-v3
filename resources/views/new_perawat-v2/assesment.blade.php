@@ -316,17 +316,17 @@ $data_persiapan_pasien = [
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="left-tab" id="tab-nyaa_dokumen_kelengkapan_pasien" onclick="clickTab('nyaa_dokumen_kelengkapan_pasien')">
-                        Dokumen Kelengkapan Pasien
-                    </div>
-                </div>
+                {{-- <div class="row">
+                            <div class="left-tab" id="tab-nyaa_dokumen_kelengkapan_pasien" onclick="clickTab('nyaa_dokumen_kelengkapan_pasien')">
+                                Dokumen Kelengkapan Pasien
+                            </div>
+                        </div>
 
-                <div class="row">
-                    <div class="left-tab" id="tab-nyaa_dokumen_tindakan" onclick="clickTab('nyaa_dokumen_tindakan')">
-                        Dokumen Tindakan
-                    </div>
-                </div>
+                        <div class="row">
+                            <div class="left-tab" id="tab-nyaa_dokumen_tindakan" onclick="clickTab('nyaa_dokumen_tindakan')">
+                                Dokumen Tindakan
+                            </div>
+                        </div> --}}
 
                 <div class="row">
                     <div class="left-tab" id="tab-checklist_kepulangan" onclick="clickTab('checklist_kepulangan')">

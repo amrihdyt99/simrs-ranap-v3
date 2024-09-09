@@ -153,14 +153,14 @@ class AssesmentAwalDokterController extends Controller
     {
         $params = $request->except('_token');
         $cek = DB::connection('mysql')
-            ->table('rs_edukasi_pasien')->where('reg_no', $request->reg_no)->first();
+            ->table('rs_edukasi_pasien_dokter')->where('reg_no', $request->reg_no)->first();
         if ($cek) {
             $simpan = DB::connection('mysql')
-                ->table('rs_edukasi_pasien')->where('id', $cek->id)
+                ->table('rs_edukasi_pasien_dokter')->where('id', $cek->id)
                 ->update($params);
         } else {
             $simpan = DB::connection('mysql')
-                ->table('rs_edukasi_pasien')
+                ->table('rs_edukasi_pasien_dokter')
                 ->insert($params);
         }
 
@@ -177,28 +177,30 @@ class AssesmentAwalDokterController extends Controller
     function reset_edukasi($id)
     {
         $reset = DB::connection('mysql')
-            ->table('rs_edukasi_pasien')->where('id', $id)
+            ->table('rs_edukasi_pasien_dokter')->where('id', $id)
             ->update([
-                'topik_dianogsa' => null,
-                'tanggal_edukasi_diagnosa' => null,
-                'tingkat_pemahaman_diagnosa' => null,
-                'metode_edukasi_diagnosa' => null,
-                'topik_penyakit' => null,
-                'tanggal_edukasi_penyakit' => null,
-                'tingkat_pemahaman_penyakit' => null,
-                'metode_edukasi_penyakit' => null,
-                'topik_prosedur' => null,
-                'tanggal_edukasi_prosedur' => null,
-                'tingkat_pemahaman_prosedur' => null,
-                'metode_edukasi_prosedur' => null,
-                'topik_manajemen_nyeri' => null,
-                'tanggal_edukasi_nyeri' => null,
-                'tingkat_pemahaman_nyeri' => null,
-                'metode_edukasi_nyeri' => null,
-                'topik_lain_lain_dokter' => null,
-                'tanggal_edukasi_lain_lain' => null,
-                'tingkat_pemahaman_lain_lain' => null,
-                'metode_edukasi_lain_lain' => null,
+                'edukasi_diagnosa_penyebab_dokter' => null,
+                'tgl_diagnosa_penyebab_dokter' => null,
+                'tingkat_paham_diagnosa_penyebab_dokter' => null,
+                'metode_edukasi_diagnosa_penyebab_dokter' => null,
+                'edukasi_penatalaksanaan_dokter' => null,
+                'tgl_penatalaksanaan_dokter' => null,
+                'tingkat_paham_penatalaksanaan_dokter' => null,
+                'metode_edukasi_penatalaksanaan_dokter' => null,
+                'edukasi_prosedur_diagnostik_dokter' => null,
+                'tgl_prosedur_diagnostik_dokter' => null,
+                'tingkat_paham_prosedur_diagnostik_dokter' => null,
+                'metode_edukasi_prosedur_diagnostik_dokter' => null,
+                'edukasi_manajemen_nyeri_dokter' => null,
+                'tgl_manajemen_nyeri_dokter' => null,
+                'tingkat_paham_manajemen_nyeri_dokter' => null,
+                'metode_edukasi_manajemen_nyeri_dokter' => null,
+                'edukasi_lain_lain_dokter' => null,
+                'tgl_lain_lain_dokter' => null,
+                'tingkat_paham_lain_lain_dokter' => null,
+                'metode_edukasi_lain_lain_dokter' => null,
+                'ttd_dokter' => null,
+                'ttd_pasien' => null,
             ]);
         if ($reset == true) {
             return response()->json(
@@ -883,6 +885,26 @@ class AssesmentAwalDokterController extends Controller
                 'success' => false,
                 'message' => $th->getMessage(),
             ], 500);
+        }
+    }
+    
+    public function getAlert(Request $request){
+        try {
+            $pengkajian_awal = DB::connection('mysql')
+                ->table('pengkajian_awal_pasien_perawat')
+                ->select([
+                    'alergi',
+                    'nama_alergi',
+                    'reaksi_alergi',
+                    'asper_brjln_seimbang',
+                    'asper_hasil',
+                ])
+                ->where('reg_no', $request->reg_no)
+                ->first();
+
+            return $pengkajian_awal;
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
     

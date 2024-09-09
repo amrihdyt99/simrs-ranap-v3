@@ -32,7 +32,7 @@
     <div class="float-right">
         <button type="button" class="btn btn-success" onclick="getResumeBaseData()"><i class="fas fa-redo"></i> Muat ulang</button>
     </div>
-    <button class="btn btn-info float-right ml-2" onclick="viewResume('{{ $reg }}')">
+    <button class="btn btn-info float-right mr-2" onclick="viewResume('{{ $reg }}')">
         <i class="fas fa-file-alt"></i> View Resume
     </button>
     <h3>RESUME PASIEN RAWAT JALAN | No Reg: {{$reg}}</h3>
@@ -258,7 +258,23 @@
                 </div>
             </div>
 
-            <h4 class="mb-3 mt-4 font-weight-bold">Nama Tindakan/Operasi <button type="button" class="btn btn-primary btn-sm ml-2 float-right" id="add-tindakan">Tambah Tindakan/Operasi</button></h4>
+            <h4 class="mb-3 mt-4 font-weight-bold">Obat Yang Dibawa Pulang <button type="button" class="btn btn-primary mt-2 float-right" id="tambah-obat"><i class="fas fa-capsules"></i> Tambah Obat Pulang</button></h4>
+            <div class="table-responsive">
+                <table class="table table-striped table_resume" id="obat-pulang-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Obat</th>
+                            <th>Jumlah</th>
+                            <th>Aturan Pakai/Minum</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mb-3 mt-4 font-weight-bold">Nama Tindakan/Operasi <button type="button" class="btn btn-primary btn-sm ml-2 float-right" id="add-tindakan"><i class="fas fa-notes-medical"></i> Tambah Tindakan/Operasi</button></h4>
             <div class="form-group row">
                 <div class="col-sm-12">
                     <div id="tindakan-container">
@@ -371,30 +387,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <h4 class="mb-3 mt-4 font-weight-bold">Obat Yang Dibawa Pulang <button type="button" class="btn btn-primary mt-2 float-right" id="tambah-obat">Tambah Obat Pulang</button></h4>
-            <div class="table-responsive">
-                <table class="table table-bordered" id="obat-pulang-table">
-                    <thead>
-                        <tr>
-                            <th>Nama Obat</th>
-                            <th>Jumlah</th>
-                            <th>Aturan Pakai/Minum</th>
-                            <th>Keterangan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="text" class="form-control" name="nama_obat[]"></td>
-                            <td><input type="text" class="form-control" name="jumlah_obat[]"></td>
-                            <td><input type="text" class="form-control" name="aturan_pakai[]"></td>
-                            <td><input type="text" class="form-control" name="keterangan_obat[]"></td>
-                            <td><button type="button" class="btn btn-danger btn-sm hapus-obat">Hapus</button></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
 
             <h4 class="mb-3 mt-4 font-weight-bold">PERAWATAN SELANJUTNYA</h4>
@@ -515,7 +507,7 @@
 
             <div class="form-group row">
                 <div class="col-sm-9 offset-sm-3 text-right">
-                    <button type="button" onclick="simpanResume()" class="btn btn-primary">Simpan</button>
+                    <button type="button" onclick="simpanResume()" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                 </div>
             </div>
         </form>
@@ -673,7 +665,7 @@
                         <input type="text" class="form-control kode_icd9" value="`+(data.kode_icd9 ?? '')+`" placeholder="Kode ICD-9-CM">
                     </div>
                     <div class="col-md-1">
-                        <button class="btn btn-danger remove-tindakan" type="button">Hapus</button>
+                        <button class="btn btn-danger remove-tindakan" type="button"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             </div>
@@ -715,29 +707,46 @@
         });
     }
 
-    $(document).ready(function() {
-        $('#tambah-obat').click(function() {
-            var newRow = `
-                <tr>
-                    <td><input type="text" class="form-control" name="nama_obat[]"></td>
-                    <td><input type="text" class="form-control" name="jumlah_obat[]" placeholder="Contoh: 1x30 mg"></td>
-                    <td><input type="text" class="form-control" name="aturan_pakai[]"></td>
-                    <td><input type="text" class="form-control" name="keterangan_obat[]"></td>
-                    <td><button type="button" class="btn btn-danger btn-sm hapus-obat">Hapus</button></td>
-                </tr>
-            `;
-            $('#obat-pulang-table tbody').append(newRow);
-        });
+    $('#tambah-obat').click(function() {
+        openPanelObatPulang()
+        // var newRow = `
+        //     <tr>
+        //         <td><input type="text" class="form-control" name="nama_obat[]"></td>
+        //         <td><input type="text" class="form-control" name="jumlah_obat[]" placeholder="Contoh: 1x30 mg"></td>
+        //         <td><input type="text" class="form-control" name="aturan_pakai[]"></td>
+        //         <td><input type="text" class="form-control" name="keterangan_obat[]"></td>
+        //         <td><button type="button" class="btn btn-danger btn-sm hapus-obat">Hapus</button></td>
+        //     </tr>
+        // `;
+        // $('#obat-pulang-table tbody').append(newRow);
+    });
 
-        $(document).on('click', '.hapus-obat', function() {
-            $(this).closest('tr').remove();
-        });
+    function openPanelObatPulang(){
+        $('#modalPrescribeNew').modal('show')
+        getPrescribeFormSelect('satuan')
+        orderPrescribeTemp()
+        additionalPrescribeButton()
+    }
+
+    function additionalPrescribeButton(){
+        $('[id="modalPrescribeNew"]').attr('obat-pulang', 1)
+
+        $('[id="modalPrescribeNew"]').append(`
+            <input type="hidden" name="obat_pulang" value="1">
+        `)
+
+        $('[id="modalPrescribeNew"] [id="prescribeAdditionalButton"]').html(`
+            <span type="button" class="btn btn-primary" onclick="copyPreviousPrescribe()"><i class="fas fa-copy"></i> Copy resep</span>
+        `)
+    }
+
+    $(document).on('click', '.hapus-obat', function() {
+        $(this).closest('tr').remove();
     });
 </script>
 <script>
     function viewResume(regNo) {
-        const url = `/resume/dokumen?reg_no=${regNo}`;
-        console.log(url);
-        window.location.href = url;
+        const url = `{{url("")}}/resume/dokumen?reg_no=${regNo}`;
+        window.open(url, '_blank');
     }
 </script>

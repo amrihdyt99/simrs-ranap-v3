@@ -35,12 +35,13 @@
             <div class="col-6">
               <a class="dropdown-item" href="{{ route('master.ketersediaanruangan.index') }}">Ketersediaan Ruangan</a>
               <a class="dropdown-item" href="{{ route('master.practitioner.index') }}">Practitioner</a>
-              <a class="dropdown-item" href="{{ route('master.organization.index') }}">Organization</a>
+              {{-- <a class="dropdown-item" href="{{ route('master.organization.index') }}">Organization</a> --}}
               <a class="dropdown-item" href="{{ route('master.medicine.index') }}">Medicine</a>
               <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.businesspartner.get_handler') }}">Business Partner</a>
-              <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.corporate.get_handler') }}">Corporate</a>
+              {{-- <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.corporate.get_handler') }}">Corporate</a> --}}
               <a class="dropdown-item" href="{{ route('nyaa_universal.data_master.customercontract.get_handler') }}">Contract Management</a>
               <a class="dropdown-item" href="{{ route('master.user.index') }}">Manajemen User</a>
+              <a class="dropdown-item" href="{{ url('') }}/master/aksesRuangan">Manajemen Akses Ruangan</a>
             </div>
           </div>
         </div>
