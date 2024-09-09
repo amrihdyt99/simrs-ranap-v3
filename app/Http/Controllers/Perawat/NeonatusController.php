@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Perawat;
 use App\Http\Controllers\Controller;
 use App\Models\Neonatus\NeonatusFisik;
 use App\Models\Neonatus\NeonatusNyeri;
+use App\Models\Neonatus\NeonatusRekonObat;
 use App\Models\Neonatus\NeonatusTtd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,13 +46,12 @@ class NeonatusController extends Controller
 
             if ($validator->passes()) {
 
-                $cek = NeonatusFisik::where('reg_no', $reg_no)->count();
-                if ($cek > 0) {
+                $cekFisik = NeonatusFisik::where('reg_no', $reg_no)->count();
+                $cekSkrinning = NeonatusNyeri::where('reg_no', $reg_no)->count();
+                $cekTtd = NeonatusTtd::where('reg_no', $reg_no)->count();
+                if ($cekFisik > 0) {
                     $fisikData = NeonatusFisik::where('reg_no', $reg_no)->first();
                     $fisikData->update($fisik);
-                    $skrinning['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
-                    $skrinningData = NeonatusNyeri::where('reg_no', $reg_no)->first();
-                    $skrinningData->update($skrinning);
                 } else {
                     $fisikData = NeonatusFisik::create($fisik);
                     $skrinning['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
@@ -59,7 +59,31 @@ class NeonatusController extends Controller
                 }
 
                 $ttd['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
-                NeonatusTtd::create($ttd);
+                $skrinning['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
+
+                if ($cekSkrinning > 0) {
+                    $skrinningData = NeonatusNyeri::where('reg_no', $reg_no)->first();
+                    $skrinningData->update($skrinning);
+                } else {
+                    $skrinningData->create($skrinning);
+                }
+
+                if ($cekTtd > 0) {
+                    $ttdData = NeonatusTtd::where('reg_no', $reg_no)->first();
+                    $ttdData->update($ttd);
+                } else {
+                    NeonatusTtd::create($ttd);
+                }
+
+                NeonatusRekonObat::where('reg_no', $reg_no)->delete();
+
+                foreach ($rekon_obat as $obat) {
+                    $obat['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
+                    $obat['reg_no'] = $reg_no;
+                    $obat['med_rec'] = $request->med_rec;
+                    NeonatusRekonObat::create($obat);
+                }
+
 
 
                 DB::commit();
