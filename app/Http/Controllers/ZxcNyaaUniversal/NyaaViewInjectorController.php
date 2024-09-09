@@ -923,6 +923,12 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function persetujuan_penolakan(Request $request)
     {
+        $dataPasien=DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no'=> $request->reg_no])
+            ->first();
+
         $informasi = DB::connection('mysql')
             ->table('rs_tindakan_medis_informasi')
             ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
@@ -946,6 +952,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'informasi' => optional($informasi),
             'persetujuan' => $persetujuan,
             'penolakan' => $penolakan,
+            'dataPasien' => $dataPasien,
 
         );
         return view('new_perawat.persetujuan_penolakan.index')

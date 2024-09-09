@@ -21,9 +21,10 @@
                 <div class="col-sm-3">
                     <label for="">Dokter Pelaksana Tindakan :</label>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-9">
                     <select name="ParamedicCode" id="ParamedicCode" class="form-control">
-                        <option value="{{ $informasi->ParamedicCode }}" selected>{{ $informasi->ParamedicName }}</option>
+                        <option value="{{ $informasi->ParamedicCode }}" selected>{{ $informasi->ParamedicName }}
+                        </option>
                     </select>
                 </div>
             </div>
@@ -31,7 +32,7 @@
                 <div class="col-sm-3">
                     <label for="">Pemberi Informasi :</label>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-9">
                     <input type="text" class="form-control" name="informasi_pemberi_info"
                         value="{{ $informasi->informasi_pemberi_info }}">
                 </div>
@@ -40,7 +41,7 @@
                 <div class="col-sm-3">
                     <label for="">Penerima Informasi / Pemberi Persetujuann :</label>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-9">
                     <input type="text" class="form-control" name="informasi_penerima_info"
                         value="{{ $informasi->informasi_penerima_info }}">
                 </div>
@@ -49,13 +50,13 @@
                 <div class="col-sm-3">
                     <label for="">Diberikan pada tanggal / jam :</label>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-9">
                     <input type="datetime-local" class="form-control" name="informasi_diberikan_pada"
                         value="{{ $informasi->informasi_diberikan_pada }}">
                 </div>
             </div>
 
-            <table class="table1 mt-2">
+            <table class="table1 mt-2 w-100">
                 <thead>
                     <tr>
                         <th>
@@ -246,8 +247,21 @@
                         dan jelas dan memberikan kesempatan untuk bertanya dan/atau berdiskus</p>
                 </div>
                 <div class="col-sm-4">
-                    <p>Tanda tangan Dokter<br><br><br>
-                        ..........................</p>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="margin-bottom: 10px; font-size:17px">Tanda tangan Dokter</div>
+                        <div id="signature-pad-dokter" style="display: inline-block;">
+                            <div
+                                style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                <canvas id="canvas_dokter" width="350" height="100">Your browser does not support
+                                    the HTML canvas tag.</canvas>
+                            </div>
+                            <div style="margin: 10px; text-align: center;">
+                                <input type="hidden" id="signature_dokter" name="informasi_ttd_dokter" value="{{$informasi->informasi_ttd_dokter}}">
+                                <button type="button" id="clear_btn_dokter" class="btn btn-danger"
+                                    data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row mt-3">
@@ -256,18 +270,25 @@
                         tanda/paraf di kolom kanannya, dan telah memahaminya</p>
                 </div>
                 <div class="col-sm-4">
-                    <p>Tanda tangan penerima informasi<br><br><br>
-                        .............................</p>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="margin-bottom: 10px; font-size:17px">Tanda tangan penerima informasi</div>
+                        <div id="signature-pad-penerima" style="display: inline-block;">
+                            <div
+                                style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                <canvas id="canvas_penerima" width="350" height="100">Your browser does not support
+                                    the HTML canvas tag.</canvas>
+                            </div>
+                            <div style="margin: 10px; text-align: center;">
+                                <input type="hidden" id="signature_penerima" name="informasi_ttd_penerima_informasi" value="{{$informasi->informasi_ttd_penerima_informasi}}">
+                                <button type="button" id="clear_btn_penerima" class="btn btn-danger"
+                                    data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <hr>
-            <div>
-                <h4 class="text-center"><b>Bila pasien tidak kompeten atau tidak mau menerima informasi,
-                        maka penerima informasi adalah wali atau keluarga terdekat.</b></h4>
-                <p>Keterangan : *) Pilih salah satu</p>
-            </div>
-            <button class="btn btn-success float-right mt-4" type="button"
-                onclick="simpanInformasiTindakanMedis()">Simpan</button>
+            
+            <button class="btn btn-success float-left mt-4" id="save-pemberian-infromasi-tindakan-medis" type="button">Simpan</button>
         </div>
     </div>
 

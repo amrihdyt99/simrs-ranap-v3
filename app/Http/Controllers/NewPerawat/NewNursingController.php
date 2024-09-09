@@ -2469,8 +2469,8 @@ class NewNursingController extends Controller
                 'informasi_prognosis_paraf' => $request->informasi_prognosis_paraf,
                 'informasi_alternatif_paraf' => $request->informasi_alternatif_paraf,
                 'informasi_lain_lain_paraf' => $request->informasi_lain_lain_paraf,
-                'informasi_ttd_dokter' => $request->informasi_ttd_dokter,
-                'informasi_ttd_penerima_informasi' => $request->informasi_ttd_penerima_informasi,
+                'informasi_ttd_dokter' => $request->ttdDokter,
+                'informasi_ttd_penerima_informasi' => $request->ttdPenerima,
 
             ];
 
@@ -2519,10 +2519,10 @@ class NewNursingController extends Controller
             'persetujuan_tanggal_lahir_2' => $request->persetujuan_tanggal_lahir_2,
             'persetujuan_alamat_2' => $request->persetujuan_alamat_2,
             'persetujuan_tanggal_waktu_ttd' => $request->persetujuan_tanggal_waktu_ttd,
-            'persetujuan_ttd_yg_menyatakan' => $request->persetujuan_ttd_yg_menyatakan,
-            'persetujuan_ttd_dokter' => $request->persetujuan_ttd_dokter,
-            'persetujuan_ttd_keluarga' => $request->persetujuan_ttd_keluarga,
-            'persetujuan_ttd_perawat' => $request->persetujuan_ttd_perawat,
+            'persetujuan_ttd_yg_menyatakan' => $request->ttd_penerima_setuju,
+            'persetujuan_ttd_dokter' => $request->ttd_dokter_setuju,
+            'persetujuan_ttd_keluarga' => $request->ttd_keluarga_setuju,
+            'persetujuan_ttd_perawat' => $request->ttd_perawat_setuju,
 
         );
         $simpan = DB::connection('mysql')
@@ -2552,10 +2552,10 @@ class NewNursingController extends Controller
             'penolakan_alamat_2' => $request->penolakan_alamat_2,
             'penolakan_tanggal_ttd' => $request->penolakan_tanggal_ttd,
 
-            'penolakan_ttd_yg_menyatakan' => $request->penolakan_ttd_yg_menyatakan,
-            'penolakan_ttd_dokter' => $request->penolakan_ttd_dokter,
-            'penolakan_ttd_keluarga' => $request->penolakan_ttd_keluarga,
-            'penolakan_ttd_perawat' => $request->penolakan_ttd_perawat,
+            'penolakan_ttd_yg_menyatakan' => $request->ttd_penerima_penolakan,
+            'penolakan_ttd_dokter' => $request->ttd_dokter_penolakan,
+            'penolakan_ttd_keluarga' => $request->ttd_keluarga_penolakan,
+            'penolakan_ttd_perawat' => $request->ttd_perawat_penolakan,
 
         );
         $simpan = DB::connection('mysql')

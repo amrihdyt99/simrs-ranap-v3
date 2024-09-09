@@ -935,6 +935,9 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.persetujuan_penolakan')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        ttd_pemberian_informasi_tindakan_medis();
+                        ttd_penolakan_tindakan_medis();
+                        ttd_persetujuan_tindakan_medis();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1606,6 +1609,8 @@
 
         $clearButtonEdukator.on("click", function(event) {
             signaturePadEdukator.clear();
+            let userSignature = "{{ auth()->user()->signature }}";
+            signaturePadEdukator.fromDataURL(userSignature);
         });
 
         $('#simpan-edukasi-pasien-perawat').on('click', function() {
@@ -1630,6 +1635,8 @@
 
         $clearButtonPerawat.on("click", function(event) {
             signaturePadPerawat.clear();
+            let userSignature = "{{ auth()->user()->signature }}";
+            signaturePadPerawat.fromDataURL(userSignature);
         });
 
         // checklist Pasien
@@ -1781,6 +1788,207 @@
             fetchResikoJatuhDetail(id);
         });
     }
+
+
+    function ttd_pemberian_informasi_tindakan_medis() {
+    // ttd Pemberian Informasi Dokter
+    let $wrapperDokterInformasi = $("#signature-pad-dokter");
+    let $clearButtonDokterInformasi = $wrapperDokterInformasi.find("#clear_btn_dokter");
+    let $canvasDokterInformasi = $wrapperDokterInformasi.find("canvas")[0];
+
+    signatureIPadDokterInformasi = new SignaturePad($canvasDokterInformasi);
+
+    // Load signature if available
+    let signatureDokterInformasiDataURL = $("#signature_dokter").val();
+    if (signatureDokterInformasiDataURL) {
+        signatureIPadDokterInformasi.fromDataURL(signatureDokterInformasiDataURL);
+    }
+
+    $clearButtonDokterInformasi.on("click", function(event) {
+        signatureIPadDokterInformasi.clear();
+        var userSignature = "{{ auth()->user()->signature }}";
+        signatureIPadDokterInformasi.fromDataURL(userSignature);
+    });
+
+    // ttd Penerima Pemberian Informasi
+    let $wrapperPenerimaInformasi = $("#signature-pad-penerima");
+    let $clearButtonPenerimaInformasi = $wrapperPenerimaInformasi.find("#clear_btn_penerima");
+    let $canvasPenerimaInformasi = $wrapperPenerimaInformasi.find("canvas")[0];
+
+    signaturePadPenerimaInformasi = new SignaturePad($canvasPenerimaInformasi);
+
+    // Load signature if available
+    let signaturePenerimaInformasiDataURL = $("#signature_penerima").val();
+    if (signaturePenerimaInformasiDataURL) {
+        signaturePadPenerimaInformasi.fromDataURL(signaturePenerimaInformasiDataURL);
+    }
+
+    $clearButtonPenerimaInformasi.on("click", function(event) {
+        signaturePadPenerimaInformasi.clear();
+    });
+
+    $('#save-pemberian-infromasi-tindakan-medis').click(function() {
+        simpanInformasiTindakanMedis();
+    });
+}
+
+function ttd_penolakan_tindakan_medis() {
+    // Penolakan Penerima
+    let $wrapperPenerimaPenolakan = $("#signature-pad-penolakan-penerima");
+    let $clearButtonPenerimaPenolakan = $wrapperPenerimaPenolakan.find("#clear_btn_penolakan_penerima");
+    let $canvasPenerimaPenolakan = $wrapperPenerimaPenolakan.find("canvas")[0];
+
+    signaturePadPenerimaPenolakan = new SignaturePad($canvasPenerimaPenolakan);
+
+    // Load signature if available
+    let signaturePenerimaPenolakanDataURL = $("#signature_penolakan_penerima").val();
+    if (signaturePenerimaPenolakanDataURL) {
+        signaturePadPenerimaPenolakan.fromDataURL(signaturePenerimaPenolakanDataURL);
+    }
+
+    $clearButtonPenerimaPenolakan.on("click", function(event) {
+        signaturePadPenerimaPenolakan.clear();
+    });
+
+    // Penolakan Dokter
+    let $wrapperDokterPenolakan = $("#signature-pad-penolakan-dokter");
+    let $clearButtonDokterPenolakan = $wrapperDokterPenolakan.find("#clear_btn_penolakan_dokter");
+    let $canvasDokterPenolakan = $wrapperDokterPenolakan.find("canvas")[0];
+
+    signaturePadDokterPenolakan = new SignaturePad($canvasDokterPenolakan);
+
+    // Load signature if available
+    let signatureDokterPenolakanDataURL = $("#signature_penolakan_dokter").val();
+    if (signatureDokterPenolakanDataURL) {
+        signaturePadDokterPenolakan.fromDataURL(signatureDokterPenolakanDataURL);
+    }
+
+    $clearButtonDokterPenolakan.on("click", function(event) {
+        signaturePadDokterPenolakan.clear();
+        var userSignature = "{{ auth()->user()->signature }}";
+        signaturePadDokterPenolakan.fromDataURL(userSignature);
+    });
+
+    // Penolakan Keluarga
+    let $wrapperKeluargaPenolakan = $("#signature-pad-penolakan-keluarga");
+    let $clearButtonKeluargaPenolakan = $wrapperKeluargaPenolakan.find("#clear_btn_penolakan_keluarga");
+    let $canvasKeluargaPenolakan = $wrapperKeluargaPenolakan.find("canvas")[0];
+
+    signaturePadKeluargaPenolakan = new SignaturePad($canvasKeluargaPenolakan);
+
+    // Load signature if available
+    let signatureKeluargaPenolakanDataURL = $("#signature_penolakan_keluarga").val();
+    if (signatureKeluargaPenolakanDataURL) {
+        signaturePadKeluargaPenolakan.fromDataURL(signatureKeluargaPenolakanDataURL);
+    }
+
+    $clearButtonKeluargaPenolakan.on("click", function(event) {
+        signaturePadKeluargaPenolakan.clear();
+    });
+
+    // Penolakan Perawat
+    let $wrapperPerawatPenolakan = $("#signature-pad-penolakan-perawat");
+    let $clearButtonPerawatPenolakan = $wrapperPerawatPenolakan.find("#clear_btn_penolakan_perawat");
+    let $canvasPerawatPenolakan = $wrapperPerawatPenolakan.find("canvas")[0];
+
+    signaturePadPerawatPenolakan = new SignaturePad($canvasPerawatPenolakan);
+
+    // Load signature if available
+    let signaturePerawatPenolakanDataURL = $("#signature_penolakan_perawat").val();
+    if (signaturePerawatPenolakanDataURL) {
+        signaturePadPerawatPenolakan.fromDataURL(signaturePerawatPenolakanDataURL);
+    }
+
+    $clearButtonPerawatPenolakan.on("click", function(event) {
+        signaturePadPerawatPenolakan.clear();
+        var userSignature = "{{ auth()->user()->signature }}";
+        signaturePadPerawatPenolakan.fromDataURL(userSignature);
+    });
+
+    $('#save-penolakan-tindakan-medis').click(function() {
+        simpanPenolakanTindakanMedis();
+    });
+}
+
+function ttd_persetujuan_tindakan_medis() {
+    // Persetujuan Penerima
+    let $wrapperPenerimaSetuju = $("#signature-pad-persetujuan-penerima");
+    let $clearButtonPenerimaSetuju = $wrapperPenerimaSetuju.find("#clear_btn_persetujuan_penerima");
+    let $canvasPenerimaSetuju = $wrapperPenerimaSetuju.find("canvas")[0];
+
+    signaturePadPenerimaSetuju = new SignaturePad($canvasPenerimaSetuju);
+
+    // Load signature if available
+    let signaturePenerimaDataURLSetuju = $("#signature_persetujuan_penerima").val();
+    if (signaturePenerimaDataURLSetuju) {
+        signaturePadPenerimaSetuju.fromDataURL(signaturePenerimaDataURLSetuju);
+    }
+
+    $clearButtonPenerimaSetuju.on("click", function(event) {
+        signaturePadPenerimaSetuju.clear();
+    });
+
+    // Persetujuan Dokter
+    let $wrapperDokterSetuju = $("#signature-pad-persetujuan-dokter");
+    let $clearButtonDokterSetuju = $wrapperDokterSetuju.find("#clear_btn_persetujuan_dokter");
+    let $canvasDokterSetuju = $wrapperDokterSetuju.find("canvas")[0];
+
+    signaturePadDokterSetuju = new SignaturePad($canvasDokterSetuju);
+
+    // Load signature if available
+    let signatureDokterDataURLSetuju = $("#signature_persetujuan_dokter").val();
+    if (signatureDokterDataURLSetuju) {
+        signaturePadDokterSetuju.fromDataURL(signatureDokterDataURLSetuju);
+    }
+
+    $clearButtonDokterSetuju.on("click", function(event) {
+        signaturePadDokterSetuju.clear();
+        var userSignature = "{{ auth()->user()->signature }}";
+        signaturePadDokterSetuju.fromDataURL(userSignature);
+    });
+
+    // Persetujuan Keluarga
+    let $wrapperKeluargaSetuju = $("#signature-pad-persetujuan-keluarga");
+    let $clearButtonKeluargaSetuju = $wrapperKeluargaSetuju.find("#clear_btn_persetujuan_keluarga");
+    let $canvasKeluargaSetuju = $wrapperKeluargaSetuju.find("canvas")[0];
+
+    signaturePadKeluargaSetuju = new SignaturePad($canvasKeluargaSetuju);
+
+    // Load signature if available
+    let signatureKeluargaDataURLSetuju = $("#signature_persetujuan_keluarga").val();
+    if (signatureKeluargaDataURLSetuju) {
+        signaturePadKeluargaSetuju.fromDataURL(signatureKeluargaDataURLSetuju);
+    }
+
+    $clearButtonKeluargaSetuju.on("click", function(event) {
+        signaturePadKeluargaSetuju.clear();
+    });
+
+    // Persetujuan Perawat
+    let $wrapperPerawatSetuju = $("#signature-pad-persetujuan-perawat");
+    let $clearButtonPerawatSetuju = $wrapperPerawatSetuju.find("#clear_btn_persetujuan_perawat");
+    let $canvasPerawatSetuju = $wrapperPerawatSetuju.find("canvas")[0];
+
+    signaturePadPerawatSetuju = new SignaturePad($canvasPerawatSetuju);
+
+    // Load signature if available
+    let signaturePerawatDataURLSetuju = $("#signature_persetujuan_perawat").val();
+    if (signaturePerawatDataURLSetuju) {
+        signaturePadPerawatSetuju.fromDataURL(signaturePerawatDataURLSetuju);
+    }
+
+    $clearButtonPerawatSetuju.on("click", function(event) {
+        signaturePadPerawatSetuju.clear();
+        var userSignature = "{{ auth()->user()->signature }}";
+        signaturePadPerawatSetuju.fromDataURL(userSignature);
+    });
+
+    $('#save-persetujuan-tindakan-medis').click(function() {
+        simpanPersetujuanTindakanMedis();
+    });
+}
+
+
 
 
 </script>
