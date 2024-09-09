@@ -1,14 +1,15 @@
 @php
-    $get_tindakan_medis_data_penolakan=DB::connection('mysql')
-            ->table('rs_tindakan_medis_penolakan')
-            ->where('kode_tindakan_medis_setuju_tolak', $informasi->kode_tindakan_medis_setuju_tolak)
-            ->first();
-            if (!$get_tindakan_medis_data_penolakan) {
-                $get_tindakan_medis_data_penolakan=optional((object)[]);
-            }
+    $get_tindakan_medis_data_penolakan = DB::connection('mysql')
+        ->table('rs_tindakan_medis_penolakan')
+        ->where('kode_tindakan_medis_setuju_tolak', $informasi->kode_tindakan_medis_setuju_tolak)
+        ->first();
+    if (!$get_tindakan_medis_data_penolakan) {
+        $get_tindakan_medis_data_penolakan = optional((object) []);
+    }
 @endphp
 <form id="PenolakanTindakanMedis">
-<input type="hidden" name="kode_tindakan_medis_setuju_tolak" value="{{$informasi->kode_tindakan_medis_setuju_tolak}}">
+    <input type="hidden" name="kode_tindakan_medis_setuju_tolak"
+        value="{{ $informasi->kode_tindakan_medis_setuju_tolak }}">
     <div class="card">
         <div class="card-header">
             <h5><b>PENOLAKAN TINDAKAN MEDIS</b></h5>
@@ -21,7 +22,8 @@
                         Nama
                     </td>
                     <td>
-                        <input type="text" name="penolakan_nama_1" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_nama_1}}">
+                        <input type="text" name="penolakan_nama_1" id="" class="form-control"
+                            value="{{ $get_tindakan_medis_data_penolakan->penolakan_nama_1 }}">
                     </td>
                 </tr>
                 <tr>
@@ -29,9 +31,13 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_jenis_kelamin_1" id="penolakan_jenis_kelamin_1_laki" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_1=='Laki-laki' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_jenis_kelamin_1" id="penolakan_jenis_kelamin_1_laki"
+                            value="Laki-laki"
+                            {{ $get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : '' }}>
                         <label for="penolakan_jenis_kelamin_1_laki">Laki-laki</label>
-                        <input type="radio" name="penolakan_jenis_kelamin_1" id="penolakan_jenis_kelamin_1_perempuan" value="Perempuan" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_1=='Perempuan' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_jenis_kelamin_1" id="penolakan_jenis_kelamin_1_perempuan"
+                            value="Perempuan"
+                            {{ $get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : '' }}>
                         <label for="penolakan_jenis_kelamin_1_perempuan">Perempuan</label>
                     </td>
                 </tr>
@@ -40,7 +46,8 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        <input type="date" name="penolakan_tanggal_lahir_1" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_tanggal_lahir_1}}">
+                        <input type="date" name="penolakan_tanggal_lahir_1" id="" class="form-control"
+                            value="{{ $get_tindakan_medis_data_penolakan->penolakan_tanggal_lahir_1 }}">
                     </td>
                 </tr>
                 <tr>
@@ -48,7 +55,8 @@
                         Alamat
                     </td>
                     <td>
-                        <input type="text" name="penolakan_alamat_1" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_alamat_1}}">
+                        <input type="text" name="penolakan_alamat_1" id="" class="form-control"
+                            value="{{ $get_tindakan_medis_data_penolakan->penolakan_alamat_1 }}">
                     </td>
                 </tr>
                 <tr>
@@ -56,7 +64,8 @@
                         Dengan ini menyatakan TIDAK SETUJU untuk dilakukan tindakan.
                     </td>
                     <td>
-                        <input type="text" name="penolakan_pernyataan" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_pernyataan}}">
+                        <input type="text" name="penolakan_pernyataan" id="" class="form-control"
+                            value="{{ $get_tindakan_medis_data_penolakan->penolakan_pernyataan }}">
                     </td>
                 </tr>
                 <tr>
@@ -64,15 +73,20 @@
                         Terhadap
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_1" value="Saya sendiri" {{$get_tindakan_medis_data_penolakan->penolakan_terhadap=='Saya sendiri' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_1" value="Saya sendiri"
+                            {{ $get_tindakan_medis_data_penolakan->penolakan_terhadap == 'Saya sendiri' ? 'checked' : '' }}>
                         <label for="penolakan_terhadap_1">Saya sendiri</label>
-                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_2" value="Anak" {{$get_tindakan_medis_data_penolakan->penolakan_terhadap=='Anak' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_2" value="Anak"
+                            {{ $get_tindakan_medis_data_penolakan->penolakan_terhadap == 'Anak' ? 'checked' : '' }}>
                         <label for="penolakan_terhadap_2">Anak</label>
-                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_3" value="Ayah" {{$get_tindakan_medis_data_penolakan->penolakan_terhadap=='Ayah' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_3" value="Ayah"
+                            {{ $get_tindakan_medis_data_penolakan->penolakan_terhadap == 'Ayah' ? 'checked' : '' }}>
                         <label for="penolakan_terhadap_3">Ayah</label>
-                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_4" value="Ibu" {{$get_tindakan_medis_data_penolakan->penolakan_terhadap=='Ibu' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_4" value="Ibu"
+                            {{ $get_tindakan_medis_data_penolakan->penolakan_terhadap == 'Ibu' ? 'checked' : '' }}>
                         <label for="penolakan_terhadap_4">Ibu</label>
-                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_5" value="Saudara" {{$get_tindakan_medis_data_penolakan->penolakan_terhadap=='Saudara' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_terhadap" id="penolakan_terhadap_5" value="Saudara"
+                            {{ $get_tindakan_medis_data_penolakan->penolakan_terhadap == 'Saudara' ? 'checked' : '' }}>
                         <label for="penolakan_terhadap_5">Saudara</label>
                     </td>
                 </tr>
@@ -81,7 +95,8 @@
                         Nama
                     </td>
                     <td>
-                        <input type="text" name="penolakan_nama_2" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_nama_2}}">
+                        <input type="text" name="penolakan_nama_2" id="" class="form-control"
+                            value="{{ $dataPasien->PatientName }}">
                     </td>
                 </tr>
                 <tr>
@@ -89,9 +104,13 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_jenis_kelamin_2" id="penolakan_jenis_kelamin_2_laki" value="Laki-laki" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_2=='Laki-laki' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_jenis_kelamin_2" id="penolakan_jenis_kelamin_2_laki"
+                            value="Laki-laki"
+                            {{ $dataPasien->GCSex == '0001^M' ? 'checked' : '' }}>
                         <label for="penolakan_jenis_kelamin_2_laki">Laki-laki</label>
-                        <input type="radio" name="penolakan_jenis_kelamin_2" id="penolakan_jenis_kelamin_2_perempuan" value="Perempuan" {{$get_tindakan_medis_data_penolakan->penolakan_jenis_kelamin_2=='Perempuan' ? 'checked' : ''}}>
+                        <input type="radio" name="penolakan_jenis_kelamin_2" id="penolakan_jenis_kelamin_2_perempuan"
+                            value="Perempuan"
+                            {{ $dataPasien->GCSex == '0001^F' ? 'checked' : '' }}>
                         <label for="penolakan_jenis_kelamin_2_perempuan">Perempuan</label>
                     </td>
                 </tr>
@@ -100,7 +119,8 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        <input type="text" name="penolakan_tanggal_lahir_2" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_nama_2}}">
+                        <input type="date" name="penolakan_tanggal_lahir_2" id="" class="form-control"
+                            value="{{ $dataPasien->DateOfBirth }}">
                     </td>
                 </tr>
                 <tr>
@@ -108,7 +128,8 @@
                         Alamat
                     </td>
                     <td>
-                        <input type="text" name="penolakan_alamat_2" id="" class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_alamat_2}}">
+                        <input type="text" name="penolakan_alamat_2" id="" class="form-control"
+                            value="{{ $dataPasien->PatientAddress }}">
                     </td>
                 </tr>
             </table>
@@ -131,7 +152,8 @@
                         </td>
                         <td>
                             <input type="datetime-local" name="penolakan_tanggal_ttd" id=""
-                                class="form-control" value="{{$get_tindakan_medis_data_penolakan->penolakan_tanggal_ttd}}">
+                                class="form-control"
+                                value="{{ $get_tindakan_medis_data_penolakan->penolakan_tanggal_ttd }}">
                         </td>
                     </tr>
                 </tbody>
@@ -141,42 +163,92 @@
         <table style="width: 100%; border: none; text-align:center;">
             <tbody>
                 <tr>
-                    <td colspan="3" style="text-align: right;">
-                        <h5>Saksi</h5>
+                    <td>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px"> Yang menyatakan</div>
+                            <div id="signature-pad-penolakan-penerima" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_penolakan_penerima" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_penolakan_penerima" name="penolakan_ttd_yg_menyatakan" value="{{$get_tindakan_medis_data_penolakan->penolakan_ttd_yg_menyatakan}}">
+                                    <button type="button" id="clear_btn_penolakan_penerima" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px"> Dokter</div>
+                            <div id="signature-pad-penolakan-dokter" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_penolakan_dokter" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_penolakan_dokter" name="penolakan_ttd_dokter" value="{{$get_tindakan_medis_data_penolakan->penolakan_ttd_dokter ?? auth()->user()->signature}}">
+                                    <button type="button" id="clear_btn_penolakan_dokter" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <h5>
-                            Yang menyatakan
-                        </h5>
-                    </td>
-                    <td>
-                        <h5>Dokter</h5>
-                    </td>
-                    <td>
-                        <h5>1. Keluarga</h5>
-                    </td>
-                    <td>
-                        <h5>2. Perawat</h5>
-                    </td>
+                    <td colspan="2" style="font-size:17px">SAKSI</td>
                 </tr>
                 <tr>
                     <td>
-                        (..................)
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px"> 1. Keluarga</div>
+                            <div id="signature-pad-penolakan-keluarga" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_penolakan_keluarga" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_penolakan_keluarga" name="penolakan_ttd_keluarga" value="{{$get_tindakan_medis_data_penolakan->penolakan_ttd_keluarga}}">
+                                    <button type="button" id="clear_btn_penolakan_keluarga" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        (..................)
-                    </td>
-                    <td>
-                        (..................)
-                    </td>
-                    <td>
-                        (..................)
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="margin-bottom: 10px; font-size:17px"> 2. Perawat</div>
+                            <div id="signature-pad-penolakan-perawat" style="display: inline-block;">
+                                <div
+                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
+                                    <canvas id="canvas_penolakan_perawat" width="350" height="100">Your browser does not
+                                        support
+                                        the HTML canvas tag.</canvas>
+                                </div>
+                                <div style="margin: 10px; text-align: center;">
+                                    <input type="hidden" id="signature_penolakan_perawat" name="penolakan_ttd_perawat" value="{{$penolakan_ttd_perawat->penolakan_ttd_perawat ??auth()->user()->signature}}">
+                                    <button type="button" id="clear_btn_penolakan_perawat" class="btn btn-danger"
+                                        data-action="clear"><span class="glyphicon glyphicon-remove"></span>
+                                        Hapus</button>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
+        
+        
     </div>
-    <button class="btn btn-success float-right mt-4" type="button" onclick="simpanPenolakanTindakanMedis()">Simpan</button>
+    <button class="btn btn-success float-left mt-4" id="save-penolakan-tindakan-medis" type="button" >Simpan</button>
 </form>

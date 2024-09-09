@@ -56,3 +56,35 @@
         </tr>
     </tbody>
 </table>
+
+<table class="table1" style="width: 95%;">
+    <tr>
+        <td style="width: 500px; text-align: center; vertical-align: middle; padding: 10px;">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div style="margin-bottom: 10px; font-weight: bold;">SASARAN</div>
+                <div id="signature-pad-sasaran" style="display: inline-block;">
+                    <div style="width: 360px; height: 110px; padding: 3px; position: relative;">
+                        <canvas id="canvas_sasaran" width="350" height="100" disabled>Your browser does not support
+                            the HTML canvas tag.</canvas>
+                    </div>
+                    <div style="margin: 10px; text-align: center;">
+                        <input type="hidden" id="signature_sasaran" name="ttd_sasaran" value="">
+                    </div>
+                </div>
+            </div>
+        </td>
+
+        <td style="width: 500px; text-align: center; vertical-align: middle; padding: 10px;">
+            <div style="margin-bottom: 10px; font-weight: bold;">EDUKATOR</div>
+            <div id="signature-pad-edukator" style="display: inline-block; margin: 0 auto;">
+                <div style="width: 360px; height: 110px; padding: 3px; position: relative;">
+                    <canvas id="canvas_edukator" width="350" height="100" disabled>Your browser does not support the
+                        HTML canvas tag.</canvas>
+                </div>
+                <div style="margin: 10px;">
+                    <input type="hidden" id="signature_edukator" name="ttd_edukator" value="">
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
