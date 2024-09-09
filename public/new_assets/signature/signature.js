@@ -1,18 +1,25 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-        typeof define === 'function' && define.amd ? define(factory) :
-            (global.SignaturePad = factory());
-}(this, (function () { 'use strict';
+    typeof exports === "object" && typeof module !== "undefined"
+        ? (module.exports = factory())
+        : typeof define === "function" && define.amd
+        ? define(factory)
+        : (global.SignaturePad = factory());
+})(this, function () {
+    "use strict";
     function Point(x, y, time) {
         this.x = x;
         this.y = y;
         this.time = time || new Date().getTime();
     }
     Point.prototype.velocityFrom = function (start) {
-        return this.time !== start.time ? this.distanceTo(start) / (this.time - start.time) : 1;
+        return this.time !== start.time
+            ? this.distanceTo(start) / (this.time - start.time)
+            : 1;
     };
     Point.prototype.distanceTo = function (start) {
-        return Math.sqrt(Math.pow(this.x - start.x, 2) + Math.pow(this.y - start.y, 2));
+        return Math.sqrt(
+            Math.pow(this.x - start.x, 2) + Math.pow(this.y - start.y, 2)
+        );
     };
     function Bezier(startPoint, control1, control2, endPoint) {
         this.startPoint = startPoint;
@@ -27,8 +34,20 @@
         var py = void 0;
         for (var i = 0; i <= steps; i += 1) {
             var t = i / steps;
-            var cx = this._point(t, this.startPoint.x, this.control1.x, this.control2.x, this.endPoint.x);
-            var cy = this._point(t, this.startPoint.y, this.control1.y, this.control2.y, this.endPoint.y);
+            var cx = this._point(
+                t,
+                this.startPoint.x,
+                this.control1.x,
+                this.control2.x,
+                this.endPoint.x
+            );
+            var cy = this._point(
+                t,
+                this.startPoint.y,
+                this.control1.y,
+                this.control2.y,
+                this.endPoint.y
+            );
             if (i > 0) {
                 var xdiff = cx - px;
                 var ydiff = cy - py;
@@ -40,7 +59,12 @@
         return length;
     };
     Bezier.prototype._point = function (t, start, c1, c2, end) {
-        return start * (1.0 - t) * (1.0 - t) * (1.0 - t) + 3.0 * c1 * (1.0 - t) * (1.0 - t) * t + 3.0 * c2 * (1.0 - t) * t * t + end * t * t * t;
+        return (
+            start * (1.0 - t) * (1.0 - t) * (1.0 - t) +
+            3.0 * c1 * (1.0 - t) * (1.0 - t) * t +
+            3.0 * c2 * (1.0 - t) * t * t +
+            end * t * t * t
+        );
     };
     function SignaturePad(canvas, options) {
         var self = this;
@@ -48,21 +72,28 @@
         this.velocityFilterWeight = opts.velocityFilterWeight || 0.7;
         this.minWidth = opts.minWidth || 0.5;
         this.maxWidth = opts.maxWidth || 1.5;
-        this.dotSize = opts.dotSize || function () {
-            return (this.minWidth + this.maxWidth) / 2;
-        };
-        this.penColor = opts.penColor || '#333';
-        this.backgroundColor = opts.backgroundColor || 'rgba(0,0,0,0)';
+        this.dotSize =
+            opts.dotSize ||
+            function () {
+                return (this.minWidth + this.maxWidth) / 2;
+            };
+        this.penColor = opts.penColor || "#333";
+        this.backgroundColor = opts.backgroundColor || "rgba(0,0,0,0)";
         this.onBegin = opts.onBegin;
         this.onEnd = opts.onEnd;
         this._canvas = canvas;
-        this._ctx = canvas.getContext('2d');
+        this._ctx = canvas.getContext("2d");
         this.clear();
         this._handleMouseDown = function (event) {
             if (event.which === 1) {
-                var noteElement = document.getElementById("note") || document.getElementById("note_petugas") || document.getElementById("note_pasien");
+                var noteElement =
+                    document.getElementById("note") ||
+                    document.getElementById("note_petugas") ||
+                    document.getElementById("note_pasien");
                 if (noteElement) {
                     noteElement.innerHTML = "";
+                } else if (document.getElementById("note")) {
+                    document.getElementById("note").innerHTML = "";
                 }
                 self._mouseButtonDown = true;
                 self._strokeBegin(event);
@@ -125,13 +156,22 @@
     SignaturePad.prototype.toDataURL = function (type) {
         var _canvas;
         switch (type) {
-            case 'image/svg+xml':
+            case "image/svg+xml":
                 return this._toSVG();
             default:
-                for (var _len = arguments.length, options = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                for (
+                    var _len = arguments.length,
+                        options = Array(_len > 1 ? _len - 1 : 0),
+                        _key = 1;
+                    _key < _len;
+                    _key++
+                ) {
                     options[_key - 1] = arguments[_key];
                 }
-                return (_canvas = this._canvas).toDataURL.apply(_canvas, [type].concat(options));
+                return (_canvas = this._canvas).toDataURL.apply(
+                    _canvas,
+                    [type].concat(options)
+                );
         }
     };
     SignaturePad.prototype.on = function () {
@@ -139,22 +179,22 @@
         this._handleTouchEvents();
     };
     SignaturePad.prototype.off = function () {
-        this._canvas.removeEventListener('mousedown', this._handleMouseDown);
-        this._canvas.removeEventListener('mousemove', this._handleMouseMove);
-        document.removeEventListener('mouseup', this._handleMouseUp);
-        this._canvas.removeEventListener('touchstart', this._handleTouchStart);
-        this._canvas.removeEventListener('touchmove', this._handleTouchMove);
-        this._canvas.removeEventListener('touchend', this._handleTouchEnd);
+        this._canvas.removeEventListener("mousedown", this._handleMouseDown);
+        this._canvas.removeEventListener("mousemove", this._handleMouseMove);
+        document.removeEventListener("mouseup", this._handleMouseUp);
+        this._canvas.removeEventListener("touchstart", this._handleTouchStart);
+        this._canvas.removeEventListener("touchmove", this._handleTouchMove);
+        this._canvas.removeEventListener("touchend", this._handleTouchEnd);
     };
     SignaturePad.prototype.isEmpty = function () {
         return this._isEmpty;
     };
-// Private methods
+    // Private methods
     SignaturePad.prototype._strokeBegin = function (event) {
         this._data.push([]);
         this._reset();
         this._strokeUpdate(event);
-        if (typeof this.onBegin === 'function') {
+        if (typeof this.onBegin === "function") {
             this.onBegin(event);
         }
     };
@@ -171,7 +211,7 @@
         this._data[this._data.length - 1].push({
             x: point.x,
             y: point.y,
-            time: point.time
+            time: point.time,
         });
     };
     SignaturePad.prototype._strokeEnd = function (event) {
@@ -180,22 +220,22 @@
         if (!canDrawCurve && point) {
             this._drawDot(point);
         }
-        if (typeof this.onEnd === 'function') {
+        if (typeof this.onEnd === "function") {
             this.onEnd(event);
         }
     };
     SignaturePad.prototype._handleMouseEvents = function () {
         this._mouseButtonDown = false;
-        this._canvas.addEventListener('mousedown', this._handleMouseDown);
-        this._canvas.addEventListener('mousemove', this._handleMouseMove);
-        document.addEventListener('mouseup', this._handleMouseUp);
+        this._canvas.addEventListener("mousedown", this._handleMouseDown);
+        this._canvas.addEventListener("mousemove", this._handleMouseMove);
+        document.addEventListener("mouseup", this._handleMouseUp);
     };
     SignaturePad.prototype._handleTouchEvents = function () {
-        this._canvas.style.msTouchAction = 'none';
-        this._canvas.style.touchAction = 'none';
-        this._canvas.addEventListener('touchstart', this._handleTouchStart);
-        this._canvas.addEventListener('touchmove', this._handleTouchMove);
-        this._canvas.addEventListener('touchend', this._handleTouchEnd);
+        this._canvas.style.msTouchAction = "none";
+        this._canvas.style.touchAction = "none";
+        this._canvas.addEventListener("touchstart", this._handleTouchStart);
+        this._canvas.addEventListener("touchmove", this._handleTouchMove);
+        this._canvas.addEventListener("touchend", this._handleTouchEnd);
     };
     SignaturePad.prototype._reset = function () {
         this.points = [];
@@ -205,7 +245,11 @@
     };
     SignaturePad.prototype._createPoint = function (x, y, time) {
         var rect = this._canvas.getBoundingClientRect();
-        return new Point(x - rect.left, y - rect.top, time || new Date().getTime());
+        return new Point(
+            x - rect.left,
+            y - rect.top,
+            time || new Date().getTime()
+        );
     };
     SignaturePad.prototype._addPoint = function (point) {
         var points = this.points;
@@ -213,9 +257,17 @@
         points.push(point);
         if (points.length > 2) {
             if (points.length === 3) points.unshift(points[0]);
-            tmp = this._calculateCurveControlPoints(points[0], points[1], points[2]);
+            tmp = this._calculateCurveControlPoints(
+                points[0],
+                points[1],
+                points[2]
+            );
             var c2 = tmp.c2;
-            tmp = this._calculateCurveControlPoints(points[1], points[2], points[3]);
+            tmp = this._calculateCurveControlPoints(
+                points[1],
+                points[2],
+                points[3]
+            );
             var c3 = tmp.c1;
             var curve = new Bezier(points[1], c2, c3, points[2]);
             var widths = this._calculateCurveWidths(curve);
@@ -224,7 +276,11 @@
         }
         return {};
     };
-    SignaturePad.prototype._calculateCurveControlPoints = function (s1, s2, s3) {
+    SignaturePad.prototype._calculateCurveControlPoints = function (
+        s1,
+        s2,
+        s3
+    ) {
         var dx1 = s1.x - s2.x;
         var dy1 = s1.y - s2.y;
         var dx2 = s2.x - s3.x;
@@ -241,14 +297,16 @@
         var ty = s2.y - cm.y;
         return {
             c1: new Point(m1.x + tx, m1.y + ty),
-            c2: new Point(m2.x + tx, m2.y + ty)
+            c2: new Point(m2.x + tx, m2.y + ty),
         };
     };
     SignaturePad.prototype._calculateCurveWidths = function (curve) {
         var startPoint = curve.startPoint;
         var endPoint = curve.endPoint;
         var widths = { start: null, end: null };
-        var velocity = this.velocityFilterWeight * endPoint.velocityFrom(startPoint) + (1 - this.velocityFilterWeight) * this._lastVelocity;
+        var velocity =
+            this.velocityFilterWeight * endPoint.velocityFrom(startPoint) +
+            (1 - this.velocityFilterWeight) * this._lastVelocity;
         var newWidth = this._strokeWidth(velocity);
         widths.start = this._lastWidth;
         widths.end = newWidth;
@@ -293,19 +351,28 @@
     };
     SignaturePad.prototype._drawDot = function (point) {
         var ctx = this._ctx;
-        var width = typeof this.dotSize === 'function' ? this.dotSize() : this.dotSize;
+        var width =
+            typeof this.dotSize === "function" ? this.dotSize() : this.dotSize;
         ctx.beginPath();
         this._drawPoint(point.x, point.y, width);
         ctx.closePath();
         ctx.fill();
     };
-    SignaturePad.prototype._fromData = function (pointGroups, drawCurve, drawDot) {
+    SignaturePad.prototype._fromData = function (
+        pointGroups,
+        drawCurve,
+        drawDot
+    ) {
         for (var i = 0; i < pointGroups.length; i += 1) {
             var group = pointGroups[i];
             if (group.length > 1) {
                 for (var j = 0; j < group.length; j += 1) {
                     var rawPoint = group[j];
-                    var point = new Point(rawPoint.x, rawPoint.y, rawPoint.time);
+                    var point = new Point(
+                        rawPoint.x,
+                        rawPoint.y,
+                        rawPoint.time
+                    );
                     if (j === 0) {
                         this._reset();
                         this._addPoint(point);
@@ -334,56 +401,99 @@
         var minY = 0;
         var maxX = canvas.width;
         var maxY = canvas.height;
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttributeNS(null, 'width', canvas.width);
-        svg.setAttributeNS(null, 'height', canvas.height);
-        this._fromData(pointGroups, function (curve, widths) {
-            var path = document.createElement('path');
-            if (!isNaN(curve.control1.x) && !isNaN(curve.control1.y) && !isNaN(curve.control2.x) && !isNaN(curve.control2.y)) {
-                var attr = 'M ' + curve.startPoint.x.toFixed(3) + ',' + curve.startPoint.y.toFixed(3) + ' ' + ('C ' + curve.control1.x.toFixed(3) + ',' + curve.control1.y.toFixed(3) + ' ') + (curve.control2.x.toFixed(3) + ',' + curve.control2.y.toFixed(3) + ' ') + (curve.endPoint.x.toFixed(3) + ',' + curve.endPoint.y.toFixed(3));
-                path.setAttribute('d', attr);
-                path.setAttribute('stroke-width', (widths.end * 2.25).toFixed(3));
-                path.setAttribute('stroke', _this2.penColor);
-                path.setAttribute('fill', 'none');
-                path.setAttribute('stroke-linecap', 'round');
-                svg.appendChild(path);
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttributeNS(null, "width", canvas.width);
+        svg.setAttributeNS(null, "height", canvas.height);
+        this._fromData(
+            pointGroups,
+            function (curve, widths) {
+                var path = document.createElement("path");
+                if (
+                    !isNaN(curve.control1.x) &&
+                    !isNaN(curve.control1.y) &&
+                    !isNaN(curve.control2.x) &&
+                    !isNaN(curve.control2.y)
+                ) {
+                    var attr =
+                        "M " +
+                        curve.startPoint.x.toFixed(3) +
+                        "," +
+                        curve.startPoint.y.toFixed(3) +
+                        " " +
+                        ("C " +
+                            curve.control1.x.toFixed(3) +
+                            "," +
+                            curve.control1.y.toFixed(3) +
+                            " ") +
+                        (curve.control2.x.toFixed(3) +
+                            "," +
+                            curve.control2.y.toFixed(3) +
+                            " ") +
+                        (curve.endPoint.x.toFixed(3) +
+                            "," +
+                            curve.endPoint.y.toFixed(3));
+                    path.setAttribute("d", attr);
+                    path.setAttribute(
+                        "stroke-width",
+                        (widths.end * 2.25).toFixed(3)
+                    );
+                    path.setAttribute("stroke", _this2.penColor);
+                    path.setAttribute("fill", "none");
+                    path.setAttribute("stroke-linecap", "round");
+                    svg.appendChild(path);
+                }
+            },
+            function (rawPoint) {
+                var circle = document.createElement("circle");
+                var dotSize =
+                    typeof _this2.dotSize === "function"
+                        ? _this2.dotSize()
+                        : _this2.dotSize;
+                circle.setAttribute("r", dotSize);
+                circle.setAttribute("cx", rawPoint.x);
+                circle.setAttribute("cy", rawPoint.y);
+                circle.setAttribute("fill", _this2.penColor);
+                svg.appendChild(circle);
             }
-        }, function (rawPoint) {
-            var circle = document.createElement('circle');
-            var dotSize = typeof _this2.dotSize === 'function' ? _this2.dotSize() : _this2.dotSize;
-            circle.setAttribute('r', dotSize);
-            circle.setAttribute('cx', rawPoint.x);
-            circle.setAttribute('cy', rawPoint.y);
-            circle.setAttribute('fill', _this2.penColor);
-            svg.appendChild(circle);
-        });
-        var prefix = 'data:image/svg+xml;base64,';
-        var header = '<svg' + ' xmlns="http://www.w3.org/2000/svg"' + ' xmlns:xlink="http://www.w3.org/1999/xlink"' + (' viewBox="' + minX + ' ' + minY + ' ' + maxX + ' ' + maxY + '"') + (' width="' + maxX + '"') + (' height="' + maxY + '"') + '>';
+        );
+        var prefix = "data:image/svg+xml;base64,";
+        var header =
+            "<svg" +
+            ' xmlns="http://www.w3.org/2000/svg"' +
+            ' xmlns:xlink="http://www.w3.org/1999/xlink"' +
+            (' viewBox="' + minX + " " + minY + " " + maxX + " " + maxY + '"') +
+            (' width="' + maxX + '"') +
+            (' height="' + maxY + '"') +
+            ">";
         var body = svg.innerHTML;
         if (body === undefined) {
-            var dummy = document.createElement('dummy');
+            var dummy = document.createElement("dummy");
             var nodes = svg.childNodes;
-            dummy.innerHTML = '';
+            dummy.innerHTML = "";
             for (var i = 0; i < nodes.length; i += 1) {
                 dummy.appendChild(nodes[i].cloneNode(true));
             }
             body = dummy.innerHTML;
         }
-        var footer = '</svg>';
+        var footer = "</svg>";
         var data = header + body + footer;
         return prefix + btoa(data);
     };
     SignaturePad.prototype.fromData = function (pointGroups) {
         var _this3 = this;
         this.clear();
-        this._fromData(pointGroups, function (curve, widths) {
-            return _this3._drawCurve(curve, widths.start, widths.end);
-        }, function (rawPoint) {
-            return _this3._drawDot(rawPoint);
-        });
+        this._fromData(
+            pointGroups,
+            function (curve, widths) {
+                return _this3._drawCurve(curve, widths.start, widths.end);
+            },
+            function (rawPoint) {
+                return _this3._drawDot(rawPoint);
+            }
+        );
     };
     SignaturePad.prototype.toData = function () {
         return this._data;
     };
     return SignaturePad;
-})));
+});
