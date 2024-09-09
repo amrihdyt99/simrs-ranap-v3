@@ -4,6 +4,7 @@ use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
+use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -219,4 +220,8 @@ Route::group(['prefix' => 'sphaira'], function () {
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
 	Route::get('web-visit-history/{medicalRecord}', [PasienController::class, 'webVisitHistory'])->name('web.visit.history');
+});
+
+Route::prefix('perawat')->name('perawat.')->group(function () {
+	Route::post('add-assesment-neonatus', [NeonatusController::class, 'store'])->name('neonatus.store');
 });

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\ZxcNyaaUniversal;
 
 use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
+use App\Models\Neonatus\NeonatusFisik;
+use App\Models\Neonatus\NeonatusNyeri;
+use App\Models\Neonatus\NeonatusTtd;
 use App\Models\Pasien;
 use App\Models\RegistrationInap;
 use Illuminate\Http\Request;
@@ -225,6 +228,23 @@ class NyaaViewInjectorController extends AaaBaseController
         } else {
             return view('new_perawat.assesment.error.assesment_anak');
         }
+    }
+
+    function assesment_awal_neonatus(Request $request)
+    {
+        $reg = RegistrationInap::find($request->reg_no);
+        $fisik = NeonatusFisik::where('reg_no', $request->reg_no)->first();
+        $nyeri = NeonatusNyeri::where('reg_no', $request->reg_no)->first();
+        $ttd = NeonatusTtd::where('reg_no', $request->reg_no)->first();
+
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'fisik' => optional($fisik),
+            'skrinning' => optional($nyeri),
+            'ttd'   => optional($ttd),
+        );
+        return view("new_perawat.assesment.neonatus")->with($context);
     }
 
     function assesment_gizi_dewasa(Request $request)
