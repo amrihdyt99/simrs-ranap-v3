@@ -62,7 +62,7 @@ class RegisterController extends Controller
             'pjawab_pasien' => $pjawab_pasien,
             'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-'
         ];
-        //dd($context['registration']);
+        // dd($context['registration']);
         return  view('register.pages.ranap.lengkapi_pendaftaran', $context);
     }
 
@@ -206,6 +206,16 @@ class RegisterController extends Controller
     public function batal_ranap($no)
     {
         $reg = str_replace("_", "/", $no);
+        $cppt = DB::table('rs_pasien_cppt')
+            ->where('soapdok_reg', $reg)
+            ->first();
+
+        $tindakan = DB::table('job_orders_dt')
+            ->where('reg_no', $reg)
+            ->first();
+        if ($cppt || $tindakan) {
+            return response()->json(['message' => 'Pasien sudah ada tindakan atau CPPT, tidak bisa dibatalkan'], 400);
+        }
         DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $reg)->update([
             'reg_deleted' => '1',
             'reg_deleted_by' => Auth::user()->id
