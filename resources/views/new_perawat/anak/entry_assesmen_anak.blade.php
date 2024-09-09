@@ -1,24 +1,24 @@
 @empty($assesment_awal_anak)
 @php
-   $assesment_awal_anak = optional((object)[]);
+$assesment_awal_anak = optional((object)[]);
 @endphp
 @endempty
 <div class="text-black" style="font-size: 14px">
     <form id="entry-asessmen-anak">
         <input type="hidden" name="reg_no" value="{{$reg}}">
         <fieldset id="lin" class="form-group">
-                <div class="row">
-                    <legend class="col-form-label col-sm-2 ptx-0 pt-1">Hospitalisasi</legend>
-                    <div class="col-sm-10">
-                        <select class="form-control" id="hospitalisasi" name="hospitalisasi">
-                            <option value="riwayat sakit berat" {{$assesment_awal_anak->hospitalisasi=='riwayat sakit berat' ? 'selected' : ''}}>Riwayat sakit berat</option>
-                            <option value="kejang" {{$assesment_awal_anak->hospitalisasi=='kejang' ? 'selected' : ''}}>Kejang</option>
-                            <option value="trauma" {{$assesment_awal_anak->hospitalisasi=='trauma' ? 'selected' : ''}}>Trauma</option>
-                            <option value="kelainan lain" {{$assesment_awal_anak->hospitalisasi=='kelainan lain' ? 'selected' : ''}}>Kelainan Lain</option>
-                        </select>
-                    </div>
-
+            <div class="row">
+                <legend class="col-form-label col-sm-2 ptx-0 pt-1">Hospitalisasi</legend>
+                <div class="col-sm-10">
+                    <select class="form-control" id="hospitalisasi" name="hospitalisasi">
+                        <option value="riwayat sakit berat" {{$assesment_awal_anak->hospitalisasi=='riwayat sakit berat' ? 'selected' : ''}}>Riwayat sakit berat</option>
+                        <option value="kejang" {{$assesment_awal_anak->hospitalisasi=='kejang' ? 'selected' : ''}}>Kejang</option>
+                        <option value="trauma" {{$assesment_awal_anak->hospitalisasi=='trauma' ? 'selected' : ''}}>Trauma</option>
+                        <option value="kelainan lain" {{$assesment_awal_anak->hospitalisasi=='kelainan lain' ? 'selected' : ''}}>Kelainan Lain</option>
+                    </select>
                 </div>
+
+            </div>
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1"></legend>
                 <div class="col-sm-10">
@@ -30,13 +30,15 @@
                     </select>
                 </div>
             </div>
-            <div class="header"><h4>Lingkungan Keluarga</h4></div>
+            <div class="header">
+                <h4>Lingkungan Keluarga</h4>
+            </div>
             <div class="row">
 
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">Pola asuh</legend>
                 <div class="col-sm-10">
                     <select class="form-control" id="pola_asuh" name="pola_asuh">
-                       <option value="demokratis" {{$assesment_awal_anak->pola_asuh=='demokratis' ? 'selected' : ''}}>Demokratis</option>
+                        <option value="demokratis" {{$assesment_awal_anak->pola_asuh=='demokratis' ? 'selected' : ''}}>Demokratis</option>
                         <option value="otoriter" {{$assesment_awal_anak->pola_asuh=='otoriter' ? 'selected' : ''}}>Otoriter</option>
                         <option value="campuran" {{$assesment_awal_anak->pola_asuh=='campuran' ? 'selected' : ''}}>Campuran</option>
                     </select>
@@ -83,14 +85,14 @@
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">Pekerjaan Ayah</legend>
                 <div class="col-sm-10">
-                    <input type="text" name="pekerjaan_ayah" id="pekerjaan_ayah" class="form-control" value="{{$assesment_awal_anak->pekerjaan_ayah}}"/>
+                    <input type="text" name="pekerjaan_ayah" id="pekerjaan_ayah" class="form-control" value="{{$assesment_awal_anak->pekerjaan_ayah}}" />
                 </div>
             </div>
 
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">Pekerjaan Ibu</legend>
                 <div class="col-sm-10">
-                    <input type="text" name="pekerjaan_ibu" id="pekerjaan_ibu" class="form-control" value="{{$assesment_awal_anak->pekerjaan_ibu}}"/>
+                    <input type="text" name="pekerjaan_ibu" id="pekerjaan_ibu" class="form-control" value="{{$assesment_awal_anak->pekerjaan_ibu}}" />
                 </div>
             </div>
 
@@ -98,7 +100,9 @@
 
         <fieldset class="form-group m-3">
             <div class="row">
-                <div class="header"><h4>SKRINNING NYERI</h4></div>
+                <div class="header">
+                    <h4>SKRINNING NYERI</h4>
+                </div>
 
             </div>
             <div class="row">
@@ -106,21 +110,23 @@
 
             </div>
             <div class="row">
-                <div class="header"><h5>Skala Wong Baker (anak>3 tahun)</h5></div>
+                <div class="header">
+                    <h5>Skala Wong Baker (anak>3 tahun)</h5>
+                </div>
 
             </div>
 
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">O (Onset) Kapan terjadi,berapa lama, dan berapa sering</legend>
                 <div class="col-sm-10">
-                    <input type="text" id="onset" name="onset" class="form-control" value="{{$assesment_awal_anak->onset}}"/>
+                    <input type="text" id="onset" name="onset" class="form-control" value="{{$assesment_awal_anak->onset}}" />
                 </div>
             </div>
 
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">P (Provocating/Palliating) Pencetus Nyeri</legend>
                 <div class="col-sm-10">
-                    <input type="text" id="provocating" name="provocating" class="form-control" value="{{$assesment_awal_anak->provocating}}"/>
+                    <input type="text" id="provocating" name="provocating" class="form-control" value="{{$assesment_awal_anak->provocating}}" />
                 </div>
             </div>
 
@@ -138,39 +144,41 @@
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">R (Region) Menjalar</legend>
                 <div class="col-sm-10">
-                    <input type="text" id="region" name="region" class="form-control" value="{{$assesment_awal_anak->region}}"/>
+                    <input type="text" id="region" name="region" class="form-control" value="{{$assesment_awal_anak->region}}" />
                 </div>
             </div>
 
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">S (Saverity)</legend>
                 <div class="col-sm-10">
-                    <input type="text" id="saverity" name="saverity" class="form-control" value="{{$assesment_awal_anak->saverity}}"/>
+                    <input type="text" id="saverity" name="saverity" class="form-control" value="{{$assesment_awal_anak->saverity}}" />
                 </div>
             </div>
 
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">T (Treatment)</legend>
                 <div class="col-sm-10">
-                    <input type="text" id="treatment" name="treatment" class="form-control" value="{{$assesment_awal_anak->treatment}}"/>
+                    <input type="text" id="treatment" name="treatment" class="form-control" value="{{$assesment_awal_anak->treatment}}" />
                 </div>
             </div>
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">U (Understanding)</legend>
                 <div class="col-sm-10">
-                    <input type="text" id="understanding" name="understanding" class="form-control" value="{{$assesment_awal_anak->understanding}}"/>
+                    <input type="text" id="understanding" name="understanding" class="form-control" value="{{$assesment_awal_anak->understanding}}" />
                 </div>
             </div>
             <div class="row">
                 <legend class="col-form-label col-sm-2 ptx-0 pt-1">V (Value)</legend>
                 <div class="col-sm-10">
-                    <input type="text" id="value" name="value" class="form-control" value="{{$assesment_awal_anak->value}}"/>
+                    <input type="text" id="value" name="value" class="form-control" value="{{$assesment_awal_anak->value}}" />
                 </div>
             </div>
 
 
             <div class="row">
-                <div class="header"><h4>Skala FLACC</h4></div>
+                <div class="header">
+                    <h4>Skala FLACC</h4>
+                </div>
 
             </div>
 
@@ -230,34 +238,34 @@
         </fieldset>
     </form>
     <div class="row">
-        <div class="col-sm-10 offset-sm-2" >
+        <div class="col-sm-12">
             <button class="btn btn-primary" type="button" onclick="simpanAssementAnak()">Simpan</button>
         </div>
     </div>
 </div>
 @push('myscripts')
-    <script>
-        // function simpanAssesmenAnak(){
-        //     // var data = $('#formAssesmenAnak').serialize();
-        //     alert('Data berhasil disimpan');
-        //     {{--$.ajax({--}}
-        //     {{--    url: '{{url('assesmen-anak')}}',--}}
-        //     {{--    method: 'POST',--}}
-        //     {{--    data: data,--}}
-        //     {{--    success: function (response) {--}}
-        //     {{--        console.log(response);--}}
-        //     {{--        if(response.status == 'success'){--}}
-        //     {{--            alert('Data berhasil disimpan');--}}
-        //     {{--            window.location.href = '{{url('assesmen-anak')}}';--}}
-        //     {{--        }else{--}}
-        //     {{--            alert('Data gagal disimpan');--}}
-        //     {{--        }--}}
-        //     {{--    },--}}
-        //     {{--    error: function (response) {--}}
-        //     {{--        console.log(response);--}}
-        //     {{--        alert('Data gagal disimpan');--}}
-        //     {{--    }--}}
-        //     {{--});--}}
-        // }
-    </script>
+<script>
+    // function simpanAssesmenAnak(){
+    //     // var data = $('#formAssesmenAnak').serialize();
+    //     alert('Data berhasil disimpan');
+    //     {{--$.ajax({--}}
+    //     {{--    url: '{{url('assesmen-anak')}}',--}}
+    //     {{--    method: 'POST',--}}
+    //     {{--    data: data,--}}
+    //     {{--    success: function (response) {--}}
+    //     {{--        console.log(response);--}}
+    //     {{--        if(response.status == 'success'){--}}
+    //     {{--            alert('Data berhasil disimpan');--}}
+    //     {{--            window.location.href = '{{url('assesmen-anak')}}';--}}
+    //     {{--        }else{--}}
+    //     {{--            alert('Data gagal disimpan');--}}
+    //     {{--        }--}}
+    //     {{--    },--}}
+    //     {{--    error: function (response) {--}}
+    //     {{--        console.log(response);--}}
+    //     {{--        alert('Data gagal disimpan');--}}
+    //     {{--    }--}}
+    //     {{--});--}}
+    // }
+</script>
 @endpush

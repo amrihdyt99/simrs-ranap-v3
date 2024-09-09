@@ -52,6 +52,7 @@ Route::prefix('nyx-sistem')
                 Route::post('assesment_cppt_soap_perawat', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_cppt_soap_perawat'])->name('assesment_cppt_soap_perawat');
                 Route::post('assesment_awal_dewasa', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_dewasa'])->name('assesment_awal_dewasa');
                 Route::post('assesment_awal_anak', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_anak'])->name('assesment_awal_anak');
+                Route::post('assesment_awal_neonatus', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_neonatus'])->name('assesment_awal_neonatus');
                 Route::post('assesment_gizi_dewasa', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_gizi_dewasa'])->name('assesment_gizi_dewasa');
                 Route::post('assesment_nurrse_note', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_nurrse_note'])->name('assesment_nurrse_note');
                 Route::post('nurse_transfer_internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'nurse_transfer_internal'])->name('nurse_transfer_internal');

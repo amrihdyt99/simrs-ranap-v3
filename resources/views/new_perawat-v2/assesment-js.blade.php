@@ -488,6 +488,25 @@
                 });
             },
 
+            'assesment-neonatus': function() {
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        "reg_no": regno,
+                        "medrec": medrec,
+                    },
+                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_neonatus')}}",
+                    success: function(data) {
+                        inject_view_data(data);
+                        loadDatatableRekonObat();
+                        loadSignature();
+                    },
+                    error: function(data) {
+                        clear_show_error();
+                    },
+                });
+            },
+
             'gizi-dewasa': function() {
                 $.ajax({
                     type: "POST",
@@ -1541,3 +1560,5 @@
         }
     }
 </script>
+
+@include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')

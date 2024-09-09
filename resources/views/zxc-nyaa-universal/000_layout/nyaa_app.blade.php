@@ -120,6 +120,7 @@
   <script src="{{ asset('neko/plugins/select2/js/i18n/id.js') }}"></script>
   <script src="{{ asset('neko/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
   <script src="{{ asset('neko/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
+  <script src="{{asset('new_assets/signature/signature.js')}}"></script>
   <script src="{{ asset('assets/plugins/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js') }}"></script>
   <script src="{{ asset('neko/custom/nyaa.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
   @stack('nyaa_parent_scripts')
