@@ -642,6 +642,18 @@ class NursingController extends Controller
     public function store_transfer_internal(Request $request) {
         try {
             
+            $validatedData = $request->validate([
+                'transfer_gcs_e' => 'required|integer|min:1|max:4', 
+                'transfer_gcs_m' => 'required|integer|min:1|max:6', 
+                'transfer_gcs_v' => 'required|integer|min:1|max:5', 
+                'transfer_td' => 'required|string|max:10', 
+                'transfer_N' => 'required|integer|min:0|max:200', 
+                'transfer_skala_nyeri' => 'required|integer|min:0|max:10', 
+                'transfer_suhu' => 'required|numeric|min:34|max:42', 
+                'transfer_p' => 'required|integer|min:0|max:150',
+                'transfer_spo2' => 'required|integer|min:0|max:100', 
+            ]);
+            
             $data = [
                 'medrec' => $request->medrec,
                 // 'kode_transfer_internal' => app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4(),
