@@ -11,7 +11,7 @@
     <li class="nav-item">
       <a class="nav-link" id="assesment_2_tab" data-toggle="tab" href="#daftar" role="tab"
         aria-controls="assesment_2" aria-selected="false">
-        Skrinning Nyeri</a>
+        Skrinning Nyeri dan Kebutuhan Eliminasi</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" id="assesment_3_tab" data-toggle="tab" href="#skrinning" role="tab"
@@ -67,7 +67,7 @@
             <input type="datetime-local" class="form-control form-control-sm text-sm" name="waktu_beri_terakhir" id="waktu_beri_terakhir">
           </div>
           <div class="form-group">
-            <label class="label-admisi">Tindak Lanjut</label><select name="reg_hub_pasien" id="reg_hub_pasien" class="form-control" required>
+            <label class="label-admisi">Tindak Lanjut</label><select name="tindak_lanjut" id="tindak_lanjut" class="form-control" required>
               <option value="">-- Pilih tindak lanjut --</option>
               <option value="Lanjut aturan pakai sama">Lanjut aturan pakai sama</option>
               <option value="Lanjut aturan pakai berubah">Lanjut aturan pakai berubah</option>
@@ -76,7 +76,7 @@
           </div>
           <div class="form-group">
             <label class="label-admisi">Perubahan Aturan Pakai</label>
-            <input type="text" class="form-control" name="ubar_aturan_pakai" id="ubar_aturan_pakai">
+            <input type="text" class="form-control" name="aturan_ubah_pakai" id="aturan_ubah_pakai">
           </div>
         </div>
         <div class="modal-footer">
