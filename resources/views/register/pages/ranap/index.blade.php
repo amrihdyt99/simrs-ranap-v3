@@ -113,6 +113,9 @@
       dataType: "json",
       success: function(r) {
         location.reload();
+      },
+      error: function() {
+        neko_d_custom_error('Gagal, Pasien Sudah Ada Tindakan');
       }
     });
   }

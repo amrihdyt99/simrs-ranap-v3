@@ -125,7 +125,8 @@
                 img.onload = function() {
                     // Gambar tanda tangan ke canvas
                     var context = canvas.getContext('2d');
-                    context.drawImage(img, 0, 0);
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    context.drawImage(img, 0, 0, canvas.width, canvas.height); 
                 };
             }
 

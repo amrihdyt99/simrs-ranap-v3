@@ -62,7 +62,7 @@ class RegisterController extends Controller
             'pjawab_pasien' => $pjawab_pasien,
             'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-'
         ];
-        //dd($context['registration']);
+        // dd($context['registration']);
         return  view('register.pages.ranap.lengkapi_pendaftaran', $context);
     }
 
@@ -87,7 +87,7 @@ class RegisterController extends Controller
             ->whereNull('reg_deleted')
             ->orderByDesc('reg_tgl');
 
-        return DataTables()
+            return DataTables()
             ->of($data)
             ->editColumn('aksi_data', function ($query) use ($request) {
                 // $query->reg_no = str_replace("/", "_", $query->reg_no);
@@ -109,6 +109,7 @@ class RegisterController extends Controller
                 $url_lengkapi_pendaftaran = route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $reg_no]);
                 $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
                 $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
+                $url_rawat_intensif = route('register.ranap.rawat-intensif', ['reg_no' => $reg_no]);
 
                 $button_dropdown = '<div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -119,20 +120,20 @@ class RegisterController extends Controller
                                             <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                                             <a href="#" class="dropdown-item" id="viewGcBtn-' . $reg_no . '">General Consent</a>'
                     . '<script>
-                                                document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
+                                        document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
                                                     e.preventDefault();
-                                                    Promise.all([
-                                                        fetch("' . $gc1Url . '").then(response => response.text()),
-                                                        fetch("' . $gc2Url . '").then(response => response.text())
-                                                    ]).then(contents => {
-                                                        const combinedContent = contents.join("<hr>");
-                                                        const viewWindow = window.open("", "_blank");
-                                                        viewWindow.document.write(combinedContent);
-                                                        viewWindow.document.close();
-                                                    }).catch(error => console.error("Error:", error));
+                                                    fetch("' . $gc1Url . '")
+                                                        .then(response => response.text())
+                                                        .then(content => {
+                                                            const viewWindow = window.open("", "_blank");
+                                                            viewWindow.document.write(content);
+                                                            viewWindow.document.close();
+                                                        })
+                                                        .catch(error => console.error("Error:", error));
                                                 });
                                             </script>
                                             <a class="dropdown-item" href="' . $url_barcode . '">Print Barcode</a>
+                                            <a class="dropdown-item" href="' . $url_rawat_intensif . '" target="_blank">Rawat Intensif</a> <!-- Tambahkan tombol Rawat Intensif -->
                                         </div>
                                     </div>';
                 return $button_dropdown;
@@ -202,10 +203,35 @@ class RegisterController extends Controller
         return "{$diff->y} Y {$diff->m} m {$diff->d} d";
     }
 
+    public function rawatIntensif($reg_no)
+    {
+        $reg_no = str_replace("_", "/", $reg_no);
+        $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
+        $data_pasien = [
+            'nama_lengkap' => $data_registration->pasien->PatientName,
+            'medical_no' => $data_registration->reg_medrec,
+            'tgl_lahir' => $data_registration->pasien->DateOfBirth,
+            'jenis_kelamin' => $data_registration->pasien->GCSex,
+            'usia' => $this->formatUsia($data_registration->pasien->DateOfBirth),
+            'alamat' => $data_registration->pasien->PatientAddress,
+            'tgl_registrasi' => Carbon::parse($data_registration->reg_tgl)->format('d F Y'),
+        ];
+        return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
+    }
 
     public function batal_ranap($no)
     {
         $reg = str_replace("_", "/", $no);
+        $cppt = DB::table('rs_pasien_cppt')
+            ->where('soapdok_reg', $reg)
+            ->first();
+
+        $tindakan = DB::table('job_orders_dt')
+            ->where('reg_no', $reg)
+            ->first();
+        if ($cppt || $tindakan) {
+            return response()->json(['message' => 'Pasien sudah ada tindakan atau CPPT, tidak bisa dibatalkan'], 400);
+        }
         DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $reg)->update([
             'reg_deleted' => '1',
             'reg_deleted_by' => Auth::user()->id
@@ -548,7 +574,7 @@ class RegisterController extends Controller
         //return view('pdf',$data);
         return $pdf->stream();
     }
-
+    
     function cetakSlipAdmisi($regno)
     {
 

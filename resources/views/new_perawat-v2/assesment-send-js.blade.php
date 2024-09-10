@@ -971,10 +971,20 @@
 
     function simpanInformasiTindakanMedis() {
         neko_proses();
+        var formData = new FormData($('#InformasiTindakanMedis')[0]);
+
+        formData.append('reg_no', regno);
+        formData.append('medrec', medrec);
+        formData.append('ttdDokter', signatureIPadDokterInformasi.toDataURL());
+        formData.append('ttdPenerima', signaturePadPenerimaInformasi.toDataURL());
+
+
         $.ajax({
             url: "{{route('add.addInformasiTindakanMedis')}}",
             type: "POST",
-            data: $('#InformasiTindakanMedis').serialize() + "&reg_no=" + regno + "&medrec=" + medrec,
+            data: formData,
+            contentType: false,
+            processData: false, 
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
@@ -982,15 +992,27 @@
             error: function(data) {
                 neko_simpan_error_noreq();
             },
-        })
+        });
     }
+
 
     function simpanPersetujuanTindakanMedis() {
         neko_proses();
+        var formData = new FormData($('#PersetujuanTindakanMedis')[0]);
+        
+        formData.append('reg_no', regno);
+        formData.append('medrec', medrec);
+        formData.append('ttd_penerima_setuju', signaturePadPenerimaSetuju.toDataURL());
+        formData.append('ttd_dokter_setuju', signaturePadDokterSetuju.toDataURL());
+        formData.append('ttd_keluarga_setuju', signaturePadKeluargaSetuju.toDataURL());
+        formData.append('ttd_perawat_setuju', signaturePadPerawatSetuju.toDataURL());
+
         $.ajax({
             url: "{{route('add.PersetujuanTindakanMedis')}}",
             type: "POST",
-            data: $('#PersetujuanTindakanMedis').serialize() + "&reg_no=" + regno + "&medrec=" + medrec,
+            data: formData,
+            contentType: false, 
+            processData: false, 
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
@@ -998,15 +1020,27 @@
             error: function(data) {
                 neko_simpan_error_noreq();
             },
-        })
+        });
     }
+
 
     function simpanPenolakanTindakanMedis() {
         neko_proses();
+        var formData = new FormData($('#PenolakanTindakanMedis')[0]);
+
+        formData.append('reg_no', regno);
+        formData.append('medrec', medrec);
+        formData.append('ttd_penerima_penolakan', signaturePadPenerimaPenolakan.toDataURL());
+        formData.append('ttd_dokter_penolakan', signaturePadDokterPenolakan.toDataURL());
+        formData.append('ttd_keluarga_penolakan', signaturePadKeluargaPenolakan.toDataURL());
+        formData.append('ttd_perawat_penolakan', signaturePadPerawatPenolakan.toDataURL());
+        
         $.ajax({
             url: "{{route('add.PenolakanTindakanMedis')}}",
             type: "POST",
-            data: $('#PenolakanTindakanMedis').serialize() + "&reg_no=" + regno + "&medrec=" + medrec,
+            data: formData,
+            contentType: false, 
+            processData: false, 
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();

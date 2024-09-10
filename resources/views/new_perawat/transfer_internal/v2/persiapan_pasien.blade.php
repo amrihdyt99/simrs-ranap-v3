@@ -120,15 +120,15 @@
         <h5 class="col-sm-12 pt-0">Saat Berangkat :</h5>
         <legend class="col-form-label col-sm-2 pt-0">GCS</legend>
         <div class="col-lg-2">
-            <div class="form-group"><label>E</label><input type="text" class="form-control"
+            <div class="form-group"><label>E</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_gcs_e }}" name="transfer_gcs_e"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>M</label><input type="text" class="form-control"
+            <div class="form-group"><label>M</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_gcs_m }}" name="transfer_gcs_m"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>V</label><input type="text" class="form-control"
+            <div class="form-group"><label>V</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_gcs_m }}"
                     value="{{ $transfer_internal->transfer_gcs_m }}" name="transfer_gcs_v"></div>
         </div>
@@ -139,24 +139,24 @@
                     value="{{ $transfer_internal->transfer_td }}" name="transfer_td"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>N</label><input type="text" class="form-control"
+            <div class="form-group"><label>N</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_N }}" name="transfer_N"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>Skala Nyeri</label><input type="text"
+            <div class="form-group"><label>Skala Nyeri</label><input type="number"
                     value="{{ $transfer_internal->transfer_skala_nyeri }}" class="form-control"
                     name="transfer_skala_nyeri"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>Suhu</label><input type="text"
+            <div class="form-group"><label>Suhu</label><input type="number"
                     value="{{ $transfer_internal->transfer_suhu }}" class="form-control" name="transfer_suhu"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>P</label><input type="text"
+            <div class="form-group"><label>P</label><input type="number"
                     value="{{ $transfer_internal->transfer_p }}" class="form-control" name="transfer_p"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>SpO2</label><input type="text"
+            <div class="form-group"><label>SpO2</label><input type="number"
                     value="{{ $transfer_internal->transfer_spo2 }}" class="form-control" name="transfer_spo2"></div>
         </div>
     </div>

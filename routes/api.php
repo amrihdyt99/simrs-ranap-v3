@@ -4,6 +4,7 @@ use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
+use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -93,8 +94,8 @@ Route::post('addPersetujuanTindakanMedis', [\App\Http\Controllers\NewPerawat\New
 Route::post('addPenolakanTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPenolakanTindakanMedis'])->name('add.PenolakanTindakanMedis');
 Route::post('addRujukanPersiapanPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanPersiapanPasien'])->name('add.RujukanPersiapanPasien');
 Route::post('addRujukanSerahTerima', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanSerahTerima'])->name('add.RujukanSerahTerima');
-Route::post('getResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh'])->name('getResikoJatuhData');
-Route::post('getResikoJatuh2', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getResikoJatuh2'])->name('getResikoJatuhData2');
+Route::post('getListResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getListResikoJatuh'])->name('getListResikoJatuh');
+Route::post('getDetailResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getDetailResikoJatuh'])->name('getDetailResikoJatuh');
 
 //baru
 Route::post('addassesmetawalanak', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPengkajianPasienAnak'])->name('add.assesmentawalanak');
@@ -219,4 +220,8 @@ Route::group(['prefix' => 'sphaira'], function () {
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
 	Route::get('web-visit-history/{medicalRecord}', [PasienController::class, 'webVisitHistory'])->name('web.visit.history');
+});
+
+Route::prefix('perawat')->name('perawat.')->group(function () {
+	Route::post('add-assesment-neonatus', [NeonatusController::class, 'store'])->name('neonatus.store');
 });

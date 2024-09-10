@@ -62,7 +62,7 @@
                                             <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Tempat Lahir">
                                         </div>
                                         <div class="col-lg-5">
-                                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control">
+                                            <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" onchange="calculateAge()">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -70,7 +70,7 @@
                                             <label for="jenis_kelamin" class="label-admisi">Jenis Kelamin</label>
                                         </div>
                                         <div class="col-lg-4 p">
-                                            <select id="jenis_kelamin" name="jenis_kelamin" class="form-control">
+                                            <select id="jenis_kelamin" name="jenis_kelamin" class="form-control" placeholder="Pilih Jenis Kelamin">
                                                 <option value=""></option>
                                                 <option value="0001^X">Tidak Diketahui</option>
                                                 <option value="0001^M">Laki-laki</option>
@@ -88,22 +88,6 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-lg-2">
-                                            <label for="age" class="label-admisi">Umur</label>
-                                        </div>
-                                        <div class="col-lg-10">
-                                            <input type="number" name="age" id="age" class="form-control" placeholder="Umur">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-lg-2">
-                                            <label for="old_mrn" class="label-admisi">MRN Lama</label>
-                                        </div>
-                                        <div class="col-lg-10">
-                                            <input type="number" name="old_mrn" id="old_mrn" class="form-control" placeholder="Old MRN">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-lg-2">
                                             <label for="agama" class="label-admisi">Agama</label>
                                         </div>
                                         <div class="col-lg-4">
@@ -117,6 +101,12 @@
                                                 <option value="0006^MOS">Muslim</option>
                                                 <option value="0006^OTH">Other</option>
                                             </select>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label for="age" class="label-admisi">Umur</label>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <input type="number" name="age" id="age" class="form-control" placeholder="Umur" readonly>
                                         </div>
                                     </div>
         
@@ -163,8 +153,8 @@
                                           <div class="col-lg-12 mb-2">
                                               <h5><b>DATA KELUARGA PASIEN</b></h5>
                                           </div>
-                                          <div id="family-forms" class="col-lg-12">
-                                              <div class="family-form mb-3">
+                                                <div id="family-forms" class="col-lg-12">
+                                                <div class="family-form mb-3">
                                                   <div class="form-group row">
                                                       <div class="col-lg-12">
                                                           <label class="label-admisi">Hubungan dengan pasien</label>
@@ -180,7 +170,7 @@
                                                       </div>
                                                       <div class="col-lg-6 mt-2">
                                                         <label class="label-admisi">Nomor MRN</label>
-                                                        <input type="number" class="form-control" name="MedicalNo[]" placeholder="Nomor MRN">
+                                                        <input type="text" class="form-control" name="MedicalNo[]" placeholder="Nomor MRN" onblur="checkMRN(this)">
                                                     </div>
                                                       <div class="col-lg-6 mt-2">
                                                           <label class="label-admisi">Nomor Telepon</label>
@@ -195,6 +185,16 @@
                                                       <div class="col-lg-6">
                                                           <label class="label-admisi">Nama Keluarga Pasien</label>
                                                           <input type="text" class="form-control" name="FamilyName[]" placeholder="Nama Keluarga Pasien">
+                                                      </div>
+                                                  </div>
+                                                  <div class="form-group row">
+                                                      <div class="col-lg-6">
+                                                          <label class="label-admisi">Tanggal Lahir</label>
+                                                          <input type="date" class="form-control" name="DateOfBirth[]">
+                                                      </div>
+                                                      <div class="col-lg-6">
+                                                          <label class="label-admisi">Pekerjaan</label>
+                                                          <input type="text" class="form-control" name="Job[]" placeholder="Pekerjaan">
                                                       </div>
                                                   </div>
                                                   <div class="form-group row">
@@ -234,6 +234,47 @@
 @endsection
 @push('nyaa_scripts')
 <script>
+    $(document).ready(function() {
+        $("input[name='MedicalNo[]']").autocomplete({
+            source: async function(request, response) {
+                const mrn = request.term;
+                const res = await fetch('{{ route('register.informasi-pasien.checkMRN') }}?mrn=' + mrn);
+                const data = await res.json();
+                response(data.map(item => ({
+                    label: `${item.MedicalNo} - ${item.PatientName}`,
+                    value: item.MedicalNo
+                })));
+            },
+            minLength: 1,
+            select: function(event, ui) {
+                $(this).val(ui.item.value);
+                return false;
+            },
+            focus: function(event, ui) {
+                $(this).val(ui.item.value);
+                return false;
+            }
+        });
+    });
+
+    async function checkMRN(input) {
+        const mrn = input.value;
+        if (!mrn) {
+            const response = await fetch('{{ route('register.informasi-pasien.generateMRN') }}');
+            const data = await response.json();
+            console.log('Generated MRN:', data.newMRN); // Debug log
+            input.value = data.newMRN;
+        } else {
+            const response = await fetch('{{ route('register.informasi-pasien.checkMRN') }}?mrn=' + mrn);
+            const data = await response.json();
+            console.log('Check MRN response:', data); // Debug log
+            if (data.exists) {
+                alert('MRN sudah ada, silakan masukkan MRN yang berbeda.');
+                input.value = '';
+            }
+        }
+    }
+
     let familyFormCount = 1;
 
     function addFamilyForm() {
@@ -297,6 +338,17 @@
         }
     });
     updateRemoveButtons();
+
+    function calculateAge() {
+        const birthDate = new Date(document.getElementById('tanggal_lahir').value);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        document.getElementById('age').value = age;
+    }
 </script>
 
 @endpush
