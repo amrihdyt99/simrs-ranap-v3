@@ -34,20 +34,20 @@ class SummaryV2Controller extends Controller
             $paracode = optional((object)[]);
         }
 
-        $dateDiff = Carbon::now()->diff($dataPasien->DateOfBirth);
-        $age = '';
-        if ($dateDiff->y == 0 && $dateDiff->m == 0 && $dateDiff->d <= 28) {
-            $age = 'bayi';
-        } else if (($dateDiff->y > 0 && $dateDiff->y <= 18) ||  $dateDiff->m > 0 || $dateDiff->d >= 29) {
-            $age = 'anak';
-        } else if ($dateDiff->y > 18) {
-            $age = 'dewasa';
-        }
+        // $dateDiff = Carbon::now()->diff($dataPasien->DateOfBirth);
+        // $age = '';
+        // if ($dateDiff->y == 0 && $dateDiff->m == 0 && $dateDiff->d <= 28) {
+        //     $age = 'bayi';
+        // } else if (($dateDiff->y > 0 && $dateDiff->y <= 18) || $dateDiff->y <= 18 ||  $dateDiff->m > 0 || $dateDiff->d >= 29) {
+        //     $age = 'anak';
+        // } else if ($dateDiff->y > 18) {
+        //     $age = 'dewasa';
+        // }
 
-        // dd($age);    
+        // dd($dataPasien->DateOfBirth);
 
 
-        return view('new_perawat-v2.assesment', compact('data', 'reg', 'dataPasien', 'paracode', 'age'));
+        return view('new_perawat-v2.assesment', compact('data', 'reg', 'dataPasien', 'paracode'));
     }
 
     // public function detail_pc_compare(RegistrationInap $patient) {
