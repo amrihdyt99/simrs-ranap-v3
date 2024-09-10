@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ZxcNyaaUniversal;
 use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
 use App\Models\Neonatus\NeonatusFisik;
 use App\Models\Neonatus\NeonatusNyeri;
+use App\Models\Neonatus\NeonatusRekonObat;
 use App\Models\Neonatus\NeonatusTtd;
 use App\Models\Pasien;
 use App\Models\RegistrationInap;
@@ -152,10 +153,10 @@ class NyaaViewInjectorController extends AaaBaseController
     function assesment_resiko_jatuh(Request $request)
     {
         $data_pasien = DB::connection('mysql2')
-        ->table('m_registrasi')
-        ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
-        ->where(['m_registrasi.reg_no'=>$request->reg_no])
-        ->first();
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->first();
 
         $universalFunctionController = app(UniversalFunctionController::class);
         $age = $universalFunctionController->kalkulasi_umur($data_pasien->DateOfBirth, 'tahun');
@@ -236,6 +237,7 @@ class NyaaViewInjectorController extends AaaBaseController
         $fisik = NeonatusFisik::where('reg_no', $request->reg_no)->first();
         $nyeri = NeonatusNyeri::where('reg_no', $request->reg_no)->first();
         $ttd = NeonatusTtd::where('reg_no', $request->reg_no)->first();
+        $rekon_obat = NeonatusRekonObat::where('reg_no', $request->reg_no)->get();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -243,6 +245,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'fisik' => optional($fisik),
             'skrinning' => optional($nyeri),
             'ttd'   => optional($ttd),
+            'rekon_obat' => $rekon_obat,
         );
         return view("new_perawat.assesment.neonatus")->with($context);
     }
@@ -943,10 +946,10 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function persetujuan_penolakan(Request $request)
     {
-        $dataPasien=DB::connection('mysql2')
+        $dataPasien = DB::connection('mysql2')
             ->table('m_registrasi')
-            ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
-            ->where(['m_registrasi.reg_no'=> $request->reg_no])
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->first();
 
         $informasi = DB::connection('mysql')

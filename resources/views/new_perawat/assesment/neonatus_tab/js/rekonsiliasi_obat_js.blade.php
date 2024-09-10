@@ -1,6 +1,4 @@
 <script>
-  let data_rekon_obat = [];
-
   function objectifyForm(formArray) {
     //serialize data function
     var returnArray = {};
@@ -11,13 +9,14 @@
   }
 
   function loadDatatableRekonObat() {
+    let data_obat_rekon = JSON.parse($('#rekon_obat_data').val());
     const dt_rekon = $('#dt-rekon-obat').DataTable({
       ordering: false,
       info: false,
       paging: false,
       searching: false,
       serverSide: false,
-      data: data_rekon_obat,
+      data: data_obat_rekon,
       columns: [{
           data: 'nama_obat',
           render: function(columnData, type, rowData, meta) {
@@ -61,10 +60,10 @@
           }
         },
         {
-          data: 'ubar_aturan_pakai',
+          data: 'aturan_ubah_pakai',
           render: function(columnData, type, rowData, meta) {
             return `<input class="form-control" name="rekon_obat[` +
-              meta.row + `][ubar_aturan_pakai]" value="` + columnData + `" required readonly>`;
+              meta.row + `][aturan_ubah_pakai]" value="` + columnData + `" required readonly>`;
           }
         },
         {
@@ -81,19 +80,22 @@
         $(row).find('#id_' + index).click(function() {
           var v = $(this).data('v')
           api.row($(this).closest("tr").get(0)).remove().draw();
-          data_rekon_obat.splice(index, 1);
+          data_obat_rekon.splice(index, 1);
+          $('#rekon_obat_data').val(JSON.stringify(data_obat_rekon));
         });
       },
     });
   }
 
   function submitFormRekonObat() {
+    let data_obat_rekon = JSON.parse($('#rekon_obat_data').val());
 
     var newPJ = $("#formRekonData").serializeArray();
-    data_rekon_obat.push(objectifyForm(newPJ));
+    data_obat_rekon.push(objectifyForm(newPJ));
+    $('#rekon_obat_data').val(JSON.stringify(data_obat_rekon));
 
     $('#dt-rekon-obat').DataTable().clear(); // Clear your data
-    $('#dt-rekon-obat').DataTable().rows.add(data_rekon_obat); // Add rows with newly updated data
+    $('#dt-rekon-obat').DataTable().rows.add(data_obat_rekon); // Add rows with newly updated data
     $('#dt-rekon-obat').DataTable().draw(); //then draw it
 
     $('#rekonModal').modal('hide');

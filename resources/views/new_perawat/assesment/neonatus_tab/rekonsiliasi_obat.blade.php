@@ -1,9 +1,10 @@
 @empty($skrinning)
 @php
-$td = optional((object)[]);
+$ttd = optional((object)[]);
 @endphp
 @endempty
 
+<input id="rekon_obat_data" type="hidden" value="{{ $rekon_obat }}">
 <h3 class="card-title">Rekonsiliasi Obat (diisi oleh dokter)</h3>
 <p>Diinformasi kepada farmasi saat pembuatan resep obat pertama</p>
 <div class="container">
@@ -46,13 +47,13 @@ $td = optional((object)[]);
           <table id="dt-rekon-obat" class="table table-lg table-bordered nowrap w-100">
             <thead>
               <tr>
-                <th>Nama Obat</th>
-                <th>Dosis</th>
-                <th>Frekuensi</th>
-                <th>Cara Pembelian</th>
-                <th>Waktu Pemberian Terakhir</th>
-                <th>Tindak Lanjut</th>
-                <th>Perubahan Aturan Pakai</th>
+                <th>Nama Obat &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;</th>
+                <th>Dosis &emsp; &emsp; &emsp; &emsp; &emsp;</th>
+                <th>Frekuensi &emsp; &emsp; &emsp; &emsp; </th>
+                <th>Cara Pembelian &emsp; &emsp;</th>
+                <th>Waktu Pemberian Terakhir &emsp; &emsp; &emsp;</th>
+                <th>Tindak Lanjut &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;</th>
+                <th>Perubahan Aturan Pakai &emsp; &emsp; &emsp;</th>
                 <th>Aksi</th>
               </tr>
             </thead>

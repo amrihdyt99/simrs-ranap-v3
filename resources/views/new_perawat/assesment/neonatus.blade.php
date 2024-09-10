@@ -76,7 +76,7 @@
           </div>
           <div class="form-group">
             <label class="label-admisi">Perubahan Aturan Pakai</label>
-            <input type="text" class="form-control" name="ubar_aturan_pakai" id="ubar_aturan_pakai">
+            <input type="text" class="form-control" name="aturan_ubah_pakai" id="aturan_ubah_pakai">
           </div>
         </div>
         <div class="modal-footer">
