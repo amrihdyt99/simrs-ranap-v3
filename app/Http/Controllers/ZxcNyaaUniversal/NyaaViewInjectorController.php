@@ -214,16 +214,16 @@ class NyaaViewInjectorController extends AaaBaseController
         $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
         // dd($dateDiff->y . ' Year ' . $dateDiff->m . ' Month ' . $dateDiff->d . ' Day');
         // if (($dateDiff->y > 0 && $dateDiff->y <= 18) ||  $dateDiff->m > 0 || $dateDiff->d >= 28) {
-        //     $assesment_awal_anak = DB::connection('mysql')
-        //         ->table('pengkajian_awal_anak_perawat')
-        //         ->where('reg_no', $request->reg_no)
-        //         ->first();
+        $assesment_awal_anak = DB::connection('mysql')
+            ->table('pengkajian_awal_anak_perawat')
+            ->where('reg_no', $request->reg_no)
+            ->first();
 
-        //     $context = array(
-        //         'reg' => $request->reg_no,
-        //         'medrec' => $request->medrec,
-        //         'assesment_awal_anak' => optional($assesment_awal_anak),
-        //     );
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'assesment_awal_anak' => optional($assesment_awal_anak),
+        );
         return view('new_perawat.assesment.index_anak')
             ->with($context);
         // } else {
