@@ -178,28 +178,21 @@ $data_persiapan_pasien = [
                         CPPT
                     </div>
                 </div>
-                @if ($age == 'dewasa')
                 <div class="row">
                     <div class="left-tab" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
                         Pengkajian Awal Dewasa
                     </div>
                 </div>
-                @endif
-
-                @if ($age == 'anak')
                 <div class="row">
                     <div class="left-tab" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
                         Pengkajian Awal Anak
                     </div>
                 </div>
-                @endif
-                @if ($age == 'bayi')
                 <div class="row">
                     <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
                         Pengkajian Awal (Neonatus)
                     </div>
                 </div>
-                @endif
                 <div class="row">
                     <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
                         Asuhan Gizi Dewasa
