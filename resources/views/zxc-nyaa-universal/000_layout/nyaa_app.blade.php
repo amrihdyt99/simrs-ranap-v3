@@ -163,7 +163,7 @@
             localStorage.setItem('shift_selected', selectedShift);
 
             $.ajax({
-              url: `{{ route('save.shift') }}'`,
+              url: `{{ route('save.shift') }}`,
               type: 'POST',
               data: {
                 _token: '{{ csrf_token() }}',
