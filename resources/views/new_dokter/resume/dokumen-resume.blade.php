@@ -517,7 +517,7 @@
                     <canvas id="signature-pad-pasien" style="border: 1px solid #000; width: 300px; height: 150px;"></canvas>
                     <button type="button" onclick="clearSignature('signature-pad-pasien')">Clear</button>
                 @endif
-                <br>( {{$data->nama_lengkap}})
+                <br>(<input type="text" id="input-nama-pasien-keluarga" name="nama_pasien_keluarga" value="{{ $data->nama_pasien_keluarga }}" {{ !empty($data->nama_pasien_keluarga) ? 'style=display:none;' : '' }}> {{$data->nama_pasien_keluarga}} )
             </td>
             <td style="width: 50%; text-align: center;">
                 Dokter Penanggung Jawab Pelayanan (DPJP)<br><br>
@@ -538,6 +538,7 @@
     <input type="hidden" name="reg_no" value="{{ $data->reg_no }}">
     <input type="hidden" name="ttd_dokter" id="ttd_dokter">
     <input type="hidden" name="ttd_pasien" id="ttd_pasien">
+    <input type="hidden" name="nama_pasien_keluarga" id="nama_pasien_keluarga">
     @if (!$data->signature_exists)
         <button type="submit" id="save-button">Save Signature</button>
     @endif
@@ -556,8 +557,16 @@
             e.preventDefault();
             var dataUrlDokter = signaturePadDokter.toDataURL();
             var dataUrlPasien = signaturePadPasien.toDataURL();
+            var namaPasienKeluarga = document.getElementById('input-nama-pasien-keluarga').value;
+
+            if (!dataUrlDokter || !dataUrlPasien || !namaPasienKeluarga) {
+                alert('Semua data harus diisi sebelum disimpan.');
+                return;
+            }
+
             document.getElementById('ttd_dokter').value = dataUrlDokter;
             document.getElementById('ttd_pasien').value = dataUrlPasien;
+            document.getElementById('nama_pasien_keluarga').value = namaPasienKeluarga;
             document.getElementById('save-button').style.display = 'none';
 
             this.submit(); 
