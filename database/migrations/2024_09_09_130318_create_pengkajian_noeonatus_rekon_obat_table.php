@@ -23,7 +23,6 @@ class CreatePengkajianNoeonatusRekonObatTable extends Migration
             $table->string('frekuensi')->nullable();
             $table->string('cara_beri')->nullable();
             $table->dateTime('waktu_beri_terakhir')->nullable();
-            $table->string('frekuensi_bab_jumlah')->nullable();
             $table->string('tindak_lanjut')->nullable();
             $table->string('aturan_ubah_pakai')->nullable();
             $table->timestamps();

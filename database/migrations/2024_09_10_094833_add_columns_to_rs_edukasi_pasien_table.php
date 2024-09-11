@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AmrModifyEdukasiDropForeignKey extends Migration
+class AddColumnsToRsEdukasiPasienTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,7 @@ class AmrModifyEdukasiDropForeignKey extends Migration
     public function up()
     {
         Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
-            // Gantilah 'foreign_key_name' dengan nama foreign key yang ingin Anda hapus
-            $table->dropColumn('user_id');
-
-            $table->integer('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
         });
     }
 
@@ -26,5 +23,10 @@ class AmrModifyEdukasiDropForeignKey extends Migration
      *
      * @return void
      */
-    public function down() {}
+    public function down()
+    {
+        Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
+            //
+        });
+    }
 }

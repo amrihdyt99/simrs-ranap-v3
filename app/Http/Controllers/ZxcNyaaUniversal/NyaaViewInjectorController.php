@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ZxcNyaaUniversal;
 use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
 use App\Models\Neonatus\NeonatusFisik;
 use App\Models\Neonatus\NeonatusNyeri;
+use App\Models\Neonatus\NeonatusRekonObat;
 use App\Models\Neonatus\NeonatusTtd;
 use App\Models\Pasien;
 use App\Models\RegistrationInap;
@@ -152,10 +153,10 @@ class NyaaViewInjectorController extends AaaBaseController
     function assesment_resiko_jatuh(Request $request)
     {
         $data_pasien = DB::connection('mysql2')
-        ->table('m_registrasi')
-        ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
-        ->where(['m_registrasi.reg_no'=>$request->reg_no])
-        ->first();
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->first();
 
         $universalFunctionController = app(UniversalFunctionController::class);
         $age = $universalFunctionController->kalkulasi_umur($data_pasien->DateOfBirth, 'tahun');
@@ -193,16 +194,16 @@ class NyaaViewInjectorController extends AaaBaseController
         $pasien = Pasien::find($reg->reg_medrec);
         $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
 
-        if ($dateDiff->y > 18) {
-            $context = array(
-                'reg' => $request->reg_no,
-                'medrec' => $request->medrec,
-            );
-            return view('new_perawat.assesment.index_dewasa')
-                ->with($context);
-        } else {
-            return view('new_perawat.assesment.error.assesment_dewasa');
-        }
+        // if ($dateDiff->y > 18) {
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+        );
+        return view('new_perawat.assesment.index_dewasa')
+            ->with($context);
+        // } else {
+        //     return view('new_perawat.assesment.error.assesment_dewasa');
+        // }
     }
 
     function assesment_awal_anak(Request $request)
@@ -212,22 +213,22 @@ class NyaaViewInjectorController extends AaaBaseController
         $pasien = Pasien::find($reg->reg_medrec);
         $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
         // dd($dateDiff->y . ' Year ' . $dateDiff->m . ' Month ' . $dateDiff->d . ' Day');
-        if (($dateDiff->y > 0 && $dateDiff->y <= 18) ||  $dateDiff->m > 0 || $dateDiff->d >= 28) {
-            $assesment_awal_anak = DB::connection('mysql')
-                ->table('pengkajian_awal_anak_perawat')
-                ->where('reg_no', $request->reg_no)
-                ->first();
+        // if (($dateDiff->y > 0 && $dateDiff->y <= 18) ||  $dateDiff->m > 0 || $dateDiff->d >= 28) {
+        $assesment_awal_anak = DB::connection('mysql')
+            ->table('pengkajian_awal_anak_perawat')
+            ->where('reg_no', $request->reg_no)
+            ->first();
 
-            $context = array(
-                'reg' => $request->reg_no,
-                'medrec' => $request->medrec,
-                'assesment_awal_anak' => optional($assesment_awal_anak),
-            );
-            return view('new_perawat.assesment.index_anak')
-                ->with($context);
-        } else {
-            return view('new_perawat.assesment.error.assesment_anak');
-        }
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'assesment_awal_anak' => optional($assesment_awal_anak),
+        );
+        return view('new_perawat.assesment.index_anak')
+            ->with($context);
+        // } else {
+        //     return view('new_perawat.assesment.error.assesment_anak');
+        // }
     }
 
     function assesment_awal_neonatus(Request $request)
@@ -236,6 +237,7 @@ class NyaaViewInjectorController extends AaaBaseController
         $fisik = NeonatusFisik::where('reg_no', $request->reg_no)->first();
         $nyeri = NeonatusNyeri::where('reg_no', $request->reg_no)->first();
         $ttd = NeonatusTtd::where('reg_no', $request->reg_no)->first();
+        $rekon_obat = NeonatusRekonObat::where('reg_no', $request->reg_no)->get();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -243,6 +245,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'fisik' => optional($fisik),
             'skrinning' => optional($nyeri),
             'ttd'   => optional($ttd),
+            'rekon_obat' => $rekon_obat,
         );
         return view("new_perawat.assesment.neonatus")->with($context);
     }
@@ -943,10 +946,10 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function persetujuan_penolakan(Request $request)
     {
-        $dataPasien=DB::connection('mysql2')
+        $dataPasien = DB::connection('mysql2')
             ->table('m_registrasi')
-            ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
-            ->where(['m_registrasi.reg_no'=> $request->reg_no])
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->first();
 
         $informasi = DB::connection('mysql')

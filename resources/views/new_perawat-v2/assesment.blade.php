@@ -185,7 +185,6 @@ $data_persiapan_pasien = [
                     </div>
                 </div>
                 @endif
-
                 @if ($age == 'anak')
                 <div class="row">
                     <div class="left-tab" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
