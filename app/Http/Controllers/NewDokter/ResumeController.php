@@ -282,10 +282,11 @@ class ResumeController extends Controller
 
         $signatureDokter = $request->input('ttd_dokter');
         $signaturePasien = $request->input('ttd_pasien');
+        $namaPasienKeluarga = $request->input('nama_pasien_keluarga');
 
         DB::table('rs_pasien_resume')
             ->where('reg_no', $reg_no)
-            ->update(['ttd_dokter' => $signatureDokter, 'ttd_pasien' => $signaturePasien]);
+            ->update(['ttd_dokter' => $signatureDokter, 'ttd_pasien' => $signaturePasien, 'nama_pasien_keluarga' => $namaPasienKeluarga]);
 
             return redirect()->route('resume.dokumen', ['reg_no' => $reg_no])
             ->with('signatures_saved', true);
