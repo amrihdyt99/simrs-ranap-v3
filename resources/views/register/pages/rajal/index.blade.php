@@ -47,6 +47,9 @@
                                                 <td>{{ $row['ranap_dpjp'] ?? '-' }}</td>
                                                 <td>-</td>
                                                 <td>
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop" onclick="handleGetSuratPernyataanRanap({{ json_encode($row['ranap_reg']) }})">
+                                                        Slip Pernyataan
+                                                      </button>
                                                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cancelRegModal" onclick="cancelRegistrationToRanap({{ json_encode($row) }})">
                                                         Batalkan
                                                     </button>
@@ -98,6 +101,25 @@
               </div>
         </section>
         <!-- /.content -->
+
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Surat Pernyataan Rawat Inap</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="slip-pernyataan-ranap">
+                  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
     </div>
 @endsection
 
@@ -227,6 +249,27 @@
             $("#cancelation_reason").val("")
             patient_name = ""
             medrec_no = ""
+        }
+
+        const handleGetSuratPernyataanRanap = (ranap_reg)=>{
+            const url = "{{ route('register.slip-register.rajal', ':id') }}"
+            const formatted_url = url.replace(':id', ranap_reg)
+            console.log(formatted_url)
+
+            $.ajax({
+                type: "GET",
+                url: formatted_url,
+                success: function (response) {
+                    $("#slip-pernyataan-ranap").html(response)
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat mengambil data.',
+                        'error'
+                    )
+                }
+            });
         }
     </script>
 @endpush

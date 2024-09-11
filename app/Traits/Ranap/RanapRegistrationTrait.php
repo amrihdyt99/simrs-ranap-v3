@@ -170,6 +170,7 @@ trait RanapRegistrationTrait
         $registrasi['reg_info_general_consent'] = request()->reg_info_general_consent;
         $registrasi['reg_info_carabayar'] = request()->reg_info_carabayar;
         $registrasi['reg_cttn'] = request()->reg_cttn;
+        $registrasi['charge_class_code'] = request()->charge_class_code ?? '-';
         return $registrasi;
     }
 

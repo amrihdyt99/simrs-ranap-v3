@@ -43,7 +43,7 @@ Route::prefix('nyx-sistem')
         });
 
         Route::prefix('view-injector')->name('view_injector.')->group(function () {
-            Route::prefix('perawat')->name('perawat.')->middleware(['auth'])->group(function () {
+            Route::prefix('perawat')->name('perawat.')->middleware(['auth', 'shift'])->group(function () {
                 Route::post('checklistpasien', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'checklist'])->name('checklist_pasien');
                 Route::post('assesment_perawat', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_perawat'])->name('assesment_perawat');
                 Route::post('assesment_entry_skrinning_nyeri', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_entry_skrinning_nyeri'])->name('assesment_entry_skrinning_nyeri');
@@ -52,6 +52,7 @@ Route::prefix('nyx-sistem')
                 Route::post('assesment_cppt_soap_perawat', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_cppt_soap_perawat'])->name('assesment_cppt_soap_perawat');
                 Route::post('assesment_awal_dewasa', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_dewasa'])->name('assesment_awal_dewasa');
                 Route::post('assesment_awal_anak', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_anak'])->name('assesment_awal_anak');
+                Route::post('assesment_awal_neonatus', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_neonatus'])->name('assesment_awal_neonatus');
                 Route::post('assesment_gizi_dewasa', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_gizi_dewasa'])->name('assesment_gizi_dewasa');
                 Route::post('assesment_nurrse_note', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_nurrse_note'])->name('assesment_nurrse_note');
                 Route::post('nurse_transfer_internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'nurse_transfer_internal'])->name('nurse_transfer_internal');

@@ -641,6 +641,19 @@ class NursingController extends Controller
 
     public function store_transfer_internal(Request $request) {
         try {
+            
+            $validatedData = $request->validate([
+                'transfer_gcs_e' => 'required|integer|min:1|max:4', 
+                'transfer_gcs_m' => 'required|integer|min:1|max:6', 
+                'transfer_gcs_v' => 'required|integer|min:1|max:5', 
+                'transfer_td' => 'required|string|max:10', 
+                'transfer_N' => 'required|integer|min:0|max:200', 
+                'transfer_skala_nyeri' => 'required|integer|min:0|max:10', 
+                'transfer_suhu' => 'required|numeric|min:34|max:42', 
+                'transfer_p' => 'required|integer|min:0|max:150',
+                'transfer_spo2' => 'required|integer|min:0|max:100', 
+            ]);
+            
             $data = [
                 'medrec' => $request->medrec,
                 // 'kode_transfer_internal' => app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4(),
@@ -655,6 +668,7 @@ class NursingController extends Controller
                 'transfer_diagnosis' => $request->transfer_diagnosis,
                 'transfer_temuan' => $request->transfer_temuan,
                 'transfer_alergi' => $request->transfer_alergi,
+                'transfer_alergi_text' => $request->transfer_alergi_text,
                 'transfer_kewaspaan' => $request->transfer_kewaspaan,
                 'transfer_gcs_e' => $request->transfer_gcs_e,
                 'transfer_gcs_m' => $request->transfer_gcs_m,
@@ -689,6 +703,10 @@ class NursingController extends Controller
                 'transfer_terima_ct_scan' => $request->transfer_terima_ct_scan,
                 'transfer_terima_ekg' => $request->transfer_terima_ekg,
                 'transfer_terima_echo' => $request->transfer_terima_echo,
+                // 'signature_doctor' => $request->signature_doctor,
+                // 'signature_nurse' => $request->signature_nurse,
+                // 'signature_doctor_2' => $request->signature_doctor_2,
+                // 'signature_nurse_2' => $request->signature_nurse_2,
                 'created_at' => Carbon::now(),
             ];
 
@@ -707,7 +725,10 @@ class NursingController extends Controller
                 $store = DB::connection('mysql')->table('transfer_internal')
                             ->insert($data);
             }
-///.
+
+            // Save signatures
+            $this->saveSignature($request);
+
             return response()->json(200);
 
         } catch (\Throwable $th) {
@@ -715,6 +736,54 @@ class NursingController extends Controller
         }
     }
 
+    // public function saveSignature(Request $request)
+    // {
+    //     try {
+    //         \Log::info('Request received:', $request->all());  // Tambahkan log untuk debugging
+    
+    //         $data = [
+    //             'signature_doctor' => $request->input('signature_doctor'),
+    //             'signature_nurse' => $request->input('signature_nurse'),
+    //             'signature_doctor_2' => $request->input('signature_doctor_2'),
+    //             'signature_nurse_2' => $request->input('signature_nurse_2'),
+    //             'updated_at' => Carbon::now(),
+    //         ];
+    
+    //         \Log::info('Data to be saved:', $data);  // Tambahkan log untuk debugging
+    
+    //         DB::table('transfer_internal')
+    //             ->where('transfer_reg', $request->input('reg'))
+    //             ->update($data);
+    
+    //         \Log::info('Data saved successfully');  // Tambahkan log untuk debugging
+    
+    //         return response()->json(200);
+    //     } catch (\Throwable $th) {
+    //         \Log::error('Error saving signature:', ['error' => $th->getMessage()]);  // Tambahkan log untuk error
+    //         return response()->json(['error' => $th->getMessage()], 500);
+    //     }
+    // }
+
+    public function saveSignature(Request $request)
+{
+    $transfer_reg = $request->input('reg'); // Retrieve the 'reg' value from the request
+
+    $signature_doctor = $request->input('signature_doctor');
+    $signature_nurse = $request->input('signature_nurse');
+    $signature_doctor_2 = $request->input('signature_doctor_2');
+    $signature_nurse_2 = $request->input('signature_nurse_2');
+
+    DB::table('transfer_internal')
+        ->where('transfer_reg', $transfer_reg)
+        ->update([
+            'signature_doctor' => $signature_doctor,
+            'signature_nurse' => $signature_nurse,
+            'signature_doctor_2' => $signature_doctor_2,
+            'signature_nurse_2' => $signature_nurse_2
+        ]);
+
+    return response()->json(200);
+}
     public function store_cathlab(Request $request) {
         try {
             $data = [

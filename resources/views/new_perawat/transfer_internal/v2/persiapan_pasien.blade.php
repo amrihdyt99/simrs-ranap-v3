@@ -1,3 +1,10 @@
+<style>
+    canvas {
+    cursor: crosshair;
+}
+
+</style>
+<script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
 <h3>Persiapan Pasien</h3>
 <input type="hidden" name="kode_transfer_internal" value="">
 <div class="card">
@@ -75,6 +82,10 @@
                     name="transfer_alergi" {{ $transfer_internal->transfer_alergi == 'Ya' ? 'checked' : '' }}>
                 <label class="custom-control-label" for="transfer_alergi_Ya">Ya</label>
             </div>
+            <div class="form-group mt-2">
+                <label for="transfer_alergi_text">Detail Alergi Jika Ya</label>
+                <input type="text" class="form-control" id="transfer_alergi_text" name="transfer_alergi_text" value="{{ $transfer_internal->transfer_alergi_text }}">
+            </div>
         </div>
     </div>
     <div class="row">
@@ -109,15 +120,15 @@
         <h5 class="col-sm-12 pt-0">Saat Berangkat :</h5>
         <legend class="col-form-label col-sm-2 pt-0">GCS</legend>
         <div class="col-lg-2">
-            <div class="form-group"><label>E</label><input type="text" class="form-control"
+            <div class="form-group"><label>E</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_gcs_e }}" name="transfer_gcs_e"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>M</label><input type="text" class="form-control"
+            <div class="form-group"><label>M</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_gcs_m }}" name="transfer_gcs_m"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>V</label><input type="text" class="form-control"
+            <div class="form-group"><label>V</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_gcs_m }}"
                     value="{{ $transfer_internal->transfer_gcs_m }}" name="transfer_gcs_v"></div>
         </div>
@@ -128,24 +139,24 @@
                     value="{{ $transfer_internal->transfer_td }}" name="transfer_td"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>N</label><input type="text" class="form-control"
+            <div class="form-group"><label>N</label><input type="number" class="form-control"
                     value="{{ $transfer_internal->transfer_N }}" name="transfer_N"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>Skala Nyeri</label><input type="text"
+            <div class="form-group"><label>Skala Nyeri</label><input type="number"
                     value="{{ $transfer_internal->transfer_skala_nyeri }}" class="form-control"
                     name="transfer_skala_nyeri"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>Suhu</label><input type="text"
+            <div class="form-group"><label>Suhu</label><input type="number"
                     value="{{ $transfer_internal->transfer_suhu }}" class="form-control" name="transfer_suhu"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>P</label><input type="text"
+            <div class="form-group"><label>P</label><input type="number"
                     value="{{ $transfer_internal->transfer_p }}" class="form-control" name="transfer_p"></div>
         </div>
         <div class="col-lg-2">
-            <div class="form-group"><label>SpO2</label><input type="text"
+            <div class="form-group"><label>SpO2</label><input type="number"
                     value="{{ $transfer_internal->transfer_spo2 }}" class="form-control" name="transfer_spo2"></div>
         </div>
     </div>
@@ -254,7 +265,10 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        Alergi : {{ $transfer_internal->transfer_alergi }} <br>
+                        Alergi : {{ $transfer_internal->transfer_alergi }} <br> 
+                        @if($transfer_internal->transfer_alergi == 'Ya')
+                            Detail Alergi : {{ $transfer_internal->transfer_alergi_text }}
+                        @endif <br>
                         Kewaspadaan : {{ $transfer_internal->transfer_kewaspaan }}
                     </td>
                     <td class="noborder">
@@ -430,24 +444,159 @@
                 </tr>
                 <tr class="noborder">
                     <td>
-                        <br><br><br><br><br>
-                        Nama dan tanda tangan dokter
+                        <br><br>
+                        Nama dan tanda tangan dokter<br>
+                        <canvas id="doctor-signature" width="200" height="100" style="border:1px solid #000;"></canvas>
+                        <button type="button" id="clear-doctor-signature">Hapus Tanda Tangan</button>
+                        <input type="hidden" id="doctor-signature-input" name="signature_doctor" value="{{ $transfer_internal->signature_doctor }}">
                     </td>
                     <td>
-                        <br><br><br><br><br>
-                        Nama dan tanda tangan perawat
+                        <br><br>
+                        Nama dan tanda tangan perawat<br>
+                        <canvas id="nurse-signature" width="200" height="100" style="border:1px solid #000;"></canvas><br>
+                        <button type="button" id="clear-nurse-signature">Hapus Tanda Tangan</button>
+                        <input type="hidden" id="nurse-signature-input" name="signature_nurse" value="{{ $transfer_internal->signature_nurse }}">
                     </td>
                     <td></td>
                     <td>
-                        <br><br><br><br><br>
-                        Nama dan tanda tangan dokter
+                        <br><br>
+                        Nama dan tanda tangan dokter yang menerima<br>
+                        <canvas id="doctor-receive-signature" width="200" height="100" style="border:1px solid #000;"></canvas><br>
+                        <button type="button" id="clear-doctor-receive-signature">Hapus Tanda Tangan</button>
+                        <input type="hidden" id="doctor-receive-signature-input" name="signature_doctor_2" value="{{ $transfer_internal->signature_doctor_2 }}">
                     </td>
                     <td>
-                        <br><br><br><br><br>
-                        Nama dan tanda tangan perawat
+                        <br><br>
+                        Nama dan tanda tangan perawat yang menerima<br>
+                        <canvas id="nurse-receive-signature" width="200" height="100" style="border:1px solid #000;"></canvas><br>
+                        <button type="button" id="clear-nurse-receive-signature">Hapus Tanda Tangan</button>
+                        <input type="hidden" id="nurse-receive-signature-input" name="signature_nurse_2" value="{{ $transfer_internal->signature_nurse_2 }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="tcenter">
+                        <br>
+                        <button type="button" id="btn_save_signature" class="btn btn-primary">Simpan</button>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    function initializeSignature(canvasId, hiddenInputId, clearButtonId) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const clearButton = document.getElementById(clearButtonId);
+        let drawing = false;
+
+        canvas.addEventListener('mousedown', function(e) {
+            drawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+
+        canvas.addEventListener('mousemove', function(e) {
+            if (drawing) {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        });
+
+        canvas.addEventListener('mouseup', function() {
+            drawing = false;
+            saveSignature(canvas, hiddenInput);
+        });
+
+        canvas.addEventListener('mouseleave', function() {
+            drawing = false;
+        });
+
+        clearButton.addEventListener('click', function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hiddenInput.value = '';
+        });
+    }
+
+    function saveSignature(canvas, hiddenInput) {
+        const dataURL = canvas.toDataURL('image/png');
+        hiddenInput.value = dataURL;
+    }
+
+    function displaySavedSignature(canvasId, hiddenInputId, clearButtonId) {
+        const canvas = document.getElementById(canvasId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const clearButton = document.getElementById(clearButtonId);
+        const ctx = canvas.getContext('2d');
+
+        if (hiddenInput.value) {
+            const img = new Image();
+            img.src = hiddenInput.value;
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+            };
+            canvas.style.border = 'none';
+            clearButton.style.display = 'none';
+        }
+    }
+
+    // Initialize all signature canvases
+    initializeSignature('doctor-signature', 'doctor-signature-input', 'clear-doctor-signature');
+    initializeSignature('nurse-signature', 'nurse-signature-input', 'clear-nurse-signature');
+    initializeSignature('doctor-receive-signature', 'doctor-receive-signature-input', 'clear-doctor-receive-signature');
+    initializeSignature('nurse-receive-signature', 'nurse-receive-signature-input', 'clear-nurse-receive-signature');
+
+    // Display saved signatures if they exist
+    displaySavedSignature('doctor-signature', 'doctor-signature-input', 'clear-doctor-signature');
+    displaySavedSignature('nurse-signature', 'nurse-signature-input', 'clear-nurse-signature');
+    displaySavedSignature('doctor-receive-signature', 'doctor-receive-signature-input', 'clear-doctor-receive-signature');
+    displaySavedSignature('nurse-receive-signature', 'nurse-receive-signature-input', 'clear-nurse-receive-signature');
+
+    // Hide save button if signatures exist
+    if (document.getElementById('doctor-signature-input').value &&
+        document.getElementById('nurse-signature-input').value &&
+        document.getElementById('doctor-receive-signature-input').value &&
+        document.getElementById('nurse-receive-signature-input').value) {
+        document.getElementById('btn_save_signature').style.display = 'none';
+    }
+
+    // Save signatures
+    document.getElementById('btn_save_signature').addEventListener('click', function() {
+        var signature_doctor = document.getElementById('doctor-signature-input').value;
+        var signature_nurse = document.getElementById('nurse-signature-input').value;
+        var signature_doctor_2 = document.getElementById('doctor-receive-signature-input').value;
+        var signature_nurse_2 = document.getElementById('nurse-receive-signature-input').value;
+
+        $.ajax({
+            url: '{{ route('perawat.saveSignature') }}',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                _token: '{{ csrf_token() }}',
+                reg: '{{ $transfer_internal->transfer_reg }}',
+                signature_doctor: signature_doctor,
+                signature_nurse: signature_nurse,
+                signature_doctor_2: signature_doctor_2,
+                signature_nurse_2: signature_nurse_2,
+            },
+            success: function(resp) {
+                if (resp == 200) {
+                    alert('Data berhasil disimpan');
+                    // Hide canvas and button, display saved signature
+                    displaySavedSignature('doctor-signature', 'doctor-signature-input', 'clear-doctor-signature');
+                    displaySavedSignature('nurse-signature', 'nurse-signature-input', 'clear-nurse-signature');
+                    displaySavedSignature('doctor-receive-signature', 'doctor-receive-signature-input', 'clear-doctor-receive-signature');
+                    displaySavedSignature('nurse-receive-signature', 'nurse-receive-signature-input', 'clear-nurse-receive-signature');
+                    document.getElementById('btn_save_signature').style.display = 'none';
+                } else {
+                    alert('Data gagal disimpan');
+                }
+            },
+            error: function() {
+                alert('Terjadi kesalahan pada server');
+            }
+        });
+    });
+</script>

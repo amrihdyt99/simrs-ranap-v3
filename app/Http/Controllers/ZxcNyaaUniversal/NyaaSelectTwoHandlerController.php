@@ -55,7 +55,8 @@ class NyaaSelectTwoHandlerController extends Controller
         $cxx = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->db_connection_mysql2()
             ->table('m_paramedis')
             ->where('ParamedicName', 'LIKE', '%' . $request->input('term', '') . '%')
-            //->where('IsActive',1)
+            ->where('IsActive', '=','1')
+            ->where('IsDeleted', '=','0')
             ->take($this->select2_take())
             ->get();
 

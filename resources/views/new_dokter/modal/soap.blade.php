@@ -276,23 +276,19 @@
             alert(msg)
         }
 
-        function hapus_item(id, _elm){
-            let _value = $(_elm).attr('value')
-
-            if (confirm('Apakah anda yakin akan menghapus data ini ?')) {
-                $.ajax({
-                    type: "get",
-                    url: "{{url('api/hapus/tindakan')}}/"+id,
-                    dataType: "json",
-                    success: function (r) {
-                        if (r.success) {
-                            clickTab(_value, _value)
-                        }else{
-                            alert(r.message)
-                        }
-                    }
-                });
+        function hapus_item(id){
+        $.ajax({
+            type: "get",
+            url: "{{url('api/hapus/tindakan')}}/"+id,
+            dataType: "json",
+            success: function (r) {
+                if (r.success) {
+                    clickTab('radiologi', 'Radiologi')
+                }else{
+                    alert(r.message)
+                }
             }
+        });
         }
 
         function hapus_diag(id) {
@@ -331,16 +327,10 @@
                 type: "get",
                 url: "{{url('api/getDiagnosa')}}/"+ reg.replaceAll("/","_"),
                 dataType: "json",
-                data: {
-                    dokter: $user_dokter_,
-                    dpjp_utama: $dpjp_utama,
-                },
                 success: function (r) {
 					$.each(r, function(index, row) {
                         $('[id="selected-diagnosa-'+row.pdiag_kategori+'"]').append(`
-                            `+row.ID_ICD10+` | `+row.NM_ICD10+` 
-                            `+(row.pdiag_dokter == $user_dokter_ ? `<div type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</div>` : ``)+`
-                            <br>
+                            `+row.ID_ICD10+` | `+row.NM_ICD10+` <div type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</div><br>
                         `)
 					});
                 }
@@ -352,16 +342,11 @@
                 type: "get",
                 url: "{{url('api/getProsedur')}}/"+ reg.replaceAll("/","_"),
                 dataType: "json",
-                data: {
-                    dokter: $user_dokter_,
-                    dpjp_utama: $dpjp_utama,
-                },
                 success: function (r) {
                     var opt = '';
                     let idx = 1;
 					$.each(r, function(index, row) {
                         let txt = idx++
-
                         if (txt == 1) {
                             opt += '<li>[' + row.ID_TIND + '] ' + row.NM_TINDAKAN + '<span class="badge badge-danger" onclick="hapus_prosedur('+row.pprosedur_id+')" style="cursor:pointer">X</span></li>';
                         }else{
@@ -386,7 +371,6 @@
                     "diagnosa": id,
                     "pdiag_dokter":dokter,
                     'pdiag_kategori': category,
-                    "dpjp_utama": $dpjp_utama,
                 },
                 dataType: "json",
                 error:function(){
@@ -395,9 +379,7 @@
                 success: function (r) {
                     if(r.success == true){
                         get_diag()
-                    } else if (!r.success && r.msg) {
-                        alert(r.msg)
-                    } else{
+                    }else{
                         neko_d_custom_error('Diagnosa '+category+' Sudah Ada')
                     }
                 }
@@ -413,7 +395,6 @@
                         "reg": reg.replaceAll("/","_"),
                         "prosedur": id,
                         "pprosedur_dokter":"{{ auth()->user()->dokter_id}}",
-                        "dpjp_utama": $dpjp_utama,
                     },
                 dataType: "json",
                 error:function(){
@@ -423,7 +404,7 @@
                     if(r.success == true){
                         get_pro()
                     }else{
-                        neko_d_custom_error('Prosedur Sudah Ada')
+                        neko_d_custom_error('Diagnosa Sudah Ada')
                     }
                 }
             });

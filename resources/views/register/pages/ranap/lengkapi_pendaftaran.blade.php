@@ -357,6 +357,19 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
+                                            <label class="label-admisi">Charge Class</label>
+                                            <select id="charge_class_code" name="charge_class_code" class="form-control select2bs4">
+                                                <option value="">-</option>
+                                                @foreach ($cover_class as $row)
+                                                <option value={{ $row->ClassCategoryCode }}>
+                                                    {{ $row->ClassCategoryName }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
                                             <label class="label-admisi">Asal Pasien</label>
                                             <select id="departemen_asal" name="departemen_asal" onchange="asal_pasien()"
                                                 class="form-control select2bs4 {{ $errors->has('departemen_asal') ? " is-invalid" : "" }}">
@@ -811,9 +824,8 @@
 <script>
     $(async function() {
         const reg_class = "{{ $registration->reg_class ?? '' }}";
-        console.log({
-            reg_class
-        })
+        const charge_class_code = "{{ $registration->charge_class_code ?? '' }}";
+
         // Initialize Select2
         $('#reg_class').select2({
             theme: 'bootstrap4',
@@ -823,6 +835,16 @@
         // Set the default value if `defaultClass` is not empty
         if (reg_class) {
             $('#reg_class').val(reg_class).trigger('change');
+        }
+        // Initialize Select2
+        $('#charge_class_code').select2({
+            theme: 'bootstrap4',
+            placeholder: "-",
+        });
+
+        // Set the default value if `defaultClass` is not empty
+        if (charge_class_code) {
+            $('#charge_class_code').val(charge_class_code).trigger('change');
         }
 
 
