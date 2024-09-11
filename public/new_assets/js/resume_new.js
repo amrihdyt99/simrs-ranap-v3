@@ -90,8 +90,8 @@ function baseTemplate(data){
     $(formResume+' [name="keluhan_utama"]').val(data.keluhan_utama)
     $(formResume+' [name="riwayat_penyakit"]').val(data.riwayat_penyakit)
     $(formResume+' [name="pemeriksaan_fisik"]').val(data.pemeriksaan_fisik)
-    $(formResume+' [name="diagnosis_masuk"]').val(data.instruksi_ranap.ranap_diagnosa)
-    $(formResume+' [name="indikasi_rawat"]').val(data.instruksi_ranap.ranap_indikasi)
+    $(formResume+' [name="diagnosis_masuk"]').val(data.instruksi_ranap ? data.instruksi_ranap.ranap_diagnosa : '-')
+    $(formResume+' [name="indikasi_rawat"]').val(data.instruksi_ranap ? data.instruksi_ranap.ranap_indikasi : '-')
 
     resumeDiagnosa = []
     resumeProsedur = []
