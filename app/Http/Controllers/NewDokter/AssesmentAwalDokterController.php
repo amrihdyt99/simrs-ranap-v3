@@ -428,7 +428,7 @@ class AssesmentAwalDokterController extends Controller
                 $a['medical_no'] = $reg->reg_medrec;
                 $a['scheduled_dttm'] = date('YmdHis');
 
-                $send_to_radiology = postService(urlLabRadiology().'/api/order-radiologi-sim', $a);
+                $send_to_radiology = postService(urlLabRadiology().'/api/order-radiologi', $a);
 
                 $resp = json_decode($send_to_radiology);
 
@@ -555,7 +555,7 @@ class AssesmentAwalDokterController extends Controller
             $a['medical_no'] = $reg->reg_medrec;
             $a['scheduled_dttm'] = date('YmdHis');
 
-            $send_to_laboratory = postService(urlLabRadiology().'/api/order-radiologi-sim', $a);
+            $send_to_laboratory = postService(urlLabRadiology().'/api/order-lab', $a);
 
             $resp = json_decode($send_to_laboratory);
 
