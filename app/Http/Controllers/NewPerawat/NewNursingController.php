@@ -1132,7 +1132,82 @@ class NewNursingController extends Controller
         ]);
     }
     
+    public function addResikoJatuhGeriatri(Request $request){
+        $skor_total_geriatri =
+            $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan +
+            $request->resiko_jatuh_geriatri_pusing +
+            $request->resiko_jatuh_geriatri_kebingungan +
+            $request->resiko_jatuh_geriatri_nokturia +
+            $request->resiko_jatuh_geriatri_kebingungan_intermiten +
+            $request->resiko_jatuh_geriatri_kelemahan_umum +
+            $request->resiko_jatuh_geriatri_obat_beresiko_tinggi +
+            $request->resiko_jatuh_geriatri_riwayat_jatuh_12_bulan +
+            $request->resiko_jatuh_geriatri_osteoporosis +
+            $request->resiko_jatuh_geriatri_pendengaran_dan_pengeliatan +
+            $request->resiko_jatuh_geriatri_70_tahun_keatas;
 
+        $params = [
+            'reg_no' => $request->regno,
+            'med_rec' => $request->medrec,
+            'user_id' => $request->user_id,
+            'intervensi_resiko_jatuh_rendah' => json_encode($request->intervensi_resiko_jatuh_rendah),
+            'intervensi_resiko_jatuh_sedang' => json_encode($request->intervensi_resiko_jatuh_sedang),
+            'intervensi_resiko_jatuh_tinggi' => json_encode($request->intervensi_resiko_jatuh_tinggi),
+            'resiko_jatuh_geriatri_gangguan_gaya_berjalan' => $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan,
+            'resiko_jatuh_geriatri_pusing' => $request->resiko_jatuh_geriatri_pusing,
+            'resiko_jatuh_geriatri_kebingungan' => $request->resiko_jatuh_geriatri_kebingungan,
+            'resiko_jatuh_geriatri_nokturia' => $request->resiko_jatuh_geriatri_nokturia,
+            'resiko_jatuh_geriatri_kebingungan_intermiten' => $request->resiko_jatuh_geriatri_kebingungan_intermiten,
+            'resiko_jatuh_geriatri_kelemahan_umum' => $request->resiko_jatuh_geriatri_kelemahan_umum,
+            'resiko_jatuh_geriatri_obat_beresiko_tinggi' => $request->resiko_jatuh_geriatri_obat_beresiko_tinggi,
+            'resiko_jatuh_geriatri_riwayat_jatuh_12_bulan' => $request->resiko_jatuh_geriatri_riwayat_jatuh_12_bulan,
+            'resiko_jatuh_geriatri_osteoporosis' => $request->resiko_jatuh_geriatri_osteoporosis,
+            'resiko_jatuh_geriatri_pendengaran_dan_pengeliatan' => $request->resiko_jatuh_geriatri_pendengaran_dan_pengeliatan,
+            'resiko_jatuh_geriatri_70_tahun_keatas' => $request->resiko_jatuh_geriatri_70_tahun_keatas,
+            'skor_total_geriatri' => $skor_total_geriatri,
+            'kategori_geriatri' => $request->kategori_geriatri,
+            'shift' => $request->shift,
+            'created_at' => now(),
+        ];
+
+        $simpan = DB::connection('mysql')
+            ->table('resiko_jatuh_geriatri')
+            ->where('reg_no', $request->regno)
+            ->where('med_rec', $request->medrec)
+            ->insert($params);
+        
+        return response()->json([
+            'success' => $simpan
+        ]);
+    }
+
+    public function getListResikoJatuhGeriatri(Request $request)
+    {
+        $data = DB::connection('mysql')
+            ->table('resiko_jatuh_geriatri')
+            ->where('reg_no', $request->reg_no)
+            ->where('med_rec', $request->med_rec)
+            ->get();
+        
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+    public function getDetailResikoJatuh(Request $request)
+    {
+        $data = DB::connection('mysql')
+            ->table('resiko_jatuh_geriatri')
+            ->where('reg_no', $request->regno)
+            ->where('med_rec', $request->medrec)
+            // ->where('user_id', $request->user_id)
+            ->where('resiko_jatuh_geriatri_id', $request->id)
+            ->first();
+    
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
 
 
 
@@ -2655,41 +2730,6 @@ class NewNursingController extends Controller
             ->updateOrInsert($paramsawalsearch, $params);
     }
 
-    public function getListResikoJatuh(Request $request)
-    {
-        $resiko_jatuh = DB::connection('mysql')
-            ->table('skrining_resiko_jatuh')
-            ->where('reg_no', $request->regno)
-            ->where('reg_medrec', $request->medrec)
-            // ->where('user_id', $request->user_id)
-            ->get();
-
-        return response()->json([
-            'data' => $resiko_jatuh
-        ]);
-    }
-
-    public function getDetailResikoJatuh(Request $request)
-    {
-        $resiko_jatuh = DB::connection('mysql')
-            ->table('skrining_resiko_jatuh')
-            ->where('reg_no', $request->regno)
-            ->where('reg_medrec', $request->medrec)
-            // ->where('user_id', $request->user_id)
-            ->where('id', $request->id)
-            ->first();
-        
-            $data_pasien = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
-            ->where(['m_registrasi.reg_no'=>$request->regno])
-            ->select('m_pasien.DateOfBirth')
-            ->first();
     
-        return response()->json([
-            'data' => $resiko_jatuh,
-            'data_pasien' => $data_pasien
-        ]);
-    }
 
 }

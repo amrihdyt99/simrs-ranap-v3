@@ -126,15 +126,15 @@
     }
 
 
-    // resiko-jatuh
-    function addresikojatuh() {
+    // resiko-jatuh-geriatri
+    function addresikojatuhGeriatri() {
         var userId = "{{ auth()->user()->id }}";
         var userShift = "{{ session('user_shift') }}";
         neko_proses();
         $.ajax({
-            url: "{{route('add.resikojatuh')}}",
+            url: "{{route('add.resiko.jatuh.geriatri')}}",
             type: "POST",
-            data: $('#entry-resiko-jatuh').serialize() +
+            data: $('#entry-resiko-jatuh-geriatri').serialize() +
                 "&medrec=" + medrec +
                 "&regno=" + regno +
                 "&user_id=" + userId +

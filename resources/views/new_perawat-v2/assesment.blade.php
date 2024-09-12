@@ -135,15 +135,15 @@ $data_persiapan_pasien = [
                     </div>
                 </div>
                 @else
-                @if (Auth::user()->room != null)
-                @if (Str::contains(Auth::user()->room->RoomName, 'ICU'))
+                {{-- @if (Auth::user()->room != null)
+                @if (Str::contains(Auth::user()->room->RoomName, 'ICU')) --}}
                 <div class="row">
                     <div class="left-tab" id="tab-intruksi-harian-icupanel" onclick="clickTab('intruksi-harian-icupanel')">
                         Intruksi Harian
                     </div>
                 </div>
-                @endif
-                @endif
+                {{-- @endif
+                @endif --}}
                 <div class="row">
                     <div class="left-tab active" id="tab-assesment" onclick="clickTab('assesment')">
                         Pengkajian Awal
@@ -168,8 +168,8 @@ $data_persiapan_pasien = [
                 </div>
 
                 <div class="row">
-                    <div class="left-tab" id="tab-resiko-jatuh" onclick="clickTab('resiko-jatuh')">
-                        Resiko Jatuh
+                    <div class="left-tab" id="tab-resiko-jatuh-geriatri" onclick="clickTab('resiko-jatuh-geriatri')">
+                        Resiko Jatuh Geriatri
                     </div>
                 </div>
 

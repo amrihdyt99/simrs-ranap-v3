@@ -48,7 +48,7 @@ Route::prefix('nyx-sistem')
                 Route::post('assesment_perawat', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_perawat'])->name('assesment_perawat');
                 Route::post('assesment_entry_skrinning_nyeri', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_entry_skrinning_nyeri'])->name('assesment_entry_skrinning_nyeri');
                 Route::post('assesment_entry_edukasi_pasien', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_entry_edukasi_pasien'])->name('assesment_entry_edukasi_pasien');
-                Route::post('assesment_resiko_jatuh', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_resiko_jatuh'])->name('assesment_resiko_jatuh');
+                Route::post('assesment_resiko_jatuh_geriatri', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_resiko_jatuh_geriatri'])->name('assesment_resiko_jatuh_geriatri');
                 Route::post('assesment_cppt_soap_perawat', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_cppt_soap_perawat'])->name('assesment_cppt_soap_perawat');
                 Route::post('assesment_awal_dewasa', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_dewasa'])->name('assesment_awal_dewasa');
                 Route::post('assesment_awal_anak', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_awal_anak'])->name('assesment_awal_anak');
