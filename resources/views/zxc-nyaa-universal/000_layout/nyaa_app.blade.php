@@ -120,11 +120,12 @@
     <script src="{{ asset('neko/plugins/select2/js/i18n/id.js') }}"></script>
     <script src="{{ asset('neko/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('neko/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js') }}"></script>
     <script src="{{ asset('neko/custom/nyaa.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
     @stack('nyaa_parent_scripts')
     <script src="{{ asset('neko/custom/nyaa-bottom.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
 
-  <script>
+    <script>
       $level_ = "{{auth()->user()->level_user}}";
       $user_dokter_ = "{{auth()->user()->dokter_id}}";
       $user_ = "{{auth()->user()->id}}";
@@ -133,75 +134,74 @@
       $host = location.hostname
 
       if ($host == '127.0.0.1' || $host == 'rj.id') {
-          $dom = ''
+        $dom = ''
       } else {
-          $dom = '/simrs_ranap'
+        $dom = '/simrs_ranap'
       }
 
-    function addOption(elm, value, text) {
+      function addOption(elm, value, text) {
         var newOption = new Option(text, value, false, false);
         $(elm).append(newOption).trigger('change');
-    }
-  </script>
+      }
+    </script>
 
-@if (auth()->user()->level_user == 'perawat')
-<script>
-        $(document).ready(function() {
-      if (!localStorage.getItem('shift_selected')) {
+    @if (auth()->user()->level_user == 'perawat')
+    <script>
+      $(document).ready(function() {
+        if (!localStorage.getItem('shift_selected')) {
           $('#modal_shift').modal('show');
-      } else {
+        } else {
           $('#trigger_shift_modal').text('SHIFT ' + localStorage.getItem('shift_selected').toUpperCase());
-      }
+        }
 
-      if (localStorage.getItem('shift_selected')) {
+        if (localStorage.getItem('shift_selected')) {
           $('#pilih_shift').val(localStorage.getItem('shift_selected'));
-      }
+        }
 
-      $('#save_shift').on('click', function() {
+        $('#save_shift').on('click', function() {
           var selectedShift = $('#pilih_shift').val();
           if (selectedShift) {
-              localStorage.setItem('shift_selected', selectedShift);
+            localStorage.setItem('shift_selected', selectedShift);
 
-              $.ajax({
-                  url: '{{ route('save.shift') }}', 
-                  type: 'POST',
-                  data: {
-                      _token: '{{ csrf_token() }}',
-                      shift: selectedShift
-                  },
-                  success: function(response) {
-                      // console.log('Shift berhasil disimpan di server');
-                      $('.left-tab.active').click();
-                      neko_notify('success','Shift berhasil disimpan.')
-                      $('#modal_shift').modal('hide');
-                  },
-                  error: function(xhr) {
-                      // console.error('Gagal menyimpan shift di server');
-                      neko_d_custom_error('Terjadi kesalahan! Mohon untuk me-refresh halaman ini.')
-                  }
-              });
+            $.ajax({
+              url: `{{ route('save.shift') }}`,
+              type: 'POST',
+              data: {
+                _token: '{{ csrf_token() }}',
+                shift: selectedShift
+              },
+              success: function(response) {
+                // console.log('Shift berhasil disimpan di server');
+                $('.left-tab.active').click();
+                neko_notify('success', 'Shift berhasil disimpan.')
+                $('#modal_shift').modal('hide');
+              },
+              error: function(xhr) {
+                // console.error('Gagal menyimpan shift di server');
+                neko_d_custom_error('Terjadi kesalahan! Mohon untuk me-refresh halaman ini.')
+              }
+            });
           }
-      });
+        });
 
-      $('#modal_shift').on('hide.bs.modal', function() {
+        $('#modal_shift').on('hide.bs.modal', function() {
           var selectedShift = localStorage.getItem('shift_selected');
           if (selectedShift) {
-              $('#trigger_shift_modal').text('SHIFT ' + selectedShift.toUpperCase());
+            $('#trigger_shift_modal').text('SHIFT ' + selectedShift.toUpperCase());
           }
-      });
+        });
 
-      $('#user_logout').on('click', function() {
-          localStorage.removeItem('shift_selected'); 
-      });
+        $('#user_logout').on('click', function() {
+          localStorage.removeItem('shift_selected');
+        });
 
-      $('#trigger_shift_modal').on('click', function() {
+        $('#trigger_shift_modal').on('click', function() {
           $('#modal_shift').modal('show');
+        });
       });
-  });
-</script>
-@endif
+    </script>
+    @endif
 
 </body>
 
 </html>
-

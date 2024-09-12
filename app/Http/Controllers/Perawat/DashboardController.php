@@ -23,7 +23,7 @@ class DashboardController extends Controller
 
     public function ajax_index($request)
     {
-        $business_partner = (object)$this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business')['data'] ?? [];
+        // $business_partner = (object)$this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business')['data'] ?? [];
 
         $datamypatient = DB::connection('mysql2')
             ->table("m_registrasi")
@@ -52,9 +52,13 @@ class DashboardController extends Controller
 
         return DataTables()
             ->of($datamypatient)
-            ->editColumn('reg_cara_bayar', function ($query) use ($business_partner) {
-                $partner = collect($business_partner)->firstWhere('BusinessPartnerID', $query->reg_cara_bayar);
-                return $partner ? $partner['BusinessPartnerName'] : '-';
+            ->editColumn('reg_cara_bayar', function ($query) {
+                $businessPartner = DB::connection('mysql2')
+                    ->table('businesspartner')
+                    ->where('id', $query->reg_cara_bayar)
+                    ->first();
+            
+                return $businessPartner ? $businessPartner->BusinessPartnerName : '-';
             })
             ->editColumn('aksi_data', function ($query) use ($request) {
                 return ('<a href="'

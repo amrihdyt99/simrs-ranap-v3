@@ -13,26 +13,26 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
             </div>
             <div class="col-sm-12">
                 <div class="w-100">
-                <table id="dttb_transfer_internal2" nyaa-urldatatable="{{ $url_form }}"
-                nyaa-columns='[
+                    <table id="dttb_transfer_internal2" nyaa-urldatatable="{{ $url_form }}"
+                        nyaa-columns='[
                     {"data": "id", "name": "id"},
                     {"data": "aksi_data", "orderable": false, "searchable": false},
                     {"data": "nama_obat", "name": "nama_obat"},
                     {"data": "quantity", "name": "quantity"},
                     {"data": "item_unit_code", "name": "item_unit_code"}
                 ]'
-                nyaa-kode_transfer_internal="{{ $transfer_internal->kode_transfer_internal }}"
-                class="w-100 table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Aksi</th>
-                            <th>Nama Obat/cairan</th>
-                            <th>Qty</th>
-                            <th>Satuan</th>
-                        </tr>
-                    </thead>
-                </table>
+                        nyaa-kode_transfer_internal="{{ $transfer_internal->kode_transfer_internal }}"
+                        class="w-100 table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Aksi</th>
+                                <th>Nama Obat/cairan</th>
+                                <th>Qty</th>
+                                <th>Satuan</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                                                 <p class="m-0">Qty *</p>
                                                 <input nyaatempname="quantity" autocomplete="off" type="text" class="form-control">
                                             </div>
-                                            
+
                                             <div class="form-group col-sm-12 col-md-7">
                                                 <p class="m-0">Satuan *</p>
                                                 <input nyaatempname="item_unit_code" autocomplete="off" type="text" class="form-control">
@@ -79,7 +79,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </nyaatempform>
                     </div>
                     <div class="modal-footer">
@@ -89,6 +89,6 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>

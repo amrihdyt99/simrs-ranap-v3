@@ -87,7 +87,7 @@ class RegisterController extends Controller
             ->whereNull('reg_deleted')
             ->orderByDesc('reg_tgl');
 
-            return DataTables()
+        return DataTables()
             ->of($data)
             ->editColumn('aksi_data', function ($query) use ($request) {
                 // $query->reg_no = str_replace("/", "_", $query->reg_no);
@@ -574,7 +574,7 @@ class RegisterController extends Controller
         //return view('pdf',$data);
         return $pdf->stream();
     }
-    
+
     function cetakSlipAdmisi($regno)
     {
 
