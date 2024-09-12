@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\NewPerawat;
 
+use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
 use App\Http\Controllers\Controller;
 use App\Models\FluidBalance;
 use App\Models\Gejala;
@@ -1047,6 +1048,30 @@ class NewNursingController extends Controller
         //     'user_id' => $request->user_id,
         // ];
     
+        // $request->validate([
+        //     'medrec' => 'required',
+        //     'regno' => 'required',
+        //     'user_id' => 'required',
+        //     'resiko_jatuh_bulan_terakhir' => 'required|numeric',
+        //     'resiko_jatuh_medis_sekunder' => 'required|numeric',
+        //     'resiko_jatuh_alat_bantu_jalan' => 'required|numeric',
+        //     'resiko_jatuh_infus' => 'required|numeric',
+        //     'resiko_jatuh_berjalan' => 'required|numeric',
+        //     'resiko_jatuh_mental' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_gangguan_gaya_berjalan' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_pusing' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_kebingungan' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_nokturia' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_kebingungan_intermiten' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_kelemahan_umum' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_obat_beresiko_tinggi' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_riwayat_jatuh_12_bulan' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_osteoporosis' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_pendengaran_dan_pengeliatan' => 'required|numeric',
+        //     'resiko_jatuh_geriatri_70_tahun_keatas' => 'required|numeric',
+        //     'shift' => 'required',
+        // ]);
+
         $total_resiko_jatuh_dewasa = 
             $request->resiko_jatuh_bulan_terakhir +
             $request->resiko_jatuh_medis_sekunder +
@@ -1097,9 +1122,8 @@ class NewNursingController extends Controller
     
         $simpan = DB::connection('mysql')
             ->table('skrining_resiko_jatuh')
-            // ->where('reg_medrec', $request->medrec)
-            // ->where('reg_no', $request->regno)
-            // ->where('user_id', $request->user_id)
+            ->where('reg_medrec', $request->medrec)
+            ->where('reg_no', $request->regno)
             ->insert($params);
 
     
@@ -1119,7 +1143,7 @@ class NewNursingController extends Controller
             ->table('skrining_resiko_jatuh')
             ->where('reg_no', $regno)
             ->first();
-
+        
 
         return response()->json([
             'success' => true,
@@ -2445,8 +2469,8 @@ class NewNursingController extends Controller
                 'informasi_prognosis_paraf' => $request->informasi_prognosis_paraf,
                 'informasi_alternatif_paraf' => $request->informasi_alternatif_paraf,
                 'informasi_lain_lain_paraf' => $request->informasi_lain_lain_paraf,
-                'informasi_ttd_dokter' => $request->informasi_ttd_dokter,
-                'informasi_ttd_penerima_informasi' => $request->informasi_ttd_penerima_informasi,
+                'informasi_ttd_dokter' => $request->ttdDokter,
+                'informasi_ttd_penerima_informasi' => $request->ttdPenerima,
 
             ];
 
@@ -2495,10 +2519,10 @@ class NewNursingController extends Controller
             'persetujuan_tanggal_lahir_2' => $request->persetujuan_tanggal_lahir_2,
             'persetujuan_alamat_2' => $request->persetujuan_alamat_2,
             'persetujuan_tanggal_waktu_ttd' => $request->persetujuan_tanggal_waktu_ttd,
-            'persetujuan_ttd_yg_menyatakan' => $request->persetujuan_ttd_yg_menyatakan,
-            'persetujuan_ttd_dokter' => $request->persetujuan_ttd_dokter,
-            'persetujuan_ttd_keluarga' => $request->persetujuan_ttd_keluarga,
-            'persetujuan_ttd_perawat' => $request->persetujuan_ttd_perawat,
+            'persetujuan_ttd_yg_menyatakan' => $request->ttd_penerima_setuju,
+            'persetujuan_ttd_dokter' => $request->ttd_dokter_setuju,
+            'persetujuan_ttd_keluarga' => $request->ttd_keluarga_setuju,
+            'persetujuan_ttd_perawat' => $request->ttd_perawat_setuju,
 
         );
         $simpan = DB::connection('mysql')
@@ -2528,10 +2552,10 @@ class NewNursingController extends Controller
             'penolakan_alamat_2' => $request->penolakan_alamat_2,
             'penolakan_tanggal_ttd' => $request->penolakan_tanggal_ttd,
 
-            'penolakan_ttd_yg_menyatakan' => $request->penolakan_ttd_yg_menyatakan,
-            'penolakan_ttd_dokter' => $request->penolakan_ttd_dokter,
-            'penolakan_ttd_keluarga' => $request->penolakan_ttd_keluarga,
-            'penolakan_ttd_perawat' => $request->penolakan_ttd_perawat,
+            'penolakan_ttd_yg_menyatakan' => $request->ttd_penerima_penolakan,
+            'penolakan_ttd_dokter' => $request->ttd_dokter_penolakan,
+            'penolakan_ttd_keluarga' => $request->ttd_keluarga_penolakan,
+            'penolakan_ttd_perawat' => $request->ttd_perawat_penolakan,
 
         );
         $simpan = DB::connection('mysql')
@@ -2631,13 +2655,13 @@ class NewNursingController extends Controller
             ->updateOrInsert($paramsawalsearch, $params);
     }
 
-    public function getResikoJatuh(Request $request)
+    public function getListResikoJatuh(Request $request)
     {
         $resiko_jatuh = DB::connection('mysql')
             ->table('skrining_resiko_jatuh')
             ->where('reg_no', $request->regno)
             ->where('reg_medrec', $request->medrec)
-            ->where('user_id', $request->user_id)
+            // ->where('user_id', $request->user_id)
             ->get();
 
         return response()->json([
@@ -2645,18 +2669,26 @@ class NewNursingController extends Controller
         ]);
     }
 
-    public function getResikoJatuh2(Request $request)
+    public function getDetailResikoJatuh(Request $request)
     {
         $resiko_jatuh = DB::connection('mysql')
             ->table('skrining_resiko_jatuh')
             ->where('reg_no', $request->regno)
             ->where('reg_medrec', $request->medrec)
-            ->where('user_id', $request->user_id)
+            // ->where('user_id', $request->user_id)
             ->where('id', $request->id)
             ->first();
-
+        
+            $data_pasien = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no'=>$request->regno])
+            ->select('m_pasien.DateOfBirth')
+            ->first();
+    
         return response()->json([
-            'data' => $resiko_jatuh
+            'data' => $resiko_jatuh,
+            'data_pasien' => $data_pasien
         ]);
     }
 

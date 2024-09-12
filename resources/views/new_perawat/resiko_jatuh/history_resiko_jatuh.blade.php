@@ -1,6 +1,6 @@
 <!-- Modal HTML -->
 <div class="modal fade" id="resikoJatuhModal" tabindex="-1" role="dialog" aria-labelledby="resikoJatuhModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="resikoJatuhModalLabel">History Resiko Jatuh</h5>
@@ -15,7 +15,6 @@
                             <thead>
                                 <tr>
                                     <th>Tanggal</th>
-                                    <th>Shift</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

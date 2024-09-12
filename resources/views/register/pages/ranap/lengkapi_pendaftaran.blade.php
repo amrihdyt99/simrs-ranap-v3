@@ -316,6 +316,25 @@
                                     <div class="col-lg-12 mb-2">
                                         <h5><b>DATA PENDAFTARAN PASIEN</b></h5>
                                     </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="label-admisi">Kategori Pasien </label>
+                                            @php
+                                            $kategori_pasien = [
+                                                'bayi' => 'Bayi',
+                                                'anak' => 'Anak',
+                                                'dewasa' => 'Dewasa',
+                                                'kebidanan' => 'Kebidanan',
+                                            ];    
+                                            @endphp
+                                            <select id="kategori_pasien" name="kategori_pasien" class="form-control">
+                                                <option value="">Pilih</option>
+                                                @foreach ($kategori_pasien as $key => $value)
+                                                    <option value="{{ $key }}" {{ $key === $registration->kategori_pasien ? 'selected': '' }}>{{ $value }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-admisi">Cara Bayar </label>
@@ -346,6 +365,19 @@
                                         <div class="form-group">
                                             <label class="label-admisi">Cover Class</label>
                                             <select id="reg_class" name="reg_class" class="form-control select2bs4">
+                                                <option value="">-</option>
+                                                @foreach ($cover_class as $row)
+                                                <option value={{ $row->ClassCategoryCode }}>
+                                                    {{ $row->ClassCategoryName }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label class="label-admisi">Charge Class</label>
+                                            <select id="charge_class_code" name="charge_class_code" class="form-control select2bs4">
                                                 <option value="">-</option>
                                                 @foreach ($cover_class as $row)
                                                 <option value={{ $row->ClassCategoryCode }}>
@@ -811,9 +843,8 @@
 <script>
     $(async function() {
         const reg_class = "{{ $registration->reg_class ?? '' }}";
-        console.log({
-            reg_class
-        })
+        const charge_class_code = "{{ $registration->charge_class_code ?? '' }}";
+
         // Initialize Select2
         $('#reg_class').select2({
             theme: 'bootstrap4',
@@ -823,6 +854,16 @@
         // Set the default value if `defaultClass` is not empty
         if (reg_class) {
             $('#reg_class').val(reg_class).trigger('change');
+        }
+        // Initialize Select2
+        $('#charge_class_code').select2({
+            theme: 'bootstrap4',
+            placeholder: "-",
+        });
+
+        // Set the default value if `defaultClass` is not empty
+        if (charge_class_code) {
+            $('#charge_class_code').val(charge_class_code).trigger('change');
         }
 
 

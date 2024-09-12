@@ -1,6 +1,6 @@
 <!-- Modal for showing details -->
 <div class="modal fade" id="resikoJatuhDetailModal" tabindex="-1" role="dialog" aria-labelledby="resikoJatuhDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="resikoJatuhDetailModalLabel">Detail Risiko Jatuh</h5>
@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table class="table1">
+                <table class="table1 w-100">
                     <tbody id="detailTableBody">
                     </tbody>
                 </table>
