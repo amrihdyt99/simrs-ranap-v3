@@ -144,62 +144,49 @@
       }
     </script>
 
-    @if (auth()->user()->level_user == 'perawat')
-    <script>
-      $(document).ready(function() {
-        if (!localStorage.getItem('shift_selected')) {
-          $('#modal_shift').modal('show');
-        } else {
-          $('#trigger_shift_modal').text('SHIFT ' + localStorage.getItem('shift_selected').toUpperCase());
-        }
+@if (auth()->user()->level_user == 'perawat')
+<script>
+  $(document).ready(function() {
+    // Show the modal if shift is not selected
+    if (!@json(session('user_shift'))) {
+      $('#modal_shift').modal('show');
+    } else {
+      $('#trigger_shift_modal').text('SHIFT ' + @json(session('user_shift')).toUpperCase());
+    }
 
-        if (localStorage.getItem('shift_selected')) {
-          $('#pilih_shift').val(localStorage.getItem('shift_selected'));
-        }
-
-        $('#save_shift').on('click', function() {
-          var selectedShift = $('#pilih_shift').val();
-          if (selectedShift) {
-            localStorage.setItem('shift_selected', selectedShift);
-
-            $.ajax({
-              url: `{{ route('save.shift') }}`,
-              type: 'POST',
-              data: {
-                _token: '{{ csrf_token() }}',
-                shift: selectedShift
-              },
-              success: function(response) {
-                // console.log('Shift berhasil disimpan di server');
-                $('.left-tab.active').click();
-                neko_notify('success', 'Shift berhasil disimpan.')
-                $('#modal_shift').modal('hide');
-              },
-              error: function(xhr) {
-                // console.error('Gagal menyimpan shift di server');
-                neko_d_custom_error('Terjadi kesalahan! Mohon untuk me-refresh halaman ini.')
-              }
-            });
-          }
-        });
-
-        $('#modal_shift').on('hide.bs.modal', function() {
-          var selectedShift = localStorage.getItem('shift_selected');
-          if (selectedShift) {
+    // Save shift selection
+    $('#save_shift').on('click', function() {
+      var selectedShift = $('#pilih_shift').val();
+      if (selectedShift) {
+        $.ajax({
+          url: `{{ route('save.shift') }}`,
+          type: 'POST',
+          data: {
+            _token: '{{ csrf_token() }}',
+            shift: selectedShift
+          },
+          success: function(response) {
+            $('.left-tab.active').click();
+            neko_notify('success', 'Shift berhasil disimpan.')
+            $('#modal_shift').modal('hide');
             $('#trigger_shift_modal').text('SHIFT ' + selectedShift.toUpperCase());
+          },
+          error: function(xhr) {
+            neko_d_custom_error('Terjadi kesalahan! Mohon untuk me-refresh halaman ini.')
           }
         });
+      }
+    });
 
-        $('#user_logout').on('click', function() {
-          localStorage.removeItem('shift_selected');
-        });
+    // Show modal on trigger click
+    $('#trigger_shift_modal').on('click', function() {
+      $('#modal_shift').modal('show');
+    });
 
-        $('#trigger_shift_modal').on('click', function() {
-          $('#modal_shift').modal('show');
-        });
-      });
-    </script>
-    @endif
+  });
+</script>
+@endif
+
 
 </body>
 

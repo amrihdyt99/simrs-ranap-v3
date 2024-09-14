@@ -1,9 +1,3 @@
-@empty($skrining_resiko_jatuh)
-    @php
-
-        $skrining_resiko_jatuh = optional((object) []);
-    @endphp
-@endempty
 <div class="container">
     <div class="card card-primary">
         <h3 class="card-title mt-3 ml-3">LEMBAR MONITORING PENCEGAHAN PASIEN JATUH GERIATRI</h3>
@@ -20,7 +14,7 @@
                 <div class="card-header">
                     <h3>Penilaian Risiko Jatuh Pasien Geriatri</h3>
                 </div>
-                <table class="table1 w-100">
+                <table class="table1 w-100" id="geriatri_table">
                     <tbody>
                         <tr>
                             <td>Gangguan gaya berjalan (diseret, menghentak, berayun)</td>
@@ -89,7 +83,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td width="700px">Obat-obat berisiko tinggi (diuretik, narkotik, sedatif, anti psikotik,
+                            <td>Obat-obat berisiko tinggi (diuretik, narkotik, sedatif, anti psikotik,
                                 laksatif, vasodilator, antiaritmia, anti hypertensi, obat hypoglikemik, antidepresan,
                                 neuroleptik, NSAID)</td>
                             <td>
@@ -357,26 +351,11 @@
 @include('new_perawat.resiko_jatuh.geriatri.detail_history_resiko_jatuh_geriatri')
 
 <script>
-    // function TotalSkorDewasa() {
-    //     let total_dewasa = 0;
-
-    //     total_dewasa += parseInt($('input[name="resiko_jatuh_bulan_terakhir"]:checked').val()) || 0;
-    //     total_dewasa += parseInt($('input[name="resiko_jatuh_medis_sekunder"]:checked').val()) || 0;
-    //     total_dewasa += parseInt($('input[name="resiko_jatuh_alat_bantu_jalan"]:checked').val()) || 0;
-    //     total_dewasa += parseInt($('input[name="resiko_jatuh_infus"]:checked').val()) || 0;
-    //     total_dewasa += parseInt($('input[name="resiko_jatuh_berjalan"]:checked').val()) || 0;
-    //     total_dewasa += parseInt($('input[name="resiko_jatuh_mental"]:checked').val()) || 0;
-
-    //     $('#total_skor_dewasa').text(total_dewasa);
-    // }
-
-    // $('input[type="radio"]').on('change', TotalSkorDewasa);
-
     function hitungSkorGeriatri() {
         let totalSkor = 0;
 
-        $("input[type='radio']:checked").each(function() {
-            let nilai = parseInt($(this).val());
+        $("#geriatri_table input[type='radio']:checked").each(function() {
+            let nilai = parseInt($(this).val(), 10); // Ensure radix 10
             if (!isNaN(nilai)) {
                 totalSkor += nilai;
             }
@@ -393,7 +372,7 @@
         }
     }
 
-    $("input[type='radio']").change(function() {
+    $("#geriatri_table input[type='radio']").change(function() {
         hitungSkorGeriatri();
     });
 

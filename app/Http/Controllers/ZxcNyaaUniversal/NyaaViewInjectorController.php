@@ -170,6 +170,36 @@ class NyaaViewInjectorController extends AaaBaseController
             ->with($context);
     }
 
+    function assesment_resiko_jatuh_humpty_dumpty(Request $request)
+    {
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+        );
+        return view('new_perawat.resiko_jatuh.humpty_dumpty.resiko_jatuh_humpty_dumpty')
+            ->with($context);
+    }
+
+    function assesment_resiko_jatuh_neonatus(Request $request)
+    {
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+        );
+        return view('new_perawat.resiko_jatuh.neonatus.resiko_jatuh_neonatus')
+            ->with($context);
+    }
+
+    function assesment_resiko_jatuh_skala_morse(Request $request)
+    {
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+        );
+        return view('new_perawat.resiko_jatuh.skala_morse.resiko_jatuh_skala_morse')
+            ->with($context);
+    }
+
     function assesment_cppt_soap_perawat(Request $request)
     {
         $context = array(

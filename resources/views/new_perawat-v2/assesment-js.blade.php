@@ -460,6 +460,64 @@
                 });
             },
 
+            'resiko-jatuh-humpty-dumpty': function() {
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        "reg_no": regno,
+                        "medrec": medrec,
+                        "user_id": $user_,
+                    },
+                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_humpty_dumpty')}}",
+                    success: function(data) {
+                        inject_view_data(data);
+                        modal_resiko_jatuh_humpty_dumpty();
+                    },
+                    error: function(data) {
+                        clear_show_error();
+                    },
+                });
+            },
+
+            'resiko-jatuh-neonatus': function() {
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        "reg_no": regno,
+                        "medrec": medrec,
+                        "user_id": $user_,
+                    },
+                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_neonatus')}}",
+                    success: function(data) {
+                        inject_view_data(data);
+                        ttd_resiko_jatuh_neonatus();
+                        modal_resiko_jatuh_neonatus();
+                    },
+                    error: function(data) {
+                        clear_show_error();
+                    },
+                });
+            },
+
+            'resiko-jatuh-skala-morse': function() {
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        "reg_no": regno,
+                        "medrec": medrec,
+                        "user_id": $user_,
+                    },
+                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_skala_morse')}}",
+                    success: function(data) {
+                        inject_view_data(data);
+                        modal_resiko_jatuh_skala_morse();
+                    },
+                    error: function(data) {
+                        clear_show_error();
+                    },
+                });
+            },
+
             'soap': function() {
                 $.ajax({
                     type: "POST",
@@ -1680,108 +1738,6 @@
         });
     }
 
-    function modal_resiko_jatuh_geriatri() {
-        $('#resikoJatuhModalGeriatri').on('show.bs.modal', function() {
-            $.ajax({
-                url: "{{ route('get.resiko.jatuh.geriatri') }}",
-                method: 'POST',
-                data:{
-                        "reg_no": regno,
-                        "med_rec": medrec,
-                        "user_id": $user_,
-                    },
-                success: function(response) {
-
-                    var tbody = $('#resiko_jatuh_table_geriatri tbody');
-                    tbody.empty();
-                    response.data.forEach(function(item) {
-                        var row = `
-                            <tr>
-                                <td>${formatDateTime(item.created_at) || 'N/A'}</td>
-                                <td><button class="btn btn-primary lihat-btn" data-id="${item.resiko_jatuh_geriatri_id}">Lihat</button></td>
-                            </tr>`;
-                        tbody.append(row);
-                    });
-
-                    initializeDataTable('#resiko_jatuh_table_geriatri', {
-                        searching: true,
-                        paging: true,
-                        info: true,
-                        columnDefs: [{
-                            targets: 1,
-                            orderable: false,
-                            searchable: false
-                        }]
-                    });
-                    handleLihatButtonClick();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', status, error);
-                    alert('Failed to load data.');
-                }
-            });
-        });
-    }
-
-    function initializeDataTable(selector, options) {
-        if ($.fn.DataTable.isDataTable(selector)) {
-            $(selector).DataTable().destroy();
-        }
-        $(selector).DataTable({
-            ...options,
-            pageLength: 10
-        });
-    }
-
-    function fetchResikoJatuhDetail(id) {
-        $.ajax({
-            url: "{{ route('get.detail.resiko.jatuh.geriatri') }}",
-            method: 'POST',
-            data: {
-                regno: regno,
-                medrec: medrec,
-                user_id: "{{ auth()->user()->id }}",
-                id: id,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                
-                $('#resikoJatuhDetailModalLabel').text('Detail Risiko Jatuh ' + 'Pada ' + formatDateTime(response.data.created_at));
-
-                $('input[name="resiko_jatuh_geriatri_gangguan_gaya_berjalan"][value="' + response.data.resiko_jatuh_geriatri_gangguan_gaya_berjalan + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_pusing"][value="' + response.data.resiko_jatuh_geriatri_pusing + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_kebingungan"][value="' + response.data.resiko_jatuh_geriatri_kebingungan + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_nokturia"][value="' + response.data.resiko_jatuh_geriatri_nokturia + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_kebingungan_intermiten"][value="' + response.data.resiko_jatuh_geriatri_kebingungan_intermiten + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_kelemahan_umum"][value="' + response.data.resiko_jatuh_geriatri_kelemahan_umum + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_obat_beresiko_tinggi"][value="' + response.data.resiko_jatuh_geriatri_obat_beresiko_tinggi + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_riwayat_jatuh_12_bulan"][value="' + response.data.resiko_jatuh_geriatri_riwayat_jatuh_12_bulan + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_osteoporosis"][value="' + response.data.resiko_jatuh_geriatri_osteoporosis + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_pendengaran_dan_pengeliatan"][value="' + response.data.resiko_jatuh_geriatri_pendengaran_dan_pengeliatan + '"]').prop('checked', true);
-                $('input[name="resiko_jatuh_geriatri_70_tahun_keatas"][value="' + response.data.resiko_jatuh_geriatri_70_tahun_keatas + '"]').prop('checked', true);
-
-                $('#total_skor_geriatri_detail').text(response.data.skor_total_geriatri);
-                $('input[name="kategori_geriatri"][value="' + response.data.kategori_geriatri + '"]').prop('checked', true);
-
-                $('#resikoJatuhDetailModal').modal('show');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', status, error);
-                alert('Failed to fetch data for the selected item.');
-            }
-        });
-    }
-
-
-
-    function handleLihatButtonClick() {
-        $(document).on('click', '.lihat-btn', function() {
-            var id = $(this).data('id');
-            fetchResikoJatuhDetail(id);
-        });
-    }
-
-
     function ttd_pemberian_informasi_tindakan_medis() {
         // ttd Pemberian Informasi Dokter
         let $wrapperDokterInformasi = $("#signature-pad-dokter");
@@ -1981,5 +1937,8 @@
     }
 </script>
 
-
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
+@include('new_perawat.resiko_jatuh.humpty_dumpty.js.resiko_jatuh_humpty_dumpty_js')
+@include('new_perawat.resiko_jatuh.geriatri.js.resiko_jatuh_geriatri_js')
+@include('new_perawat.resiko_jatuh.neonatus.js.resiko_jatuh_neonatus_js')
+@include('new_perawat.resiko_jatuh.skala_morse.js.resiko_jatuh_skala_morse_js')
