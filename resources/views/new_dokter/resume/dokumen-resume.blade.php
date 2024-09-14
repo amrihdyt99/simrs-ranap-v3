@@ -336,10 +336,20 @@
                 <td>PENYEBAB LUAR / CIDERA / KECELAKAAN (BILA ADA)</td>
                 <td>KODE ICD-10</td>
             </tr>
-            <tr>
-                <td>{{$data->penyebab_luar}}</td>
-                <td>{{$data->penyebab_luar_icd}}</td>
-            </tr>
+            @if($data->penyebab_luar && $data->penyebab_luar_icd)
+                @foreach($data->penyebab_luar as $index => $penyebab)
+                    @foreach(json_decode($penyebab) as $penyebabItem)
+                    <tr>
+                        <td>{{ $penyebabItem }}</td>
+                        <td>{{ json_decode($data->penyebab_luar_icd[$index])[$loop->index] }}</td>
+                    </tr>
+                    @endforeach
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="2" class="text-center">No Data Available</td>
+                </tr>
+            @endif
         </tbody>
     </table>
 
@@ -506,7 +516,8 @@
     <table style="width: 100%;" border="1">
     <tbody>
         <tr>
-            <td colspan="2" style="text-align: left;">Palembang, ....................................................</td>
+            <td colspan="2" style="text-align: left;">Palembang, {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
+            <!-- <td>: {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td> -->
         </tr>
         <tr>
             <td style="width: 50%; text-align: center;">
