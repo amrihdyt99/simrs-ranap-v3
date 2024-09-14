@@ -336,10 +336,20 @@
                 <td>PENYEBAB LUAR / CIDERA / KECELAKAAN (BILA ADA)</td>
                 <td>KODE ICD-10</td>
             </tr>
-            <tr>
-                <td>{{$data->penyebab_luar}}</td>
-                <td>{{$data->penyebab_luar_icd}}</td>
-            </tr>
+            @if($data->penyebab_luar && $data->penyebab_luar_icd)
+                @foreach($data->penyebab_luar as $index => $penyebab)
+                    @foreach(json_decode($penyebab) as $penyebabItem)
+                    <tr>
+                        <td>{{ $penyebabItem }}</td>
+                        <td>{{ json_decode($data->penyebab_luar_icd[$index])[$loop->index] }}</td>
+                    </tr>
+                    @endforeach
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="2" class="text-center">No Data Available</td>
+                </tr>
+            @endif
         </tbody>
     </table>
 
@@ -506,7 +516,8 @@
     <table style="width: 100%;" border="1">
     <tbody>
         <tr>
-            <td colspan="2" style="text-align: left;">Palembang, ....................................................</td>
+            <td colspan="2" style="text-align: left;">Palembang, {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
+            <!-- <td>: {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td> -->
         </tr>
         <tr>
             <td style="width: 50%; text-align: center;">
@@ -517,7 +528,7 @@
                     <canvas id="signature-pad-pasien" style="border: 1px solid #000; width: 300px; height: 150px;"></canvas>
                     <button type="button" onclick="clearSignature('signature-pad-pasien')">Clear</button>
                 @endif
-                <br>( {{$data->nama_lengkap}})
+                <br>(<input type="text" id="input-nama-pasien-keluarga" name="nama_pasien_keluarga" value="{{ $data->nama_pasien_keluarga }}" {{ !empty($data->nama_pasien_keluarga) ? 'style=display:none;' : '' }}> {{$data->nama_pasien_keluarga}} )
             </td>
             <td style="width: 50%; text-align: center;">
                 Dokter Penanggung Jawab Pelayanan (DPJP)<br><br>
@@ -538,6 +549,7 @@
     <input type="hidden" name="reg_no" value="{{ $data->reg_no }}">
     <input type="hidden" name="ttd_dokter" id="ttd_dokter">
     <input type="hidden" name="ttd_pasien" id="ttd_pasien">
+    <input type="hidden" name="nama_pasien_keluarga" id="nama_pasien_keluarga">
     @if (!$data->signature_exists)
         <button type="submit" id="save-button">Save Signature</button>
     @endif
@@ -556,8 +568,16 @@
             e.preventDefault();
             var dataUrlDokter = signaturePadDokter.toDataURL();
             var dataUrlPasien = signaturePadPasien.toDataURL();
+            var namaPasienKeluarga = document.getElementById('input-nama-pasien-keluarga').value;
+
+            if (!dataUrlDokter || !dataUrlPasien || !namaPasienKeluarga) {
+                alert('Semua data harus diisi sebelum disimpan.');
+                return;
+            }
+
             document.getElementById('ttd_dokter').value = dataUrlDokter;
             document.getElementById('ttd_pasien').value = dataUrlPasien;
+            document.getElementById('nama_pasien_keluarga').value = namaPasienKeluarga;
             document.getElementById('save-button').style.display = 'none';
 
             this.submit(); 

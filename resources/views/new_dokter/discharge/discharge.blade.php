@@ -229,7 +229,7 @@
 
     @else
     @php
-        $resume = $cek->first();
+        //$resume = $cek->first();
         $discharge = $cek2->first();
     @endphp
     <div class="row">

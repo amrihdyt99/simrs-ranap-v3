@@ -90,8 +90,8 @@ function baseTemplate(data){
     $(formResume+' [name="keluhan_utama"]').val(data.keluhan_utama)
     $(formResume+' [name="riwayat_penyakit"]').val(data.riwayat_penyakit)
     $(formResume+' [name="pemeriksaan_fisik"]').val(data.pemeriksaan_fisik)
-    $(formResume+' [name="diagnosis_masuk"]').val(data.instruksi_ranap.ranap_diagnosa)
-    $(formResume+' [name="indikasi_rawat"]').val(data.instruksi_ranap.ranap_indikasi)
+    $(formResume+' [name="diagnosis_masuk"]').val(data.instruksi_ranap ? data.instruksi_ranap.ranap_diagnosa : '-')
+    $(formResume+' [name="indikasi_rawat"]').val(data.instruksi_ranap ? data.instruksi_ranap.ranap_indikasi : '-')
 
     resumeDiagnosa = []
     resumeProsedur = []
@@ -173,6 +173,28 @@ function baseTemplate(data){
             `+$td_prosedur+`
         `)
     }
+
+    let klausaDiagnosa = data.diagnosa.filter(d => d.pdiag_kategori === 'klausa');
+if (klausaDiagnosa.length > 0) {
+    let tableBody = $('#penyebab-luar-tbody');
+    tableBody.empty(); 
+
+    let penyebabLuarArr = [];
+    let penyebabLuarICDArr = [];
+
+    klausaDiagnosa.forEach(d => {
+        penyebabLuarArr.push(d.NM_ICD10);
+        penyebabLuarICDArr.push(d.ID_ICD10);
+
+        let row = `<tr>
+            <td>${d.NM_ICD10}</td>
+            <td>${d.ID_ICD10}</td>
+        </tr>`;
+        tableBody.append(row);
+    });
+    $('input[name="penyebab_luar"]').val(JSON.stringify(penyebabLuarArr));
+    $('input[name="penyebab_luar_icd"]').val(JSON.stringify(penyebabLuarICDArr));
+}
 
     $('[id="terapi-container"]').html('')
 

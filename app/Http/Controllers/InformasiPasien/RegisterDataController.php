@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pasien;
 use App\Models\PasienInformasi;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Milon\Barcode\Facades\DNS1DFacade;
 use Yajra\DataTables\Facades\DataTables;
 
 class RegisterDataController extends Controller
@@ -21,7 +23,7 @@ class RegisterDataController extends Controller
     {
         try {
             $newMRN = $this->generateMRN();
-            
+
             $pasienData = [
                 'MedicalNo' => $newMRN,
                 'SSN' => $request->ssn,
@@ -58,7 +60,6 @@ class RegisterDataController extends Controller
             }, array_keys($request->GCRelationShip));
             PasienInformasi::insert($keluargaData);
             return redirect()->route('register.informasi-pasien.index');
-            
         } catch (\Throwable $th) {
             return back()->withErrors('Terjadi kesalahan: ' . $th->getMessage());
         }
@@ -114,6 +115,7 @@ class RegisterDataController extends Controller
                             Aksi
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="' . route('register.informasi-pasien.barcode', $row->MedicalNo) . '">Barcode</a>
                             <a class="dropdown-item" href="' . route('register.informasi-pasien.edit', $row->MedicalNo) . '">Edit</a>
                             <button class="dropdown-item btn-delete" data-id="' . $row->MedicalNo . '">Hapus</button>
                         </div>
@@ -152,7 +154,7 @@ class RegisterDataController extends Controller
             ]);
 
             PasienInformasi::where('MedicalNo', $medicalNo)->delete();
-            $keluargaData = array_map(function($key) use ($request, $medicalNo) {
+            $keluargaData = array_map(function ($key) use ($request, $medicalNo) {
                 return [
                     'MedicalNo' => $medicalNo,
                     'GCRelationShip' => $request->GCRelationShip[$key],
@@ -189,5 +191,30 @@ class RegisterDataController extends Controller
     public function create()
     {
         return view('register.pages.informasi-pasien.create');
+    }
+
+    public function barcodePasien($medical_no)
+    {
+        $pasien = Pasien::where('MedicalNo', $medical_no)->first();
+        if (!$pasien) {
+            return back()->withErrors('Data pasien tidak ditemukan.');
+        }
+        $data_pasien = [
+            'nama_lengkap' => $pasien->PatientName,
+            'medical_no' => $pasien->MedicalNo,
+            'tgl_lahir' => $pasien->DateOfBirth,
+            'jenis_kelamin' => $pasien->GCSex,
+            'usia' => $this->formatUsia($pasien->DateOfBirth),
+            'barcode' => DNS1DFacade::getBarcodeSVG($pasien->MedicalNo, 'C128', 1, 48),
+        ];
+        return view('register.pages.informasi-pasien.barcode-pasien', compact('data_pasien'));
+    }
+
+    private function formatUsia($dateOfBirth)
+    {
+        $date1 = new \DateTime($dateOfBirth);
+        $date2 = new \DateTime();
+        $diff = $date1->diff($date2);
+        return "{$diff->y} Y {$diff->m} m {$diff->d} d";
     }
 }

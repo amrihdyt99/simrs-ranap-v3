@@ -316,6 +316,25 @@
                                     <div class="col-lg-12 mb-2">
                                         <h5><b>DATA PENDAFTARAN PASIEN</b></h5>
                                     </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="label-admisi">Kategori Pasien </label>
+                                            @php
+                                            $kategori_pasien = [
+                                                'bayi' => 'Bayi',
+                                                'anak' => 'Anak',
+                                                'dewasa' => 'Dewasa',
+                                                'kebidanan' => 'Kebidanan',
+                                            ];    
+                                            @endphp
+                                            <select id="kategori_pasien" name="kategori_pasien" class="form-control">
+                                                <option value="">Pilih</option>
+                                                @foreach ($kategori_pasien as $key => $value)
+                                                    <option value="{{ $key }}" {{ $key === $registration->kategori_pasien ? 'selected': '' }}>{{ $value }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-admisi">Cara Bayar </label>
