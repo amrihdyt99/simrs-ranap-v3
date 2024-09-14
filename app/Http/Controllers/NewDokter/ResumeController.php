@@ -109,8 +109,8 @@ class ResumeController extends Controller
                 'edukasi_penyakit' => $request->edukasi_penyakit,
                 'edukasi_diet' => $request->edukasi_diet,
                 'edukasi_alat_bantu' => $request->edukasi_alat_bantu,
-                'penyebab_luar' => $request->penyebab_luar,
-                'penyebab_luar_icd' => $request->penyebab_luar_icd,
+                'penyebab_luar' => json_encode($request->penyebab_luar),
+                'penyebab_luar_icd' => json_encode($request->penyebab_luar_icd),
                 'dokter_id' => $request->dokter_id,
             ];
 
@@ -264,7 +264,12 @@ class ResumeController extends Controller
         $tindakan = collect(json_decode($data->tindakan))->values(); 
         $prosedur = collect(json_decode($data->prosedur)); 
         $terapi = collect(json_decode($data->terapi));
+
+        $penyebab_luar = collect(json_decode($data->penyebab_luar));
+        $penyebab_luar_icd = collect(json_decode($data->penyebab_luar_icd));
         
+        $data->penyebab_luar = $penyebab_luar;
+        $data->penyebab_luar_icd = $penyebab_luar_icd;
         $data->diagnosis_utama = $diagnosisUtama;
         $data->diagnosis_sekunder = $diagnosisSekunder;
         $data->diagnosis_klausa = $diagnosisKlausa;
