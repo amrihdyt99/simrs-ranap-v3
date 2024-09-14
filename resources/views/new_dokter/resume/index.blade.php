@@ -283,20 +283,19 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-lg-6">
-                    <fieldset class="form-group">
-                        <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
-                        <textarea class="form-control" name="penyebab_luar" rows="4"></textarea>
-                    </fieldset>
-                </div>
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        <label for="">Kode ICD-10</label>
-                        <textarea class="form-control" name="penyebab_luar_icd" rows="4"></textarea>
-                    </div>
-                </div>
-            </div>
+            <table class="table table-striped table_resume">
+                <thead>
+                    <tr>
+                        <th>Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</th>
+                        <th>Kode ICD-10</th>
+                    </tr>
+                </thead>
+                <tbody id="penyebab-luar-tbody">
+
+                </tbody>
+                <input type="hidden" name="penyebab_luar" id="penyebab_luar">
+                <input type="hidden" name="penyebab_luar_icd" id="penyebab_luar_icd">
+            </table>
 
             <h4 class="mb-3 mt-4 font-weight-bold">Alasan Pulang</h4>
             <div class="form-group row">

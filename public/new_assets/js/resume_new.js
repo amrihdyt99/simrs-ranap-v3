@@ -174,6 +174,28 @@ function baseTemplate(data){
         `)
     }
 
+    let klausaDiagnosa = data.diagnosa.filter(d => d.pdiag_kategori === 'klausa');
+if (klausaDiagnosa.length > 0) {
+    let tableBody = $('#penyebab-luar-tbody');
+    tableBody.empty(); 
+
+    let penyebabLuarArr = [];
+    let penyebabLuarICDArr = [];
+
+    klausaDiagnosa.forEach(d => {
+        penyebabLuarArr.push(d.NM_ICD10);
+        penyebabLuarICDArr.push(d.ID_ICD10);
+
+        let row = `<tr>
+            <td>${d.NM_ICD10}</td>
+            <td>${d.ID_ICD10}</td>
+        </tr>`;
+        tableBody.append(row);
+    });
+    $('input[name="penyebab_luar"]').val(JSON.stringify(penyebabLuarArr));
+    $('input[name="penyebab_luar_icd"]').val(JSON.stringify(penyebabLuarICDArr));
+}
+
     $('[id="terapi-container"]').html('')
 
     if (data.terapi.length > 0) {

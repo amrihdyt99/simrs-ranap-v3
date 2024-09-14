@@ -76,13 +76,14 @@
                         </div>--}}
 
                         <div class="row">
-                            <div class="left-tab" id="tab-discharge" onclick="clickTab('discharge')">
-                                Discharge
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="left-tab" id="tab-resume" onclick="clickTab('resume')">
                                 Resume Pasien
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="left-tab" id="tab-discharge" onclick="clickTab('discharge')">
+                                Discharge
                             </div>
                         </div>
 
