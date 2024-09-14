@@ -825,7 +825,7 @@
     $(async function() {
         const reg_class = "{{ $registration->reg_class ?? '' }}";
         const charge_class_code = "{{ $registration->charge_class_code ?? '' }}";
-        
+
         // Initialize Select2
         $('#reg_class').select2({
             theme: 'bootstrap4',
