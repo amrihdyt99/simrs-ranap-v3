@@ -729,21 +729,12 @@ class NursingController extends Controller
                 'created_at' => Carbon::now(),
             ];
 
-            $check_ = DB::connection('mysql')
-                ->table('transfer_internal')
-                ->where('transfer_reg', $request->transfer_reg)
-                ->first();
-
-            if ($check_) {
-                $update = DB::connection('mysql')->table('transfer_internal')
-                    ->where('transfer_reg', $request->transfer_reg)
-                    ->update($data);
-            } else {
-                // $data['kode_transfer_internal']=app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
-                $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
-                $store = DB::connection('mysql')->table('transfer_internal')
-                    ->insert($data);
-            }
+            $update = DB::connection('mysql')->table('transfer_internal')
+                ->where([
+                    ['transfer_reg', $request->transfer_reg],
+                    ['kode_transfer_internal', $request->kode_transfer_internal]
+                ])
+                ->update($data);
 
             // Save signatures
             $this->saveSignature($request);

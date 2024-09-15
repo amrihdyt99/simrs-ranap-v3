@@ -17,7 +17,7 @@ class TransferInternalController extends Controller
 
             $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
                              `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
-                             `internal`.`status_transfer`
+                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`
                       FROM `$dbInap`.`transfer_internal` as `internal`
                       LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
                       LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
@@ -39,7 +39,7 @@ class TransferInternalController extends Controller
                         $actionBtn = "<button type='button' class='btn btn-success'><i class='far fa-eye'></i> Detail</button>";
                     } else {
 
-                        $actionBtn = "<button type='button' class='btn btn-info btn-delete' data-id ='" . $row->transfer_id . "'>Edit</button>";
+                        $actionBtn = "<button type='button' class='btn btn-info btn-edit-transfer' data-transfer_code='$row->kode_transfer_internal'>Edit</button>";
                     }
 
                     $actionBtn .= '</div>';
@@ -51,7 +51,7 @@ class TransferInternalController extends Controller
     }
 
 
-    function getTerimaTerimaPasienData(Request $request)
+    function getTerimaPasienData(Request $request)
     {
         $user_id = auth()->user()->id;
         if ($request->ajax()) {
@@ -93,7 +93,24 @@ class TransferInternalController extends Controller
         }
     }
 
-    public function store(Request $request) {}
+    public function confirmSerahTerima(Request $request)
+    {
+        DB::transaction();
+        try {
+
+
+            DB::commit();
+            $response = response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ]);
+        } catch (\Throwable $throw) {
+            //throw $th;
+            DB::rollBack();
+            //dd($th->getMessage());
+            abort(500, $throw->getMessage());
+        }
+    }
 
     public function getUnitRoom(Request $request)
     {

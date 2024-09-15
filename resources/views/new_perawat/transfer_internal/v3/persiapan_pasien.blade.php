@@ -5,7 +5,7 @@
 </style>
 <script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
 <h3>Persiapan Pasien</h3>
-<input type="hidden" name="kode_transfer_internal" value="">
+<input type="hidden" name="kode_transfer_internal" value="{{ $transfer_internal->kode_transfer_internal }}">
 <div class="card">
     <div class="form-group row">
         <div class="col-lg-6">
