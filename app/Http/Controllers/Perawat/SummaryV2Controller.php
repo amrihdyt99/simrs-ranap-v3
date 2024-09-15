@@ -36,10 +36,15 @@ class SummaryV2Controller extends Controller
 
         $dateDiff = Carbon::now()->diff($dataPasien->DateOfBirth);
         $age = '';
-        if ($dateDiff->y > 18) {
+
+        if ($dateDiff->y > 60) {
+            $age = 'geriatri';
+        } elseif ($dateDiff->y > 18) {
             $age = 'dewasa';
-        } else if ($dateDiff->y == 0 && $dateDiff->m == 0 && $dateDiff->d <= 28) {
+        } elseif ($dateDiff->y == 0 && $dateDiff->m == 0 && $dateDiff->d <= 28) {
             $age = 'bayi';
+        } elseif ($dateDiff->y > 3 && $dateDiff->y <= 13) {
+            $age = 'humpty dumpty';
         } else {
             $age = 'anak';
         }

@@ -89,6 +89,8 @@ Route::post('getFludiBalanceBaru', [\App\Http\Controllers\NewPerawat\NewNursingC
 Route::post('addassesmetawal', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addasessmentawal'])->name('add.assesmentawal');
 Route::post('perawat_addPemulanganPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addpemulanganpasien'])->name('add.perawat.pemulangan.pasien');
 Route::post('addMonitoringNews', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addmonitoring_news'])->name('add.monitoringnews');
+Route::get('getMonitoringNews', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getMonitoringNews'])->name('get.monitoringnews');
+Route::get('getMonitoringNewsDetail{id}', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getMonitoringNewsDetail'])->name('get.detail.monitoringnews');
 Route::post('addChecklistKepulangan', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addchecklist_kepulangan'])->name('add.checklist_kepulangan');
 Route::post('addInformasiTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addInformasiTindakanMedis'])->name('add.addInformasiTindakanMedis');
 Route::post('addPersetujuanTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPersetujuanTindakanMedis'])->name('add.PersetujuanTindakanMedis');

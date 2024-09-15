@@ -980,6 +980,7 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.monitoring_news')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        loadDatatableNews();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1946,3 +1947,4 @@
 @include('new_perawat.resiko_jatuh.neonatus.js.resiko_jatuh_neonatus_js')
 @include('new_perawat.resiko_jatuh.skala_morse.js.resiko_jatuh_skala_morse_js')
 @include('new_perawat.transfer_internal.js.index_js')
+@include('new_perawat.monitoring_news.js.entry_news_js')

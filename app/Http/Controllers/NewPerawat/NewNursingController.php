@@ -253,14 +253,14 @@ class NewNursingController extends Controller
 
     function addFluidBalanceBaru(Request $request)
     {
-        $totalJumlahIntake = $request->jumlah_transfusi + $request->minum + $request->sonde;
-        $totalJumlahOutput = $request->urine + $request->drain + $request->iwl_muntah;
+        $totalJumlahIntake = ($request->jumlah_transfusi ?? 0) + ($request->minum ?? 0) + ($request->sonde ?? 0);
+        $totalJumlahOutput = ($request->urine ?? 0) + ($request->drain ?? 0) + ($request->iwl_muntah ?? 0);
         $totalBalance = $totalJumlahIntake - $totalJumlahOutput;
+
         $params = array(
             'no_reg' => $request->reg_no,
             'med_rec' => $request->med_rec,
-            'tanggal' => $request->tanggal_pemberian,
-            'jam' => $request->tanggal,
+            'tanggal_waktu_pemberian' => $request->tanggal_waktu_pemberian,
             'cairan_transfusi' => $request->cairan_transfusi,
             'jumlah_cairan' => $request->jumlah_transfusi,
             'minum' => $request->minum,
@@ -2675,51 +2675,69 @@ class NewNursingController extends Controller
 
     function addmonitoring_news(Request $request)
     {
-        $paramsawalsearch = array(
-            'reg_no' => $request->reg_no,
-            'med_rec' => $request->medrec,
-            'news_jam' => $request->news_jam,
-            'news_tanggal' => $request->news_tanggal,
-        );
+        $total = $request->pernafasaan + $request->saturasi_oksigen +
+        $request->o2_tambahan + $request->suhu + $request->tekanan_darah +
+        $request->nadi + $request->tingkat_kesadaran + $request->news_total;
 
         $params = array(
-            'news_tanggal' => $request->news_tanggal,
-            'news_jam' => $request->news_jam,
-            'pernafasaan_3' => $request->pernafasaan_3,
-            'pernafasaan_2' => $request->pernafasaan_2,
-            'pernafasaan_1' => $request->pernafasaan_1,
-            'pernafasaan_0' => $request->pernafasaan_0,
-            'saturasi_3' => $request->saturasi_3,
-            'saturasi_2' => $request->saturasi_2,
-            'saturasi_1' => $request->saturasi_1,
-            'saturasi_0' => $request->saturasi_0,
-            'O2_tambahan_0' => $request->O2_tambahan_0,
-            'O2_tambahan_2' => $request->O2_tambahan_2,
-            'suhu_3' => $request->suhu_3,
-            'suhu_2' => $request->suhu_2,
-            'suhu_1' => $request->suhu_1,
-            'suhu_0' => $request->suhu_0,
-            'tekanan_darah_3' => $request->tekanan_darah_3,
-            'tekanan_darah_2' => $request->tekanan_darah_2,
-            'tekanan_darah_1' => $request->tekanan_darah_1,
-            'tekanan_darah_0' => $request->tekanan_darah_0,
-            'nadi_3' => $request->nadi_3,
-            'nadi_2' => $request->nadi_2,
-            'nadi_1' => $request->nadi_1,
-            'nadi_0' => $request->nadi_0,
-            'tingkat_kesadaran_3' => $request->tingkat_kesadaran_3,
-            'tingkat_kesadaran_0' => $request->tingkat_kesadaran_0,
-            'news_total' => $request->news_total,
+            'reg_no' => $request->reg_no,
+            'med_rec' => $request->medrec,
+            'pernafasaan' => $request->pernafasaan,
+            'saturasi_oksigen' => $request->saturasi_oksigen,
+            'o2_tambahan' => $request->o2_tambahan,
+            'suhu' => $request->suhu,
+            'tekanan_darah' => $request->tekanan_darah,
+            'nadi' => $request->nadi,
+            'tingkat_kesadaran' => $request->tingkat_kesadaran,
+            'news_total' => $total,
             'news_kategori' => $request->news_kategori,
             'news_gula_darah' => $request->news_gula_darah,
             'news_analisa_gas_darah' => $request->news_analisa_gas_darah,
             'news_penilaian_tik' => $request->news_penilaian_tik,
-            'user_name' => $request->user_name,
+            'tanggal_dan_waktu' => Carbon::now(),
+            'user_id' => $request->user_id,
         );
+
         $simpan = DB::connection('mysql')
-            ->table('rs_monitoring_news')
-            ->updateOrInsert($paramsawalsearch, $params);
+            ->table('monitoring_news')
+            ->Insert($params);
     }
+
+    public function getMonitoringNews(Request $request)
+    {
+        if ($request->ajax()) {
+            $monitoring_news = DB::connection('mysql')
+                                ->table('monitoring_news')
+                                ->where('reg_no', $request->reg_no)
+                                ->get();
+
+            return DataTables()
+                ->of($monitoring_news)
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '<div class="btn-group" role="group">';
+                    $actionBtn .= '<button type="button" class="btn btn-sm btn-info" onclick="showDetailModal(' . $row->id . ')">Details</button>';
+                    $actionBtn .= '</div>';
+
+                    return $actionBtn;
+                })
+                ->escapeColumns([])
+                ->toJson();
+        }
+    }
+
+    public function getMonitoringNewsDetail($id)
+    {
+        $newsDetail = DB::connection('mysql')
+                        ->table('monitoring_news')
+                        ->where('id', $id)
+                        ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $newsDetail
+        ]);
+    }
+
 
     function addchecklist_kepulangan(Request $request)
     {

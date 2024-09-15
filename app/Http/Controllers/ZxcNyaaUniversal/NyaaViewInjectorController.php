@@ -152,15 +152,6 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function assesment_resiko_jatuh_geriatri(Request $request)
     {
-        // $data_pasien = DB::connection('mysql2')
-        //     ->table('m_registrasi')
-        //     ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-        //     ->where(['m_registrasi.reg_no' => $request->reg_no])
-        //     ->first();
-
-        // $universalFunctionController = app(UniversalFunctionController::class);
-        // $age = $universalFunctionController->kalkulasi_umur($data_pasien->DateOfBirth, 'tahun');
-
 
         $context = array(
             'reg' => $request->reg_no,
@@ -953,7 +944,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 "dataTransfusi",
                 "dataFluidBalanceBaru",
                 "obatdaridokter",
-                "datamypatient"
+                "datamypatient",
             )
         );
     }
@@ -1256,21 +1247,21 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function monitoring_news(Request $request)
     {
-        $jam_sekarang = Carbon::now()->format('H');
-        $tanggal_sekarang = Carbon::now()->format('Y-m-d');
-        $monitoring_news = DB::connection('mysql')
-            ->table('rs_monitoring_news')
-            ->where('reg_no', $request->reg_no)
-            ->where('news_jam', $jam_sekarang)
-            ->where('news_tanggal', $tanggal_sekarang)
-            ->first();
+        // $jam_sekarang = Carbon::now()->format('H');
+        // $tanggal_sekarang = Carbon::now()->format('Y-m-d');
+        // $monitoring_news = DB::connection('mysql')
+        //     ->table('rs_monitoring_news')
+        //     ->where('reg_no', $request->reg_no)
+        //     ->where('news_jam', $jam_sekarang)
+        //     ->where('news_tanggal', $tanggal_sekarang)
+        //     ->first();
 
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
-            'monitoring_news' => optional($monitoring_news),
-            'jam_sekarang' => ($jam_sekarang),
-            'tanggal_sekarang' => ($tanggal_sekarang),
+            // 'monitoring_news' => optional($monitoring_news),
+            // 'jam_sekarang' => ($jam_sekarang),
+            // 'tanggal_sekarang' => ($tanggal_sekarang),
         );
         return view('new_perawat.monitoring_news.index')
             ->with($context);
