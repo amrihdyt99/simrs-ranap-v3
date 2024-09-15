@@ -8,25 +8,44 @@
 <input type="hidden" name="kode_transfer_internal" value="">
 <div class="card">
     <div class="form-group row">
-        <div class="col-lg-4">
-            <div class="form-group"><label>Unit asal</label><input type="text" class="form-control"
-                    name="transfer_unit_asal" value="{{ $transfer_internal->transfer_unit_asal }}"></div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Unit asal</label>
+                <select name="transfer_unit_asal" id="select-bed-asal" class="form-control">
+                    @if (isset($ruangan_asal))
+                    <option value="{{$ruangan_asal->bed_id}}"
+                        selected>{{ $ruangan_asal->bed_code . ' - ' . $ruangan_asal->ruang . ' - ' . $ruangan_asal->kelompok . ' - ' . $ruangan_asal->kelas }}</option>
+                    @endif
+                </select>
+            </div>
         </div>
-        <div class="col-lg-4">
-            <div class="form-group"><label>Unit tujuan</label><input type="text" class="form-control"
-                    name="transfer_unit_tujuan" value="{{ $transfer_internal->transfer_unit_tujuan }}"></div>
+        <div class="col-lg-6">
+            <div class="form-group"><label>Unit tujuan</label>
+                <select name="transfer_unit_tujuan" id="select-bed-tujuan" class="form-control">
+                    @if (isset($ruangan_tujuan))
+                    <option value="{{$ruangan_tujuan->bed_id}}"
+                        selected>{{ $ruangan_tujuan->bed_code . ' - ' . $ruangan_tujuan->ruang . ' - ' . $ruangan_tujuan->kelompok . ' - ' . $ruangan_tujuan->kelas }}</option>
+                    @endif
+                </select>
+            </div>
         </div>
-        <div class="col-lg-4">
-            <div class="form-group"><label>Nama petugas unit tujuan yang dihubungi</label><input type="text"
-                    class="form-control" name="transfer_unit_tujuan_petugas"
-                    value="{{ $transfer_internal->transfer_unit_tujuan_petugas }}"></div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Nama petugas unit tujuan yang dihubungi</label>
+                <select name="perawat_tujuan" id="select-petugas-tujuan" class="form-control">
+                    @if (isset($transfer_internal))
+                    <option value="{{ $transfer_internal->diterima_oleh_user_id }}"
+                        selected>{{ $transfer_internal->diterima_oleh_nama }}</option>
+                    @endif
+                </select>
+            </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <div class="form-group"><label>Tanggal dan waktu menghubungi</label><input type="datetime-local"
                     class="form-control" name="transfer_waktu_hubungi"
                     value="{{ $transfer_internal->transfer_waktu_hubungi }}"></div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <div class="form-group"><label>Tanggal dan waktu transfer</label><input type="datetime-local"
                     class="form-control" name="ditransfer_waktu" value="{{ $transfer_internal->ditransfer_waktu }}">
             </div>
@@ -200,7 +219,9 @@
         </div>
 
     </div>
+    @if ($type != 'terima')
     <div class="float-left">
         <button class="btn btn-success btn_transfer_internal" type="button">Simpan</button>
     </div>
+    @endif
 </div>

@@ -24,43 +24,38 @@
                 <a onclick="neko_refresh_datatable('dttb_transfer_internal4')" class="nav-link" id="kejadian-tab" data-toggle="tab" href="#kejadian" role="tab" aria-controls="kejadian-tab" aria-selected="false">
                     Kejadian dan tindakan</a>
             </li>
+            @if ($type == 'terima')
             <li class="nav-item">
-                <a class="nav-link " id="serah_terima-tab" data-toggle="tab" href="#serah_terima" role="tab" aria-controls="serah_terima-tab" aria-selected="false">
+                <a onclick="neko_refresh_datatable('dttb_transfer_internal5')" class="nav-link " id="serah_terima-tab" data-toggle="tab" href="#serah_terima" role="tab" aria-controls="serah_terima-tab" aria-selected="false">
                     Serah terima</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link " id="riwayat-transfer-tab" data-toggle="tab" href="#riwayat-transfer" role="tab" aria-controls="riwayat-transfer-tab" aria-selected="false">
-                    Riwayat Transfer Internal</a>
-            </li>
-
+            @endif
         </ul>
         <div class="tab-content" id="tab_transfer">
             <div id="persiapan" class="tab-pane fade show active" role="tabpanel" aria-labelledby="persiapan-tab">
-                @include('new_perawat.transfer_internal.v2.persiapan_pasien')
+                @include('new_perawat.transfer_internal.v3.persiapan_pasien')
             </div>
 
             <div id="alat_terpasang" class="tab-pane fade " role="tabpanel" aria-labelledby="alat_terpasang-tab">
-                @include('new_perawat.transfer_internal.v2.alat_terpasang')
+                @include('new_perawat.transfer_internal.v3.alat_terpasang')
             </div>
 
             <div id="obat_cairan" class="tab-pane fade " role="tabpanel" aria-labelledby="obat_cairan-tab">
-                @include('new_perawat.transfer_internal.v2.obat_cairan')
+                @include('new_perawat.transfer_internal.v3.obat_cairan')
             </div>
 
             <div id="status_pasien" class="tab-pane fade " role="tabpanel" aria-labelledby="status_pasien-tab">
-                @include('new_perawat.transfer_internal.v2.status_pasien')
+                @include('new_perawat.transfer_internal.v3.status_pasien')
             </div>
 
             <div id="kejadian" class="tab-pane fade " role="tabpanel" aria-labelledby="kejadian-tab">
-                @include('new_perawat.transfer_internal.v2.kejadian')
+                @include('new_perawat.transfer_internal.v3.kejadian')
             </div>
+            @if ($type == 'terima')
             <div id="serah_terima" class="tab-pane fade " role="tabpanel" aria-labelledby="serah_terima-tab">
-                @include('new_perawat.transfer_internal.v2.serah_terima')
+                @include('new_perawat.transfer_internal.v3.confirm_serah_terima')
             </div>
-            <div id="riwayat-transfer" class="tab-pane fade " role="tabpanel" aria-labelledby="riwayat-transfer-tab">
-                @include('new_perawat.transfer_internal.v3.riwayat_transfer')
-            </div>
-
+            @endif
         </div>
     </div>
 </form>

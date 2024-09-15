@@ -263,7 +263,7 @@
             icd9()
             icd10('#select-diagnosa-utama')
             icd10('#select-diagnosa-sekunder')
-            icd10('#select-diagnosa-klausa')
+            icd10('#select-diagnosa-klausa', 'X') 
             get_diag()
             get_pro()
           
@@ -410,14 +410,15 @@
             });
         }
         
-        function icd10(_id = '') {
+        function icd10(_id = '', category = '') {
             $(_id).select2({
                 ajax: {
                     url: "{{url('api/sphaira/icd10')}}",
                     type: 'GET',
                     data: function(params){
                         return {
-                            searchParams: params.term
+                            searchParams: params.term,
+                            category: category 
                         }
                     },
                     processResults: function(resp){

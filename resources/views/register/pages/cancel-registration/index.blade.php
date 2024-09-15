@@ -38,6 +38,7 @@
                     <th>MRN</th>
                     <th>Nama Pasien</th>
                     <th>Alasan</th>
+                    <th>Asal</th>
                   </tr>
                 </thead>
               </table>
@@ -145,6 +146,10 @@
         {
           data: "cancelation_reason",
           name: "cancelation_reason",
+        },
+        {
+          data: "asal",
+          name: "asal",
         },
       ],
     });

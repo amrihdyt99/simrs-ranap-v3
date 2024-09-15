@@ -92,7 +92,7 @@
                 neko_simpan_error_noreq();
             },
         })
-    
+
     }
 
     // edukasi pasien perawat
@@ -103,17 +103,17 @@
         neko_proses();
 
         var formData = new FormData($('#entry-edukasi-pasien-perawat')[0]);
-        formData.append('reg_no', regno); 
-        formData.append('medrec', medrec); 
-        formData.append('ttd_sasaran', ttdSasaran); 
-        formData.append('ttd_edukator', ttdEdukator); 
+        formData.append('reg_no', regno);
+        formData.append('medrec', medrec);
+        formData.append('ttd_sasaran', ttdSasaran);
+        formData.append('ttd_edukator', ttdEdukator);
         formData.append('user_id', "{{auth()->user()->id}}");
-        
+
         $.ajax({
-            url: "{{route('add.edukasi_pasien_perawat')}}", 
+            url: "{{route('add.edukasi_pasien_perawat')}}",
             type: "POST",
             data: formData,
-            contentType: false, 
+            contentType: false,
             processData: false,
             success: function(data) {
                 neko_simpan_success();
@@ -139,7 +139,7 @@
                 "&regno=" + regno +
                 "&user_id=" + userId +
                 "&shift=" + userShift,
-                success: function(data) {
+            success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
             },
@@ -747,7 +747,7 @@
             },
             error: function(xhr, status, error) {
                 console.log();
-                
+
                 console.error("Error occurred:", status, error);
                 neko_simpan_error_noreq();
             },
@@ -984,7 +984,7 @@
             type: "POST",
             data: formData,
             contentType: false,
-            processData: false, 
+            processData: false,
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
@@ -999,7 +999,7 @@
     function simpanPersetujuanTindakanMedis() {
         neko_proses();
         var formData = new FormData($('#PersetujuanTindakanMedis')[0]);
-        
+
         formData.append('reg_no', regno);
         formData.append('medrec', medrec);
         formData.append('ttd_penerima_setuju', signaturePadPenerimaSetuju.toDataURL());
@@ -1011,8 +1011,8 @@
             url: "{{route('add.PersetujuanTindakanMedis')}}",
             type: "POST",
             data: formData,
-            contentType: false, 
-            processData: false, 
+            contentType: false,
+            processData: false,
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
@@ -1034,13 +1034,13 @@
         formData.append('ttd_dokter_penolakan', signaturePadDokterPenolakan.toDataURL());
         formData.append('ttd_keluarga_penolakan', signaturePadKeluargaPenolakan.toDataURL());
         formData.append('ttd_perawat_penolakan', signaturePadPerawatPenolakan.toDataURL());
-        
+
         $.ajax({
             url: "{{route('add.PenolakanTindakanMedis')}}",
             type: "POST",
             data: formData,
-            contentType: false, 
-            processData: false, 
+            contentType: false,
+            processData: false,
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();

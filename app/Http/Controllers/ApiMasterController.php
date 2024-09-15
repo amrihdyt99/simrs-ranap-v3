@@ -119,14 +119,22 @@ class ApiMasterController extends Controller
 	}
 	public function icd_10(Request $r)
 	{
+		$query = DB::connection('mysql')->table('icd10_bpjs');
 
-		if (!isset($r->searchParams)) {
-			$data =  DB::connection('mysql')->table('icd10_bpjs')->take(50)->get();
-		} else {
-			$data =  DB::connection('mysql')->table('icd10_bpjs')->where('NM_ICD10', 'like', '%' . $r->searchParams . '%')
-				->orWhere('ID_ICD10', 'like', '%' . $r->searchParams . '%')
-				->get();
+		if (isset($r->category)) {
+			$query->where(function($q) use ($r) {
+				$q->where('ID_ICD10', 'like', 'X%')
+				  ->orWhere('ID_ICD10', 'like', 'V%');
+			});
 		}
+	
+		if (isset($r->searchParams)) {
+			$query->where(function($q) use ($r) {
+				$q->where('NM_ICD10', 'like', '%' . $r->searchParams . '%')
+				  ->orWhere('ID_ICD10', 'like', '%' . $r->searchParams . '%');
+			});
+		}
+		$data = $query->take(50)->get();
 		$dat = $data;
 		if ($dat) {
 			$json['code'] = 200;
