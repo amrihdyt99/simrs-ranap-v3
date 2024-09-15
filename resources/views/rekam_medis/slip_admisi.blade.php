@@ -32,7 +32,7 @@
             <td width="998" align="center"><img src="{{asset('new_assets/images/kop.png')}}" alt="" width="1051" height="178" /><br />
                 <table width="1060" border="0" align="center" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td colspan="10" align="center"><em><strong>SLIP ADMISSION</strong></em></td>
+                        <td colspan="10" align="center"><em><h4><strong>SLIP ADMISSION</strong></h4></em></td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -116,7 +116,7 @@
                         <td width="19">&nbsp;</td>
                         <td width="22"><strong>II.</strong></td>
                         <td width="166"><strong>Diagnosis masuk</strong></td>
-                        <td>:</td>
+                        <td></td>
                         <td colspan="4">&nbsp;</td>
                     </tr>
                     <tr>
@@ -144,7 +144,8 @@
                         <td>&nbsp;</td>
                         <td>Cara Bayar</td>
                         <td>:</td>
-                        <td colspan="4">{{$datapasien->reg_cara_bayar ?? '-'}}</td>
+                        <td colspan="4">{{ $datapasien->reg_cara_bayar_name }}</td>
+
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -158,7 +159,7 @@
                     <tr>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td>&nbsp;</td> 
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -171,7 +172,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td><strong>III,</strong></td>
+                        <td><strong>III.</strong></td>
                         <td colspan="6"><strong>Permintaan Kamar / TT Rawat Inap</strong></td>
                     </tr>
                     <tr>
@@ -179,11 +180,8 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td align="left">
-                            <ul>
-                                <li>Kelas Perawatan</li>
-                            </ul>
-                        </td>
+                      
+                        <td>Kelas Perawatan</td>
                         <td>:</td>
                         <td colspan="4">{{$datapasien->nama_kelas ?? '-'}}</td>
                     </tr>
@@ -193,12 +191,8 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>
-                            <ul>
-                                <li>Ruangan</li>
-                            </ul>
-                        </td>
-                        <td>&nbsp;</td>
+                        <td>Ruangan</td>
+                        <td>:</td>
                         <td><input type="checkbox" name="tempat" id="tempat" checked />
                             {{$datapasien->nama_ruangan ?? '-'}}
                         </td>
@@ -291,11 +285,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>
-                            <ul>
-                                <li>Ruang Perawatan</li>
-                            </ul>
-                        </td>
+                        <td>Ruang Perawatan</td>
                         <td>:</td>
                         <td>Rp. {{$datapasien->tarif_kelas ?? '-'}}</td>
                         <td>&nbsp;</td>
@@ -307,11 +297,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>
-                            <ul>
-                                <li>Jenis Tindakan</li>
-                            </ul>
-                        </td>
+                        <td>Jenis Tindakan</td>
                         <td>:</td>
                         <td>........................................</td>
                         <td>Rp. <u>+ ................................</u></td>
@@ -323,11 +309,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>
-                            <ul>
-                                <li>Visit Dokter</li>
-                            </ul>
-                        </td>
+                        <td>Jenis Tindakan</td>
                         <td>:</td>
                         <td>Rp. {{$datapasien->FeeAmount ?? '-'}} /1x visite</td>
                         <td>&nbsp;</td>
@@ -339,37 +321,9 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>
-                            <ul>
-                                <li>Lain - lain</li>
-                            </ul>
-                        </td>
+                        <td>Visit Dokter </td>
                         <td>:</td>
                         <td>Rp. .................................</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -403,13 +357,8 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td colspan="3">
-                            <ul>
-                                <li>Informasi Ketersediaan &amp; Situasi Kamar</li>
-                            </ul>
-                        </td>
+                        <td colspan="3" align="left">Informasi Ketersediaan &amp; Situasi Kamar</td>
                         <td>:
-
                             @empty($datapasien->reg_ketersidaan_kamar)
                             -
                             @else
@@ -418,7 +367,7 @@
                             @else
                             Tidak
                             @endif
-                            @endif
+                            @endempty
                         </td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -428,11 +377,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td colspan="3">
-                            <ul>
-                                <li>Informasi Hak &amp; Kewajiban</li>
-                            </ul>
-                        </td>
+                        <td colspan="3" align="left">Informasi Hak &amp; Kewajiban</td>                            
                         <td>:
                             @empty($datapasien->reg_info_kewajiban)
                             -
@@ -452,11 +397,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td colspan="3">
-                            <ul>
-                                <li>Informasi General Concent</li>
-                            </ul>
-                        </td>
+                        <td colspan="3" align="left">Informasi General Concent</td>
                         <td>:
                             @empty($datapasien->reg_info_general_consent)
                             -
@@ -476,17 +417,13 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td colspan="3">
-                            <ul>
-                                <li>Informasi Cara Bayar dan perlengkapan / persyaratan</li>
-                            </ul>
-                        </td>
+                        <td colspan="3" align="left">Informasi Cara Bayar dan perlengkapan / persyaratan</td>   
                         <td>:
                             @empty($datapasien->reg_info_carabayar)
                             -
                             @else
                             @if($datapasien->reg_info_carabayar == 1)
-                            Ya
+                            Ya  
                             @else
                             Tidak
                             @endif
@@ -505,7 +442,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td>&nbsp;</td> 
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -729,6 +666,8 @@ IRD--}}
                 var canvas = document.getElementById("the_canvas");
                 var dataUrl = canvas.toDataURL();
                 document.getElementById("signature").value = dataUrl;
+                alert("Signature saved successfully.");
+                location.reload(); // Refresh the page after saving the signature
             }
         });
         // var grd = ctx.createRadialGradient(75,50,5,90,60,100);
