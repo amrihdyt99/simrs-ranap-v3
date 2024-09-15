@@ -64,7 +64,64 @@
       <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
+<div class="modal fade" id="modalAdmisi" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg custom-width" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="resultModalLabel">Slip Admisi</h5>
+        <div class="d-flex align-items-center">
+          <button id="printButtonAdmisi" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+     <!-- <iframe id="iframe-admisi" style="width:100%; height:100%;" frameborder="0"></iframe> -->
+     <iframe id="iframe-admisi" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalGeneralConsent" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg custom-width" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="resultModalLabel">General Consent</h5>
+        <div class="d-flex align-items-center">
+          <button id="printButtonGC" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+      <iframe id="iframe-generalConsent" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe> 
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalRawatIntensif" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg custom-width" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="resultModalLabel">Surat Rawat Intensif</h5>
+        <div class="d-flex align-items-center">
+          <button id="printButtonIntensif" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+      <iframe id="iframe-rawatIntensif" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
   </section>
+
   <!-- /.content -->
 </div>
 @endsection
@@ -185,8 +242,110 @@
           orderable: false,
           searchable: false,
         },
-      ],
+      ],rowCallback: function(row, data) {
+        let api = this.api();
+       $(row).find('.print-admisi').click(function() {
+          var reg = $(this).data('reg_no');
+          console.log(reg);
+          $.ajax({
+            type: "get",
+            url: "/ranap/slipadmisi/" + reg,
+            success: function(data) {
+              $('#report-admisi').empty().html(data);
+              var iframe = document.getElementById('iframe-admisi');
+              iframe.contentDocument.open();
+              iframe.contentDocument.write(data);
+              iframe.contentDocument.close();
+              $('#modalAdmisi').modal('show').on('shown.bs.modal', function () {
+                var modalDialog = $(this).find('.modal-dialog');
+                modalDialog.css({
+                  'max-width': '80%',
+                  'width': '80%',
+                  'max-height': '90%',
+                  'height': '90%'
+                });
+              });
+            },
+            error: function() {
+              neko_d_custom_error('Gagal, Memuat Slip Admisi');
+            }
+          });
+        });
+        $(row).find('.print-generalconsent').click(function() {
+          var reg = $(this).data('reg_no');
+          console.log(reg);
+          $.ajax({
+            type: "get",
+            url: "/ranap/gc1/" + reg,
+            success: function(data) {
+              console.log(data);
+              $('#report-generalConsent').empty().html(data);
+              var iframe = document.getElementById('iframe-generalConsent');
+              iframe.contentDocument.open();
+              iframe.contentDocument.write(data);
+              iframe.contentDocument.close();
+              $('#modalGeneralConsent').modal('show').on('shown.bs.modal', function () {
+                var modalDialog = $(this).find('.modal-dialog');
+                modalDialog.css({
+                  'max-width': '80%',
+                  'width': '80%',
+                  'max-height': '90%',
+                  'height': '90%'
+                });
+              });
+            },
+            error: function() {
+              neko_d_custom_error('Gagal, Memuat General Consent');
+            }
+          });
+        });
+        $(row).find('.print-rawatintensif').click(function() {
+          var reg = $(this).data('reg_no');
+          console.log(reg);
+          $.ajax({
+            type: "get",
+            url: "/ranap/rawat-intensif/" + reg,
+            success: function(data) {
+              console.log(data);
+              $('#report-rawatIntensif').empty().html(data);
+              var iframe = document.getElementById('iframe-rawatIntensif');
+              iframe.contentDocument.open();
+              iframe.contentDocument.write(data);
+              iframe.contentDocument.close();
+              $('#modalRawatIntensif').modal('show').on('shown.bs.modal', function () {
+                var modalDialog = $(this).find('.modal-dialog');
+                modalDialog.css({
+                  'max-width': '80%',
+                  'width': '80%',
+                  'max-height': '90%',
+                  'height': '90%'
+                });
+              });
+            },
+            error: function() {
+              neko_d_custom_error('Gagal, Memuat Surat Rawat Intensif');
+            }
+          });
+        });
+      }
     });
   }
+</script>
+<script>
+document.getElementById('printButtonAdmisi').addEventListener('click', function() {
+  var iframe = document.getElementById('iframe-admisi');
+  iframe.contentWindow.focus();
+  iframe.contentWindow.print();
+});
+document.getElementById('printButtonGC').addEventListener('click', function() {
+  var iframe = document.getElementById('iframe-generalConsent');
+  iframe.contentWindow.focus();
+  iframe.contentWindow.print();
+});
+document.getElementById('printButtonIntensif').addEventListener('click', function() {
+  var iframe = document.getElementById('iframe-rawatIntensif');
+  iframe.contentWindow.focus();
+  iframe.contentWindow.print();
+});
 </script>
 @endpush
