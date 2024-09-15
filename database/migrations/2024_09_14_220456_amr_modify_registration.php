@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToRsEdukasiPasienTable extends Migration
+class AmrModifyRegistration extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnsToRsEdukasiPasienTable extends Migration
      */
     public function up()
     {
-        Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
-            // $table->unsignedBigInteger('user_id');
+        Schema::connection('mysql2')->table('m_registrasi', function (Blueprint $table) {
+            $table->longText('reg_dokter_care')->nullable()->change();
         });
     }
 
@@ -25,8 +25,6 @@ class AddColumnsToRsEdukasiPasienTable extends Migration
      */
     public function down()
     {
-        Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

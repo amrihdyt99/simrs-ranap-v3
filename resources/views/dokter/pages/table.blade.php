@@ -23,19 +23,28 @@
             <td class="text-sm">{{$row->reg_medrec}}</td>
             <td class="text-sm">{{$row->ParamedicName}}</td>
             <td class="text-sm">
-    @foreach(explode('|', $row->physician_team) as $team_member)
-        <span style="margin-right: 5px; margin-bottom: 5px; white-space: nowrap; font-size: 0.875rem;" class="badge badge-primary">{{ trim($team_member) }}</span>
-    @endforeach
-</td>
+                @foreach(explode('|', $row->physician_team) as $team_member)
+                    <span style="margin-right: 5px; margin-bottom: 5px; white-space: nowrap; font-size: 0.875rem;" class="badge badge-primary">{{ trim($team_member) }}</span>
+                @endforeach
+            </td>
             <td class="text-sm">{{$row->nama_ruangan}}</td>
             <td class="text-sm">{{$row->reg_cara_bayar}}</td>
             <td class="text-sm">
-                <a href="{{route('dokter.patient.summary',['patient'=>$row->reg_no])}}" class="btn btn-sm btn-outline-primary">
-                    <i class="mr-2 fa fa-clipboard-check"></i>Periksa
-                </a>
-                <a href="{{route('dokter.patient.detail', $row->reg_no)}}" target="_blank" class="btn btn-sm btn-outline-success">
-                    <i class="mr-2 fa fa-clipboard-check"></i>Detail
-                </a>
+                @if ($type == 'area')
+                    <button type="button" onclick="takeOver('{{$row->reg_no}}')" class="btn btn-sm btn-outline-primary">
+                        <i class="mr-2 fa fa-share-square"></i>Ambil Alih
+                    </button>
+                @else
+                    <a href="{{route('dokter.patient.summary',['patient'=>$row->reg_no])}}" class="mb-1 btn btn-sm btn-outline-primary">
+                        <i class="mr-2 fa fa-clipboard-check"></i>Periksa
+                    </a><br>
+                    <a href="{{route('dokter.patient.detail', $row->reg_no)}}" target="_blank" class="mb-1 btn btn-sm btn-outline-success">
+                        <i class="mr-2 fa fa-list"></i>Detail
+                    </a><br>
+                    <button type="button" onclick="takeOver('{{$row->reg_no}}', 'cancel')" class="btn btn-sm btn-outline-danger">
+                        <i class="mr-2 fa fa-times"></i>Batal
+                    </a>
+                @endif
             </td>
         </tr>
         @endforeach
