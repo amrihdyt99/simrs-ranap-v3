@@ -303,6 +303,14 @@ class NyaaViewInjectorController extends AaaBaseController
             ])
             ->first();
 
+        $cek_transfer_ongoing = DB::connection('mysql')
+            ->table('transfer_internal')
+            ->where([
+                ['transfer_reg', $request->reg_no],
+                ['status_transfer', 0],
+            ])
+            ->count();
+
         $transfer_internal = DB::connection('mysql')
             ->table('transfer_internal')
             ->where('transfer_reg', $request->reg_no)
@@ -349,7 +357,9 @@ class NyaaViewInjectorController extends AaaBaseController
             'transfer_internal_obat_dibawa' => $transfer_internal_obat_dibawa,
             'transfer_internal_status_pasien' => $transfer_internal_status_pasien,
             'transfer_internal_kejadian' => $transfer_internal_kejadian,
+            'cek_transfer_ongoing'  => $cek_transfer_ongoing
         );
+
         return view('new_perawat.transfer_internal.v3.riwayat_transfer')
             ->with($context);
     }
