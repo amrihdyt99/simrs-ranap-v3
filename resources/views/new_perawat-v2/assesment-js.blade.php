@@ -228,6 +228,7 @@
                     };
                 };
                 neko_d_custom_success('Berhasil.');
+                $('.protecc').removeAttr('disabled');
                 $('#ModalBase').modal('hide');
                 return null;
             },
@@ -585,7 +586,8 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.nurse_transfer_internal')}}",
                     success: function(data) {
                         inject_view_data(data);
-                        init_TransferInternal();
+                        loadAllTfInteralFunc();
+                        viewSerahTerima();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1461,6 +1463,7 @@
         nyaa_transferinternal_load_datatable('#dttb_transfer_internal2');
         nyaa_transferinternal_load_datatable('#dttb_transfer_internal3');
         nyaa_transferinternal_load_datatable('#dttb_transfer_internal4');
+        nyaa_transferinternal_load_datatable('#dttb_transfer_internal5');
     }
 
     function nyaa_transferinternal_load_datatable(id_dttb) {
@@ -2008,3 +2011,4 @@
 
 
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
+@include('new_perawat.transfer_internal.js.index_js')

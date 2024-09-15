@@ -6,11 +6,12 @@ use App\Http\Controllers\Perawat\DiagnoseController;
 use App\Http\Controllers\Perawat\NursingController;
 use App\Http\Controllers\Perawat\SummaryController;
 use App\Http\Controllers\Perawat\DetailPasienPerawatController;
+use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/perawat/patient/save_signature', [NursingController::class, 'saveSignature'])->name('saveSignature');
 Route::post('/perawat/save-signature', [NursingController::class, 'saveSignature'])->name('perawat.saveSignature');
-Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi','shift'])->group(function () {
+Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi', 'shift'])->group(function () {
 
     Route::get('/perawat/dashboard', [DashboardController::class, 'index'])->name('perawat.dashboard');
     Route::post('/save-shift', [DashboardController::class, 'saveShift'])->name('save.shift');
@@ -73,6 +74,10 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
         Route::post('/perawat/patient/save_signature', [NursingController::class, 'saveSignature']);
         // summary V2
         Route::get('/summary-v2/{reg_no}', [\App\Http\Controllers\Perawat\SummaryV2Controller::class, 'summary'])->where('reg_no', '(.*)')->name('perawat.patient.summary-v2');
+
+        // new route 
+        Route::get('/get-history-transfer-internal', [TransferInternalController::class, 'getRiwayatTransferInternal'])->name('perawat.get_history_tf_internal');
+        Route::get('/get-history-serah-terima', [TransferInternalController::class, 'getTerimaTerimaPasienData'])->name('perawat.get_serah_terima_data');
     });
 
     /**
