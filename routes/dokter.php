@@ -14,6 +14,9 @@ Route::get('/dokter/data/{type}/{ruang}', [\App\Http\Controllers\Dokter\PatientC
 
 
 Route::prefix('dokter')->group(function () {
+    Route::prefix('takeOver')->group(function () {
+        Route::post('/', [PatientController::class, 'takeOver']);
+    });
 
     Route::get('/cpoe/imaging/{patient}', [\App\Http\Controllers\Dokter\TreatmentController::class, 'create_cpoe_imaging'])->where('patient', '(.*)')->name('create.cpoe.imaging');
     Route::post('/cpoe/imaing', [\App\Http\Controllers\Dokter\TreatmentController::class, 'storeCPOEImaging'])->name('store.cpoe.imaging');

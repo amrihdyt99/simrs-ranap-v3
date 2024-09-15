@@ -30,6 +30,7 @@ class PatientController extends Controller
 
     public function data_table($type, $ruang)
     {
+        $dokter_code = auth()->user()->dokter_id;
     
         if ($type == 'area') {
             $datamypatient = DB::connection('mysql2')
@@ -45,7 +46,10 @@ class PatientController extends Controller
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
             ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode')
             ->where('m_registrasi.reg_discharge', '!=', '3')
-            ->whereRaw("(m_bed.service_unit_id = '".$ruang."' or m_registrasi.service_unit = '".$ruang."')")
+            ->whereRaw("
+                (reg_dokter_care is null or reg_dokter_care not like ?) 
+                and (m_bed.service_unit_id = ? or m_registrasi.service_unit = ?)
+            ", ['%' . $dokter_code . '%', $ruang, $ruang])
             ->where(function ($query) {
                 $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id) // Dokter utama
                       ->orWhereExists(function ($subQuery) {
@@ -92,7 +96,10 @@ class PatientController extends Controller
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
             ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode')
             ->where('m_registrasi.reg_discharge', '!=', '3')
-            ->whereRaw("(m_bed.service_unit_id = '".$ruang."' or m_registrasi.service_unit = '".$ruang."')")
+            ->whereRaw("
+                (reg_dokter_care = '' or reg_dokter_care like ?) 
+                and (m_bed.service_unit_id = ? or m_registrasi.service_unit = ?)
+            ", ['%' . $dokter_code . '%', $ruang, $ruang])
             ->where(function ($query) {
                 $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
                       ->orWhereExists(function ($subQuery) {
@@ -238,5 +245,69 @@ class PatientController extends Controller
         $data['soap'] = PasienSoapDok::where('soapdok_reg', $reg_no)->latest()->get();
 
         return view('dokter.pages.patient.detail', $data);
+    }
+
+    public function takeOver(Request $request){
+        try {
+            $check_ = RegistrationInap::where('reg_no', $request->reg_no)
+                ->first();
+
+            $data = [];
+
+            if (isset($check_->reg_dokter_care)) {
+                foreach (json_decode($check_->reg_dokter_care, true) as $key => $value) {
+                    if (!$request->type) {
+                        if ($value['kode'] != $request->dokter_code) {
+                            array_push($data, $value);
+                        }
+                    } else {
+                        array_push($data, $value);
+                    }
+                }
+
+                array_push($data, [
+                    'kode' => $request->dokter_code,
+                    'taken_at' => date('Y-m-d H:i:s')
+                ]);
+
+                if ($request->type == 'cancel') {
+                    foreach ($data as $key => $object) {
+                        if ($object['kode'] === $request->dokter_code) {
+                            unset($data[$key]);
+                        }
+                    }
+                }
+            } else {
+                $data = [
+                    [
+                        'kode' => $request->dokter_code,
+                        'taken_at' => date('Y-m-d H:i:s')
+                    ]
+                ];
+            }
+            
+            $update = RegistrationInap::where('reg_no', $request->reg_no)
+                ->update([
+                    'reg_dokter_care' => json_encode($data)
+                ]);
+
+            if ($update) {
+                return [
+                    'code' => 200,
+                    'success' => true,
+                    'message' => $request->type == 'cancel' ? 'Pelayanan pasien berhasil dibatalkan' : 'Pasien berhasil diambil alih'
+                ];
+            } else {
+                return [
+                    'code' => 500,
+                    'success' => false,
+                    'message' => $request->type == 'cancel' ? 'Pelayanan pasien gagal dibatalkan' : 'Pasien gagal diambil alih'
+                ];
+            }
+            
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
