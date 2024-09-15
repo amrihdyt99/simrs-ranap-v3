@@ -2,6 +2,14 @@
   <div class="card">
     <div class="card-header container-fluid">
       <div class="row">
+        @if ($cek_transfer_ongoing > 0)
+        <div class="col-md-9">
+          <h3><b>TRANSFER INTERNAL</b></h3>
+        </div>
+        <div class="col-md-3 float-right">
+          <button class="btn btn-success" id="btnSerahTerimaTfInternal"><i class="fas fa-user-check"></i> Terima Transfer Pasien</button>
+        </div>
+        @else
         <div class="col-md-7">
           <h3><b>TRANSFER INTERNAL</b></h3>
         </div>
@@ -11,6 +19,7 @@
             <button class="btn btn-success" id="btnSerahTerimaTfInternal"><i class="fas fa-user-check"></i> Terima Transfer Pasien</button>
           </div>
         </div>
+        @endif
       </div>
     </div>
     <div class="card-body">

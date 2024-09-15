@@ -12,15 +12,18 @@ class TransferInternalController extends Controller
     public function getRiwayatTransferInternal(Request $request)
     {
         if ($request->ajax()) {
+            $dbMaster = DB::connection('mysql2')->getDatabaseName();
+            $dbInap = DB::connection('mysql')->getDatabaseName();
+
             $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
                              `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
                              `internal`.`status_transfer`
-                      FROM `sim_rs_inap`.`transfer_internal` as `internal`
-                      LEFT JOIN `sim_rs_master`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
-                      LEFT JOIN `sim_rs_master`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
-                      LEFT JOIN `sim_rs_master`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
-                      LEFT JOIN `sim_rs_master`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
-                      LEFT JOIN `sim_rs_master`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
+                      FROM `$dbInap`.`transfer_internal` as `internal`
+                      LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
+                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
+                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
+                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
+                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
                       WHERE `internal`.`transfer_reg` = '$request->reg_no' 
                       ORDER BY `internal`.`transfer_id` DESC";
 
@@ -30,15 +33,16 @@ class TransferInternalController extends Controller
             return DataTables()
                 ->of($data)
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<div class="btn-group">
-                                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        Aksi
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="">Edit</a></li>
-                                        <li><a class="dropdown-item btn-delete" href="#" data-id ="' . $row->transfer_id . '" >Hapus</a></li>
-                                    </ul>
-                                </div>';
+                    $actionBtn = '<div class="btn-group" role="group">';
+
+                    if ($row->status_transfer == 1) {
+                        $actionBtn = "<button type='button' class='btn btn-success'><i class='far fa-eye'></i> Detail</button>";
+                    } else {
+
+                        $actionBtn = "<button type='button' class='btn btn-info btn-delete' data-id ='" . $row->transfer_id . "'>Edit</button>";
+                    }
+
+                    $actionBtn .= '</div>';
                     return $actionBtn;
                 })
                 ->escapeColumns([])
@@ -51,15 +55,18 @@ class TransferInternalController extends Controller
     {
         $user_id = auth()->user()->id;
         if ($request->ajax()) {
+            $dbMaster = DB::connection('mysql2')->getDatabaseName();
+            $dbInap = DB::connection('mysql')->getDatabaseName();
+
             $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
                              `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
                              `internal`.`status_transfer`
-                      FROM `sim_rs_inap`.`transfer_internal` as `internal`
-                      LEFT JOIN `sim_rs_master`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
-                      LEFT JOIN `sim_rs_master`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
-                      LEFT JOIN `sim_rs_master`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
-                      LEFT JOIN `sim_rs_master`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
-                      LEFT JOIN `sim_rs_master`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
+                      FROM `$dbInap`.`transfer_internal` as `internal`
+                      LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
+                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
+                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
+                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
+                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
                       WHERE `internal`.`transfer_reg` = '$request->reg_no' AND `internal`.`diterima_oleh_user_id` = '$user_id'
                       ORDER BY `internal`.`transfer_id` DESC";
 
@@ -69,13 +76,16 @@ class TransferInternalController extends Controller
             return DataTables()
                 ->of($data)
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '';
+                    $actionBtn = '<div class="btn-group" role="group">';
                     if ($row->status_transfer == 1) {
                         $actionBtn = "<button type='button' class='btn btn-success'><i class='far fa-eye'></i> Detail</button>";
                     } else {
 
                         $actionBtn = "<button type='button' class='btn btn-warning btn-confirm-tf'><i class='fas fa-user-check'></i> Konfirmasi Penerimaan</button>";
                     }
+
+                    $actionBtn .= '</div>';
+
                     return $actionBtn;
                 })
                 ->escapeColumns([])
