@@ -5,7 +5,6 @@
   }
 
   function loadCreateTfInternalFunc() {
-    nyaa_dttb_transferinternal_load_all();
     loadSelect2TfInternal();
     $('.btn_transfer_internal').on('click', function() {
       simpanTransferInternal();
@@ -90,39 +89,25 @@
       ],
       rowCallback: function(row, data) {
         let api = this.api();
-        $(row).find('.btn-delete').click(function() {
-          let pk = $(this).data('id'),
-            url = `/ranap/vclaim-manual/delete/` + pk;
-          Swal.fire({
-            title: "Anda Yakin ?",
-            text: "Data tidak dapat dikembalikan setelah di hapus!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Tidak, Batalkan",
-          }).then((result) => {
-            if (result.value) {
-              $.ajax({
-                url: url,
-                type: "POST",
-                data: {
-                  _token: '{{ csrf_token() }}',
-                  _method: 'POST'
-                },
-                error: function(response) {
-                  neko_notify('Error', 'Data gagal dihapus !');
-                },
-                success: function(response) {
-                  if (response.status === "success") {
-                    neko_simpan_success();
-                    api.draw();
-                  } else {
-                    neko_notify('Error', 'Data gagal dihapus !');
-                  }
-                }
-              });
-            }
+        $(row).find('.btn-edit-transfer').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.edit_transfer_internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              nyaa_dttb_transferinternal_edit_load_all();
+              loadCreateTfInternalFunc();
+            },
+            error: function(data) {
+              clear_show_error();
+            },
           });
         });
       }
@@ -213,6 +198,8 @@
             url: "{{route('nyaa_universal.view_injector.perawat.create-serah-terima-transfer-internal')}}",
             success: function(data) {
               inject_view_data(data);
+              nyaa_dttb_transferinternal_load_all();
+              confirmTransferInternal();
               loadCreateTfInternalFunc();
             },
             error: function(data) {
@@ -400,6 +387,42 @@
           };
         }
       }
+    });
+  }
+
+  function confirmTransferInternal() {
+    $('#confirmTransfer').click(function(e) {
+      Swal.fire({
+        title: "Konfirmasi Serah Terima Transfer Internal ?",
+        text: "Transfer yang telah dikonfirmasi tidak bisa dikembalikan !",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Konfirmasi !",
+        cancelButtonText: "Tidak, Batalkan",
+      }).then((result) => {
+        if (result.value) {
+          // $.ajax({
+          //   url: url,
+          //   type: "POST",
+          //   data: {
+          //     _token: '{{ csrf_token() }}',
+          //     _method: 'POST'
+          //   },
+          //   error: function(response) {
+          //     neko_notify('Error', 'Data gagal dihapus !');
+          //   },
+          //   success: function(response) {
+          //     if (response.status === "success") {
+          //       neko_simpan_success();
+          //       api.draw();
+          //     } else {
+          //       neko_notify('Error', 'Data gagal dihapus !');
+          //     }
+          //   }
+          // });
+        }
+      });
     });
   }
 </script>

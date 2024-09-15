@@ -77,7 +77,7 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
 
         // new route 
         Route::get('/get-history-transfer-internal', [TransferInternalController::class, 'getRiwayatTransferInternal'])->name('perawat.get_history_tf_internal');
-        Route::get('/get-history-serah-terima', [TransferInternalController::class, 'getTerimaTerimaPasienData'])->name('perawat.get_serah_terima_data');
+        Route::get('/get-history-serah-terima', [TransferInternalController::class, 'getTerimaPasienData'])->name('perawat.get_serah_terima_data');
     });
 
     /**
