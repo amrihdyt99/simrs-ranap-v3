@@ -67,7 +67,7 @@ Route::get('register/informasi-pasien/generateMRN', [RegisterDataController::cla
 Route::get('register/informasi-pasien/checkMRN', [RegisterDataController::class, 'checkMRN'])->name('register.informasi-pasien.checkMRN');
 //Route::get('/informasi-pasien/patientnew', 'register.pages.informasi-pasien.patientnew')->name('register.pages.informasi-pasien.patientnew');
 //Route::get('/informasi-pasien', [InformasiPasien\RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
-
+Route::get('register/informasi-pasien/{mrn}/barcode', [RegisterDataController::class, 'barcodePasien'])->name('register.informasi-pasien.barcode');
 Route::get('/register/cancelation', [RegistrationCancelationController::class, 'index'])->name('cancelation.index');
 Route::post('/register/cancelation/{reg_no}', [RegistrationCancelationController::class, 'cancelRegistration'])->name('cancel_registration');
 
