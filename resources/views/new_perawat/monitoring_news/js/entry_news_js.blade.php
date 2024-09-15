@@ -63,11 +63,7 @@
         });
     }
 
-    function reloadDatatableNews() {
-        $('#historyNewsTable').DataTable().ajax.reload(null, false); 
+    function updateRadioButton(table, name, value) {
+        table.find(`input[name="${name}"][value="${value}"]`).prop('checked', true);
     }
-
-    setInterval(function() {
-        reloadDatatableNews();
-    }, 30000);
 </script>

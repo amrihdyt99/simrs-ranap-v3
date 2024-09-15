@@ -153,6 +153,31 @@ $registrasi_data =  DB::connection('mysql2')
                         Pengkajian Awal
                     </div>
                 </div>
+
+                @if ($dataPasien->kategori_pasien == 'dewasa')
+                <div class="row">
+                    <div class="left-tab" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
+                        Pengkajian Awal Dewasa
+                    </div>
+                </div>
+                @endif
+
+                @if ($dataPasien->kategori_pasien == 'anak')
+                <div class="row">
+                    <div class="left-tab" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
+                        Pengkajian Awal Anak
+                    </div>
+                </div>
+                @endif
+
+                @if ($dataPasien->kategori_pasien == 'bayi')
+                <div class="row">
+                    <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
+                        Pengkajian Awal (Neonatus)
+                    </div>
+                </div>
+                @endif
+
                 <div class="row">
                     <div class="left-tab" id="tab-nyeri" onclick="clickTab('nyeri')">
                         Skrinning Nyeri
@@ -187,7 +212,7 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
                 @endif
 
-                @if ($age == 'bayi')
+                @if ($dataPasien->kategori_pasien == 'bayi')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-neonatus" onclick="clickTab('resiko-jatuh-neonatus')">
                         Resiko Jatuh Neonatus
@@ -195,7 +220,7 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
                 @endif
 
-                @if ($age == 'dewasa')
+                @if ($dataPasien->kategori_pasien == 'dewasa')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-skala-morse" onclick="clickTab('resiko-jatuh-skala-morse')">
                         Resiko Jatuh Skala Morse
@@ -215,29 +240,7 @@ $registrasi_data =  DB::connection('mysql2')
                     </div>
                 </div>
 
-                @if ($age == 'dewasa')
-                <div class="row">
-                    <div class="left-tab" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
-                        Pengkajian Awal Dewasa
-                    </div>
-                </div>
-                @endif
-
-                @if ($age == 'anak')
-                <div class="row">
-                    <div class="left-tab" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
-                        Pengkajian Awal Anak
-                    </div>
-                </div>
-                @endif
-
-                @if ($age == 'bayi')
-                <div class="row">
-                    <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
-                        Pengkajian Awal (Neonatus)
-                    </div>
-                </div>
-                @endif
+                
 
                 <div class="row">
                     <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">

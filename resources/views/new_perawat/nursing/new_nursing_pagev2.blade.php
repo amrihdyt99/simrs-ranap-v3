@@ -26,6 +26,10 @@
         <a class="nav-link" id="drugs-tab" data-toggle="tab" href="#drugstable" role="tab" aria-controls="drugs"
             aria-selected="false">Drugs History</a>
     </li>
+    {{-- <li class="nav-item">
+        <a class="nav-link" id="drugs-tab" data-toggle="tab" href="#transfusi_darah_nursing" role="tab" aria-controls="drugs"
+            aria-selected="false">Transfusi Darah</a>
+    </li> --}}
 </ul>
 <div class="tab-content" id="myTabContentNursing">
     <div class="tab-pane fade show active" id="baru-all" role="tabpanel" aria-labelledby="baru-all-tab">
@@ -57,6 +61,9 @@
     <div class="tab-pane fade" id="drugstable" role="tabpanel" aria-labelledby="drug-tab">
         @include('new_perawat.nursing.new_prescribe_table')
     </div>
+    {{-- <div class="tab-pane fade" id="transfusi_darah_nursing" role="tabpanel" aria-labelledby="drug-tab">
+        @include('new_perawat.nursing.transfusi_darah.index_transfusi_darah')
+    </div> --}}
 
 </div>
 <script>

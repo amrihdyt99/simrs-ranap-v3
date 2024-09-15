@@ -927,6 +927,14 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
             ->where('m_registrasi.reg_no', "=", $reg_no)
             ->get();
+        
+        // $nurse_transfusi_darah = DB::connection('mysql')
+        // ->table('monitoring_transfusi_darah')
+        // ->where('reg_no', $request->reg_no)
+        // ->where('reg_medrec', $request->medrec)
+        // ->orderBy('waktu_transfusi', 'desc')
+        // ->orderBy('id', 'desc')
+        // ->first();
 
         return view(
             'new_perawat.nursing.index_new_nursing_page',
@@ -945,6 +953,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 "dataFluidBalanceBaru",
                 "obatdaridokter",
                 "datamypatient",
+                // "nurse_transfusi_darah",
             )
         );
     }
