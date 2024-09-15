@@ -168,8 +168,26 @@ $data_persiapan_pasien = [
                 </div>
 
                 <div class="row">
-                    <div class="left-tab" id="tab-resiko-jatuh" onclick="clickTab('resiko-jatuh')">
-                        Resiko Jatuh
+                    <div class="left-tab" id="tab-resiko-jatuh-geriatri" onclick="clickTab('resiko-jatuh-geriatri')">
+                        Resiko Jatuh Geriatri
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-resiko-jatuh-humpty-dumpty" onclick="clickTab('resiko-jatuh-humpty-dumpty')">
+                        Resiko Jatuh Humpty Dumpty
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-resiko-jatuh-neonatus" onclick="clickTab('resiko-jatuh-neonatus')">
+                        Resiko Jatuh Neonatus
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-resiko-jatuh-skala-morse" onclick="clickTab('resiko-jatuh-skala-morse')">
+                        Resiko Jatuh Skala Morse
                     </div>
                 </div>
 
