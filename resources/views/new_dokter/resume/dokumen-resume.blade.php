@@ -515,12 +515,12 @@
 
     <table style="width: 100%;" border="1">
     <tbody>
-        <tr>
-            <td colspan="2" style="text-align: left;">Palembang, {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
+        <tr >
+            <td colspan="2" style="text-align: left; border: none;" >Palembang, {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
             <!-- <td>: {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td> -->
         </tr>
         <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 50%; text-align: center; border: none;">
                 Pasien/Keluarga<br><br>
                 @if(isset($data->ttd_pasien) && $data->ttd_pasien)
                     <img src="{{ $data->ttd_pasien }}" alt="Signature Pasien" style="width: 100px; height: auto;">
@@ -530,7 +530,7 @@
                 @endif
                 <br>(<input type="text" id="input-nama-pasien-keluarga" name="nama_pasien_keluarga" value="{{ $data->nama_pasien_keluarga }}" {{ !empty($data->nama_pasien_keluarga) ? 'style=display:none;' : '' }}> {{$data->nama_pasien_keluarga}} )
             </td>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 50%; text-align: center; border: none;">
                 Dokter Penanggung Jawab Pelayanan (DPJP)<br><br>
                 @if(isset($data->ttd_dokter) && $data->ttd_dokter)
                     <img src="{{ $data->ttd_dokter }}" alt="Signature Dokter" style="width: 100px; height: auto;">
@@ -559,21 +559,21 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var canvasDokter = document.getElementById('signature-pad');
-        var signaturePadDokter = new SignaturePad(canvasDokter);
+        var signaturePadDokter = canvasDokter ? new SignaturePad(canvasDokter) : null;
 
         var canvasPasien = document.getElementById('signature-pad-pasien');
-        var signaturePadPasien = new SignaturePad(canvasPasien);
+        var signaturePadPasien = canvasPasien ? new SignaturePad(canvasPasien) : null;
 
         document.getElementById('signature-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            var dataUrlDokter = signaturePadDokter.toDataURL();
-            var dataUrlPasien = signaturePadPasien.toDataURL();
+            var dataUrlDokter = signaturePadDokter ? signaturePadDokter.toDataURL() : null;
+            var dataUrlPasien = signaturePadPasien ? signaturePadPasien.toDataURL() : null;
             var namaPasienKeluarga = document.getElementById('input-nama-pasien-keluarga').value;
 
-            if (!dataUrlDokter || !dataUrlPasien || !namaPasienKeluarga) {
-                alert('Semua data harus diisi sebelum disimpan.');
-                return;
-            }
+            // if (!dataUrlDokter || !dataUrlPasien || !namaPasienKeluarga) {
+            //     alert('Semua data harus diisi sebelum disimpan.');
+            //     return;
+            // }
 
             document.getElementById('ttd_dokter').value = dataUrlDokter;
             document.getElementById('ttd_pasien').value = dataUrlPasien;
@@ -584,11 +584,16 @@
         });
 
         window.clearSignature = function (padId) {
-            if (padId === 'signature-pad') {
+            if (padId === 'signature-pad' && signaturePadDokter) {
                 signaturePadDokter.clear();
-            } else if (padId === 'signature-pad-pasien') {
+            } else if (padId === 'signature-pad-pasien' && signaturePadPasien) {
                 signaturePadPasien.clear();
             }
+        }
+
+        // Enable canvas for patient signature if doctor's signature exists and patient's signature does not exist
+        if (signaturePadDokter && !signaturePadDokter.isEmpty() && signaturePadPasien && signaturePadPasien.isEmpty()) {
+            canvasPasien.style.display = 'block';
         }
     });
 </script>
