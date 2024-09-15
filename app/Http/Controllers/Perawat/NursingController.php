@@ -21,32 +21,32 @@ class NursingController extends Controller
     public function nursing($reg_no)
     {
         $registrationInap = RegistrationInap::find($reg_no);
-        $transfusi = FluidBalance::with(['fluid_balance_data'=>function($q){
-            $q->whereDate("created_at",Carbon::now()->toDateString());
-        }])->where(['reg_no'=>$reg_no,'intake'=>"transfusi"])->get();
-        $makan = FluidBalance::with(['fluid_balance_data'=>function($q){
-            $q->whereDate("created_at",Carbon::now()->toDateString());
-        }])->where(['reg_no'=>$reg_no,'intake'=>"makan"])->get();
-        $parental = FluidBalance::with(['fluid_balance_data'=>function($q){
-            $q->whereDate("created_at",Carbon::now()->toDateString());
-        }])->where(['reg_no'=>$reg_no,'intake'=>"parental"])->get();
-        $output = FluidBalance::with(['fluid_balance_data'=>function($q){
-            $q->whereDate("created_at",Carbon::now()->toDateString());
-        }])->where(['reg_no'=>$reg_no,'intake'=>"output"])->get();
-        $fluid_balance = FluidBalance::with(['fluid_balance_data'=>function($q){
-            $q->whereDate("created_at",Carbon::now()->toDateString());
-        }])->where(['reg_no'=>$reg_no,'intake'=>"fluid_balance"])->get();
+        $transfusi = FluidBalance::with(['fluid_balance_data' => function ($q) {
+            $q->whereDate("created_at", Carbon::now()->toDateString());
+        }])->where(['reg_no' => $reg_no, 'intake' => "transfusi"])->get();
+        $makan = FluidBalance::with(['fluid_balance_data' => function ($q) {
+            $q->whereDate("created_at", Carbon::now()->toDateString());
+        }])->where(['reg_no' => $reg_no, 'intake' => "makan"])->get();
+        $parental = FluidBalance::with(['fluid_balance_data' => function ($q) {
+            $q->whereDate("created_at", Carbon::now()->toDateString());
+        }])->where(['reg_no' => $reg_no, 'intake' => "parental"])->get();
+        $output = FluidBalance::with(['fluid_balance_data' => function ($q) {
+            $q->whereDate("created_at", Carbon::now()->toDateString());
+        }])->where(['reg_no' => $reg_no, 'intake' => "output"])->get();
+        $fluid_balance = FluidBalance::with(['fluid_balance_data' => function ($q) {
+            $q->whereDate("created_at", Carbon::now()->toDateString());
+        }])->where(['reg_no' => $reg_no, 'intake' => "fluid_balance"])->get();
         //ambil data dari vitalsign kemudian kirim melalui array
-        $vitaldata = VitalSign::where('reg_no',$reg_no)->get();
+        $vitaldata = VitalSign::where('reg_no', $reg_no)->get();
         $gejaladata = Gejala::all();
-        $dokter=Paramedic::all();
-        $obat = PasienPemberianObat::where('reg_no',$reg_no)->get();
-//        $soap = PasienSoaper::where('reg_no',$reg_no)->latest()->first();
+        $dokter = Paramedic::all();
+        $obat = PasienPemberianObat::where('reg_no', $reg_no)->get();
+        //        $soap = PasienSoaper::where('reg_no',$reg_no)->latest()->first();
         //var_dump($vitalsigndata[0]['kategori']);
         /*return view('perawat.pages.patient.nursing',['registrationInap'=>$registrationInap,'vitaldata'=>$vitalsigndata,
             'gejaladata'=>$gejaladata,'dokter'=>$dokter]);*/
         //var_dump($obat);
-        return view('perawat.pages.patient.nursing',compact("registrationInap","transfusi","makan","parental","output","fluid_balance","gejaladata","vitaldata","dokter","obat"));
+        return view('perawat.pages.patient.nursing', compact("registrationInap", "transfusi", "makan", "parental", "output", "fluid_balance", "gejaladata", "vitaldata", "dokter", "obat"));
     }
 
     public function add_fluid_balance(Request $request)
@@ -57,50 +57,49 @@ class NursingController extends Controller
             "jenis" => $request->jenis,
         ]);
 
-        return redirect()->route('perawat.patient.nursing',['reg_no'=>$request->reg_no]);
+        return redirect()->route('perawat.patient.nursing', ['reg_no' => $request->reg_no]);
     }
 
     public function add_fluid_balance_data(Request $request)
     {
         $fluid_balance = FluidBalance::find($request->fluid_balance_id);
-        $fluid_balance_data = $fluid_balance->fluid_balance_data()->whereDate('created_at',Carbon::now()->toDateString())->first();
-        if(!empty($fluid_balance_data)){
+        $fluid_balance_data = $fluid_balance->fluid_balance_data()->whereDate('created_at', Carbon::now()->toDateString())->first();
+        if (!empty($fluid_balance_data)) {
             $fluid_balance_data->data = $request->data;
             $fluid_balance_data->save();
-        }else{
+        } else {
             FluidBalanceData::create([
                 'fluid_balance_id' => $request->fluid_balance_id,
                 'data' => $request->data,
             ]);
         }
-
     }
 
-    public function addVitalSign(Request $request){
-        $dateTimeNow=Carbon::now();
-        $sql="SELECT * FROM vital_sign WHERE id_pasien=? AND tanggal=?";
-        if($request->kategori=="blood pressure"){
-            $params=array(
-                'reg_no'=>$request->reg_no,
-                'kategori'=>$request->kategori,
-                'tanggal_pemberian'=>$dateTimeNow->toDateTimeString(),
-                'data'=>$request->data1."/".$request->data2
+    public function addVitalSign(Request $request)
+    {
+        $dateTimeNow = Carbon::now();
+        $sql = "SELECT * FROM vital_sign WHERE id_pasien=? AND tanggal=?";
+        if ($request->kategori == "blood pressure") {
+            $params = array(
+                'reg_no' => $request->reg_no,
+                'kategori' => $request->kategori,
+                'tanggal_pemberian' => $dateTimeNow->toDateTimeString(),
+                'data' => $request->data1 . "/" . $request->data2
             );
-        }else if($request->kategori=="GCS"){
-            $valuedata="{E:".$request->data_e.",V:".$request->data_v.",M:".$request->data_m."}";
-            $params=array(
-                'reg_no'=>$request->reg_no,
-                'kategori'=>$request->kategori,
-                'tanggal_pemberian'=>$dateTimeNow->toDateTimeString(),
-                'data'=>$valuedata
+        } else if ($request->kategori == "GCS") {
+            $valuedata = "{E:" . $request->data_e . ",V:" . $request->data_v . ",M:" . $request->data_m . "}";
+            $params = array(
+                'reg_no' => $request->reg_no,
+                'kategori' => $request->kategori,
+                'tanggal_pemberian' => $dateTimeNow->toDateTimeString(),
+                'data' => $valuedata
             );
-        }
-        else{
-            $params=array(
-                'reg_no'=>$request->reg_no,
-                'kategori'=>$request->kategori,
-                'tanggal_pemberian'=>$dateTimeNow->toDateTimeString(),
-                'data'=>$request->data
+        } else {
+            $params = array(
+                'reg_no' => $request->reg_no,
+                'kategori' => $request->kategori,
+                'tanggal_pemberian' => $dateTimeNow->toDateTimeString(),
+                'data' => $request->data
             );
         }
 
@@ -166,7 +165,7 @@ class NursingController extends Controller
 
         VitalSign::create($params);
 
-        return redirect()->route('perawat.patient.nursing',['reg_no'=>$request->reg_no]);
+        return redirect()->route('perawat.patient.nursing', ['reg_no' => $request->reg_no]);
         //$data['registrationInap'] = RegistrationInap::find($reg_no);
         //$data['obat'] = PasienPemberianObat::where('reg_no', $reg_no)->get();
         //return view('perawat.pages.patient.nursing', $data);
@@ -192,11 +191,11 @@ class NursingController extends Controller
             'antibiotik' => '',
             'kode_dokter' => '',
             'verifikasi_nurse' => '',
-//            'tgl_pemberian' => '',
-//            'tipe_jam' => ''
+            //            'tgl_pemberian' => '',
+            //            'tipe_jam' => ''
         ]);
-        $valData['nama_dokter']=$request->nama_dokter;
-        $valData['nama_obat']=$request->kode_obat;
+        $valData['nama_dokter'] = $request->nama_dokter;
+        $valData['nama_obat'] = $request->kode_obat;
         // $rentang_jam = $request->rentang_jam??[];
         // $tipe_jam = $request->tipe_jam??[];
         // $i=0;
@@ -214,8 +213,8 @@ class NursingController extends Controller
         //     $valData[$kolom_jam] = $row2;
         //     $j=$j+1;
         // }
-        $data_perjam= $request->data_perjam??[];
-        $form_pemberian_obat_display=[
+        $data_perjam = $request->data_perjam ?? [];
+        $form_pemberian_obat_display = [
             0 => '00',
             1 => '01',
             2 => '02',
@@ -241,33 +240,33 @@ class NursingController extends Controller
             22 => '22',
             23 => '23',
         ];
-        foreach($form_pemberian_obat_display as $data_perjam_key=>$data_perjam_value){
-            $valData['tgl_pemberian_'.$data_perjam_key]=$request->tgl_pemberian;
-            $valData['rentang_jam_'.$data_perjam_key]=null;
-            $valData['tipe_jam_'.$data_perjam_key]=null;
+        foreach ($form_pemberian_obat_display as $data_perjam_key => $data_perjam_value) {
+            $valData['tgl_pemberian_' . $data_perjam_key] = $request->tgl_pemberian;
+            $valData['rentang_jam_' . $data_perjam_key] = null;
+            $valData['tipe_jam_' . $data_perjam_key] = null;
 
-            if (array_key_exists($data_perjam_key, $data_perjam)){
-                if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])){
-                    if ($data_perjam[$data_perjam_key]['rentang_jam']!==null){
-                        if (array_key_exists($data_perjam_key, $data_perjam)){
-                            if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])){
-                                $valData['rentang_jam_'.$data_perjam_key]=$data_perjam[$data_perjam_key]['rentang_jam'];
+            if (array_key_exists($data_perjam_key, $data_perjam)) {
+                if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
+                    if ($data_perjam[$data_perjam_key]['rentang_jam'] !== null) {
+                        if (array_key_exists($data_perjam_key, $data_perjam)) {
+                            if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
+                                $valData['rentang_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['rentang_jam'];
                             }
                         }
-                        if (array_key_exists($data_perjam_key, $data_perjam)){
-                            if (array_key_exists('tipe_jam', $data_perjam[$data_perjam_key])){
-                                $valData['tipe_jam_'.$data_perjam_key]=$data_perjam[$data_perjam_key]['tipe_jam'];
+                        if (array_key_exists($data_perjam_key, $data_perjam)) {
+                            if (array_key_exists('tipe_jam', $data_perjam[$data_perjam_key])) {
+                                $valData['tipe_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['tipe_jam'];
                             }
                         }
                     }
                 }
             }
         }
-        
-        
-        $valData['is_deleted'] = $request->is_deleted??0;
+
+
+        $valData['is_deleted'] = $request->is_deleted ?? 0;
         PasienPemberianObat::create($valData);
-        return redirect()->route('perawat.patient.summary', ['reg_no'=>$request->reg_no]);
+        return redirect()->route('perawat.patient.summary', ['reg_no' => $request->reg_no]);
     }
 
     public function update_drugs($id)
@@ -291,33 +290,34 @@ class NursingController extends Controller
         //$data['physician'] = Paramedic::all();
         // $data['obat'] = Medicine::all();
         //var_dump($data);
-        
-        $data_detail_pemberian_obat=DB::table("rs_pasien_pemberian_obat")
-        ->where('id', $id)
-        ->first();
-        if (!$data_detail_pemberian_obat){
+
+        $data_detail_pemberian_obat = DB::table("rs_pasien_pemberian_obat")
+            ->where('id', $id)
+            ->first();
+        if (!$data_detail_pemberian_obat) {
             return abort(404);
         }
 
-        $obatdaridokter=DB::connection('mysql')
+        $obatdaridokter = DB::connection('mysql')
             ->table('job_orders_dt')
             ->where([
-                ['reg_no','=',$data_detail_pemberian_obat->reg_no],
-                ['jenis_order','LIKE', 'obat%']
+                ['reg_no', '=', $data_detail_pemberian_obat->reg_no],
+                ['jenis_order', 'LIKE', 'obat%']
             ])->get();
 
-        $context=[
-            'data_detail_pemberian_obat'=>$data_detail_pemberian_obat,
-            'obatdaridokter'=>$obatdaridokter,
-            'reg_no'=>$data_detail_pemberian_obat->reg_no,
-            'data_id'=>$data_detail_pemberian_obat->id,
+        $context = [
+            'data_detail_pemberian_obat' => $data_detail_pemberian_obat,
+            'obatdaridokter' => $obatdaridokter,
+            'reg_no' => $data_detail_pemberian_obat->reg_no,
+            'data_id' => $data_detail_pemberian_obat->id,
         ];
         return view('perawat.pages.drugs.edit', $context);
     }
 
-    public function ubah_drugs(Request $request){
+    public function ubah_drugs(Request $request)
+    {
 
-        $id=$request->id;
+        $id = $request->id;
         $reg_no = $request->input('reg_no');
         $valData = $request->validate([
             'dosis' => '',
@@ -328,8 +328,8 @@ class NursingController extends Controller
             'antibiotik' => '',
             'kode_dokter' => '',
             'verifikasi_nurse' => '',
-//            'tgl_pemberian' => '',
-//            'tipe_jam' => ''
+            //            'tgl_pemberian' => '',
+            //            'tipe_jam' => ''
         ]);
         // $rentang_jam = $request->input('rentang_jam');
         // $tipe_jam = $request->input('tipe_jam');
@@ -348,10 +348,10 @@ class NursingController extends Controller
         //     $valData[$kolom_jam] = $row2;
         //     $j=$j+1;
         // }
-            
-        $data_perjam= $request->data_perjam??[];
+
+        $data_perjam = $request->data_perjam ?? [];
         // dd($data_perjam);
-        $form_pemberian_obat_display=[
+        $form_pemberian_obat_display = [
             0 => '00',
             1 => '01',
             2 => '02',
@@ -377,64 +377,74 @@ class NursingController extends Controller
             22 => '22',
             23 => '23',
         ];
-        foreach($form_pemberian_obat_display as $data_perjam_key=>$data_perjam_value){
+        foreach ($form_pemberian_obat_display as $data_perjam_key => $data_perjam_value) {
             // dd($data_perjam_value);
-            $valData['tgl_pemberian_'.$data_perjam_key]=$request->tgl_pemberian;
-            $valData['rentang_jam_'.$data_perjam_key]=null;
-            $valData['tipe_jam_'.$data_perjam_key]=null;
+            $valData['tgl_pemberian_' . $data_perjam_key] = $request->tgl_pemberian;
+            $valData['rentang_jam_' . $data_perjam_key] = null;
+            $valData['tipe_jam_' . $data_perjam_key] = null;
 
-            if (array_key_exists($data_perjam_key, $data_perjam)){
-                if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])){
-                    if ($data_perjam[$data_perjam_key]['rentang_jam']!==null){
-                        if (array_key_exists($data_perjam_key, $data_perjam)){
-                            if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])){
-                                $valData['rentang_jam_'.$data_perjam_key]=$data_perjam[$data_perjam_key]['rentang_jam'];
+            if (array_key_exists($data_perjam_key, $data_perjam)) {
+                if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
+                    if ($data_perjam[$data_perjam_key]['rentang_jam'] !== null) {
+                        if (array_key_exists($data_perjam_key, $data_perjam)) {
+                            if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
+                                $valData['rentang_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['rentang_jam'];
                             }
                         }
-                        if (array_key_exists($data_perjam_key, $data_perjam)){
-                            if (array_key_exists('tipe_jam', $data_perjam[$data_perjam_key])){
-                                $valData['tipe_jam_'.$data_perjam_key]=$data_perjam[$data_perjam_key]['tipe_jam'];
+                        if (array_key_exists($data_perjam_key, $data_perjam)) {
+                            if (array_key_exists('tipe_jam', $data_perjam[$data_perjam_key])) {
+                                $valData['tipe_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['tipe_jam'];
                             }
                         }
                     }
                 }
             }
         }
-        $valData['is_deleted'] = $request->is_deleted??0;
+        $valData['is_deleted'] = $request->is_deleted ?? 0;
         //var_dump($valData);
         DB::table("rs_pasien_pemberian_obat")
-            ->where("id",$id)
+            ->where("id", $id)
             ->update($valData);
         // return redirect()->route('perawat.patient.nursing', $patient);
         return redirect()->route('perawat.patient.summary-v2', [$reg_no])
-        ->with('success_message', 'Data pemberian obat di nursing berhasil di ubah.');
+            ->with('success_message', 'Data pemberian obat di nursing berhasil di ubah.');
     }
 
     // NEW
-    public function data_pengkajian_dewasa(Request $request) {
+    public function data_pengkajian_dewasa(Request $request)
+    {
         try {
             $data = DB::table('rs_ranap.pengkajian_awal_pasien_perawat')
-                        ->leftjoin('rs_ranap.assesment_awal_dokter', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_no', 'no_reg')
-                        ->leftjoin('rs_ranap.skrining_gizi', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_no', 'rs_ranap.skrining_gizi.reg_no')
-                        ->leftjoin('rs_ranap.skrining_nyeri', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_no', 'rs_ranap.skrining_nyeri.reg_no')
-                        ->join('rs_ranap.rs_m_pasien', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_medrec', 'MedicalNo')
-                        ->join('rs_ranap_master.m_registrasi as db2','rs_ranap.pengkajian_awal_pasien_perawat.reg_no','db2.reg_no')
-                        ->join('rs_ranap_master.m_ruangan as db3','reg_ruangan','db3.RoomID')
-                        ->where('rs_ranap.pengkajian_awal_pasien_perawat.reg_no', $request->reg)
-                        ->select([
-                            'pengkajian_awal_pasien_perawat.*',
-                            'assesment_awal_dokter.*',
-                            'skrining_gizi.ketegori',
-                            'PatientName',
-                            'merasakan_nyeri', 'durasi', 'frekuensi', 'pencetus_nyeri', 'kapan_terjadi_nyeri', 'tipe_nyeri', 'ekspresi_wajah', 'bps_wajah', 'bps_ekstremitas_atas', 'bps_compleance_atas',
-                            'MedicalNo',
-                            'GCSex',
-                            'DateOfBirth',
-                            'reg_tgl',
-                            'reg_jam',
-                            'RoomName'
-                        ])
-                        ->first();
+                ->leftjoin('rs_ranap.assesment_awal_dokter', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_no', 'no_reg')
+                ->leftjoin('rs_ranap.skrining_gizi', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_no', 'rs_ranap.skrining_gizi.reg_no')
+                ->leftjoin('rs_ranap.skrining_nyeri', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_no', 'rs_ranap.skrining_nyeri.reg_no')
+                ->join('rs_ranap.rs_m_pasien', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_medrec', 'MedicalNo')
+                ->join('rs_ranap_master.m_registrasi as db2', 'rs_ranap.pengkajian_awal_pasien_perawat.reg_no', 'db2.reg_no')
+                ->join('rs_ranap_master.m_ruangan as db3', 'reg_ruangan', 'db3.RoomID')
+                ->where('rs_ranap.pengkajian_awal_pasien_perawat.reg_no', $request->reg)
+                ->select([
+                    'pengkajian_awal_pasien_perawat.*',
+                    'assesment_awal_dokter.*',
+                    'skrining_gizi.ketegori',
+                    'PatientName',
+                    'merasakan_nyeri',
+                    'durasi',
+                    'frekuensi',
+                    'pencetus_nyeri',
+                    'kapan_terjadi_nyeri',
+                    'tipe_nyeri',
+                    'ekspresi_wajah',
+                    'bps_wajah',
+                    'bps_ekstremitas_atas',
+                    'bps_compleance_atas',
+                    'MedicalNo',
+                    'GCSex',
+                    'DateOfBirth',
+                    'reg_tgl',
+                    'reg_jam',
+                    'RoomName'
+                ])
+                ->first();
 
             return response()->json($data);
         } catch (\Throwable $th) {
@@ -442,7 +452,8 @@ class NursingController extends Controller
         }
     }
 
-    public function data_assesment_dewasa(Request $request) {
+    public function data_assesment_dewasa(Request $request)
+    {
         try {
             $data = DB::table('assesment_dewasa')->where('asdew_reg', $request->reg)->latest()->first();
 
@@ -452,7 +463,8 @@ class NursingController extends Controller
         }
     }
 
-    public function data_transfer_internal(Request $request) {
+    public function data_transfer_internal(Request $request)
+    {
         try {
             $data = DB::connection('mysql')->table('transfer_internal')->where('transfer_reg', $request->reg)->latest()->first();
 
@@ -462,7 +474,8 @@ class NursingController extends Controller
         }
     }
 
-    public function data_pra_tindakan(Request $request) {
+    public function data_pra_tindakan(Request $request)
+    {
         try {
             $data = DB::connection('mysql')->table('keperawatan_pra_tindakan')->where('pra_reg', $request->reg)->latest()->first();
 
@@ -472,7 +485,8 @@ class NursingController extends Controller
         }
     }
 
-    public function data_cathlab(Request $request) {
+    public function data_cathlab(Request $request)
+    {
         try {
             $data = DB::connection('mysql')->table('cathlab')->where('cathlab_reg', $request->reg)->latest()->first();
 
@@ -482,7 +496,8 @@ class NursingController extends Controller
         }
     }
 
-    public function data_assesment_gizi(Request $request) {
+    public function data_assesment_gizi(Request $request)
+    {
         try {
             $data['assesment'] = DB::table('assesment_gizi_dewasa')->where('dewasa_reg', $request->reg)->latest()->first();
             $data['asuhan'] = DB::table('asuhan_gizi_dewasa')->where('asdewasa_reg', $request->reg)->latest()->first();
@@ -493,7 +508,8 @@ class NursingController extends Controller
         }
     }
 
-    public function store_assesment_dewasa(Request $request) {
+    public function store_assesment_dewasa(Request $request)
+    {
         try {
             $data = [
                 'asdew_reg' => $request->asdew_reg,
@@ -543,10 +559,10 @@ class NursingController extends Controller
             ];
 
             $check_ = DB::table('assesment_dewasa')
-                                    ->where('asdew_reg', $request->asdew_reg)
-                                    ->where('asdew_user', auth()->user()->id)
-                                    ->where('created_at', 'like', '%'.date('Y-m-d H').'%')
-                                    ->first();
+                ->where('asdew_reg', $request->asdew_reg)
+                ->where('asdew_user', auth()->user()->id)
+                ->where('created_at', 'like', '%' . date('Y-m-d H') . '%')
+                ->first();
 
             if (isset($check_)) {
                 $store = DB::table('assesment_dewasa')->where('asdew_id', $check_->asdew_id)->update($data);
@@ -555,13 +571,13 @@ class NursingController extends Controller
             }
 
             return response()->json(200);
-
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function store_assesment_gizi(Request $request) {
+    public function store_assesment_gizi(Request $request)
+    {
         try {
 
             $data['assesment'] = [
@@ -610,16 +626,16 @@ class NursingController extends Controller
             ];
 
             $check_assesment = DB::table('assesment_gizi_dewasa')
-                                    ->where('dewasa_reg', $request->dewasa_reg)
-                                    ->where('dewasa_user', auth()->user()->id)
-                                    ->where('created_at', 'like', '%'.date('Y-m-d H').'%')
-                                    ->first();
+                ->where('dewasa_reg', $request->dewasa_reg)
+                ->where('dewasa_user', auth()->user()->id)
+                ->where('created_at', 'like', '%' . date('Y-m-d H') . '%')
+                ->first();
 
             $check_asuhan = DB::table('asuhan_gizi_dewasa')
-                                    ->where('asdewasa_reg', $request->dewasa_reg)
-                                    ->where('asdewasa_user', auth()->user()->id)
-                                    ->where('created_at', 'like', '%'.date('Y-m-d H').'%')
-                                    ->first();
+                ->where('asdewasa_reg', $request->dewasa_reg)
+                ->where('asdewasa_user', auth()->user()->id)
+                ->where('created_at', 'like', '%' . date('Y-m-d H') . '%')
+                ->first();
 
             if (isset($check_assesment)) {
                 $store = DB::table('assesment_gizi_dewasa')->where('dewasa_id', $check_assesment->dewasa_id)->update($data['assesment']);
@@ -639,21 +655,24 @@ class NursingController extends Controller
         }
     }
 
-    public function store_transfer_internal(Request $request) {
+    public function store_transfer_internal(Request $request)
+    {
         try {
-            
-            $validatedData = $request->validate([
-                'transfer_gcs_e' => 'required|integer|min:1|max:4', 
-                'transfer_gcs_m' => 'required|integer|min:1|max:6', 
-                'transfer_gcs_v' => 'required|integer|min:1|max:5', 
-                'transfer_td' => 'required|string|max:10', 
-                'transfer_N' => 'required|integer|min:0|max:200', 
-                'transfer_skala_nyeri' => 'required|integer|min:0|max:10', 
-                'transfer_suhu' => 'required|numeric|min:34|max:42', 
-                'transfer_p' => 'required|integer|min:0|max:150',
-                'transfer_spo2' => 'required|integer|min:0|max:100', 
-            ]);
-            
+
+            // $validatedData = $request->validate([
+            //     'transfer_gcs_e' => 'required|integer|min:1|max:4',
+            //     'transfer_gcs_m' => 'required|integer|min:1|max:6',
+            //     'transfer_gcs_v' => 'required|integer|min:1|max:5',
+            //     'transfer_td' => 'required|string|max:10',
+            //     'transfer_N' => 'required|integer|min:0|max:200',
+            //     'transfer_skala_nyeri' => 'required|integer|min:0|max:10',
+            //     'transfer_suhu' => 'required|numeric|min:34|max:42',
+            //     'transfer_p' => 'required|integer|min:0|max:150',
+            //     'transfer_spo2' => 'required|integer|min:0|max:100',
+            // ]);
+
+            $perawat = DB::connection('mysql2')->table('users')->where('id', $request->perawat_tujuan)->first();
+
             $data = [
                 'medrec' => $request->medrec,
                 // 'kode_transfer_internal' => app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4(),
@@ -685,8 +704,8 @@ class NursingController extends Controller
                 'ditransfer_oleh_user_id' => auth()->user()->id,
                 'ditransfer_oleh_nama' => auth()->user()->name,
                 'ditransfer_waktu' => Carbon::now(),
-                // 'diterima_oleh_user_id' => $request->diterima_oleh_user_id,
-                // 'diterima_oleh_nama' => $request->diterima_oleh_nama,
+                'diterima_oleh_user_id' => $perawat->id,
+                'diterima_oleh_nama' => $perawat->name,
                 // 'diterima_waktu' => $request->diterima_waktu,
                 'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
                 'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
@@ -711,26 +730,25 @@ class NursingController extends Controller
             ];
 
             $check_ = DB::connection('mysql')
-                        ->table('transfer_internal')
-                        ->where('transfer_reg', $request->transfer_reg)
-                        ->first();
+                ->table('transfer_internal')
+                ->where('transfer_reg', $request->transfer_reg)
+                ->first();
 
             if ($check_) {
                 $update = DB::connection('mysql')->table('transfer_internal')
-                ->where('transfer_reg', $request->transfer_reg)
-                ->update($data);
+                    ->where('transfer_reg', $request->transfer_reg)
+                    ->update($data);
             } else {
                 // $data['kode_transfer_internal']=app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
-                $data['kode_transfer_internal']=app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
+                $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
                 $store = DB::connection('mysql')->table('transfer_internal')
-                            ->insert($data);
+                    ->insert($data);
             }
 
             // Save signatures
             $this->saveSignature($request);
 
             return response()->json(200);
-
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -740,7 +758,7 @@ class NursingController extends Controller
     // {
     //     try {
     //         \Log::info('Request received:', $request->all());  // Tambahkan log untuk debugging
-    
+
     //         $data = [
     //             'signature_doctor' => $request->input('signature_doctor'),
     //             'signature_nurse' => $request->input('signature_nurse'),
@@ -748,15 +766,15 @@ class NursingController extends Controller
     //             'signature_nurse_2' => $request->input('signature_nurse_2'),
     //             'updated_at' => Carbon::now(),
     //         ];
-    
+
     //         \Log::info('Data to be saved:', $data);  // Tambahkan log untuk debugging
-    
+
     //         DB::table('transfer_internal')
     //             ->where('transfer_reg', $request->input('reg'))
     //             ->update($data);
-    
+
     //         \Log::info('Data saved successfully');  // Tambahkan log untuk debugging
-    
+
     //         return response()->json(200);
     //     } catch (\Throwable $th) {
     //         \Log::error('Error saving signature:', ['error' => $th->getMessage()]);  // Tambahkan log untuk error
@@ -765,26 +783,27 @@ class NursingController extends Controller
     // }
 
     public function saveSignature(Request $request)
-{
-    $transfer_reg = $request->input('reg'); // Retrieve the 'reg' value from the request
+    {
+        $transfer_reg = $request->input('reg'); // Retrieve the 'reg' value from the request
 
-    $signature_doctor = $request->input('signature_doctor');
-    $signature_nurse = $request->input('signature_nurse');
-    $signature_doctor_2 = $request->input('signature_doctor_2');
-    $signature_nurse_2 = $request->input('signature_nurse_2');
+        $signature_doctor = $request->input('signature_doctor');
+        $signature_nurse = $request->input('signature_nurse');
+        $signature_doctor_2 = $request->input('signature_doctor_2');
+        $signature_nurse_2 = $request->input('signature_nurse_2');
 
-    DB::table('transfer_internal')
-        ->where('transfer_reg', $transfer_reg)
-        ->update([
-            'signature_doctor' => $signature_doctor,
-            'signature_nurse' => $signature_nurse,
-            'signature_doctor_2' => $signature_doctor_2,
-            'signature_nurse_2' => $signature_nurse_2
-        ]);
+        DB::table('transfer_internal')
+            ->where('transfer_reg', $transfer_reg)
+            ->update([
+                'signature_doctor' => $signature_doctor,
+                'signature_nurse' => $signature_nurse,
+                'signature_doctor_2' => $signature_doctor_2,
+                'signature_nurse_2' => $signature_nurse_2
+            ]);
 
-    return response()->json(200);
-}
-    public function store_cathlab(Request $request) {
+        return response()->json(200);
+    }
+    public function store_cathlab(Request $request)
+    {
         try {
             $data = [
                 'cathlab_reg' => $request->reg,
@@ -794,27 +813,27 @@ class NursingController extends Controller
             ];
 
             $check_ = DB::connection('mysql')
-                        ->table('cathlab')
-                        ->where('cathlab_reg', $request->reg)
-                        ->first();
+                ->table('cathlab')
+                ->where('cathlab_reg', $request->reg)
+                ->first();
 
             if (isset($check_)) {
                 $update = DB::connection('mysql')->table('cathlab')
-                            ->where('cathlab_id', $check_->cathlab_id)
-                            ->update($data);
+                    ->where('cathlab_id', $check_->cathlab_id)
+                    ->update($data);
             } else {
                 $store = DB::connection('mysql')->table('cathlab')
-                            ->insert($data);
+                    ->insert($data);
             }
 
             return response()->json(200);
-
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function store_pra_tindakan(Request $request) {
+    public function store_pra_tindakan(Request $request)
+    {
         try {
             $data = [
                 'pra_reg' => $request->reg,
@@ -824,26 +843,22 @@ class NursingController extends Controller
             ];
 
             $check_ = DB::connection('mysql')
-                        ->table('keperawatan_pra_tindakan')
-                        ->where('pra_reg', $request->reg)
-                        ->first();
+                ->table('keperawatan_pra_tindakan')
+                ->where('pra_reg', $request->reg)
+                ->first();
 
             if (isset($check_)) {
                 $update = DB::connection('mysql')->table('keperawatan_pra_tindakan')
-                            ->where('pra_id', $check_->pra_id)
-                            ->update($data);
+                    ->where('pra_id', $check_->pra_id)
+                    ->update($data);
             } else {
                 $store = DB::connection('mysql')->table('keperawatan_pra_tindakan')
-                            ->insert($data);
+                    ->insert($data);
             }
 
             return response()->json(200);
-
         } catch (\Throwable $th) {
             throw $th;
         }
     }
-
 }
-
-

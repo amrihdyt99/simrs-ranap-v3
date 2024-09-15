@@ -462,10 +462,11 @@ class NyaaViewInjectorSupportController extends AaaBaseController
                 ->toJson();
         } elseif ($mode == '2') {
             $dcv = DB::table('transfer_internal_obat_dibawa')
+                ->select('*', 'item_id as nama_obat', 'item_unit_code as satuan_obat')
                 ->where('reg_no',  $request->reg_no)
                 ->where('med_rec',  $request->medrec)
                 ->where('kode_transfer_internal', $request->kode_transfer_internal)
-                ->where('hapus', 0);
+                ->where('hapus', 0)->get();
             return DataTables()
                 ->of($dcv)
                 ->editColumn('aksi_data', function ($query) use ($request, $mode) {
@@ -549,6 +550,26 @@ class NyaaViewInjectorSupportController extends AaaBaseController
                 })
                 ->escapeColumns([])
                 ->toJson();
+        } else if ($mode == '5') {
+            $dcv = DB::table('transfer_internal_diagnostik')
+                ->where('reg_no',  $request->reg_no)
+                ->where('med_rec',  $request->medrec)
+                ->where('kode_transfer_internal', $request->kode_transfer_internal)
+                ->where('hapus', 0);
+            return DataTables()
+                ->of($dcv)
+                ->editColumn('aksi_data', function ($query) use ($request, $mode) {
+                    return
+                        // START
+                        ('<button type="button" class="protecc btn btn-sm btn-danger m-1" onclick="nyaa_dlt(this)" nyaa-mode="hapus" ' .
+                            'nyaa-dtid="' . $query->id . '" ' .
+                            'nyaa-urlhapus="' . route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_internal', [$mode]) . '" ' .
+                            '>Hapus</button>')
+                        // END
+                    ;
+                })
+                ->escapeColumns([])
+                ->toJson();
         }
 
         // tidak ada yang match
@@ -572,6 +593,8 @@ class NyaaViewInjectorSupportController extends AaaBaseController
             $nama_db = 'transfer_internal_status_pasien';
         } elseif ($mode == '4') {
             $nama_db = 'transfer_internal_kejadian';
+        } elseif ($mode == '5') {
+            $nama_db = 'transfer_internal_diagnostik';
         } else {
             return response()->json(["error_pesan" => 'Terjadi kesalahan! Data Mode tidak ditemukan'], 422);
         }
@@ -584,34 +607,45 @@ class NyaaViewInjectorSupportController extends AaaBaseController
             ];
         } elseif ($request->dt_mode === 'hapus') {
             // hapus data
-            $dtx_a_add = [
-                'reg_no' => $request->reg_no,
-                'med_rec' => $request->med_rec,
-                'kode_transfer_internal' => $request->kode_transfer_internal,
+            if ($mode == '5') {
+                $dt_dlt = DB::table($nama_db)
+                    ->where('id', $request->dtid)->update([
+                        // log
+                        'hapus' => 1,
+                        'hapus_at' => $this->universal_function()->carbon_generate_datetime_now(),
+                        'deleted_by_username' => auth()->user()->username,
+                    ]);
+            } else {
+                $dtx_a_add = [
+                    'reg_no' => $request->reg_no,
+                    'med_rec' => $request->med_rec,
+                    'kode_transfer_internal' => $request->kode_transfer_internal,
 
-                // log
-                'aktif' => 1,
-                'aktif_at' => $this->universal_function()->carbon_generate_datetime_now(),
-                'aktif_by_user_name' => Auth::user()->name,
-
-                'created_at' => $this->universal_function()->carbon_generate_datetime_now(),
-                'created_by_user_name' => Auth::user()->name,
-
-                'updated_at' => $this->universal_function()->carbon_generate_datetime_now(),
-                'updated_by_user_name' => Auth::user()->name,
-            ];
-
-            $dt_dlt = DB::table($nama_db)
-                ->where('id', $request->dtid)->update([
                     // log
-                    'aktif' => 0,
+                    'aktif' => 1,
                     'aktif_at' => $this->universal_function()->carbon_generate_datetime_now(),
-                    'aktif_by_user_name' => auth()->user()->name,
+                    'aktif_by_user_name' => Auth::user()->name,
 
-                    'hapus' => 1,
-                    'hapus_at' => $this->universal_function()->carbon_generate_datetime_now(),
-                    'hapus_by_user_name' => auth()->user()->name,
-                ]);
+                    'created_at' => $this->universal_function()->carbon_generate_datetime_now(),
+                    'created_by_user_name' => Auth::user()->name,
+
+                    'updated_at' => $this->universal_function()->carbon_generate_datetime_now(),
+                    'updated_by_user_name' => Auth::user()->name,
+                ];
+
+                $dt_dlt = DB::table($nama_db)
+                    ->where('id', $request->dtid)->update([
+                        // log
+                        'aktif' => 0,
+                        'aktif_at' => $this->universal_function()->carbon_generate_datetime_now(),
+                        'aktif_by_user_name' => auth()->user()->name,
+
+                        'hapus' => 1,
+                        'hapus_at' => $this->universal_function()->carbon_generate_datetime_now(),
+                        'hapus_by_user_name' => auth()->user()->name,
+                    ]);
+            }
+
             return response()->json(["sukses_pesan" => 'Sukses! Data berhasil dihapus.'], 200);
         } else {
             return response()->json(["error_pesan" => 'Terjadi kesalahan! Data Mode tidak ditemukan'], 422);
@@ -662,10 +696,23 @@ class NyaaViewInjectorSupportController extends AaaBaseController
                 $dtx_a_add['waktu'] = $request->waktu;
                 $dtx_a_add['kejadian'] = $request->kejadian;
                 $dtx_a_add['tindakan'] = $request->tindakan;
+            } elseif ($mode == '5') {
+                unset($dtx_a_add['aktif']);
+                unset($dtx_a_add['aktif_at']);
+                unset($dtx_a_add['aktif_by_user_name']);
+                unset($dtx_a_add['created_by_user_name']);
+                unset($dtx_a_add['updated_by_user_name']);
+                $dtx_a_add['created_by_username'] = Auth::user()->username;
+                $dtx_a_add['lab'] = $request->transfer_terima_lab;
+                $dtx_a_add['lab'] = $request->transfer_terima_lab;
+                $dtx_a_add['xray'] = $request->transfer_terima_xray;
+                $dtx_a_add['mri'] = $request->transfer_terima_mri;
+                $dtx_a_add['ct_scan'] = $request->transfer_terima_ct_scan;
+                $dtx_a_add['ekg'] = $request->transfer_terima_ekg;
+                $dtx_a_add['echo'] = $request->transfer_terima_echo;
             } else {
                 return response()->json(["error_pesan" => 'Terjadi kesalahan! Data Mode tidak ditemukan'], 422);
             }
-
             DB::table($nama_db)->insert($dtx_a_add);
         }
         return response()->json(["sukses_pesan" => 'Sukses! Data berhasil ' . $cnf['text1'] . '.'], 200);

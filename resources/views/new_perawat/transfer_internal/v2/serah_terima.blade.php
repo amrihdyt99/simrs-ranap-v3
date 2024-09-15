@@ -29,7 +29,7 @@
                 <div class="form-group">
                     <label>V</label>
                     <input type="text" class="form-control" name="transfer_terima_gcs_v" value="{{$transfer_internal->transfer_terima_gcs_v}}">
-            </div>
+                </div>
             </div>
         </div>
         <div class="row">
