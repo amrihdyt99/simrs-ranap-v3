@@ -24,11 +24,11 @@
         </div>
         <div class="form-group">
             <label for="hpht">HPHT (Hari Pertama Haid Terakhir):</label>
-            <input type="text" class="form-control" id="hpht" name="hpht" value="{{$riwayat_menstruasi->hpht}}">
+            <input type="date" class="form-control" id="hpht" name="hpht" value="{{$riwayat_menstruasi->hpht}}">
         </div>
         <div class="form-group">
             <label for="tp">TP (Taksiran Partus):</label>
-            <input type="text" class="form-control" id="tp" name="tp" value="{{$riwayat_menstruasi->tp}}">
+            <input type="date" class="form-control" id="tp" name="tp" value="{{$riwayat_menstruasi->tp}}">
         </div>
         <div class="form-group">
             <label for="gangguan_haid">Gangguan Haid:</label>

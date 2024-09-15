@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToRsEdukasiPasienTable extends Migration
+class FinAddColumnTransferInternalDiagnostikTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddColumnsToRsEdukasiPasienTable extends Migration
      */
     public function up()
     {
-        Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
-            // $table->unsignedBigInteger('user_id');
+        Schema::connection('mysql')->table('transfer_internal_diagnostik', function (Blueprint $table) {
+            $table->tinyInteger('hapus')->default(0)->after('echo');
+            $table->timestamp('hapus_at')->nullable()->after('hapus');
         });
     }
 
@@ -25,8 +26,6 @@ class AddColumnsToRsEdukasiPasienTable extends Migration
      */
     public function down()
     {
-        Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

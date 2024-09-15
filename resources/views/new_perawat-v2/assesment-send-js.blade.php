@@ -219,7 +219,7 @@
                 "&regno=" + regno +
                 "&user_id=" + userId +
                 "&shift=" + userShift,
-                success: function(data) {
+            success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
             },
@@ -1079,6 +1079,7 @@
     function simpanPersetujuanTindakanMedis() {
         neko_proses();
         var formData = new FormData($('#PersetujuanTindakanMedis')[0]);
+
         formData.append('reg_no', regno);
         formData.append('medrec', medrec);
         formData.append('ttd_penerima_setuju', signaturePadPenerimaSetuju.toDataURL());

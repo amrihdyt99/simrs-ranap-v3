@@ -6,6 +6,7 @@ use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
+use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -191,6 +192,8 @@ Route::post('get.pesan.radiologin', [\App\Http\Controllers\Radiologi\RadiologiCo
 Route::post('upload.radiologi', [\App\Http\Controllers\Radiologi\RadiologiController::class, 'uploadFile'])->name('upload.radiologi');
 Route::get('getBussinessPartner', [RegisterController::class, 'getBussinessPartner'])->name('get.bussinesspartner');
 Route::post('getDokumen', [RegisterController::class, 'getNoDocument'])->name('get.document');
+Route::get('transfer-internal/getRoom', [TransferInternalController::class, 'getUnitRoom'])->name('transfer-internal.getRoom');
+Route::get('transfer-internal/getPerawat', [TransferInternalController::class, 'getPerawat'])->name('transfer-internal.getPerawat');
 
 Route::get('getProvinsi', [RegisterController::class, 'getProvinsi'])->name('get.provinsi');
 Route::post('getRegency', [RegisterController::class, 'getRegency'])->name('get.regency');
