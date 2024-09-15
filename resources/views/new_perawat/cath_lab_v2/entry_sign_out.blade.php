@@ -8,7 +8,7 @@
         <li>
             <div class="form-group">
                 <label>Tindakan yang dilakukan</label>
-                <input type="text" class="form-control" name="cath_signout_tindakan" value="{{$sign_out->cath_signout_tindakan}}">
+                <textarea class="form-control" name="cath_signout_tindakan">{{$sign_out->cath_signout_tindakan}}</textarea>
             </div>
         </li>
         <li>
