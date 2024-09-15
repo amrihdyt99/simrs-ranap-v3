@@ -228,6 +228,7 @@
                     };
                 };
                 neko_d_custom_success('Berhasil.');
+                $('.protecc').removeAttr('disabled');
                 $('#ModalBase').modal('hide');
                 return null;
             },
@@ -585,7 +586,8 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.nurse_transfer_internal')}}",
                     success: function(data) {
                         inject_view_data(data);
-                        init_TransferInternal();
+                        loadAllTfInteralFunc();
+                        viewSerahTerima();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1274,6 +1276,7 @@
             },
             url: "{{route('get.nursing.note')}}",
             success: function(data) {
+                console.log("Data received:", data);
                 var dataJSON = data.data;
                 var bodyTable = document.getElementById('body-tindakan-perawat')
                 bodyTable.innerHTML = '';
@@ -1289,6 +1292,21 @@
                     col2.innerHTML = dataJSON[i]['jam_note']
                     col3.innerHTML = dataJSON[i]['catatan']
                     col4.innerHTML = dataJSON[i]['id_nurse']
+                    if (dataJSON[i]['signature']) {
+                    console.log("Signature Base64:", dataJSON[i]['signature']);
+                    col4.innerHTML = `
+                        <div style="text-align: center;">
+                            <img src="${dataJSON[i]['signature']}" alt="Signature" style="width: 400px; height: 200px;"/>
+                            <p>${dataJSON[i]['id_nurse']}</p>
+                        </div>
+                    `; 
+                } else {
+                    col4.innerHTML = `
+                        <div style="text-align: center;">
+                            <p>${dataJSON[i]['id_nurse']}</p>
+                        </div>
+                    `;
+                }
                     tr.appendChild(col1)
                     tr.appendChild(col2)
                     tr.appendChild(col3)
@@ -1298,6 +1316,7 @@
                 }
             },
             error: function(data) {
+                console.error("Error fetching nursing notes:", data);
                 neko_refresh();
             },
         });
@@ -1461,6 +1480,7 @@
         nyaa_transferinternal_load_datatable('#dttb_transfer_internal2');
         nyaa_transferinternal_load_datatable('#dttb_transfer_internal3');
         nyaa_transferinternal_load_datatable('#dttb_transfer_internal4');
+        nyaa_transferinternal_load_datatable('#dttb_transfer_internal5');
     }
 
     function nyaa_transferinternal_load_datatable(id_dttb) {
@@ -2008,3 +2028,4 @@
 
 
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
+@include('new_perawat.transfer_internal.js.index_js')

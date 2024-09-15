@@ -22,6 +22,13 @@ class RegistrationCancelationController extends Controller
                     $btn = '<a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="cancelRegistration(\'' . $row->reg_no . '\')">Batalkan</a>';
                     return $btn;
                 })
+                ->addColumn('asal', function ($row) {
+                    $asal = explode('/', $row->reg_no);
+                    $asal_reg = $asal[1];
+                    if ($asal_reg == 'RJ') return 'Rawat Jalan';
+                    else if ($asal_reg == 'RI') return 'Rawat Inap';
+                    else return 'IGD';
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         }

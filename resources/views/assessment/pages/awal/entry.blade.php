@@ -118,13 +118,13 @@
                 <div class="form-group row ">
                     <label for="inputPassword3" class="col-sm-2 col-form-label">HPHT</label>
                     <div class="input-group col-sm-10">
-                        <input id="hpht" type="text" class="form-control" name="asper_hpht">
+                        <input id="hpht" type="date" class="form-control" name="asper_hpht">
                     </div>
                 </div>
                 <div class="form-group row ">
                     <label for="inputPassword3" class="col-sm-2 col-form-label">TP</label>
                     <div class="input-group col-sm-10">
-                        <input id="tp" type="text" class="form-control" name="asper_tp">
+                        <input id="tp" type="date" class="form-control" name="asper_tp">
                     </div>
                 </div>
                 <fieldset class="form-group">
