@@ -1,250 +1,32 @@
-
-    <input type="hidden" name="pdischarge_reg" value="{{$reg}}">
-    @if (auth()->user()->level_user != 'dokter')
-    <div class="row">
-        <div class="col">
-                <div class="float-right">
-                    <label for="">Petugas Discharge: </label>
-                    <input type="text" name="pdischarge_dokter_nama" class="terapis" placeholder="Nama Petugas Discharge">
-                </div>
-            </div>
+<input type="hidden" name="pdischarge_reg" value="{{$reg}}">
+@if (auth()->user()->level_user != 'dokter')
+<div class="row">
+    <div class="col">
+        <div class="float-right">
+            <label for="">Petugas Discharge: </label>
+            <input type="text" name="pdischarge_dokter_nama" class="terapis" placeholder="Nama Petugas Discharge">
         </div>
-    @endif
-    @php
-        // $cek = DB::connection('mysql')->table('rs_m_resume_pasien')->where('reg_no',$reg);
-        $cek = array();
-        $cek2 = DB::connection('mysql')->table('rs_pasien_discharge')->where('pdischarge_reg',$reg);
-   
-    @endphp
-    @if (count($cek)==0 && $cek2 ->count() == 0)
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-lg-8 pr-0">
-                        <div class="form-group">
-                            <label for="">Tanggal Discharge</label>
-                            <input type="date" name="pdischarge_tgl" id="pdischarge_tgl" value="{{date('Y-m-d')}}" class="form-control no-radius">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 pl-0">
-                        <div class="form-group">
-                            <label for="">Jam Discharge</label>
-                            <input type="time" name="pdischarge_jam" id="pdischarge_jam" value="{{date('H:i:s')}}" class="form-control no-radius">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-lg-8 pr-0">
-                        <div class="form-group">
-                            <label for="">Tgl Kematian</label>
-                            <input type="date" name="pdischarge_tgl_mati" id="pdischarge_tgl_mati" class="form-control no-radius">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 pl-0">
-                        <div class="form-group">
-                            <label for="">Jam Kematian</label>
-                            <input type="time" name="pdischarge_jam_mati" id="pdischarge_jam_mati" class="form-control no-radius">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <div class="row">
-            <div class="col-lg-6">
-                <h5 class="text-danger">
-                    * Discharge condition only apply for Inpatient or Emergency Registration
-                </h5>
-                <fieldset class="form-group">
-                    <label class="label-admisi">Alasan Pulang</label>
-                    <div class="row">
-                        <div class="col">
-                            <select class="form-control" id="pdischarge_alasan" name="pdischarge_alasan">
-                                <option value="Sembuh">Sembuh</option>
-                                <option value="Dapat Berobat Jalan">Dapat Berobat Jalan</option>
-                                <option value="Pulang Sendiri">Pulang Atas Permintaan Sendiri</option>
-                                <option value="Pindah Ke RS Lain">Pindah Ke RS Lain</option>
-                                <option value="Meninggal">Meninggal</option>
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group">
-                    <label class="label-admisi">Kondisi Pulang</label>
-                    <div class="row">
-                        <div class="col">
-                            <select class="form-control" id="pdischarge_condition" name="pdischarge_condition">
-                            <option value="mandiri">Mandiri</option>
-                                <option value="cacat">Cacat</option>
-                                <option value="dengan alat bantu">Tidak Mandiri Dengan Alat Bantu</option>
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group">
-                    <label class="label-admisi">Terapi Yang Sudah Diberikan</label>
-                    <div class="row">
-                        <div class="col">
-                        <textarea class="form-control" name="pdischarge_terapi" id="pdischarge_terapi" rows="4"></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset class="form-group">
-                    <label class="label-admisi">Obat yang dibawa pulang</label>
-                    <div class="row">
-                        <div class="col">
-                        <textarea class="form-control" name="pdischarge_obat" id="pdischarge_obat" rows="4"></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-
-            </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label for="">Catatan Medis</label>
-                    <textarea name="pdischarge_med_notes" id="pdischarge_med_notes" class="form-control" rows="4"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="">Catatan</label>
-                    <textarea name="pdischarge_notes" id="pdischarge_notes" class="form-control" rows="4"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="">Tanggal Terapi</label>
-                    <input type="date" name="tanggal_tindakan" id="tanggal_tindakan" class="form-control" >
-                </div>
-            </div>
-        </div>
-        <hr>
-        <div class="row">
-            <div class="col-lg-6">
-
-                <fieldset class="form-group">
-                    <label class="label-admisi">Nama Tindakan/Operasi</label>
-                    <div class="row">
-                        <div class="col">
-                            <textarea class="form-control" name="pdischarge_tindakan_operasi" rows="4" id="pdischarge_tindakan_operasi"></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group">
-                    <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
-                    <div class="row">
-                        <div class="col">
-                            <textarea class="form-control" name="pdischarge_penyebab_luar" rows="4" id="pdischarge_penyebab_luar"></textarea>
-                        </div>
-                    </div>
-                </fieldset>
-
-            </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label for="">Kode ICD-9-CM</label>
-                    <textarea name="pdischarge_icd_9" id="pdischarge_icd_9" class="form-control" rows="4"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="">Kode ICD-10</label>
-                    <textarea name="pdischarge_icd_10" id="pdischarge_icd_10" class="form-control" rows="4"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">RESUME PASIEN</h3>
-                </div>
-                <div class="card-body">
-                    <h4>Kontrol di RSUD Siti Fatimah</h4>
-            
-                    <div class="form-group">
-                        <label class="control-label">Klinik</label>
-                    <input type="text" name="klinik" id="klinik"placeholder=""class="form-control"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label">Dokter</label>
-                        <input type="text" name="dokter" id="dokter" placeholder="" class="form-control"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label">Tanggal Kontrol</label>
-                        <input type="date" name="tanggal_kontrol_rsud" id="tanggal_kontrol_rsud" class="form-control"/>
-                    </div>
-                    
-                    <h4>Rujukan RS Lain</h4>
-                    
-                    <div class="form-group">
-                        <label class="control-label">Tanggal</label>
-                        <input type="date" name="tanggal_rs_lain" id="tanggal_rs_lain" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Ke RS</label>
-                        <input type="text" name="nama_rs_lain" id="nama_rs_lain" placeholder="" class="form-control" />
-                    </div>
-                    
-                    
-                    <h4>Rujuk Balik</h4>
-                    
-                    <div class="form-group">
-                        <label class="control-label">Tanggal</label>
-                        <input type="date" name="tanggal_rujuk_balik" id="tanggal_rujuk_balik" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Ke RS</label>
-                        <input type="text" name="nama_rs_rujuk_balik" id="nama_rs_rujuk_balik" placeholder="" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Puskesmas</label>
-                        <input type="text" name="puskesmas" id="puskesmas" placeholder="" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Dokter Praktek Pribadi</label>
-                        <input type="text" name="dokter_pribadi" id="dokter_pribadi" placeholder="" class="form-control" />
-                    </div>
-                    
-                    <h4>Edukasi Pasien</h4>
-                    
-                    <div class="form-group">
-                        <label class="control-label">Penyakit</label>
-                        <input type="text" name="edukasi_penyakit" id="edukasi_penyakit" placeholder="" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Diet</label>
-                        <input type="text" name="edukasi_diet" id="edukasi_diet" placeholder="" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Alat bantu bila ada</label>
-                        <input type="text" name="edukasi_alat_bantu" id="edukasi_alat_bantu" placeholder="" class="form-control" />
-                    </div>
-                </div>        
-            </div>
-        </div>
-        @include('new_dokter.modal.meninggal')
-        <button type="button" class="btn btn-success float-right mt-2" id="btn-save-discharge" onclick="adddischarge()"><i class="fas fa-save"></i> Simpan</button>
-
-    @else
-    @php
-        //$resume = $cek->first();
-        $discharge = $cek2->first();
-    @endphp
+    </div>
+</div>
+@endif
+@php
+    $cek = DB::connection('mysql')->table('rs_pasien_resume')->where('reg_no',$reg)->get();
+    $cek2 = DB::connection('mysql')->table('rs_pasien_discharge')->where('pdischarge_reg',$reg)->get();
+@endphp
+@if (count($cek)==0 && $cek2 ->count() == 0)
     <div class="row">
         <div class="col-lg-6">
             <div class="row">
                 <div class="col-lg-8 pr-0">
                     <div class="form-group">
                         <label for="">Tanggal Discharge</label>
-                        <input type="date"  value="{{$discharge->pdischarge_tgl ?? ''}}" readonly class="form-control no-radius">
+                        <input type="date" name="pdischarge_tgl" id="pdischarge_tgl" value="{{date('Y-m-d')}}" class="form-control no-radius">
                     </div>
                 </div>
                 <div class="col-lg-4 pl-0">
                     <div class="form-group">
                         <label for="">Jam Discharge</label>
-                        <input type="time" value="{{$discharge->pdischarge_jam ?? ''}}" readonly  class="form-control no-radius">
+                        <input type="time" name="pdischarge_jam" id="pdischarge_jam" value="{{date('H:i:s')}}" class="form-control no-radius">
                     </div>
                 </div>
             </div>
@@ -254,13 +36,13 @@
                 <div class="col-lg-8 pr-0">
                     <div class="form-group">
                         <label for="">Tgl Kematian</label>
-                        <input type="date" value="{{$discharge->pdischarge_tgl_mati ?? ''}}" readonly class="form-control no-radius">
+                        <input type="date" name="pdischarge_tgl_mati" id="pdischarge_tgl_mati" class="form-control no-radius">
                     </div>
                 </div>
                 <div class="col-lg-4 pl-0">
                     <div class="form-group">
                         <label for="">Jam Kematian</label>
-                        <input type="time" value="{{$discharge->pdischarge_jam_mati ?? ''}}" readonly class="form-control no-radius">
+                        <input type="time" name="pdischarge_jam_mati" id="pdischarge_jam_mati" class="form-control no-radius">
                     </div>
                 </div>
             </div>
@@ -276,12 +58,155 @@
                 <label class="label-admisi">Alasan Pulang</label>
                 <div class="row">
                     <div class="col">
-                        <input type="text" class="form-control" readonly value="{{$discharge->pdischarge_method ?? ''}}">
+                        <select class="form-control" id="pdischarge_alasan" name="pdischarge_alasan">
+                            <option value="Sembuh">Sembuh</option>
+                            <option value="Dapat Berobat Jalan">Dapat Berobat Jalan</option>
+                            <option value="Pulang Sendiri">Pulang Atas Permintaan Sendiri</option>
+                            <option value="Pindah Ke RS Lain">Pindah Ke RS Lain</option>
+                            <option value="Meninggal">Meninggal</option>
+                        </select>
                     </div>
                 </div>
             </fieldset>
 
-            @if ($discharge->pdischarge_method ?? '' == 'Meninggal')
+            <fieldset class="form-group">
+                <label class="label-admisi">Kondisi Pulang</label>
+                <div class="row">
+                    <div class="col">
+                        <select class="form-control" id="pdischarge_condition" name="pdischarge_condition">
+                            <option value="mandiri">Mandiri</option>
+                            <option value="cacat">Cacat</option>
+                            <option value="dengan alat bantu">Tidak Mandiri Dengan Alat Bantu</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <label class="label-admisi">Terapi Yang Sudah Diberikan</label>
+                <div class="row">
+                    <div class="col">
+                        <textarea class="form-control" name="pdischarge_terapi" id="pdischarge_terapi" rows="4"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label class="label-admisi">Obat yang dibawa pulang</label>
+                <div class="row">
+                    <div class="col">
+                        <textarea class="form-control" name="pdischarge_obat" id="pdischarge_obat" rows="4"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="">Catatan Medis</label>
+                <textarea name="pdischarge_med_notes" id="pdischarge_med_notes" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="">Catatan</label>
+                <textarea name="pdischarge_notes" id="pdischarge_notes" class="form-control" rows="4"></textarea>
+            </div>
+            <!-- <div class="form-group">
+                <label for="">Tanggal Terapi</label>
+                <input type="date" name="tanggal_tindakan" id="tanggal_tindakan" class="form-control">
+            </div> -->
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-6">
+            <fieldset class="form-group">
+                <label class="label-admisi">Nama Tindakan/Operasi</label>
+                <div class="row">
+                    <div class="col">
+                        <textarea class="form-control" name="pdischarge_tindakan_operasi" rows="4" id="pdischarge_tindakan_operasi"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
+                <div class="row">
+                    <div class="col">
+                        <textarea class="form-control" name="pdischarge_penyebab_luar" rows="4" id="pdischarge_penyebab_luar"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="">Kode ICD-9-CM</label>
+                <textarea name="pdischarge_icd_9" id="pdischarge_icd_9" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="">Kode ICD-10</label>
+                <textarea name="pdischarge_icd_10" id="pdischarge_icd_10" class="form-control" rows="4"></textarea>
+            </div>
+        </div>
+    </div>
+
+    @include('new_dokter.modal.meninggal')
+    <button type="button" class="btn btn-success float-right mt-2" id="btn-save-discharge" onclick="adddischarge()"><i class="fas fa-save"></i> Simpan</button>
+
+@else
+    @php
+        $resume = $cek->first();
+        $discharge = $cek2->first();
+    
+    @endphp
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-8 pr-0">
+                    <div class="form-group">
+                        <label for="">Tanggal Discharge</label>
+                        <input type="date" name="pdischarge_tgl" id="pdischarge_tgl" value="{{ $discharge ? $discharge->pdischarge_tgl : date('Y-m-d') }}" class="form-control no-radius" {{ $discharge && $discharge->pdischarge_tgl ? 'readonly' : '' }}>
+                    </div>
+                </div>
+                <div class="col-lg-4 pl-0">
+                    <div class="form-group">
+                        <label for="">Jam Discharge</label>
+                        <input type="time" name="pdischarge_jam" id="pdischarge_jam" value="{{ $discharge ? $discharge->pdischarge_jam : date('H:i:s') }}" class="form-control no-radius" {{ $discharge && $discharge->pdischarge_jam ? 'readonly' : '' }}>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-8 pr-0">
+                    <div class="form-group">
+                        <label for="">Tgl Kematian</label>
+                        <input type="date" name="pdischarge_tgl_mati" id="pdischarge_tgl_mati" value="{{ $discharge ? $discharge->pdischarge_tgl_mati : '' }}" class="form-control no-radius" {{ $discharge && $discharge->pdischarge_tgl_mati ? 'readonly' : '' }}>
+                    </div>
+                </div>
+                <div class="col-lg-4 pl-0">
+                    <div class="form-group">
+                        <label for="">Jam Kematian</label>
+                        <input type="time" name="pdischarge_jam_mati" id="pdischarge_jam_mati" value="{{ $discharge ? $discharge->pdischarge_jam_mati : '' }}" class="form-control no-radius" {{ $discharge && $discharge->pdischarge_jam_mati ? 'readonly' : '' }}>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-6">
+            <h5 class="text-danger">
+                * Discharge condition only apply for Inpatient or Emergency Registration
+            </h5>
+            <fieldset class="form-group">
+                <label class="label-admisi">Alasan Pulang</label>
+                <div class="row">
+                <div class="col">
+                        <input type="text" class="form-control" name="pdischarge_alasan" id="pdischarge_alasan" readonly value="{{ implode(', ', json_decode($resume->alasan_pulang ?? '[]')) }}">
+                    </div>
+                </div>
+            </fieldset>
+
+            @if (($discharge->pdischarge_method ?? '') == 'Meninggal')
             <div class="form-group">
                 <label for="">Kelompok penyebab kematian</label>
                 <select class="form-control" id="kelompok_penyebab_kematian">
@@ -310,7 +235,7 @@
                 <label class="label-admisi">Kondisi Pulang</label>
                 <div class="row">
                     <div class="col">
-                        <input type="text" value="{{$discharge->pdischarge_condition ?? ''}}" readonly class="form-control">
+                        <input type="text" class="form-control" name="pdischarge_condition" id="pdischarge_condition" readonly value="{{ implode(', ', json_decode($resume->kondisi_pulang ?? '[]')) }}">
                     </div>
                 </div>
             </fieldset>
@@ -319,7 +244,21 @@
                 <label class="label-admisi">Terapi Yang Sudah Diberikan</label>
                 <div class="row">
                     <div class="col">
-                       <textarea class="form-control" readonly rows="4">{{$resume->terapi_yang_diberikan ?? ''}}</textarea>
+                        @php
+                            $terapi = json_decode($resume->terapi ?? '[]', true);
+                        @endphp
+                        <textarea class="form-control" name="pdischarge_terapi" id="pdischarge_terapi" rows="4" {{ isset($resume->terapi) ? 'readonly' : '' }}>
+@if(is_array($terapi) && count($terapi) > 0)
+@foreach ($terapi as $item)
+Nama: {{ $item['nama'] ?? '' }} Dosis: {{ $item['dosis'] ?? '' }} Hari: {{ $item['hari'] ?? '' }} Satuan: {{ $item['satuan'] ?? '' }}
+Spesial Instruksi: {{ $item['spesial_instruksi'] ?? '' }}
+Durasi Hari: {{ $item['durasi_hari'] ?? '' }}
+@if (!$loop->last)
+
+@endif
+@endforeach
+@endif
+                        </textarea>
                     </div>
                 </div>
             </fieldset>
@@ -327,7 +266,9 @@
                 <label class="label-admisi">Obat yang dibawa pulang</label>
                 <div class="row">
                     <div class="col">
-                       <textarea class="form-control" readonly rows="4">{{$resume->obat_dibawa ?? ''}}</textarea>
+                        <textarea class="form-control" name="pdischarge_obat" id="pdischarge_obat" rows="4" {{ isset($resume->obat_dibawa) ? 'readonly' : '' }}>
+                            {{ $resume->obat_dibawa ?? '' }}
+                        </textarea>
                     </div>
                 </div>
             </fieldset>
@@ -335,128 +276,99 @@
         </div>
         <div class="col-lg-6">
             <div class="form-group">
-                <label for="">Catatan Medis</label>
-                <textarea readonly class="form-control" rows="4">{{$discharge->pdischarge_med_notes ?? ''}}</textarea>
+            <label for="">Catatan Medis</label>
+                <textarea name="pdischarge_med_notes" id="pdischarge_med_notes" class="form-control" rows="4" {{ isset($discharge->pdischarge_med_notes) ? 'readonly' : '' }}>
+{{ $discharge->pdischarge_med_notes ?? '' }}
+                </textarea>
             </div>
             <div class="form-group">
                 <label for="">Catatan</label>
-                <textarea readonly class="form-control" rows="4">{{$discharge->pdischarge_notes ?? ''}}</textarea>
+                <textarea name="pdischarge_notes" id="pdischarge_notes" class="form-control" rows="4" {{ isset($discharge->pdischarge_notes) ? 'readonly' : '' }}>
+{{ $discharge->pdischarge_notes ?? '' }}
+                </textarea>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="">Tanggal Terapi</label>
-                <input type="date" value="{{$resume->tanggal_tindakan ?? ''}}" readonly class="form-control" >
-            </div>
+                <input type="date" name="tanggal_tindakan" id="tanggal_tindakan" value="{{$resume->tanggal_tindakan ?? ''}}" class="form-control" {{ $resume->tanggal_tindakan ?? '' ? 'readonly' : '' }}>
+            </div> -->
         </div>
     </div>
     <hr>
-<div class="row">
-    <div class="col-lg-6">
-
-        <fieldset class="form-group">
-            <label class="label-admisi">Nama Tindakan/Operasi</label>
-            <div class="row">
-                <div class="col">
-                    <textarea class="form-control" readonly rows="4">{{$resume->tindakan_atau_operasi ?? ''}}</textarea>
+    <div class="row">
+        <div class="col-lg-6">
+            <fieldset class="form-group">
+                <label class="label-admisi">Nama Tindakan/Operasi</label>
+                <div class="row">
+                    <div class="col">
+                        @php
+                            $tindakan = json_decode($resume->tindakan ?? '[]', true);
+                        @endphp
+                        <textarea class="form-control" name="pdischarge_tindakan" id="pdischarge_tindakan" rows="4" {{ $resume->tindakan ? 'readonly' : '' }}>
+@if(is_array($tindakan) && count($tindakan) > 0)
+@foreach ($tindakan as $item)
+{{ explode(' -- ', $item['nama_tindakan_icd9'])[1] ?? 'N/A' }}
+@endforeach
+@else
+Tidak ada data tindakan
+@endif
+                        </textarea>
+                    </div>
                 </div>
-            </div>
-        </fieldset>
+            </fieldset>
 
-        <fieldset class="form-group">
-            <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
-            <div class="row">
-                <div class="col">
-                    <textarea class="form-control"  rows="4" readonly>{{$resume->penyebab_luar ?? ''}}</textarea>
+            <fieldset class="form-group">
+                <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
+                <div class="row">
+                    <div class="col">
+                    <textarea class="form-control" name="pdischarge_penyebab_luar" id="pdischarge_penyebab_luar" rows="4" {{ $resume->penyebab_luar ? 'readonly' : '' }}>
+@php
+$penyebabLuarArray = json_decode(json_decode($resume->penyebab_luar ?? '[]', true), true);
+$penyebabLuarString = is_array($penyebabLuarArray) 
+    ? implode("\n", $penyebabLuarArray) 
+    : 'Data tidak valid atau kosong';
+@endphp
+{{ trim($penyebabLuarString) }}
+</textarea>
+                    </div>
                 </div>
-            </div>
-        </fieldset>
-
-    </div>
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label for="">Kode ICD-9-CM</label>
-            <textarea readonly class="form-control" rows="4">{{$resume->icd_9_tindakan ?? ''}}</textarea>
+            </fieldset>
         </div>
-        <div class="form-group">
-            <label for="">Kode ICD-10</label>
-            <textarea readonly class="form-control" rows="4">{{$resume->icd_10_penyebab ?? ''}}</textarea>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="pdischarge_icd_9">Kode ICD-9-CM</label>
+                @php
+                    $tindakan = json_decode($resume->tindakan ?? '[]', true);
+                @endphp
+                <textarea class="form-control" name="pdischarge_icd_9" id="pdischarge_icd_9" rows="4" {{ $resume->tindakan ? 'readonly' : '' }}>
+@if(is_array($tindakan) && count($tindakan) > 0)
+@foreach ($tindakan as $item)
+{{ $item['kode_icd9'] ?? '' }}
+@endforeach
+@else
+Tidak ada data ICD-9
+@endif
+                </textarea>
+            </div>
+            <div class="form-group">
+                <label for="pdischarge_icd_10">Kode ICD-10</label>
+                @php
+                    $firstDecode = !empty($resume->penyebab_luar_icd) ? json_decode($resume->penyebab_luar_icd, true) : '';
+                    $penyebabLuarIcdArray = is_string($firstDecode) ? json_decode($firstDecode, true) : $firstDecode;
+                    $penyebabLuarIcdString = is_array($penyebabLuarIcdArray) 
+                        ? implode(', ', $penyebabLuarIcdArray) 
+                        : 'Data tidak valid atau kosong';
+                @endphp
+                <textarea name="pdischarge_icd_10" id="pdischarge_icd_10" class="form-control" rows="4" {{ $resume->penyebab_luar_icd ? 'readonly' : '' }}>{{ trim($penyebabLuarIcdString) }}</textarea>
+                    <!-- {{ $resume->penyebab_luar_icd ? 'readonly' : '' }} -->
+
+            </textarea>
+            </div>
         </div>
     </div>
-</div>
+    <button type="button" class="btn btn-success float-right mt-2" id="btn-save-discharge" onclick="adddischarge()"><i class="fas fa-save"></i> Simpan</button>
+    <button type="button" class="btn btn-danger float-right mt-2" id="btn-reset-discharge" onclick="delete_discharge('{{$reg}}')"><i class="fas fa-redo"></i> Reset</button>
+@endif
 
-<div class="container">
-    <div class="card card-primary">
-        <div class="card-header">
-            <h3 class="card-title">RESUME PASIEN</h3>
-        </div>
-        <div class="card-body">
-            <h4>Kontrol di RSUD Siti Fatimah</h4>
-    
-            <div class="form-group">
-                <label class="control-label">Klinik</label>
-            <input type="text" value="{{$resume->klinik ?? ''}}" readonly class="form-control"/>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label">Dokter</label>
-                <input type="text" value="{{$resume->dokter ?? ''}}" readonly class="form-control"/>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label">Tanggal Kontrol</label>
-                <input type="date" value="{{$resume->tanggal_kontrol_rsud ?? ''}}" readonly class="form-control"/>
-            </div>
-            
-            <h4>Rujukan RS Lain</h4>
-            
-            <div class="form-group">
-                <label class="control-label">Tanggal</label>
-                <input type="date"  value="{{$resume->tanggal_rs_lain ?? ''}}" readonly class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Ke RS</label>
-                <input type="text"  value="{{$resume->nama_rs_lain ?? ''}}" readonly placeholder="" class="form-control" />
-            </div>
-            
-            
-            <h4>Rujuk Balik</h4>
-            
-            <div class="form-group">
-                <label class="control-label">Tanggal</label>
-                <input type="date"  value="{{$resume->tanggal_rujuk_balik ?? ''}}" readonly class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Ke RS</label>
-                <input type="text"  value="{{$resume->nama_rs_rujuk_balik ?? ''}}" readonly placeholder="" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Puskesmas</label>
-                <input type="text"  value="{{$resume->puskesmas ?? ''}}" readonly class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Dokter Praktek Pribadi</label>
-                <input type="text"  value="{{$resume->dokter_pribadi ?? ''}}" readonly class="form-control" />
-            </div>
-            
-            <h4>Edukasi Pasien</h4>
-            
-            <div class="form-group">
-                <label class="control-label">Penyakit</label>
-                <input type="text"  value="{{$resume->edukasi_penyakit ?? ''}}" readonly class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Diet</label>
-                <input type="text"  value="{{$resume->edukasi_diet ?? ''}}" readonly class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Alat bantu bila ada</label>
-                <input type="text"  value="{{$resume->edukasi_alat_bantu ?? ''}}" readonly class="form-control" />
-            </div>
-        </div>        
-    </div>
-</div>
-<button type="button" class="btn btn-danger float-right mt-2"  onclick="delete_discharge('{{$reg}}')"><i class="fas fa-redo"></i> Reset</button>
-        
-    @endif
    
 
 @push('myscripts')

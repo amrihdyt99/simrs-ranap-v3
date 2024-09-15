@@ -864,6 +864,20 @@ class NewNursingController extends Controller
             ->where('med_rec', $medrec)
             ->get();
 
+            foreach ($data as $note) {
+                $nurse = DB::connection('mysql2')
+                    ->table('users')
+                    ->where('name', $note->id_nurse)
+                    ->first();
+    
+                if ($nurse) {
+                    $note->signature = $nurse->signature;
+                } else {
+                    $note->signature = null;
+                }
+
+            }
+
         return response()->json([
             'success' => true,
             'data' => $data

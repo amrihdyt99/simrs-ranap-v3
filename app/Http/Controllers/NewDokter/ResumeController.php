@@ -190,40 +190,6 @@ class ResumeController extends Controller
             return response()->json(['message' => 'Terjadi kesalahan: ' . $th->getMessage()], 500);
         }
     }
-
-
-    // public function showDokumenResume(Request $request)
-    // {
-    //     // Ambil data dari rs_pasien_resume menggunakan koneksi default
-    //     $resumeData = DB::table('rs_pasien_resume')
-    //         ->where('reg_no', $request->reg_no)
-    //         ->first();
-
-    //     // Ambil data dari m_registrasi dan m_pasien menggunakan koneksi mysql2
-    //     $additionalData = DB::connection('mysql2')
-    //         ->table('m_registrasi as m')
-    //         ->leftJoin('m_pasien as p', 'm.reg_medrec', '=', 'p.MedicalNo')
-    //         ->where('m.reg_no', $request->reg_no)
-    //         ->select([
-    //             'p.PatientName as nama_lengkap',
-    //             'p.DateOfBirth as tanggal_lahir',
-    //             'p.GCSex as jenis_kelamin',
-    //             'm.reg_ruangan as ruang_rawat',
-    //             'm.reg_tgl as tgl_masuk_rawat_inap',
-    //             // 'm.reg_medrec as reg_medrec'
-    //             'p.MedicalNo as reg_medrec'
-    //         ])
-    //         ->first();
-
-    //     // Gabungkan data dari kedua query
-    //     if ($resumeData && $additionalData) {
-    //         $data = (object) array_merge((array) $resumeData, (array) $additionalData);
-    //     } else {
-    //         $data = $resumeData ?: $additionalData;
-    //     }
-
-    //     return view('new_dokter.resume.dokumen-resume', compact('data'));
-    // }
     public function showDokumenResume(Request $request)
     {
         $resumeData = DB::table('rs_pasien_resume')
@@ -248,6 +214,18 @@ class ResumeController extends Controller
             ])
             ->first();
 
+            $userSignature = DB::connection('mysql2')
+            ->table('users')
+                ->where('dokter_id', $resumeData->dokter_id)
+                ->value('signature');
+    
+            if ($resumeData && empty($resumeData->ttd_dokter) && !empty($userSignature)) {
+                DB::table('rs_pasien_resume')
+                    ->where('reg_no', $request->reg_no)
+                    ->update(['ttd_dokter' => $userSignature]);
+                $resumeData->ttd_dokter = $userSignature;
+            }
+
         if ($resumeData && $additionalData) {
             $data = (object) array_merge((array) $resumeData, (array) $additionalData);
         } else {
@@ -258,6 +236,7 @@ class ResumeController extends Controller
         }
 
         $data->signature_exists = !empty($resumeData->ttd_dokter) && !empty($resumeData->ttd_pasien);
+        
         $diagnosisUtama = collect(json_decode($data->diagnosa))->firstWhere('pdiag_kategori', 'utama');
         $diagnosisSekunder = collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'sekunder');
         $diagnosisKlausa = collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'klausa');
