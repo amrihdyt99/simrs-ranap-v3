@@ -63,6 +63,9 @@ Route::post('getOrderTindakan', [\App\Http\Controllers\NewDokter\OrderObatContro
 Route::get('hapus/tindakan/{id}', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'del_order'])->name('del.order.tindakan');
 Route::post('getPemeriksaanDokter', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'getOrderTindakanDokter'])->name('get.pemeriksaan.dokter');
 
+Route::get('getOtherInstructions', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'getOtherInstructions']);
+Route::post('sendOtherInstructions', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'sendOtherInstructions']);
+
 Route::post('/getCpoe', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getCPOEDokter'])->name('get.cpoe.dokter');
 Route::post('addSoapDokter', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_soap_dokter'])->name('add.soap.dokter');
 Route::post('addDiagnosa', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_diagnosa'])->name('add.diagnosa');

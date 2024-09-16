@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\NewDokter;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ForeignController;
 use App\Models\JobOrders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -1004,4 +1005,79 @@ class OrderObatController extends Controller
     // } else if ($jenisorder == "lainnya") {
     //     $orderNumberFormat = 'ANY/RI/' . $newDateFormat . $countorder;
     // }
+
+    public function getOtherInstructions(Request $request){
+        try {
+            $data = DB::table('rs_pasien_instruksi_luar')
+                ;
+
+            if (isset($request->params)) {
+                foreach ($request->params as $key => $value) {
+                    $data = $data->where($value['key'], $value['value']);
+                }
+            }
+            
+
+            $data = $data->get();
+
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    
+    public function sendOtherInstructions(Request $request){
+        try {
+            $check = DB::table('rs_pasien_instruksi_luar')
+                ->where('id_cppt', $request->id_cppt)
+                ->first();
+
+            $data = [
+                'reg_no' => $request->reg_no,
+                'dokter_code' => $request->dokter_code,
+                'type' => $request->type,
+                'instruksi' => $request->instruksi,
+                'id_cppt' => $request->id_cppt,
+            ];
+
+            if (isset($check)) {
+                $data['updated_at'] = date('Y-m-d H:i:s');
+
+                $store = DB::table('rs_pasien_instruksi_luar')
+                    ->where('id', $check->id)
+                    ->update($data);
+            } else {
+                $data['created_at'] = date('Y-m-d H:i:s');
+
+                $store = DB::table('rs_pasien_instruksi_luar')
+                    ->insert($data);
+            }
+
+            $callForeign = new ForeignController;
+
+            if ($request->type == 'rehab') {
+                $request->merge([
+                    'reg_no' => $request->reg_no,
+                    'poli_kode' => 'fisio',
+                    'dokter_kode' => 'drxigd',
+                ]);
+
+                $sendData = $callForeign->sendRegistrationToRajal($request);
+            }
+
+            if (isset($sendData)) {
+                if (!$sendData->success) {
+                    return $sendData;
+                }
+            }
+            
+            return [
+                'code' => 200,
+                'success' => true,
+                'message' => 'Data berhasil disimpan'
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

@@ -12,3 +12,6 @@ username        | level user     | password
 stela           | perawat        |password
 
 tambahkan bertindak sebagai apa dokter tsb
+
+https://rsud.sumselprov.go.id/simrs-rajal/api/rajal/tagihan/perItem?reg_no=QREG/RI/202409010001
+https://rsud.sumselprov.go.id/simrs-rajal/api/emr/cppt/latest/QREG_RI_202409010001
