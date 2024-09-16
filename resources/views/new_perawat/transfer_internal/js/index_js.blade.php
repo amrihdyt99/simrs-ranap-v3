@@ -189,11 +189,13 @@
         let api = this.api();
         $(row).find('.btn-confirm-tf').click(function() {
           clear_show_load();
+          let kode_transfer = $(this).data('transfer_code');
           $.ajax({
             type: "POST",
             data: {
               "reg_no": regno,
               "medrec": medrec,
+              "kode_transfer": kode_transfer,
             },
             url: "{{route('nyaa_universal.view_injector.perawat.create-serah-terima-transfer-internal')}}",
             success: function(data) {
@@ -402,25 +404,22 @@
         cancelButtonText: "Tidak, Batalkan",
       }).then((result) => {
         if (result.value) {
-          // $.ajax({
-          //   url: url,
-          //   type: "POST",
-          //   data: {
-          //     _token: '{{ csrf_token() }}',
-          //     _method: 'POST'
-          //   },
-          //   error: function(response) {
-          //     neko_notify('Error', 'Data gagal dihapus !');
-          //   },
-          //   success: function(response) {
-          //     if (response.status === "success") {
-          //       neko_simpan_success();
-          //       api.draw();
-          //     } else {
-          //       neko_notify('Error', 'Data gagal dihapus !');
-          //     }
-          //   }
-          // });
+          $.ajax({
+            url: "{{route('perawat.confirm_serah_terima')}}",
+            type: "POST",
+            data: $('form#form_transfer_internal').serialize() + "&medrec=" + medrec + "&transfer_reg=" + regno,
+            error: function(response) {
+              neko_notify('Error', 'Data gagal disimpan !');
+            },
+            success: function(response) {
+              if (response.status === "success") {
+                neko_simpan_success();
+                api.draw();
+              } else {
+                neko_notify('Error', 'Data gagal disimpan !');
+              }
+            }
+          });
         }
       });
     });

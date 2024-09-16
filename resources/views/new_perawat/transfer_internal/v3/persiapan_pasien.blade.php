@@ -11,12 +11,11 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Unit asal</label>
-                <select name="transfer_unit_asal" id="select-bed-asal" class="form-control">
-                    @if (isset($ruangan_asal))
-                    <option value="{{$ruangan_asal->bed_id}}"
-                        selected>{{ $ruangan_asal->bed_code . ' - ' . $ruangan_asal->ruang . ' - ' . $ruangan_asal->kelompok . ' - ' . $ruangan_asal->kelas }}</option>
-                    @endif
-                </select>
+                <input type="hidden"
+                    class="form-control" name="transfer_unit_asal" value="{{$ruangan_asal->bed_id}}">
+                <input type="text"
+                    class="form-control" value="{{ $ruangan_asal->bed_code . ' - ' . $ruangan_asal->ruang . ' - ' . $ruangan_asal->kelompok . ' - ' . $ruangan_asal->kelas }}" disabled>
+
             </div>
         </div>
         <div class="col-lg-6">
