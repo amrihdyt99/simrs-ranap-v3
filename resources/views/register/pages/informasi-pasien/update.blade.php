@@ -250,7 +250,7 @@
                                                         <div class="col-lg-6">
                                                             <label class="label-admisi">Pekerjaan</label>
                                                             <input type="text" class="form-control" name="Job[]">
-                                                        </div>
+                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
                                                         <div class="col-lg-12">
@@ -366,5 +366,29 @@
         document.getElementById('age').value = age;
     }
     document.getElementById('tanggal_lahir').addEventListener('change', calculateAge);
+
+    // Autocomplete for MedicalNo
+    $(document).ready(function() {
+        $("input[name='MedicalNo[]']").autocomplete({
+            source: async function(request, response) {
+                const mrn = request.term;
+                const res = await fetch(`{{ route('register.informasi-pasien.checkMRN') }}?mrn=` + mrn);
+                const data = await res.json();
+                response(data.map(item => ({
+                    label: `${item.MedicalNo} - ${item.PatientName}`,
+                    value: item.MedicalNo
+                })));
+            },
+            minLength: 1,
+            select: function(event, ui) {
+                $(this).val(ui.item.value);
+                return false;
+            },
+            focus: function(event, ui) {
+                $(this).val(ui.item.value);
+                return false;
+            }
+        });
+    });
 </script>
 @endpush

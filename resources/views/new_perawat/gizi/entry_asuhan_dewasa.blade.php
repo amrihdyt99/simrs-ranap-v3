@@ -46,19 +46,19 @@
         <div class="form-group row">
             <div class="col-sm-3 pr-0">
                 <label for="">Energi (kkal/hari)</label>
-                <input type="text" name="asdewasa_energi" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_energi}}">
+                <input type="number" name="asdewasa_energi" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_energi}}">
             </div>
             <div class="col-sm-3 pr-0">
                 <label for="">Protein (g/hari)</label>
-                <input type="text" name="asdewasa_protein" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_protein}}">
+                <input type="number" name="asdewasa_protein" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_protein}}">
             </div>
             <div class="col-sm-3 pr-0">
                 <label for="">KH (gr/kkal)</label>
-                <input type="text" name="asdewasa_kh" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_kh}}">
+                <input type="number" name="asdewasa_kh" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_kh}}">
             </div>
             <div class="col-sm-3">
                 <label for="">Lemak (gr/kkal)</label>
-                <input type="text" name="asdewasa_lemak" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_lemak}}">
+                <input type="number" name="asdewasa_lemak" class="form-control" value="{{$asuhan_gizi_dewasa->asdewasa_lemak}}">
             </div>
         </div>
     </div>

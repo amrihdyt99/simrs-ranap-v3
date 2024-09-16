@@ -89,14 +89,14 @@ Route::post('getFludiBalanceBaru', [\App\Http\Controllers\NewPerawat\NewNursingC
 Route::post('addassesmetawal', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addasessmentawal'])->name('add.assesmentawal');
 Route::post('perawat_addPemulanganPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addpemulanganpasien'])->name('add.perawat.pemulangan.pasien');
 Route::post('addMonitoringNews', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addmonitoring_news'])->name('add.monitoringnews');
+Route::get('getMonitoringNews', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getMonitoringNews'])->name('get.monitoringnews');
+Route::get('getMonitoringNewsDetail{id}', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getMonitoringNewsDetail'])->name('get.detail.monitoringnews');
 Route::post('addChecklistKepulangan', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addchecklist_kepulangan'])->name('add.checklist_kepulangan');
 Route::post('addInformasiTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addInformasiTindakanMedis'])->name('add.addInformasiTindakanMedis');
 Route::post('addPersetujuanTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPersetujuanTindakanMedis'])->name('add.PersetujuanTindakanMedis');
 Route::post('addPenolakanTindakanMedis', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPenolakanTindakanMedis'])->name('add.PenolakanTindakanMedis');
 Route::post('addRujukanPersiapanPasien', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanPersiapanPasien'])->name('add.RujukanPersiapanPasien');
 Route::post('addRujukanSerahTerima', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanSerahTerima'])->name('add.RujukanSerahTerima');
-Route::post('getListResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getListResikoJatuh'])->name('getListResikoJatuh');
-Route::post('getDetailResikoJatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getDetailResikoJatuh'])->name('getDetailResikoJatuh');
 
 //baru
 Route::post('addassesmetawalanak', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPengkajianPasienAnak'])->name('add.assesmentawalanak');
@@ -128,8 +128,22 @@ Route::post('addphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingCont
 Route::post('getphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getPhysicianTeam'])->name('get.physicianteam');
 Route::post('addTindakanIntra', [App\Http\Controllers\NewPerawat\NewNursingController::class, 'addTindakanIntra'])->name('add.tindakan.intra');
 Route::post('addPemantauanIntra', [App\Http\Controllers\NewPerawat\NewNursingController::class, 'addIntraPemantauan'])->name('add.pemantauan.intra');
-Route::post('addresikojatuh', [App\Http\Controllers\NewPerawat\NewNursingController::class, 'addresikojatuh'])->name('add.resikojatuh');
-Route::post('getresikojatuh', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getSkrinningJatuh'])->name('get.resiko.jatuh');
+Route::post('addResikoJatuhGeriatri', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addResikoJatuhGeriatri'])->name('add.resiko.jatuh.geriatri');
+Route::post('getListResikoJatuhGeriatri', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getListResikoJatuhGeriatri'])->name('get.resiko.jatuh.geriatri');
+Route::post('getDetailResikoJatuhGeriatri', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getDetailResikoJatuhGeriatri'])->name('get.detail.resiko.jatuh.geriatri');
+Route::post('deleteResikoJatuhGeriatri', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'deleteResikoJatuhGeriatri'])->name('delete.resiko.jatuh.geriatri');
+Route::post('addReskoJatuhHumptyDumpty', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addReskoJatuhHumptyDumpty'])->name('add.resiko.jatuh.humptydumpty');
+Route::post('getListReskoJatuhHumptyDumpty', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getListResikoJatuhHumptyDumpty'])->name('get.resiko.jatuh.humptydumpty');
+Route::post('getDetailReskoJatuhHumptyDumpty', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getDetailResikoJatuhHumptyDumpty'])->name('get.detail.resiko.jatuh.humptydumpty');
+Route::post('deleteResikoJatuhHumptyDumpty', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'deleteResikoJatuhHumptyDumpty'])->name('delete.resiko.jatuh.humptydumpty');
+Route::post('addResikoJatuhNeonatus', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addResikoJatuhNeonatus'])->name('add.resiko.jatuh.neonatus');
+Route::post('getListResikoJatuhNeonatus', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getListResikoJatuhNeonatus'])->name('get.resiko.jatuh.neonatus');
+Route::post('getDetailResikoJatuhNeonatus', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getDetailResikoJatuhNeonatus'])->name('get.detail.resiko.jatuh.neonatus');
+Route::post('deleteResikoJatuhNeonatus', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'deleteResikoJatuhNeonatus'])->name('delete.resiko.jatuh.neonatus');
+Route::post('addResikoJatuhSkalaMorse', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addResikoJatuhSkalaMorse'])->name('add.resiko.jatuh.skalamorse');
+Route::post('getListResikoJatuhSkalaMorse', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getListResikoJatuhSkalaMorse'])->name('get.resiko.jatuh.skalamorse');
+Route::post('getDetailResikoJatuhSkalaMorse', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getDetailResikoJatuhSkalaMorse'])->name('get.detail.resiko.jatuh.skalamorse');
+Route::post('deleteResikoJatuhSkalaMorse', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'deleteResikoJatuhSkalaMorse'])->name('delete.resiko.jatuh.skalamorse');
 Route::post('addordertindakanperawat', [\App\Http\Controllers\Master\TarifController::class, 'ordertindakannurse'])->name('add.ordertindakanperawat');
 //api register
 Route::get('registrasi/sphaira', [App\Http\Controllers\Ranap\RegisterController::class, 'get_data_sphaira'])->name('tarik.sphaira');

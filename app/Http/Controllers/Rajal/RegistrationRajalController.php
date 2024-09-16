@@ -111,20 +111,22 @@ class RegistrationRajalController extends Controller
         $data_pasien = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/master/getPasien?medrec=' . $data['reg_medrec']);
         $data_pasien = json_decode($data_pasien->body(), true);
         
-        
+        $userSignature = DB::connection('mysql2')
+        ->table('users')
+            ->where('dokter_id', $data['dokter_poli_kode'])
+            ->value('signature');
         // Ambil medrec dan reg_no dari data yang diambil
         $data['pasien'] = $data_pasien[0] ?? null;
         $data['pasien']['date_of_birth'] = date('d-m-Y', strtotime($data['pasien']['DateOfBirth']));
 
         $slipPernyataanRanap = SlipPernyataanRanap::where('reg_no', $reg_no)->first();
-        $signature = $slipPernyataanRanap ? $slipPernyataanRanap->ttd_dokter : null;
+        $signature = $slipPernyataanRanap ? $slipPernyataanRanap->ttd_dokter : $userSignature;
 
-        
         return response()->view('register.pages.rajal.slip-pernyataan-ranap', [
             'data' => $data,
-            'reg_no' => $data['ranap_reg'], // Kirim reg_no ke view
+            'reg_no' => $data['ranap_reg'], 
             'medrec' => $data['reg_medrec'],
-            'signature' => $signature, 
+            'signature' => $signature
         ]);
     }
 

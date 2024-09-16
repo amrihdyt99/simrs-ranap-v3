@@ -400,9 +400,9 @@
 
                                         </div>
 
-                                        <div id="panel-resiko-jatuh">
+                                        {{-- <div id="panel-resiko-jatuh">
                                             @include('new_perawat.resiko_jatuh.form_resiko_jatuh')
-                                        </div>
+                                        </div> --}}
 
 
                                         <div id="panel-profile">

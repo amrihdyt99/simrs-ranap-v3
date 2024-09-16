@@ -120,14 +120,17 @@
                         <span style="margin-top: 60px;">(............................................)</span>
                     </div>
                     <div class="flex-col" style="width: 100%">
-                        <!-- <canvas id="doctor-signature" style="border:1px solid #000; width: 200px; height: 100px;"></canvas> -->
-                                    <canvas id="doctor-signature" style="border:1px solid #000; width: 200px; height: 100px;"></canvas>
-                                    <button type="button" id="save-doctor-signature" class="btn btn-sm btn-primary mt-2 no-print" style="width: 200px; margin-right: 10px;">Simpan Tanda Tangan</button>
-                                    <button type="button" id="clear-doctor-signature" class="btn btn-sm btn-secondary mt-2 no-print" style="width: 200px;">Hapus Tanda Tangan</button>
-                                    <input type="hidden" id="doctor-signature-input" name="signature_doctor" value="">
-                                    <input type="hidden" id="reg_no" name="reg_no" value="{{ $reg_no }}">
-                                    <input type="hidden" id="medrec" name="medrec" value="{{ $medrec }}">
-                                    <span style="margin-top: 10px;">({{ $data['dokter_poli'] }})</span>
+                        @if ($signature)
+                            <img src="{{ $signature }}" alt="Doctor's Signature" style="width: 200px; height: 100px;">
+                        @else
+                            <canvas id="doctor-signature" style="border:1px solid #000; width: 200px; height: 100px;"></canvas>
+                            <button type="button" id="save-doctor-signature" class="btn btn-sm btn-primary mt-2 no-print" style="width: 200px; margin-right: 10px;">Simpan Tanda Tangan</button>
+                            <button type="button" id="clear-doctor-signature" class="btn btn-sm btn-secondary mt-2 no-print" style="width: 200px;">Hapus Tanda Tangan</button>
+                            <input type="hidden" id="doctor-signature-input" name="signature_doctor" value="">
+                            <input type="hidden" id="reg_no" name="reg_no" value="{{ $reg_no }}">
+                            <input type="hidden" id="medrec" name="medrec" value="{{ $medrec }}">
+                        @endif
+                        <span style="margin-top: 10px;">({{ $data['dokter_poli'] }})</span>
                     </div>          
                 </div>
             </div>
