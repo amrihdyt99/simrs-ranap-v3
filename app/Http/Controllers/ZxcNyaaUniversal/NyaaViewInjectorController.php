@@ -1227,12 +1227,36 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('reg_no', $request->reg_no)
             ->first();
 
+        $rs_pasien_intra_tindakan = DB::connection('mysql')
+        ->table('rs_pasien_intra_tindakan')
+        ->where('no_reg', $request->reg_no)
+        ->first();
+    
+        $pra_tindakan = DB::connection('mysql')
+        ->table('rs_catatan_keperawatan_pra_tindakan')
+        ->where('reg_no', $request->reg_no)
+        ->first();
+
+        $paska_tindakan = DB::connection('mysql')
+            ->table('rs_paska_tindakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $observasi_paska = DB::connection('mysql')
+        ->table('rs_observasi_paska_tindakan')
+        ->where('reg_no', $request->reg_no)
+        ->first();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'sign_in' => optional($sign_in),
             'time_out' => optional($time_out),
             'sign_out' => optional($sign_out),
+            'rs_pasien_intra_tindakan' => optional($rs_pasien_intra_tindakan),
+            'pra_tindakan' => optional($pra_tindakan),
+            'paska_tindakan' => optional($paska_tindakan),
+            'observasi_paska' => optional($observasi_paska),
         );
         return view('new_perawat.cath_lab_v2.index')
             ->with($context);

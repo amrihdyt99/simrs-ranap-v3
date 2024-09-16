@@ -10,7 +10,7 @@
     $pernapasan=json_decode($rs_pasien_intra_pemantuan->pernapasan)??[];
     $spo2=json_decode($rs_pasien_intra_pemantuan->spo2)??[];
 @endphp
-<table width="100%" border="1">
+<table class="table1" width="100%" border="1">
     <tbody>
     <tr>
         <td colspan="12">PEMANTAUAN HEMODINAMIK INTRA OPERATIF</td>

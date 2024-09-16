@@ -272,17 +272,17 @@ $registrasi_data =  DB::connection('mysql2')
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-pra-tindakan" onclick="clickTab('pra-tindakan')">
                         Catatan Keperawatan - Pra Tindakan
                     </div>
-                </div>
+                </div> --}}
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-intra-tindakan" onclick="clickTab('intra-tindakan')">
                         Catatan Keperawatan - Intra Tindakan
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="row">
                     <div class="left-tab" id="tab-intra-hemodinamik" onclick="clickTab('intra-hemodinamik')">
@@ -304,18 +304,18 @@ $registrasi_data =  DB::connection('mysql2')
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-paska-tindakan" onclick="clickTab('paska-tindakan')">
                         Pemantauan Paska Tindakan
                     </div>
-                </div>
+                </div> --}}
 
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-observasi-paska" onclick="clickTab('observasi-paska')">
                         Observasi Paska Tindakan
                     </div>
-                </div>
+                </div> --}}
 
 
 
