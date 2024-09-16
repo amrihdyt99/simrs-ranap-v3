@@ -66,7 +66,7 @@
     <label for="tanggal_pemberian" class="col-sm-2 col-form-label">Tanggal Pemberian</label>
     <div class="input-group col-sm-10">
         <input type="datetime-local" id="tanggal_pemberian" class="datetime-auto form-control ui-datepicker"
-            name="tanggal_pemberian"  value=""/>
+            name="tanggal_pemberian" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" />
     </div>
 </div>
 

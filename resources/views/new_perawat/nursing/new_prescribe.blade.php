@@ -466,7 +466,7 @@
                     <div class="form-group">
                         <label for="" class="text-sm">Tanggal Pemberian</label>
                         <input type="datetime-local" class="datetime-auto form-control" name="tgl_pemberian"
-                            value="">
+                        value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
                     </div>
                 </div>
             </div>
