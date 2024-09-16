@@ -266,9 +266,7 @@ Durasi Hari: {{ $item['durasi_hari'] ?? '' }}
                 <label class="label-admisi">Obat yang dibawa pulang</label>
                 <div class="row">
                     <div class="col">
-                        <textarea class="form-control" name="pdischarge_obat" id="pdischarge_obat" rows="4" {{ isset($resume->obat_dibawa) ? 'readonly' : '' }}>
-                            {{ $resume->obat_dibawa ?? '' }}
-                        </textarea>
+                        <textarea class="form-control" name="pdischarge_obat" id="pdischarge_obat" rows="4" readonly>{{ $discharge->pdischarge_obat ?? '' }}</textarea>
                     </div>
                 </div>
             </fieldset>
