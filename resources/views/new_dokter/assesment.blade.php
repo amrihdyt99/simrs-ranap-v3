@@ -240,6 +240,12 @@
         $subs =  "";
         var $service_unit = '{{$dataPasien->service_unit}}'
         var $id_cppt = '{{$id_cppt}}' 
+        var selectedRoom = localStorage.getItem('pilihruang').split(',')
+        var $id_dpjp = "{{$patient->reg_dokter}}"
+
+        if (selectedRoom.length > 0) {
+            getDetailRegistration(selectedRoom[0])
+        }
 
         getAlert($reg)
 
@@ -258,9 +264,33 @@
         });
 
         $('#btn-add-soap').click(function(){
-            
             add_soap()
         });
+
+        function getDetailRegistration(_room){
+            $.ajax({
+                url: '{{url("")}}/dokter/data/patient/'+_room,
+                dataType: 'json',
+                data: {
+                    no_ajax: true,
+                    params: [
+                        {key: 'm_registrasi.reg_no', value: $reg}
+                    ]
+                },
+                success: function(resp){
+                    if (resp.length > 0) {
+                        $.each(resp, function(i, item){
+                            let sessionData = {
+                                reg_no: $reg,
+                                roles: item.physician_team_role
+                            }
+
+                            sessionStorage.setItem('sessionData', JSON.stringify(sessionData))
+                        })
+                    }
+                }
+            })
+        }
 
         function add_soap() {
             const reg = '{{$dataPasien->reg_no}}';
@@ -269,6 +299,13 @@
             const utama = '{{$dataPasien->reg_dokter}}';
             const soapdok_dokter = '{{ auth()->user()->dokter_id}}';
             const nama_ppa = '{{auth()->user()->name}}';
+
+            let dataSession = JSON.parse(sessionStorage.getItem('sessionData'))
+
+            if (!dataSession) {
+                dataSession.roles = null
+            }
+
             $.ajax({
                 type: "post",
                 url: "{{url('api/addSoap')}}",
@@ -279,6 +316,7 @@
                     "soapdok_dokter": soapdok_dokter,
                     "nama_ppa": nama_ppa,
                     "bed": bed,
+                    "bertindak_sebagai": dataSession.roles
                 },
                 dataType: "json",
                 success: function (r) {

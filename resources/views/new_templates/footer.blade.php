@@ -100,7 +100,6 @@
                     reg_no: _reg 
                 },
                 success: function(resp){
-                    console.log(resp)
                     $('#alert_indikator').html('')
 
                     if (resp.alergi == 'Ya' && resp.asper_hasil) {
@@ -604,6 +603,8 @@
                         });
 
                         getPhysicianTeam()
+                    } else if (id == 'rehab') {
+                        getOtherInstructions(id, null)
                     }
 
                 
@@ -1441,14 +1442,23 @@
                             if (dataSoap[i].diagnosa.length > 0) {
                                 $.each(dataSoap[i].diagnosa, function(i_diagnosa, item_diagnosa){
                                     $row_diagnosa += `
-                                        `+item_diagnosa.ID_ICD10+` - `+item_diagnosa.NM_ICD10+`<br>    
+                                        `+item_diagnosa.ID_ICD10+` - `+item_diagnosa.NM_ICD10+`<br> 
                                     `
+                                })
+                            }
+
+                            let roleSoap = JSON.parse(dataSoap[i].bertindak_sebagai)
+                            let contentRoleSoap = ''
+                            
+                            if (roleSoap) {
+                                $.each(roleSoap, function(sub_i, sub_item){
+                                    contentRoleSoap += sub_item+(roleSoap.length != sub_i + 1 ? ', ' : '')
                                 })
                             }
 
                             table = table + "<tr>"
                             table = table + "<td>"+dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu+"</td>"
-                            table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+"</td>"
+                            table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+" "+(contentRoleSoap ? '<br><br>('+contentRoleSoap+')' : '')+"</td>"
                             table = table + `<td>
                                 (S) `+(dataSoap[i].soapdok_subject ?? '')+`<br/><br/>
                                 (O) `+(dataSoap[i].soapdok_object ?? '')+`<br/><br/>
