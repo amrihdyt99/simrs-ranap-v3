@@ -980,6 +980,7 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.monitoring_news')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        loadDatatableNews();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1334,6 +1335,7 @@
             },
             url: "{{route('get.nursing.note')}}",
             success: function(data) {
+                console.log("Data received:", data);
                 var dataJSON = data.data;
                 var bodyTable = document.getElementById('body-tindakan-perawat')
                 bodyTable.innerHTML = '';
@@ -1349,6 +1351,21 @@
                     col2.innerHTML = dataJSON[i]['jam_note']
                     col3.innerHTML = dataJSON[i]['catatan']
                     col4.innerHTML = dataJSON[i]['id_nurse']
+                    if (dataJSON[i]['signature']) {
+                    console.log("Signature Base64:", dataJSON[i]['signature']);
+                    col4.innerHTML = `
+                        <div style="text-align: center;">
+                            <img src="${dataJSON[i]['signature']}" alt="Signature" style="width: 400px; height: 200px;"/>
+                            <p>${dataJSON[i]['id_nurse']}</p>
+                        </div>
+                    `; 
+                } else {
+                    col4.innerHTML = `
+                        <div style="text-align: center;">
+                            <p>${dataJSON[i]['id_nurse']}</p>
+                        </div>
+                    `;
+                }
                     tr.appendChild(col1)
                     tr.appendChild(col2)
                     tr.appendChild(col3)
@@ -1358,6 +1375,7 @@
                 }
             },
             error: function(data) {
+                console.error("Error fetching nursing notes:", data);
                 neko_refresh();
             },
         });
@@ -1953,3 +1971,4 @@
 @include('new_perawat.resiko_jatuh.neonatus.js.resiko_jatuh_neonatus_js')
 @include('new_perawat.resiko_jatuh.skala_morse.js.resiko_jatuh_skala_morse_js')
 @include('new_perawat.transfer_internal.js.index_js')
+@include('new_perawat.monitoring_news.js.entry_news_js')

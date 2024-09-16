@@ -1038,7 +1038,7 @@
         $.ajax({
             url: "{{route('add.monitoringnews')}}",
             type: "POST",
-            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec,
+            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec  + "&user_id=" + "{{auth()->user()->id}}",
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();

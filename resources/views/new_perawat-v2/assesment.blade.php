@@ -48,6 +48,10 @@ $data_persiapan_pasien = [
 ['item' => 'Obat DM dihentikan saat puasa**'],
 ['item' => 'Lain-lain**'],
 ];
+
+$registrasi_data =  DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
 @endphp
 
 <style>
@@ -149,6 +153,31 @@ $data_persiapan_pasien = [
                         Pengkajian Awal
                     </div>
                 </div>
+
+                @if ($dataPasien->kategori_pasien == 'dewasa')
+                <div class="row">
+                    <div class="left-tab" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
+                        Pengkajian Awal Dewasa
+                    </div>
+                </div>
+                @endif
+
+                @if ($dataPasien->kategori_pasien == 'anak')
+                <div class="row">
+                    <div class="left-tab" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
+                        Pengkajian Awal Anak
+                    </div>
+                </div>
+                @endif
+
+                @if ($dataPasien->kategori_pasien == 'bayi')
+                <div class="row">
+                    <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
+                        Pengkajian Awal (Neonatus)
+                    </div>
+                </div>
+                @endif
+
                 <div class="row">
                     <div class="left-tab" id="tab-nyeri" onclick="clickTab('nyeri')">
                         Skrinning Nyeri
@@ -167,27 +196,41 @@ $data_persiapan_pasien = [
                     </div>
                 </div>
 
+                @if ($age == 'geriatri')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-geriatri" onclick="clickTab('resiko-jatuh-geriatri')">
                         Resiko Jatuh Geriatri
                     </div>
                 </div>
+                @endif
 
+                @if ($age == 'humpty dumpty')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-humpty-dumpty" onclick="clickTab('resiko-jatuh-humpty-dumpty')">
                         Resiko Jatuh Humpty Dumpty
                     </div>
                 </div>
+                @endif
 
+                @if ($dataPasien->kategori_pasien == 'bayi')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-neonatus" onclick="clickTab('resiko-jatuh-neonatus')">
                         Resiko Jatuh Neonatus
                     </div>
                 </div>
+                @endif
 
+                @if ($dataPasien->kategori_pasien == 'dewasa')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-skala-morse" onclick="clickTab('resiko-jatuh-skala-morse')">
                         Resiko Jatuh Skala Morse
+                    </div>
+                </div>
+                @endif
+
+                <div class="row">
+                    <div class="left-tab" id="tab-monitoring_news" onclick="clickTab('monitoring_news')">
+                        Monitoring NEWS
                     </div>
                 </div>
 
@@ -196,32 +239,15 @@ $data_persiapan_pasien = [
                         CPPT
                     </div>
                 </div>
-                @if ($age == 'dewasa')
-                <div class="row">
-                    <div class="left-tab" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
-                        Pengkajian Awal Dewasa
-                    </div>
-                </div>
-                @endif
-                @if ($age == 'anak')
-                <div class="row">
-                    <div class="left-tab" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
-                        Pengkajian Awal Anak
-                    </div>
-                </div>
-                @endif
-                @if ($age == 'bayi')
-                <div class="row">
-                    <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
-                        Pengkajian Awal (Neonatus)
-                    </div>
-                </div>
-                @endif
+
+                
+
                 <div class="row">
                     <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
                         Asuhan Gizi Dewasa
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="left-tab" id="tab-nursing" onclick="clickTab('nursing')">
                         Nursing
@@ -246,17 +272,17 @@ $data_persiapan_pasien = [
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-pra-tindakan" onclick="clickTab('pra-tindakan')">
                         Catatan Keperawatan - Pra Tindakan
                     </div>
-                </div>
+                </div> --}}
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-intra-tindakan" onclick="clickTab('intra-tindakan')">
                         Catatan Keperawatan - Intra Tindakan
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="row">
                     <div class="left-tab" id="tab-intra-hemodinamik" onclick="clickTab('intra-hemodinamik')">
@@ -278,18 +304,18 @@ $data_persiapan_pasien = [
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-paska-tindakan" onclick="clickTab('paska-tindakan')">
                         Pemantauan Paska Tindakan
                     </div>
-                </div>
+                </div> --}}
 
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-observasi-paska" onclick="clickTab('observasi-paska')">
                         Observasi Paska Tindakan
                     </div>
-                </div>
+                </div> --}}
 
 
 
@@ -361,13 +387,6 @@ $data_persiapan_pasien = [
                         Surat Rujukan
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="left-tab" id="tab-monitoring_news" onclick="clickTab('monitoring_news')">
-                        Monitoring NEWS
-                    </div>
-                </div>
-
 
                 @endif
 

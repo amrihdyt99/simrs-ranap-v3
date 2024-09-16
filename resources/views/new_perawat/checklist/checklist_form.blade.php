@@ -8,7 +8,7 @@
         @csrf
         <input type="hidden" name="id" value="{{ $datapasien->MedicalNo }}">
         <div class="card-body">
-            <table class="table table-bordered table-sm mt-3 border-dark">
+            <table class="table1 table-bordered table-sm mt-3 border-dark">
                 <tbody>
                     <tr>
                         <td rowspan="9" class="text-center align-middle fs-5">CHECKLIST ORIENTASI PELAYANAN DAN

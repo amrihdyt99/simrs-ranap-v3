@@ -152,15 +152,6 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function assesment_resiko_jatuh_geriatri(Request $request)
     {
-        // $data_pasien = DB::connection('mysql2')
-        //     ->table('m_registrasi')
-        //     ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-        //     ->where(['m_registrasi.reg_no' => $request->reg_no])
-        //     ->first();
-
-        // $universalFunctionController = app(UniversalFunctionController::class);
-        // $age = $universalFunctionController->kalkulasi_umur($data_pasien->DateOfBirth, 'tahun');
-
 
         $context = array(
             'reg' => $request->reg_no,
@@ -1056,6 +1047,14 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
             ->where('m_registrasi.reg_no', "=", $reg_no)
             ->get();
+        
+        // $nurse_transfusi_darah = DB::connection('mysql')
+        // ->table('monitoring_transfusi_darah')
+        // ->where('reg_no', $request->reg_no)
+        // ->where('reg_medrec', $request->medrec)
+        // ->orderBy('waktu_transfusi', 'desc')
+        // ->orderBy('id', 'desc')
+        // ->first();
 
         return view(
             'new_perawat.nursing.index_new_nursing_page',
@@ -1073,7 +1072,8 @@ class NyaaViewInjectorController extends AaaBaseController
                 "dataTransfusi",
                 "dataFluidBalanceBaru",
                 "obatdaridokter",
-                "datamypatient"
+                "datamypatient",
+                // "nurse_transfusi_darah",
             )
         );
     }
@@ -1347,12 +1347,36 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('reg_no', $request->reg_no)
             ->first();
 
+        $rs_pasien_intra_tindakan = DB::connection('mysql')
+        ->table('rs_pasien_intra_tindakan')
+        ->where('no_reg', $request->reg_no)
+        ->first();
+    
+        $pra_tindakan = DB::connection('mysql')
+        ->table('rs_catatan_keperawatan_pra_tindakan')
+        ->where('reg_no', $request->reg_no)
+        ->first();
+
+        $paska_tindakan = DB::connection('mysql')
+            ->table('rs_paska_tindakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $observasi_paska = DB::connection('mysql')
+        ->table('rs_observasi_paska_tindakan')
+        ->where('reg_no', $request->reg_no)
+        ->first();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'sign_in' => optional($sign_in),
             'time_out' => optional($time_out),
             'sign_out' => optional($sign_out),
+            'rs_pasien_intra_tindakan' => optional($rs_pasien_intra_tindakan),
+            'pra_tindakan' => optional($pra_tindakan),
+            'paska_tindakan' => optional($paska_tindakan),
+            'observasi_paska' => optional($observasi_paska),
         );
         return view('new_perawat.cath_lab_v2.index')
             ->with($context);
@@ -1376,21 +1400,21 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function monitoring_news(Request $request)
     {
-        $jam_sekarang = Carbon::now()->format('H');
-        $tanggal_sekarang = Carbon::now()->format('Y-m-d');
-        $monitoring_news = DB::connection('mysql')
-            ->table('rs_monitoring_news')
-            ->where('reg_no', $request->reg_no)
-            ->where('news_jam', $jam_sekarang)
-            ->where('news_tanggal', $tanggal_sekarang)
-            ->first();
+        // $jam_sekarang = Carbon::now()->format('H');
+        // $tanggal_sekarang = Carbon::now()->format('Y-m-d');
+        // $monitoring_news = DB::connection('mysql')
+        //     ->table('rs_monitoring_news')
+        //     ->where('reg_no', $request->reg_no)
+        //     ->where('news_jam', $jam_sekarang)
+        //     ->where('news_tanggal', $tanggal_sekarang)
+        //     ->first();
 
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
-            'monitoring_news' => optional($monitoring_news),
-            'jam_sekarang' => ($jam_sekarang),
-            'tanggal_sekarang' => ($tanggal_sekarang),
+            // 'monitoring_news' => optional($monitoring_news),
+            // 'jam_sekarang' => ($jam_sekarang),
+            // 'tanggal_sekarang' => ($tanggal_sekarang),
         );
         return view('new_perawat.monitoring_news.index')
             ->with($context);
