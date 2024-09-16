@@ -122,9 +122,12 @@
                     <div class="tab-button" id="tab-prescribe" onclick="clickTab('prescribe', 'Prescribe')">
                         Prescribe
                     </div>
-                    <div class="tab-button" id="tab-fisio" onclick="clickTab('fisio', 'Fisioterapis')">
-                        Fisioterapis
+                    <div class="tab-button" id="tab-rehab" onclick="clickTab('rehab', 'Instruksi Rehab Medik')">
+                        Rehab Medik
                     </div>
+                    {{-- <div class="tab-button" id="tab-fisio" onclick="clickTab('fisio', 'Fisioterapis')">
+                        Fisioterapis
+                    </div> --}}
                     <div class="tab-button" id="tab-lainnya" onclick="clickTab('lainnya', 'Tindakan Lainnya')">
                         Tindakan Lainnya
                     </div>
@@ -208,6 +211,16 @@
                             </div>
                         </div>
                     </div>
+                    <div id="panel-rehab">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <textarea name="instruksi_rehab" class="form-control" cols="30" rows="15" placeholder="Tambahkan deskripsi instruksi ke Rehab Medik"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-success float-right" onclick="sendOtherInstructions('rehab', this)"><i class="fas fa-check"></i> Kirim data</button>
+                    </div>
                     <div id="panel-lainnya">
                         <div class="row">
                             <div class="col">
@@ -266,8 +279,6 @@
             icd10('#select-diagnosa-klausa', 'X') 
             get_diag()
             get_pro()
-          
-       
         })
     </script>
     <script>
@@ -330,7 +341,9 @@
                 success: function (r) {
 					$.each(r, function(index, row) {
                         $('[id="selected-diagnosa-'+row.pdiag_kategori+'"]').append(`
-                            `+row.ID_ICD10+` | `+row.NM_ICD10+` <div type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</div><br>
+                            `+row.ID_ICD10+` | `+row.NM_ICD10+` 
+                            `+($user_dokter_ == $id_dpjp ? '<div type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</div>' : '')+`
+                            <br>
                         `)
 					});
                 }
@@ -371,6 +384,7 @@
                     "diagnosa": id,
                     "pdiag_dokter":dokter,
                     'pdiag_kategori': category,
+                    'dpjp_utama': $id_dpjp,
                 },
                 dataType: "json",
                 error:function(){
@@ -379,7 +393,9 @@
                 success: function (r) {
                     if(r.success == true){
                         get_diag()
-                    }else{
+                    } else if (r.message) {
+                        neko_d_custom_error(r.message)
+                    } else{
                         neko_d_custom_error('Diagnosa '+category+' Sudah Ada')
                     }
                 }
@@ -545,6 +561,59 @@
                             confirmButtonText: 'OK'
                         })
                     }
+                }
+            })
+        }
+
+        function getOtherInstructions(_type, _elm){
+            $.ajax({
+                url: '{{url("")}}/api/getOtherInstructions',
+                type: 'get',
+                data: {
+                    params: [
+                        {key: 'reg_no', value: $reg},
+                        {key: 'id_cppt', value: $id_cppt},
+                    ]
+                },
+                success: function(resp){
+                    $.each(resp, function(i, item){
+                        $('[id="panel-'+_type+'"] textarea').val(item.instruksi)
+                    })
+                }
+            })
+        }
+
+        function sendOtherInstructions(_type, _elm){
+            let instruksi = $('[id="panel-'+_type+'"] textarea').val()
+
+            $.ajax({
+                url: '{{url("")}}/api/sendOtherInstructions',
+                type: 'post',
+                beforeSend: function(){
+                    $(_elm).html(`
+                        <i class="fas fa-spinner fa-spin"></i> Memproses data
+                    `).attr('disabled', true)
+                },
+                data: {
+                    _token: '{{csrf_token()}}',
+                    reg_no: $reg,
+                    dokter_code: $user_dokter_,
+                    type: _type,
+                    instruksi: instruksi,
+                    id_cppt: $id_cppt
+                },
+                success: function(resp){
+                    if (resp.success) {
+                        alert(resp.message)
+
+                        getOtherInstructions(_type, _elm)
+                    } else {
+                        alert(resp.message)
+                    }
+
+                    $(_elm).html(`
+                        <i class="fas fa-check"></i> Kirim data
+                    `).attr('disabled', false)
                 }
             })
         }

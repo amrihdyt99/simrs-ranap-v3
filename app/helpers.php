@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController;
 use Carbon\Carbon;
 
 function keyPharmacy(){
@@ -185,4 +186,9 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
     } catch (\Throwable $th) {
         throw $th;
     }
+}
+
+function getUni(){
+    $uni = new UniversalFunctionController;
+    return $uni;
 }

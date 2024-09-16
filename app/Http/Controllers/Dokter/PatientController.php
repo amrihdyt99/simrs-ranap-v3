@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dokter;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController;
 use App\Models\PasienCPOEImaging;
 use App\Models\PasienCPOELaboratory;
 use App\Models\PasienSoapDok;
@@ -14,7 +15,6 @@ use Illuminate\Support\Carbon;
 
 class PatientController extends Controller
 {
-
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -28,7 +28,7 @@ class PatientController extends Controller
         return view('dokter.pages.dashboard');
     }
 
-    public function data_table($type, $ruang)
+    public function data_table(Request $request, $type, $ruang)
     {
         $dokter_code = auth()->user()->dokter_id;
     
@@ -68,7 +68,16 @@ class PatientController extends Controller
                 DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '".$ruang."') as nama_ruangan"),
                 'businesspartner.BusinessPartnerName as reg_cara_bayar',
                 'm_registrasi.reg_tgl',
-                DB::raw('GROUP_CONCAT(physician.ParamedicName SEPARATOR "| ") as physician_team')
+                'm_registrasi.reg_jam',
+                DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
+                DB::raw("
+                    (
+                        select CONCAT('[', GROUP_CONCAT(CONCAT('\"', kategori, '\"') ORDER BY kategori ASC SEPARATOR ', '), ']')
+                        from ".getUni()->db_connection_mysql2()->getDatabaseName().".m_physician_team 
+                        where kode_dokter = '".$dokter_code."'
+                        and reg_no = m_registrasi.reg_no
+                    ) as physician_team_role
+                ")
             ])
             ->groupBy([
                 'm_pasien.PatientName',
@@ -94,8 +103,15 @@ class PatientController extends Controller
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
-            ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode')
-            ->where('m_registrasi.reg_discharge', '!=', '3')
+            ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode');
+
+            if (isset($request->params)) {
+                foreach ($request->params as $key => $value) {
+                    $datamypatient = $datamypatient->where($value['key'], $value['value']);
+                }
+            }
+            
+            $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
             ->whereRaw("
                 (reg_dokter_care = '' or reg_dokter_care like ?) 
                 and (m_bed.service_unit_id = ? or m_registrasi.service_unit = ?)
@@ -117,7 +133,16 @@ class PatientController extends Controller
                 'ServiceUnitName as nama_ruangan',
                 'businesspartner.BusinessPartnerName as reg_cara_bayar',
                 'm_registrasi.reg_tgl',
-                DB::raw('GROUP_CONCAT(physician.ParamedicName SEPARATOR "| ") as physician_team') // Menggabungkan nama dokter
+                'm_registrasi.reg_jam',
+                DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
+                DB::raw("
+                    (
+                        select CONCAT('[', GROUP_CONCAT(CONCAT('\"', kategori, '\"') ORDER BY kategori ASC SEPARATOR ', '), ']')
+                        from ".getUni()->db_connection_mysql2()->getDatabaseName().".m_physician_team 
+                        where kode_dokter = '".$dokter_code."'
+                        and reg_no = m_registrasi.reg_no
+                    ) as physician_team_role
+                ")
             ])
             ->groupBy([
                 'm_pasien.PatientName',
@@ -133,6 +158,11 @@ class PatientController extends Controller
         
         }
         $data = $datamypatient->get();
+
+        if (isset($request->no_ajax)) {
+            return $data;
+        }
+
         return view('dokter.pages.table', compact('data', 'type'));
     }
     
@@ -155,6 +185,7 @@ class PatientController extends Controller
                 'm_ruangan_baru.nama_ruangan',
                 'm_registrasi.reg_cara_bayar',
                 'm_registrasi.reg_tgl',
+                'm_registrasi.reg_jam',
             ])
             ->orderByDesc('m_registrasi.reg_tgl');
 
