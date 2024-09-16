@@ -115,8 +115,8 @@
                   <!-- Konten untuk dicetak -->
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" onclick="printModalContent()">Print</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                  <button type="button" class="btn btn-primary" onclick="printModalContent()">Cetak</button>
                 </div>
               </div>
             </div>

@@ -40,7 +40,7 @@
                         <td>&nbsp;</td>
                         <td colspan="2"><strong>Hari / tanggal / pukul</strong></td>
                         <td width="9">:</td>
-                        <td colspan="4">{{$datapasien->reg_tgl ?? '-'}}&nbsp;</td>
+                        <td colspan="4">{{ isset($datapasien->reg_tgl) ? \Carbon\Carbon::parse($datapasien->reg_tgl)->format('d F Y') : '-' }}&nbsp;</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
