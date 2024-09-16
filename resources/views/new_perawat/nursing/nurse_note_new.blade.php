@@ -11,11 +11,11 @@
 
 
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="" class="text-sm">Tanggal Note</label>
                         <input type="datetime-local" class="form-control form-control-sm text-sm"
-                               name="tgl_pemberian">
+                               name="tgl_pemberian" value="">
                     </div>
                 </div>
             </div>
