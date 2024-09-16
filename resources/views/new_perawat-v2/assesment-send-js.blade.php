@@ -126,15 +126,95 @@
     }
 
 
-    // resiko-jatuh
-    function addresikojatuh() {
+    // resiko-jatuh-geriatri
+    function addresikojatuhGeriatri() {
         var userId = "{{ auth()->user()->id }}";
         var userShift = "{{ session('user_shift') }}";
         neko_proses();
         $.ajax({
-            url: "{{route('add.resikojatuh')}}",
+            url: "{{route('add.resiko.jatuh.geriatri')}}",
             type: "POST",
-            data: $('#entry-resiko-jatuh').serialize() +
+            data: $('#entry-resiko-jatuh-geriatri').serialize() +
+                "&medrec=" + medrec +
+                "&regno=" + regno +
+                "&user_id=" + userId +
+                "&shift=" + userShift,
+                success: function(data) {
+                neko_simpan_success();
+                $('.left-tab.active').click();
+            },
+            error: function(data) {
+                neko_simpan_error_noreq();
+            },
+        })
+    }
+
+    // resiko-jatuh-humpty-dumpty
+    function addresikojatuhHumptyDumpty() {
+        var userId = "{{ auth()->user()->id }}";
+        var userShift = "{{ session('user_shift') }}";
+
+        neko_proses();
+        $.ajax({
+            url: "{{route('add.resiko.jatuh.humptydumpty')}}",
+            type: "POST",
+            data: $('#entry-resiko-jatuh-humpty_dumpty').serialize() +
+                "&medrec=" + medrec +
+                "&regno=" + regno +
+                "&user_id=" + userId +
+                "&shift=" + userShift,
+                success: function(data) {
+                neko_simpan_success();
+                $('.left-tab.active').click();
+            },
+            error: function(data) {
+                neko_simpan_error_noreq();
+            },
+        })
+    }
+
+    // resiko-jatuh-neonatus
+    function addresikojatuhNeonatus() {
+        var userId = "{{ auth()->user()->id }}";
+        var userShift = "{{ session('user_shift') }}";
+
+        var formData = new FormData($('#entry-resiko-jatuh-neonatus')[0]);
+
+        formData.append('medrec', medrec);
+        formData.append('regno', regno);
+        formData.append('user_id', userId);
+        formData.append('shift', userShift);
+        formData.append('ttd_keluarga', signaturePadKeluargaNeonatus.toDataURL());
+        formData.append('ttd_petugas', signaturePadPetugasNeonatus.toDataURL());
+
+        neko_proses();
+
+        $.ajax({
+            url: "{{ route('add.resiko.jatuh.neonatus') }}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                neko_simpan_success();
+                $('.left-tab.active').click();
+            },
+            error: function(data) {
+                neko_simpan_error_noreq();
+            }
+        });
+    }
+
+    // resiko-jatuh-skala-morse
+    function addresikojatuhSkalaMorse() {
+        var userId = "{{ auth()->user()->id }}";
+        var userShift = "{{ session('user_shift') }}";
+
+        neko_proses();
+        $.ajax({
+            url: "{{route('add.resiko.jatuh.skalamorse')}}",
+            type: "POST",
+            data: $('#entry-resiko-jatuh-skala-morse').serialize() +
                 "&medrec=" + medrec +
                 "&regno=" + regno +
                 "&user_id=" + userId +
@@ -958,7 +1038,7 @@
         $.ajax({
             url: "{{route('add.monitoringnews')}}",
             type: "POST",
-            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec,
+            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec  + "&user_id=" + "{{auth()->user()->id}}",
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();

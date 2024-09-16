@@ -162,9 +162,13 @@
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <div style="margin-bottom: 10px; font-weight: bold;">SASARAN</div>
                 <div id="signature-pad-sasaran" style="display: inline-block;">
-                    <div style="width: 360px; height: 110px; padding: 3px; position: relative;">
-                        <canvas id="canvas_sasaran" width="350" height="100" disabled>Your browser does not support
-                            the HTML canvas tag.</canvas>
+                    <div style="width: 460px; height: 210px; padding: 3px; position: relative;">
+                        @if(isset($edukasi_pasien_dokter->ttd_pasien) && $edukasi_pasien_dokter->ttd_pasien)
+                            <img src="{{ $edukasi_pasien_dokter->ttd_pasien }}" alt="Tanda Tangan Pasien" style="max-width: 100%; height: auto;">
+                        @else
+                            <canvas id="canvas_sasaran" width="450" height="200" disabled>Your browser does not support
+                                the HTML canvas tag.</canvas>
+                        @endif
                     </div>
                     <div style="margin: 10px; text-align: center;">
                         <input type="hidden" id="signature_sasaran" name="ttd_sasaran" value="{{$edukasi_pasien_dokter->ttd_pasien}}">
@@ -176,9 +180,13 @@
         <td style="width: 500px; text-align: center; vertical-align: middle; padding: 10px;">
             <div style="margin-bottom: 10px; font-weight: bold;">EDUKATOR</div>
             <div id="signature-pad-edukator" style="display: inline-block; margin: 0 auto;">
-                <div style="width: 360px; height: 110px; padding: 3px; position: relative;">
-                    <canvas id="canvas_edukator" width="350" height="100" disabled>Your browser does not support the
-                        HTML canvas tag.</canvas>
+                <div style="width: 460px; height: 210px; padding: 3px; position: relative;">
+                    @if(isset($edukasi_pasien_dokter->ttd_dokter) && $edukasi_pasien_dokter->ttd_dokter)
+                        <img src="{{ $edukasi_pasien_dokter->ttd_dokter }}" alt="Tanda Tangan Dokter" style="max-width: 100%; height: auto;">
+                    @else
+                        <canvas id="canvas_edukator" width="450" height="200" disabled>Your browser does not support the
+                            HTML canvas tag.</canvas>
+                    @endif
                 </div>
                 <div style="margin: 10px;">
                     <input type="hidden" id="signature_edukator" name="ttd_edukator" value="{{$edukasi_pasien_dokter->ttd_dokter}}">
