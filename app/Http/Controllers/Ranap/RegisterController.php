@@ -543,7 +543,6 @@ class RegisterController extends Controller
 
     function cetakSlipAdmisi($regno)
     {
-
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -553,11 +552,33 @@ class RegisterController extends Controller
             ->leftJoin('businesspartner','m_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
             ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*','businesspartner.BusinessPartnerName as reg_cara_bayar_name')
-            ->get()->first();
+            // ->get()->first();
 
-        $data['datapasien'] = $datamypatient;
+            // $data['datapasien'] = $datamypatient;
+            ->first();
+    
+        if ($datamypatient) {
+            $ranap_reg = $datamypatient->reg_lama;
+            if ($ranap_reg) {
+                $response = \Illuminate\Support\Facades\Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/' . str_replace('/', '_', $ranap_reg));
+                if ($response->successful()) {
+                    $dataFromApi = $response->json();
+                    if (!empty($dataFromApi)) {
+                        $datamypatient->poli_asal = $dataFromApi['poli_asal'] ?? null;
+                    } else {
+                        $datamypatient->poli_asal = null;
+                    }
+                } else {
+                    $datamypatient->poli_asal = null;
+                }
+            } else {
+                $datamypatient->poli_asal = null;
+            }
+        }
 
-        // dd($data['datapasien']);
+        $data['datamypatient'] = $datamypatient;
+        $data['datapasien'] = $datamypatient; 
+    
         return view('rekam_medis.slip_admisi', $data);
     }
 
