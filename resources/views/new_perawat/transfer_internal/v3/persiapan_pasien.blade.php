@@ -5,18 +5,17 @@
 </style>
 <script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
 <h3>Persiapan Pasien</h3>
-<input type="hidden" name="kode_transfer_internal" value="">
+<input type="hidden" name="kode_transfer_internal" value="{{ $transfer_internal->kode_transfer_internal }}">
 <div class="card">
     <div class="form-group row">
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Unit asal</label>
-                <select name="transfer_unit_asal" id="select-bed-asal" class="form-control">
-                    @if (isset($ruangan_asal))
-                    <option value="{{$ruangan_asal->bed_id}}"
-                        selected>{{ $ruangan_asal->bed_code . ' - ' . $ruangan_asal->ruang . ' - ' . $ruangan_asal->kelompok . ' - ' . $ruangan_asal->kelas }}</option>
-                    @endif
-                </select>
+                <input type="hidden"
+                    class="form-control" name="transfer_unit_asal" value="{{$ruangan_asal->bed_id}}">
+                <input type="text"
+                    class="form-control" value="{{ $ruangan_asal->bed_code . ' - ' . $ruangan_asal->ruang . ' - ' . $ruangan_asal->kelompok . ' - ' . $ruangan_asal->kelas }}" disabled>
+
             </div>
         </div>
         <div class="col-lg-6">

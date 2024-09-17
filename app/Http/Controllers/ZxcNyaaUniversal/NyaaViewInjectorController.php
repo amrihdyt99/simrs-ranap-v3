@@ -9,6 +9,7 @@ use App\Models\Neonatus\NeonatusRekonObat;
 use App\Models\Neonatus\NeonatusTtd;
 use App\Models\Pasien;
 use App\Models\RegistrationInap;
+use App\Traits\Master\MasterBedTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,8 @@ use GuzzleHttp\Client as GuzzleClient;
 
 class NyaaViewInjectorController extends AaaBaseController
 {
+    use MasterBedTraits;
+
     function checklist(Request $request)
     {
         $regno = $request->reg_no;
@@ -326,7 +329,10 @@ class NyaaViewInjectorController extends AaaBaseController
 
         $transfer_internal = DB::connection('mysql')
             ->table('transfer_internal')
-            ->where('transfer_reg', $request->reg_no)
+            ->where([
+                ['transfer_reg', $request->reg_no],
+                ['status_transfer', 0],
+            ])
             ->first();
 
         $transfer_internal_alat_terpasang = DB::connection('mysql')
@@ -374,6 +380,124 @@ class NyaaViewInjectorController extends AaaBaseController
         );
 
         return view('new_perawat.transfer_internal.v3.riwayat_transfer')
+            ->with($context);
+    }
+
+    function edit_transfer_internal(Request $request)
+    {
+        $datapasien = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
+            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
+            ->where('m_registrasi.reg_medrec', $request->medrec)
+            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->select([
+                'm_registrasi.*',
+                'm_pasien.*',
+                'm_paramedis.ParamedicName',
+                'm_paramedis.FeeAmount',
+                'm_ruangan_baru.*',
+                'm_kelas_ruangan_baru.*',
+            ])
+            ->first();
+
+        $cek_transfer_ongoing = DB::connection('mysql')
+            ->table('transfer_internal')
+            ->where([
+                ['transfer_reg', $request->reg_no],
+                ['status_transfer', 0],
+            ])
+            ->count();
+
+        $transfer_internal = DB::connection('mysql')
+            ->table('transfer_internal')
+            ->where([
+                ['transfer_reg', $request->reg_no],
+                ['kode_transfer_internal', $request->kode_transfer_internal],
+                ['status_transfer', 0],
+            ])
+            ->first();
+
+
+        $ruangan_asal = DB::connection('mysql2')
+            ->table('m_bed')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->leftJoin('m_unit_departemen', function ($join) {
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
+            })
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+            ->where('bed_id', $datapasien->bed)
+            ->first();
+
+
+        $ruangan_tujuan = DB::connection('mysql2')
+            ->table('m_bed')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->leftJoin('m_unit_departemen', function ($join) {
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
+            })
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+            ->where('bed_id', $transfer_internal->transfer_unit_tujuan)
+            ->first();
+
+        $transfer_internal_alat_terpasang = DB::connection('mysql')
+            ->table('transfer_internal_alat_terpasang')
+            ->where('reg_no', $request->reg_no)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
+            ->get();
+
+        $transfer_internal_kejadian = DB::connection('mysql')
+            ->table('transfer_internal_kejadian')
+            ->where('reg_no', $request->reg_no)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
+            ->get();
+
+        $transfer_internal_obat_dibawa = DB::connection('mysql')
+            ->table('transfer_internal_obat_dibawa')
+            ->where('reg_no', $request->reg_no)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
+            ->get();
+
+        $transfer_internal_status_pasien = DB::connection('mysql')
+            ->table('transfer_internal_status_pasien')
+            ->where('reg_no', $request->reg_no)
+            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
+                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
+            })
+            ->get();
+
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'transfer_internal' => optional($transfer_internal),
+            'datapasien' => optional($datapasien),
+            'transfer_internal_alat_terpasang' => $transfer_internal_alat_terpasang,
+            'transfer_internal_obat_dibawa' => $transfer_internal_obat_dibawa,
+            'transfer_internal_status_pasien' => $transfer_internal_status_pasien,
+            'transfer_internal_kejadian' => $transfer_internal_kejadian,
+            'cek_transfer_ongoing'  => $cek_transfer_ongoing,
+            'ruangan_asal' => $ruangan_asal,
+            'ruangan_tujuan' => $ruangan_tujuan,
+            'type'  => 'buat',
+        );
+
+        return view('new_perawat.transfer_internal.v3.index')
             ->with($context);
     }
 
@@ -458,11 +582,6 @@ class NyaaViewInjectorController extends AaaBaseController
                 'transfer_reg'  => $request->reg_no,
                 'medrec'        => $request->medrec,
             ];
-            $data['kode_transfer_internal'] = 'TI20240913112430346';
-            // $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
-
-            // DB::connection('mysql')->table('transfer_internal')
-            //     ->insert($data);
 
             $datapasien = DB::connection('mysql2')
                 ->table('m_registrasi')
@@ -483,6 +602,17 @@ class NyaaViewInjectorController extends AaaBaseController
                 ->first();
 
 
+            // $data['kode_transfer_internal'] = 'TI20240913112430346';
+            $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
+            $data['transfer_unit_asal'] = $datapasien->bed;
+            $data['ditransfer_oleh_user_id'] = auth()->user()->username;
+            $data['ditransfer_oleh_nama'] = auth()->user()->name;
+
+
+            DB::connection('mysql')->table('transfer_internal')
+                ->insert($data);
+
+
 
             $transfer_internal = DB::connection('mysql')
                 ->table('transfer_internal')
@@ -501,7 +631,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 })
                 ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
                 ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-                ->where('bed_id', $transfer_internal->transfer_unit_tujuan)
+                ->where('bed_id', $datapasien->bed)
                 ->first();
 
             $ruangan_tujuan = DB::connection('mysql2')
@@ -559,8 +689,8 @@ class NyaaViewInjectorController extends AaaBaseController
                 'transfer_internal_obat_dibawa' => $transfer_internal_obat_dibawa,
                 'transfer_internal_status_pasien' => $transfer_internal_status_pasien,
                 'transfer_internal_kejadian' => $transfer_internal_kejadian,
-                'ruangan_asal' => $ruangan_tujuan,
-                'ruangan_tujuan' => $ruangan_asal,
+                'ruangan_asal' => $ruangan_asal,
+                'ruangan_tujuan' => $ruangan_tujuan,
                 'type'  => 'buat'
             );
 
@@ -597,7 +727,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 'transfer_reg'  => $request->reg_no,
                 'medrec'        => $request->medrec,
             ];
-            $data['kode_transfer_internal'] = 'TI20240913112430346';
+            // $data['kode_transfer_internal'] = 'TI20240913112430346';
             // $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
 
             // DB::connection('mysql')->table('transfer_internal')
@@ -626,7 +756,7 @@ class NyaaViewInjectorController extends AaaBaseController
             $transfer_internal = DB::connection('mysql')
                 ->table('transfer_internal')
                 ->where('transfer_reg', $request->reg_no)
-                ->where('kode_transfer_internal', $data['kode_transfer_internal'])
+                ->where('kode_transfer_internal', $request->kode_transfer)
                 ->first();
 
             $ruangan_asal = DB::connection('mysql2')
@@ -640,7 +770,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 })
                 ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
                 ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-                ->where('bed_id', $transfer_internal->transfer_unit_tujuan)
+                ->where('bed_id', $datapasien->bed)
                 ->first();
 
             $ruangan_tujuan = DB::connection('mysql2')
@@ -698,8 +828,8 @@ class NyaaViewInjectorController extends AaaBaseController
                 'transfer_internal_obat_dibawa' => $transfer_internal_obat_dibawa,
                 'transfer_internal_status_pasien' => $transfer_internal_status_pasien,
                 'transfer_internal_kejadian' => $transfer_internal_kejadian,
-                'ruangan_asal' => $ruangan_tujuan,
-                'ruangan_tujuan' => $ruangan_asal,
+                'ruangan_asal' => $ruangan_asal,
+                'ruangan_tujuan' => $ruangan_tujuan,
                 'type'  => 'terima'
             );
 

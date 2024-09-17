@@ -1542,6 +1542,13 @@
         nyaa_transferinternal_load_datatable('#dttb_transfer_internal5');
     }
 
+    function nyaa_dttb_transferinternal_edit_load_all() {
+        nyaa_transferinternal_load_datatable('#dttb_transfer_internal1');
+        nyaa_transferinternal_load_datatable('#dttb_transfer_internal2');
+        nyaa_transferinternal_load_datatable('#dttb_transfer_internal3');
+        nyaa_transferinternal_load_datatable('#dttb_transfer_internal4');
+    }
+
     function nyaa_transferinternal_load_datatable(id_dttb) {
         // console.log(JSON.parse($(id_dttb).attr('nyaa-columns')));
         var url = $(id_dttb).attr('nyaa-urldatatable');

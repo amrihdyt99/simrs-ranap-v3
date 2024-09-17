@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Perawat;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class TransferInternalController extends Controller
 {
@@ -17,7 +18,7 @@ class TransferInternalController extends Controller
 
             $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
                              `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
-                             `internal`.`status_transfer`
+                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`, `internal`.`ditransfer_oleh_user_id`
                       FROM `$dbInap`.`transfer_internal` as `internal`
                       LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
                       LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
@@ -33,13 +34,14 @@ class TransferInternalController extends Controller
             return DataTables()
                 ->of($data)
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<div class="btn-group" role="group">';
+                    $actionBtn = '<div class="btn-group" role="group" >';
 
                     if ($row->status_transfer == 1) {
                         $actionBtn = "<button type='button' class='btn btn-success'><i class='far fa-eye'></i> Detail</button>";
-                    } else {
+                        $actionBtn .= "<button type='button' class='btn btn-info'><i class='fas fa-print'></i> Print Riwayat Transfer</button>";
+                    } else if ($row->status_transfer == 0 && $row->ditransfer_oleh_user_id == auth()->user()->username) {
 
-                        $actionBtn = "<button type='button' class='btn btn-info btn-delete' data-id ='" . $row->transfer_id . "'>Edit</button>";
+                        $actionBtn = "<button type='button' class='btn btn-info btn-edit-transfer' data-transfer_code='$row->kode_transfer_internal'>Edit</button>";
                     }
 
                     $actionBtn .= '</div>';
@@ -51,16 +53,16 @@ class TransferInternalController extends Controller
     }
 
 
-    function getTerimaTerimaPasienData(Request $request)
+    function getTerimaPasienData(Request $request)
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->user()->username;
         if ($request->ajax()) {
             $dbMaster = DB::connection('mysql2')->getDatabaseName();
             $dbInap = DB::connection('mysql')->getDatabaseName();
 
             $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
                              `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
-                             `internal`.`status_transfer`
+                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`
                       FROM `$dbInap`.`transfer_internal` as `internal`
                       LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
                       LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
@@ -81,7 +83,7 @@ class TransferInternalController extends Controller
                         $actionBtn = "<button type='button' class='btn btn-success'><i class='far fa-eye'></i> Detail</button>";
                     } else {
 
-                        $actionBtn = "<button type='button' class='btn btn-warning btn-confirm-tf'><i class='fas fa-user-check'></i> Konfirmasi Penerimaan</button>";
+                        $actionBtn = "<button type='button' class='btn btn-warning btn-confirm-tf' data-transfer_code='$row->kode_transfer_internal'><i class='fas fa-user-check'></i> Konfirmasi Penerimaan</button>";
                     }
 
                     $actionBtn .= '</div>';
@@ -93,7 +95,109 @@ class TransferInternalController extends Controller
         }
     }
 
-    public function store(Request $request) {}
+    public function confirmSerahTerima(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'transfer_terima_tanggal' => 'required',
+            'transfer_terima_kondisi' => 'required',
+        ]);
+        if ($validator->passes()) {
+            DB::beginTransaction();
+            try {
+                $tf_internal = DB::connection('mysql')->table('transfer_internal')->where([
+                    ['transfer_reg', $request->transfer_reg],
+                    ['kode_transfer_internal', $request->kode_transfer_internal],
+                ])->first();
+
+                $data = array(
+                    'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
+                    'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
+                    'transfer_terima_gcs_e' => $request->transfer_terima_gcs_e,
+                    'transfer_terima_gcs_m' => $request->transfer_terima_gcs_m,
+                    'transfer_terima_gcs_v' => $request->transfer_terima_gcs_v,
+                    'transfer_terima_td' => $request->transfer_terima_td,
+                    'transfer_terima_n' => $request->transfer_terima_n,
+                    'transfer_terima_suhu' => $request->transfer_terima_suhu,
+                    'transfer_terima_p' => $request->transfer_terima_p,
+                    'diterima_oleh_user_id' => auth()->user()->username,
+                    'diterima_oleh_nama' => auth()->user()->name,
+                    'status_transfer'   => 1,
+                );
+
+
+                DB::connection('mysql')->table('transfer_internal')
+                    ->where([
+                        ['transfer_reg', $request->transfer_reg],
+                        ['kode_transfer_internal', $request->kode_transfer_internal]
+                    ])
+                    ->update($data);
+
+                //Update Bed
+
+                // DB::connection('mysql2')->table('m_registrasi')
+                //     ->where([
+                //         ['reg_no', $request->transfer_reg],
+                //         ['reg_medrec', $request->medrec]
+                //     ])
+                //     ->update([
+                //         'bed' => $tf_internal->transfer_unit_tujuan,
+                //     ]);
+
+                //update bed asal
+                DB::connection('mysql2')->table('m_bed')
+                    ->where('bed_id', $tf_internal->transfer_unit_asal)
+                    ->update([
+                        'registration_no' => '',
+                        'bed_status' => '0116^R',
+                    ]);
+
+                //update bed tujuan
+                DB::connection('mysql2')->table('m_bed')
+                    ->where('bed_id', $tf_internal->transfer_unit_tujuan)
+                    ->update([
+                        'registration_no' => $tf_internal->transfer_reg,
+                        'bed_status' => '0116^O',
+                    ]);
+
+                //Log History Bed
+
+                // $history = array(
+                //     'RegNo' => $request->transfer_reg,
+                //     'MedicalNo' => $request->medrec,
+                //     'HistoryRefCode' => $request->kode_transfer_internal,
+                //     'TableRef' => 'transfer_internal',
+                //     'FromServiceUnitID' => '',
+                //     'FromBedID' => '',
+                //     'ToUnitServiceUnitID' => '',
+                //     'ToBedID'   => '',
+                //     'RequestTransferDate' => $request->ditransfer_waktu,
+                //     'RequestTransferTime'   => $request->ditransfer_waktu,
+                //     'ReceiveTransferDate'   => $request->transfer_terima_tanggal,
+                //     'ReceiveTransferTime'   => $request->transfer_terima_tanggal,
+                //     'Description'   => 'Transfer Internal',
+                //     'CreatedBy'     => auth()->user()->username,
+                //     'RequestedBy'   => $tf_internal->ditransfer_oleh_user_id,
+                //     'ReceivedBy'    => auth()->user()->username,
+                //     'created_at' => Carbon::now(),
+                // );
+
+
+                DB::commit();
+                $response = response()->json([
+                    'status' => 'success',
+                    'message' => 'Data berhasil disimpan',
+                ]);
+            } catch (\Throwable $throw) {
+                //throw $th;
+                DB::rollBack();
+                //dd($th->getMessage());
+                abort(500, $throw->getMessage());
+            }
+        } else {
+            abort(402, json_encode($validator->errors()->all()));
+        }
+        return $response;
+    }
 
     public function getUnitRoom(Request $request)
     {
