@@ -592,6 +592,8 @@ class NyaaViewInjectorController extends AaaBaseController
             // $data['kode_transfer_internal'] = 'TI20240913112430346';
             $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
             $data['transfer_unit_asal'] = $datapasien->bed;
+            $data['ditransfer_oleh_user_id'] = auth()->user()->username;
+            $data['ditransfer_oleh_nama'] = auth()->user()->name;
 
 
             DB::connection('mysql')->table('transfer_internal')
