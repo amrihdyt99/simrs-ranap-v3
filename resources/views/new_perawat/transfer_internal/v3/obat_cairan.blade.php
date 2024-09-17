@@ -7,6 +7,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
 <div class="row">
     <div class="col-lg-12">
         <h4>{{ $judul_form }}</h4>
+        @if ($type == 'edit' || $type == 'terima')
         <div class="row">
             <div class="col-sm-12 pb-3" style>
                 <button type="button" class="protecc btn btn-sm btn-info" onclick="nyaa_act(this,'ModalBase_orig_transferinternal_obtcr','ModalBase')" nyaa-mode="add">Tambah Data Baru</button>
@@ -36,6 +37,32 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                 </div>
             </div>
         </div>
+        @else
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="w-100">
+                    <table id="dttb_transfer_internal2" nyaa-urldatatable="{{ $url_form }}"
+                        nyaa-columns='[
+                    {"data": "id", "name": "id"},
+                    {"data": "nama_obat", "name": "nama_obat"},
+                    {"data": "quantity", "name": "quantity"},
+                    {"data": "satuan_obat", "name": "satuan_obat"}
+                ]'
+                        nyaa-kode_transfer_internal="{{ $transfer_internal->kode_transfer_internal }}"
+                        class="w-100 table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama Obat/cairan</th>
+                                <th>Qty</th>
+                                <th>Satuan</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @endif
         <div id="ModalBase_orig_transferinternal_obtcr" style="display:none!important;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">

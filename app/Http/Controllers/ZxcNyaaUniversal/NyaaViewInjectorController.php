@@ -403,10 +403,8 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where([
                 ['transfer_reg', $request->reg_no],
                 ['kode_transfer_internal', $request->kode_transfer_internal],
-                ['status_transfer', 0],
             ])
             ->first();
-
 
         $ruangan_asal = DB::connection('mysql2')
             ->table('m_bed')
@@ -481,7 +479,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'cek_transfer_ongoing'  => $cek_transfer_ongoing,
             'ruangan_asal' => $ruangan_asal,
             'ruangan_tujuan' => $ruangan_tujuan,
-            'type'  => 'buat',
+            'type'  => $request->type,
         );
 
         return view('new_perawat.transfer_internal.v3.index')
@@ -621,63 +619,12 @@ class NyaaViewInjectorController extends AaaBaseController
                 ->where('bed_id', $datapasien->bed)
                 ->first();
 
-            $ruangan_tujuan = DB::connection('mysql2')
-                ->table('m_bed')
-                ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-                ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-                // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                ->leftJoin('m_unit_departemen', function ($join) {
-                    $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                        ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
-                })
-                ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
-                ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-                ->where('bed_id', $transfer_internal->transfer_unit_tujuan)
-                ->first();
-
-            $transfer_internal_alat_terpasang = DB::connection('mysql')
-                ->table('transfer_internal_alat_terpasang')
-                ->where('reg_no', $request->reg_no)
-                ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                    return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-                })
-                ->get();
-
-            $transfer_internal_kejadian = DB::connection('mysql')
-                ->table('transfer_internal_kejadian')
-                ->where('reg_no', $request->reg_no)
-                ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                    return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-                })
-                ->get();
-
-            $transfer_internal_obat_dibawa = DB::connection('mysql')
-                ->table('transfer_internal_obat_dibawa')
-                ->where('reg_no', $request->reg_no)
-                ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                    return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-                })
-                ->get();
-
-            $transfer_internal_status_pasien = DB::connection('mysql')
-                ->table('transfer_internal_status_pasien')
-                ->where('reg_no', $request->reg_no)
-                ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                    return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-                })
-                ->get();
-
             $context = array(
                 'reg' => $request->reg_no,
                 'medrec' => $request->medrec,
                 'transfer_internal' => optional($transfer_internal),
                 'datapasien' => optional($datapasien),
-                'transfer_internal_alat_terpasang' => $transfer_internal_alat_terpasang,
-                'transfer_internal_obat_dibawa' => $transfer_internal_obat_dibawa,
-                'transfer_internal_status_pasien' => $transfer_internal_status_pasien,
-                'transfer_internal_kejadian' => $transfer_internal_kejadian,
-                'ruangan_asal' => $ruangan_asal,
-                'ruangan_tujuan' => $ruangan_tujuan,
+                'ruangan_asal'  => optional($ruangan_asal),
                 'type'  => 'buat'
             );
 

@@ -37,11 +37,12 @@ class TransferInternalController extends Controller
                     $actionBtn = '<div class="btn-group" role="group" >';
 
                     if ($row->status_transfer == 1) {
-                        $actionBtn = "<button type='button' class='btn btn-success'><i class='far fa-eye'></i> Detail</button>";
+                        $actionBtn .= "<button type='button' class='btn btn-success btn-detail-transfer' data-transfer_code='$row->kode_transfer_internal'><i class='far fa-eye'></i> Detail</button>";
                         $actionBtn .= "<button type='button' class='btn btn-info'><i class='fas fa-print'></i> Print Riwayat Transfer</button>";
                     } else if ($row->status_transfer == 0 && $row->ditransfer_oleh_user_id == auth()->user()->username) {
-
                         $actionBtn = "<button type='button' class='btn btn-info btn-edit-transfer' data-transfer_code='$row->kode_transfer_internal'>Edit</button>";
+                    } else if ($row->status_transfer == 0) {
+                        $actionBtn .= "<button type='button' class='btn btn-success btn-detail-transfer' data-transfer_code='$row->kode_transfer_internal'><i class='far fa-eye'></i> Detail</button>";
                     }
 
                     $actionBtn .= '</div>';
@@ -69,7 +70,9 @@ class TransferInternalController extends Controller
                       LEFT JOIN `$dbMaster`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
                       LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
                       LEFT JOIN `$dbMaster`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
-                      WHERE `internal`.`transfer_reg` = '$request->reg_no' AND `internal`.`diterima_oleh_user_id` = '$user_id'
+                      WHERE `internal`.`transfer_reg` = '$request->reg_no' 
+                        AND `internal`.`diterima_oleh_user_id` = '$user_id'
+                        AND `internal`.`status_transfer` = 0
                       ORDER BY `internal`.`transfer_id` DESC";
 
             $data = DB::select($query);
