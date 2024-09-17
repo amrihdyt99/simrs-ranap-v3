@@ -98,12 +98,57 @@
               "reg_no": regno,
               "medrec": medrec,
               "kode_transfer_internal": kode_transfer,
+              'type': 'edit'
             },
             url: "{{route('nyaa_universal.view_injector.perawat.edit_transfer_internal')}}",
             success: function(data) {
               inject_view_data(data);
               nyaa_dttb_transferinternal_edit_load_all();
               loadCreateTfInternalFunc();
+            },
+            error: function(data) {
+              clear_show_error();
+            },
+          });
+        });
+        $(row).find('.btn-detail-transfer').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+              'type': 'detail'
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.edit_transfer_internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              nyaa_dttb_transferinternal_load_all();
+              loadCreateTfInternalFunc();
+
+            },
+            error: function(data) {
+              clear_show_error();
+            },
+          });
+        });
+        $(row).find('.btn-print-transfer').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.print-transfer-internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              printTransferInternal();
+
             },
             error: function(data) {
               clear_show_error();
@@ -268,11 +313,12 @@
             data: {
               "reg_no": regno,
               "medrec": medrec,
+              'type': 'edit',
             },
             url: "{{route('nyaa_universal.view_injector.perawat.create_transfer_internal')}}",
             success: function(data) {
               inject_view_data(data);
-              nyaa_dttb_transferinternal_load_all();
+              nyaa_dttb_transferinternal_edit_load_all();
               loadCreateTfInternalFunc();
             },
             error: function(data) {
@@ -422,6 +468,19 @@
             }
           });
         }
+      });
+    });
+  }
+
+  function printTransferInternal() {
+    $(document).ready(function() {
+      $('#btnPrintTransferInternal').click(function() {
+        var printContent = $('#printTransferInternalContent').html(); // Get the div content
+        var originalContent = $('body').html(); // Backup the entire page's content
+
+        $('body').html(printContent); // Replace body content with the div content
+        window.print(); // Trigger the print
+        $('body').html(originalContent); // Restore original page content
       });
     });
   }

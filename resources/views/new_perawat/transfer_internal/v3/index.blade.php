@@ -24,7 +24,7 @@
                 <a onclick="neko_refresh_datatable('dttb_transfer_internal4')" class="nav-link" id="kejadian-tab" data-toggle="tab" href="#kejadian" role="tab" aria-controls="kejadian-tab" aria-selected="false">
                     Kejadian dan tindakan</a>
             </li>
-            @if ($type == 'terima')
+            @if ($type == 'terima' || $type == 'detail')
             <li class="nav-item">
                 <a onclick="neko_refresh_datatable('dttb_transfer_internal5')" class="nav-link " id="serah_terima-tab" data-toggle="tab" href="#serah_terima" role="tab" aria-controls="serah_terima-tab" aria-selected="false">
                     Serah terima</a>
@@ -51,7 +51,7 @@
             <div id="kejadian" class="tab-pane fade " role="tabpanel" aria-labelledby="kejadian-tab">
                 @include('new_perawat.transfer_internal.v3.kejadian')
             </div>
-            @if ($type == 'terima')
+            @if ($type == 'terima' || $type == 'detail')
             <div id="serah_terima" class="tab-pane fade " role="tabpanel" aria-labelledby="serah_terima-tab">
                 @include('new_perawat.transfer_internal.v3.confirm_serah_terima')
             </div>

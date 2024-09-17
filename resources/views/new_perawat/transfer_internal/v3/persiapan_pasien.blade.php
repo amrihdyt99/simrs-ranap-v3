@@ -11,11 +11,15 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Unit asal</label>
+                @if (isset($ruangan_asal))
                 <input type="hidden"
                     class="form-control" name="transfer_unit_asal" value="{{$ruangan_asal->bed_id}}">
                 <input type="text"
                     class="form-control" value="{{ $ruangan_asal->bed_code . ' - ' . $ruangan_asal->ruang . ' - ' . $ruangan_asal->kelompok . ' - ' . $ruangan_asal->kelas }}" disabled>
-
+                @else
+                <input type="text"
+                    class="form-control" value="" disabled>
+                @endif
             </div>
         </div>
         <div class="col-lg-6">
@@ -218,7 +222,7 @@
         </div>
 
     </div>
-    @if ($type != 'terima')
+    @if ($type != 'terima' && $type != 'detail')
     <div class="float-left">
         <button class="btn btn-success btn_transfer_internal" type="button">Simpan</button>
     </div>
