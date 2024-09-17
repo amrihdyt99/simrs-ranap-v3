@@ -16,17 +16,33 @@ class TransferInternalController extends Controller
             $dbMaster = DB::connection('mysql2')->getDatabaseName();
             $dbInap = DB::connection('mysql')->getDatabaseName();
 
-            $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
-                             `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
-                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`, `internal`.`ditransfer_oleh_user_id`
-                      FROM `$dbInap`.`transfer_internal` as `internal`
-                      LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
-                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
-                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
-                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
-                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
-                      WHERE `internal`.`transfer_reg` = '$request->reg_no' 
-                      ORDER BY `internal`.`transfer_id` DESC";
+            $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `internal`.`transfer_unit_asal`, 
+                             `internal`.`transfer_unit_tujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
+                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`, `internal`.`ditransfer_oleh_user_id`,
+                             `bed_asal`.`bed_code` AS `bed_code_asal`, `bed_asal`.`RoomName` AS `bed_asal_name` , `bed_asal`.`ServiceUnitName` AS `bed_asal_unit`, `bed_asal`.`ClassName` AS `bed_asal_class`,
+                             `bed_tujuan`.`bed_code` AS `bed_code_tujuan`, `bed_tujuan`.`RoomName` AS `bed_tujuan_name`, `bed_tujuan`.`ServiceUnitName` AS `bed_tujuan_unit`, `bed_tujuan`.`ClassName`AS `bed_tujuan_class`
+                        FROM `$dbInap`.`transfer_internal` AS `internal`
+                        LEFT JOIN `$dbMaster`.`m_pasien` AS `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
+                        LEFT JOIN (
+                            SELECT `$dbMaster`.`m_bed`.`bed_id`, `$dbMaster`.`m_bed`.`bed_code`, `$dbMaster`.`m_bed`.`class_code`, 
+                                    `$dbMaster`.`m_ruangan`.`RoomName`, `$dbMaster`.`m_unit`.`ServiceUnitName`, `$dbMaster`.`m_room_class`.`ClassName`
+                            FROM `$dbMaster`.`m_bed`
+                            LEFT JOIN `$dbMaster`.`m_ruangan` ON `$dbMaster`.`m_ruangan`.`RoomID` = `$dbMaster`.`m_bed`.`room_id`
+                            LEFT JOIN `$dbMaster`.`m_room_class` ON `$dbMaster`.`m_room_class`.`ClassCode` = `$dbMaster`.`m_bed`.`class_code`
+                            LEFT JOIN `$dbMaster`.`m_unit_departemen` ON `$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id`
+                            LEFT JOIN `$dbMaster`.`m_unit` ON `$dbMaster`.`m_unit`.`ServiceUnitCode` = `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode`
+                        ) AS `bed_asal` on `bed_asal`.`bed_id` = `internal`.`transfer_unit_asal`
+                        LEFT JOIN (
+                            SELECT `$dbMaster`.`m_bed`.`bed_id`, `$dbMaster`.`m_bed`.`bed_code`, `$dbMaster`.`m_bed`.`class_code`, 
+                                    `$dbMaster`.`m_ruangan`.`RoomName`, `$dbMaster`.`m_unit`.`ServiceUnitName`, `$dbMaster`.`m_room_class`.`ClassName`
+                            FROM `$dbMaster`.`m_bed`
+                            LEFT JOIN `$dbMaster`.`m_ruangan` ON `$dbMaster`.`m_ruangan`.`RoomID` = `$dbMaster`.`m_bed`.`room_id`
+                            LEFT JOIN `$dbMaster`.`m_room_class` ON `$dbMaster`.`m_room_class`.`ClassCode` = `$dbMaster`.`m_bed`.`class_code`
+                            LEFT JOIN `$dbMaster`.`m_unit_departemen` ON `$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id`
+                            LEFT JOIN `$dbMaster`.`m_unit` ON `$dbMaster`.`m_unit`.`ServiceUnitCode` = `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode`
+                        ) AS `bed_tujuan` on `bed_tujuan`.`bed_id` = `internal`.`transfer_unit_tujuan`
+                        WHERE `internal`.`transfer_reg` = '$request->reg_no' 
+                    ORDER BY `internal`.`transfer_id` DESC";
 
             $data = DB::select($query);
 
@@ -61,19 +77,39 @@ class TransferInternalController extends Controller
             $dbMaster = DB::connection('mysql2')->getDatabaseName();
             $dbInap = DB::connection('mysql')->getDatabaseName();
 
-            $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
-                             `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
-                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`
-                      FROM `$dbInap`.`transfer_internal` as `internal`
-                      LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
-                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
-                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
-                      LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
-                      LEFT JOIN `$dbMaster`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
-                      WHERE `internal`.`transfer_reg` = '$request->reg_no' 
-                        AND `internal`.`diterima_oleh_user_id` = '$user_id'
-                        AND `internal`.`status_transfer` = 0
-                      ORDER BY `internal`.`transfer_id` DESC";
+            $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `internal`.`transfer_unit_asal`, 
+                             `internal`.`transfer_unit_tujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
+                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`, `internal`.`ditransfer_oleh_user_id`,
+                             `bed_asal`.`bed_code` AS `bed_code_asal`, `bed_asal`.`RoomName` AS `bed_asal_name` , `bed_asal`.`ServiceUnitName` AS `bed_asal_unit`, `bed_asal`.`ClassName` AS `bed_asal_class`,
+                             `bed_tujuan`.`bed_code` AS `bed_code_tujuan`, `bed_tujuan`.`RoomName` AS `bed_tujuan_name`, `bed_tujuan`.`ServiceUnitName` AS `bed_tujuan_unit`, `bed_tujuan`.`ClassName`AS `bed_tujuan_class`
+                            FROM `$dbInap`.`transfer_internal` as `internal`
+                            LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
+                            LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
+                            LEFT JOIN `$dbMaster`.`m_unit` as `unit_asal` on `unit_dep_asal`.`ServiceUnitCode` = `unit_asal`.`ServiceUnitCode`
+                            LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_tujuan` on `internal`.`transfer_unit_tujuan` = `unit_dep_tujuan`.`ServiceUnitID`
+                            LEFT JOIN `$dbMaster`.`m_unit` as `unit_tujuan` on `unit_dep_tujuan`.`ServiceUnitCode` = `unit_tujuan`.`ServiceUnitCode`
+                            LEFT JOIN (
+                                SELECT `$dbMaster`.`m_bed`.`bed_id`, `$dbMaster`.`m_bed`.`bed_code`, `$dbMaster`.`m_bed`.`class_code`, 
+                                        `$dbMaster`.`m_ruangan`.`RoomName`, `$dbMaster`.`m_unit`.`ServiceUnitName`, `$dbMaster`.`m_room_class`.`ClassName`
+                                FROM `$dbMaster`.`m_bed`
+                                LEFT JOIN `$dbMaster`.`m_ruangan` ON `$dbMaster`.`m_ruangan`.`RoomID` = `$dbMaster`.`m_bed`.`room_id`
+                                LEFT JOIN `$dbMaster`.`m_room_class` ON `$dbMaster`.`m_room_class`.`ClassCode` = `$dbMaster`.`m_bed`.`class_code`
+                                LEFT JOIN `$dbMaster`.`m_unit_departemen` ON `$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id`
+                                LEFT JOIN `$dbMaster`.`m_unit` ON `$dbMaster`.`m_unit`.`ServiceUnitCode` = `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode`
+                            ) AS `bed_asal` on `bed_asal`.`bed_id` = `internal`.`transfer_unit_asal`
+                            LEFT JOIN (
+                                SELECT `$dbMaster`.`m_bed`.`bed_id`, `$dbMaster`.`m_bed`.`bed_code`, `$dbMaster`.`m_bed`.`class_code`, 
+                                        `$dbMaster`.`m_ruangan`.`RoomName`, `$dbMaster`.`m_unit`.`ServiceUnitName`, `$dbMaster`.`m_room_class`.`ClassName`
+                                FROM `$dbMaster`.`m_bed`
+                                LEFT JOIN `$dbMaster`.`m_ruangan` ON `$dbMaster`.`m_ruangan`.`RoomID` = `$dbMaster`.`m_bed`.`room_id`
+                                LEFT JOIN `$dbMaster`.`m_room_class` ON `$dbMaster`.`m_room_class`.`ClassCode` = `$dbMaster`.`m_bed`.`class_code`
+                                LEFT JOIN `$dbMaster`.`m_unit_departemen` ON `$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id`
+                                LEFT JOIN `$dbMaster`.`m_unit` ON `$dbMaster`.`m_unit`.`ServiceUnitCode` = `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode`
+                            ) AS `bed_tujuan` on `bed_tujuan`.`bed_id` = `internal`.`transfer_unit_tujuan`
+                            WHERE `internal`.`transfer_reg` = '$request->reg_no' 
+                                AND `internal`.`diterima_oleh_user_id` = '$user_id'
+                                AND `internal`.`status_transfer` = 0
+                            ORDER BY `internal`.`transfer_id` DESC";
 
             $data = DB::select($query);
 

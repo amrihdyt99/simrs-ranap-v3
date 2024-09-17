@@ -50,15 +50,21 @@
           searchable: true,
         },
         {
-          data: "UnitAsal",
-          name: "UnitAsal",
+          data: "bed_code_asal",
+          name: "bed_code_asal",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_asal + '] ' + row.bed_asal_name + ' - ' + row.bed_asal_unit + ' - ' + row.bed_asal_class;
+          }
         }, {
-          data: "UnitTujuan",
-          name: "UnitTujuan",
+          data: "bed_code_tujuan",
+          name: "bed_code_tujuan",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_tujuan + '] ' + row.bed_tujuan_name + ' - ' + row.bed_tujuan_unit + ' - ' + row.bed_tujuan_class;
+          }
         }, {
           data: "transfer_waktu_hubungi",
           name: "transfer_waktu_hubungi",
@@ -193,15 +199,21 @@
           searchable: true,
         },
         {
-          data: "UnitAsal",
-          name: "UnitAsal",
+          data: "bed_code_asal",
+          name: "bed_code_asal",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_asal + '] ' + row.bed_asal_name + ' - ' + row.bed_asal_unit + ' - ' + row.bed_asal_class;
+          }
         }, {
-          data: "UnitTujuan",
-          name: "UnitTujuan",
+          data: "bed_code_tujuan",
+          name: "bed_code_tujuan",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_tujuan + '] ' + row.bed_tujuan_name + ' - ' + row.bed_tujuan_unit + ' - ' + row.bed_tujuan_class;
+          }
         }, {
           data: "transfer_waktu_hubungi",
           name: "transfer_waktu_hubungi",
