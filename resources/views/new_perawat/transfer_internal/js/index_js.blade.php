@@ -147,6 +147,7 @@
             url: "{{route('nyaa_universal.view_injector.perawat.print-transfer-internal')}}",
             success: function(data) {
               inject_view_data(data);
+              printTransferInternal();
 
             },
             error: function(data) {
@@ -467,6 +468,19 @@
             }
           });
         }
+      });
+    });
+  }
+
+  function printTransferInternal() {
+    $(document).ready(function() {
+      $('#btnPrintTransferInternal').click(function() {
+        var printContent = $('#printTransferInternalContent').html(); // Get the div content
+        var originalContent = $('body').html(); // Backup the entire page's content
+
+        $('body').html(printContent); // Replace body content with the div content
+        window.print(); // Trigger the print
+        $('body').html(originalContent); // Restore original page content
       });
     });
   }
