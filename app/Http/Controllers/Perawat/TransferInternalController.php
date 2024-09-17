@@ -38,7 +38,7 @@ class TransferInternalController extends Controller
 
                     if ($row->status_transfer == 1) {
                         $actionBtn .= "<button type='button' class='btn btn-success btn-detail-transfer' data-transfer_code='$row->kode_transfer_internal'><i class='far fa-eye'></i> Detail</button>";
-                        $actionBtn .= "<button type='button' class='btn btn-info'><i class='fas fa-print'></i> Print Riwayat Transfer</button>";
+                        $actionBtn .= "<button type='button' class='btn btn-info btn-print-transfer' data-transfer_code='$row->kode_transfer_internal'><i class='fas fa-print'></i> Print Riwayat Transfer</button>";
                     } else if ($row->status_transfer == 0 && $row->ditransfer_oleh_user_id == auth()->user()->username) {
                         $actionBtn = "<button type='button' class='btn btn-info btn-edit-transfer' data-transfer_code='$row->kode_transfer_internal'>Edit</button>";
                     } else if ($row->status_transfer == 0) {
@@ -112,6 +112,13 @@ class TransferInternalController extends Controller
                     ['kode_transfer_internal', $request->kode_transfer_internal],
                 ])->first();
 
+
+                $reg = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $request->transfer_reg)->first();
+                //get dokter dpjp
+                $dokter = DB::connection('mysql2')->table('users')->where('dokter_id', $reg->reg_dokter)->first();
+                $perawat_asal = DB::connection('mysql2')->table('users')->where('username', $tf_internal->ditransfer_oleh_user_id)->first();
+                $perawat_tujuan = DB::connection('mysql2')->table('users')->where('username', $tf_internal->diterima_oleh_user_id)->first();
+
                 $data = array(
                     'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
                     'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
@@ -125,6 +132,10 @@ class TransferInternalController extends Controller
                     'diterima_oleh_user_id' => auth()->user()->username,
                     'diterima_oleh_nama' => auth()->user()->name,
                     'status_transfer'   => 1,
+                    'signature_doctor' => $dokter->signature,
+                    'signature_nurse' => $perawat_asal->signature,
+                    'signature_doctor_2' => $dokter->signature,
+                    'signature_nurse_2' => $perawat_tujuan->signature,
                 );
 
 

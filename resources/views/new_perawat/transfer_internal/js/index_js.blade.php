@@ -134,6 +134,26 @@
             },
           });
         });
+        $(row).find('.btn-print-transfer').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.print-transfer-internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+
+            },
+            error: function(data) {
+              clear_show_error();
+            },
+          });
+        });
       }
     });
   }
@@ -292,11 +312,12 @@
             data: {
               "reg_no": regno,
               "medrec": medrec,
+              'type': 'edit',
             },
             url: "{{route('nyaa_universal.view_injector.perawat.create_transfer_internal')}}",
             success: function(data) {
               inject_view_data(data);
-              nyaa_dttb_transferinternal_load_all();
+              nyaa_dttb_transferinternal_edit_load_all();
               loadCreateTfInternalFunc();
             },
             error: function(data) {
