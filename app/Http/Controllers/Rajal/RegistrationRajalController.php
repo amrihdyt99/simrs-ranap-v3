@@ -115,7 +115,6 @@ class RegistrationRajalController extends Controller
         ->table('users')
             ->where('dokter_id', $data['dokter_poli_kode'])
             ->value('signature');
-        // Ambil medrec dan reg_no dari data yang diambil
         $data['pasien'] = $data_pasien[0] ?? null;
         $data['pasien']['date_of_birth'] = date('d-m-Y', strtotime($data['pasien']['DateOfBirth']));
 
