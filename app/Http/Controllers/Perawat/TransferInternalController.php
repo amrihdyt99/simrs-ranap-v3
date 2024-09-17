@@ -18,7 +18,7 @@ class TransferInternalController extends Controller
 
             $query = "SELECT `internal`.`transfer_id`, `internal`.`transfer_reg`, `pasien`.`PatientName`, `pasien`.`MedicalNo`, `unit_asal`.`ServiceUnitName` as `UnitAsal`, 
                              `unit_asal`.`ServiceUnitName` as `UnitTujuan`, `internal`.`transfer_waktu_hubungi`, `internal`.`ditransfer_waktu`, `internal`.`diterima_oleh_user_id`,
-                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`
+                             `internal`.`status_transfer`, `internal`.`kode_transfer_internal`, `internal`.`ditransfer_oleh_user_id`
                       FROM `$dbInap`.`transfer_internal` as `internal`
                       LEFT JOIN `$dbMaster`.`m_pasien` as `pasien` on `pasien`.`MedicalNo` = `internal`.`medrec`
                       LEFT JOIN `$dbMaster`.`m_unit_departemen` as `unit_dep_asal` on `internal`.`transfer_unit_asal` = `unit_dep_asal`.`ServiceUnitID`
@@ -34,11 +34,12 @@ class TransferInternalController extends Controller
             return DataTables()
                 ->of($data)
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<div class="btn-group" role="group">';
+                    $actionBtn = '<div class="btn-group" role="group" >';
 
                     if ($row->status_transfer == 1) {
                         $actionBtn = "<button type='button' class='btn btn-success'><i class='far fa-eye'></i> Detail</button>";
-                    } else {
+                        $actionBtn .= "<button type='button' class='btn btn-info'><i class='fas fa-print'></i> Print Riwayat Transfer</button>";
+                    } else if ($row->status_transfer == 0 && $row->ditransfer_oleh_user_id == auth()->user()->username) {
 
                         $actionBtn = "<button type='button' class='btn btn-info btn-edit-transfer' data-transfer_code='$row->kode_transfer_internal'>Edit</button>";
                     }
@@ -103,10 +104,10 @@ class TransferInternalController extends Controller
         if ($validator->passes()) {
             DB::beginTransaction();
             try {
-                // $tf_internal = DB::connection('mysql')->where([
-                //     ['transfer_reg', $request->transfer_reg],
-                //     ['kode_transfer_internal', $request->kode_transfer_internal],
-                // ])->first();
+                $tf_internal = DB::connection('mysql')->table('transfer_internal')->where([
+                    ['transfer_reg', $request->transfer_reg],
+                    ['kode_transfer_internal', $request->kode_transfer_internal],
+                ])->first();
 
                 $data = array(
                     'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
@@ -130,6 +131,33 @@ class TransferInternalController extends Controller
                         ['kode_transfer_internal', $request->kode_transfer_internal]
                     ])
                     ->update($data);
+
+                //Update Bed
+
+                // DB::connection('mysql2')->table('m_registrasi')
+                //     ->where([
+                //         ['reg_no', $request->transfer_reg],
+                //         ['reg_medrec', $request->medrec]
+                //     ])
+                //     ->update([
+                //         'bed' => $tf_internal->transfer_unit_tujuan,
+                //     ]);
+
+                //update bed asal
+                DB::connection('mysql2')->table('m_bed')
+                    ->where('bed_id', $tf_internal->transfer_unit_asal)
+                    ->update([
+                        'registration_no' => '',
+                        'bed_status' => '0116^R',
+                    ]);
+
+                //update bed tujuan
+                DB::connection('mysql2')->table('m_bed')
+                    ->where('bed_id', $tf_internal->transfer_unit_tujuan)
+                    ->update([
+                        'registration_no' => $tf_internal->transfer_reg,
+                        'bed_status' => '0116^O',
+                    ]);
 
                 //Log History Bed
 

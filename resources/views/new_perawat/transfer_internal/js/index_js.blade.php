@@ -272,6 +272,7 @@
             url: "{{route('nyaa_universal.view_injector.perawat.create_transfer_internal')}}",
             success: function(data) {
               inject_view_data(data);
+              nyaa_dttb_transferinternal_load_all();
               loadCreateTfInternalFunc();
             },
             error: function(data) {
