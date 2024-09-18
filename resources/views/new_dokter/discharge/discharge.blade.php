@@ -201,7 +201,7 @@
                 <label class="label-admisi">Alasan Pulang</label>
                 <div class="row">
                 <div class="col">
-                        <input type="text" class="form-control" name="pdischarge_alasan" id="pdischarge_alasan" readonly value="{{ implode(', ', json_decode($resume->alasan_pulang ?? '[]')) }}">
+                        <input type="text" class="form-control" name="pdischarge_alasan" id="pdischarge_alasan" readonly value="{{ is_array(json_decode($resume->alasan_pulang ?? '[]')) ? implode(', ', json_decode($resume->alasan_pulang ?? '[]')) : '' }}">
                     </div>
                 </div>
             </fieldset>
@@ -235,7 +235,7 @@
                 <label class="label-admisi">Kondisi Pulang</label>
                 <div class="row">
                     <div class="col">
-                        <input type="text" class="form-control" name="pdischarge_condition" id="pdischarge_condition" readonly value="{{ implode(', ', json_decode($resume->kondisi_pulang ?? '[]')) }}">
+                        <input type="text" class="form-control" name="pdischarge_condition" id="pdischarge_condition" readonly value="{{ is_array(json_decode($resume->kondisi_pulang ?? '[]')) ? implode(', ', json_decode($resume->kondisi_pulang ?? '[]')) : '' }}">
                     </div>
                 </div>
             </fieldset>
