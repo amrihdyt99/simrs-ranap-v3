@@ -282,7 +282,7 @@ class TransferInternalController extends Controller
     {
         $perawat = DB::connection('mysql2')
             ->table('users')
-            ->select('name', 'id')
+            ->select('name', 'perawat_id', 'id')
             ->where([
                 ['is_deleted', 0],
                 ['is_active', 1],

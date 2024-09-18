@@ -22,7 +22,8 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                     {"data": "kesadaran", "name": "kesadaran"},
                     {"data": "td", "name": "td"},
                     {"data": "hr", "name": "hr"},
-                    {"data": "rr", "name": "rr"}
+                    {"data": "rr", "name": "rr"},
+                    {"data": "spo2", "name": "spo2"}
                 ]'
                         nyaa-kode_transfer_internal="{{ $transfer_internal->kode_transfer_internal }}"
                         class="w-100 table table-sm table-bordered">
@@ -35,6 +36,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                                 <th>TD (mmHg)</th>
                                 <th>HR (x/mnt)</th>
                                 <th>RR (x/mnt)</th>
+                                <th>SpO2</th>
                             </tr>
                         </thead>
                     </table>
@@ -50,7 +52,8 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                     {"data": "kesadaran", "name": "kesadaran"},
                     {"data": "td", "name": "td"},
                     {"data": "hr", "name": "hr"},
-                    {"data": "rr", "name": "rr"}
+                    {"data": "rr", "name": "rr"},
+                    {"data": "spo2", "name": "spo2"}
                 ]'
                         nyaa-kode_transfer_internal="{{ $transfer_internal->kode_transfer_internal }}"
                         class="w-100 table table-sm table-bordered">
@@ -62,6 +65,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                                 <th>TD (mmHg)</th>
                                 <th>HR (x/mnt)</th>
                                 <th>RR (x/mnt)</th>
+                                <th>SpO2</th>
                             </tr>
                         </thead>
                     </table>
@@ -98,7 +102,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
 
                                         <div class="form-row">
                                             <div class="form-group col-sm-12">
-                                                <p class="m-0">Kesadatan *</p>
+                                                <p class="m-0">Kesadaran *</p>
                                                 <input nyaatempname="kesadaran" autocomplete="off" type="text" class="form-control">
                                             </div>
                                         </div>
@@ -121,6 +125,13 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                                             <div class="form-group col-sm-12">
                                                 <p class="m-0">RR (x/mnt)</p>
                                                 <input nyaatempname="rr" autocomplete="off" type="text" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group col-sm-12">
+                                                <p class="m-0">SpO2</p>
+                                                <input nyaatempname="spo2" autocomplete="off" type="text" class="form-control">
                                             </div>
                                         </div>
 

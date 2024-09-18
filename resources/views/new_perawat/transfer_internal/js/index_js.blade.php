@@ -384,71 +384,55 @@
   }
 
   function loadSelect2TfInternal() {
-    $('#select-bed-asal').select2({
-      theme: 'bootstrap4',
-      placeholder: 'Pilih Asal Ruangan dan Bed',
-      ajax: {
-        url: "{{ route('transfer-internal.getRoom') }}",
-        dataType: 'json',
-        processResults: function(response) {
-          let results = $.map(response.data, function(row, index) {
-            row.id = row.bed_id;
-            row.text = row.bed_code + ' - ' + row.ruang + ' - ' + row.kelompok + ' - ' + row.kelas;
-            return row;
+    $(async function() {
+      $.ajax({
+        type: "get",
+        url: "{{url('api/cekketersediaanruangan')}}",
+        dataType: "json",
+        success: function(r) {
+          var opt = '<option value="" disabled>Pilih Tujuan Ruangan dan Bed</option>';
+          $.each(r.data, function(index, row) {
+            opt += '<option value="' + row.bed_id + '">' + row.bed_code + ' - ' + row.ruang + ' - ' + row.kelompok + ' - ' + row.kelas + '</option>';
           });
-          return {
-            results: results,
-            pagination: {
-              more: (response.next_page_url != null)
-            }
-          };
-        }
-      }
-    });
+          $('#select-bed-tujuan').html(opt);
 
-    $('#select-bed-tujuan').select2({
-      theme: 'bootstrap4',
-      placeholder: 'Pilih Asal Ruangan dan Bed',
-      ajax: {
-        url: "{{ route('transfer-internal.getRoom') }}",
-        dataType: 'json',
-        processResults: function(response) {
-          let results = $.map(response.data, function(row, index) {
-            row.id = row.bed_id;
-            row.text = row.bed_code + ' - ' + row.ruang + ' - ' + row.kelompok + ' - ' + row.kelas;
-            return row;
+          // Initialize Select2 after populating options
+          $('#select-bed-tujuan').select2({
+            theme: 'bootstrap4',
+            placeholder: "Pilih Asal Ruangan dan Bed"
           });
-          return {
-            results: results,
-            pagination: {
-              more: (response.next_page_url != null)
-            }
-          };
-        }
-      }
-    });
 
-    $('#select-petugas-tujuan').select2({
-      theme: 'bootstrap4',
-      placeholder: 'Pilih petugas unit tujuan',
-      ajax: {
+          // Set the default value if `bed_id` is not empty
+          if (bed_id) {
+            $('#select-bed-tujuan').val(bed_id).trigger('change');
+          }
+        }
+      });
+
+      $.ajax({
+        type: "get",
         url: "{{ route('transfer-internal.getPerawat') }}",
-        dataType: 'json',
-        processResults: function(response) {
-          let results = $.map(response.data, function(row, index) {
-            row.id = row.id;
-            row.text = row.name;
-            return row;
+        dataType: "json",
+        success: function(r) {
+          var opt = '<option value="" disabled>Pilih perawat tujuan</option>';
+          $.each(r.data, function(index, row) {
+            opt += '<option value="' + row.id + '">' + row.name + '</option>';
           });
-          return {
-            results: results,
-            pagination: {
-              more: (response.next_page_url != null)
-            }
-          };
+          $('#select-petugas-tujuan').html(opt);
+
+          // Initialize Select2 after populating options
+          $('#select-petugas-tujuan').select2({
+            theme: 'bootstrap4',
+            placeholder: "Pilih perawat tujuan"
+          });
+
+          // Set the default value if `bed_id` is not empty
+          if (bed_id) {
+            $('#select-petugas-tujuan').val(bed_id).trigger('change');
+          }
         }
-      }
-    });
+      });
+    })
   }
 
   function confirmTransferInternal() {
