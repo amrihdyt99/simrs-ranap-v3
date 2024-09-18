@@ -14,11 +14,21 @@ class FinChangeHistoryBedTable extends Migration
     public function up()
     {
         Schema::connection('mysql2')->table('m_bed_history', function (Blueprint $table) {
-            $table->string('HistoryRefCode')->nullable()->change();
-            $table->date('RequestTransferDate')->nullable()->change();
-            $table->time('RequestTransferTime')->nullable()->change();
-            $table->string('RequestedBy', 100)->nullable()->change();
-            $table->string('ReceivedBy', 100)->nullable()->change();
+            $table->dropColumn([
+                'HistoryRefCode',
+                'RequestTransferDate',
+                'RequestTransferTime',
+                'RequestedBy',
+                'ReceivedBy',
+            ]);
+        });
+
+        Schema::connection('mysql2')->table('m_bed_history', function (Blueprint $table) {
+            $table->string('HistoryRefCode')->nullable();
+            $table->date('RequestTransferDate')->nullable();
+            $table->time('RequestTransferTime')->nullable();
+            $table->string('RequestedBy', 100)->nullable();
+            $table->string('ReceivedBy', 100)->nullable();
         });
     }
 

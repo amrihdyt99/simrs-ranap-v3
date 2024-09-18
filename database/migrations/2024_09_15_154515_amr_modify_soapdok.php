@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AmrModifySoapdok extends Migration
@@ -13,9 +14,7 @@ class AmrModifySoapdok extends Migration
      */
     public function up()
     {
-        Schema::table('rs_pasien_cppt', function (Blueprint $table) {
-            $table->text('bertindak_sebagai')->nullable()->change();
-        });
+        DB::statement('ALTER TABLE rs_pasien_cppt MODIFY bertindak_sebagai TEXT NULL');
     }
 
     /**
@@ -25,6 +24,7 @@ class AmrModifySoapdok extends Migration
      */
     public function down()
     {
-        //
+        // If you need to revert the changes, adjust as necessary
+        DB::statement('ALTER TABLE rs_pasien_cppt MODIFY bertindak_sebagai TEXT');
     }
 }

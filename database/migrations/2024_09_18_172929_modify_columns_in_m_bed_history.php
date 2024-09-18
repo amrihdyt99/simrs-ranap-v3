@@ -14,10 +14,19 @@ class ModifyColumnsInMBedHistory extends Migration
     public function up()
     {
         Schema::connection('mysql2')->table('m_bed_history', function (Blueprint $table) {
-            $table->string('TableRef')->nullable()->change();
-            $table->date('ReceiveTransferDate')->nullable()->change();
-            $table->time('ReceiveTransferTime')->nullable()->change();
-            $table->string('Description')->nullable()->change();
+            $table->dropColumn([
+                'TableRef',
+                'ReceiveTransferDate',
+                'ReceiveTransferTime',
+                'Description',
+            ]);
+        });
+
+        Schema::connection('mysql2')->table('m_bed_history', function (Blueprint $table) {
+            $table->string('TableRef')->nullable();
+            $table->date('ReceiveTransferDate')->nullable();
+            $table->time('ReceiveTransferTime')->nullable();
+            $table->string('Description')->nullable();
         });
     }
 
