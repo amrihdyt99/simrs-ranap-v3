@@ -86,7 +86,8 @@ class PatientController extends Controller
                 'm_paramedis.ParamedicName',
                 'ServiceUnitName',
                 'businesspartner.BusinessPartnerName',
-                'm_registrasi.reg_tgl'
+                'm_registrasi.reg_tgl',
+                'm_registrasi.reg_jam'
             ])
             ->orderByDesc('m_registrasi.reg_tgl');
         
@@ -151,7 +152,8 @@ class PatientController extends Controller
                 'm_paramedis.ParamedicName',
                 'ServiceUnitName',
                 'businesspartner.BusinessPartnerName',
-                'm_registrasi.reg_tgl'
+                'm_registrasi.reg_tgl',
+                'm_registrasi.reg_jam'
             ])
             ->orderByDesc('m_registrasi.reg_tgl');
         

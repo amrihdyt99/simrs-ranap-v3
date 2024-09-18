@@ -299,9 +299,9 @@ Durasi Hari: {{ $item['durasi_hari'] ?? '' }}
                 <div class="row">
                     <div class="col">
                         @php
-                            $tindakan = json_decode($resume->tindakan ?? '[]', true);
+                            $tindakan = isset($resume) ? json_decode($resume->tindakan ?? '[]', true) : [];
                         @endphp
-                        <textarea class="form-control" name="pdischarge_tindakan" id="pdischarge_tindakan" rows="4" {{ $resume->tindakan ? 'readonly' : '' }}>
+                        <textarea class="form-control" name="pdischarge_tindakan" id="pdischarge_tindakan" rows="4" {{ isset($resume->tindakan) ? 'readonly' : '' }}>
 @if(is_array($tindakan) && count($tindakan) > 0)
 @foreach ($tindakan as $item)
 {{ explode(' -- ', $item['nama_tindakan_icd9'])[1] ?? 'N/A' }}
@@ -318,10 +318,10 @@ Tidak ada data tindakan
                 <label class="label-admisi">Penyebab Luar/Cidera/Kecelakaan (Bila Ada)</label>
                 <div class="row">
                     <div class="col">
-                    <textarea class="form-control" name="pdischarge_penyebab_luar" id="pdischarge_penyebab_luar" rows="4" {{ $resume->penyebab_luar ? 'readonly' : '' }}>
+                    <textarea class="form-control" name="pdischarge_penyebab_luar" id="pdischarge_penyebab_luar" rows="4" {{ isset($resume->penyebab_luar) ? 'readonly' : '' }}>
 @php
-$penyebabLuarArray = json_decode(json_decode($resume->penyebab_luar ?? '[]', true), true);
-$penyebabLuarString = is_array($penyebabLuarArray) 
+$penyebabLuarArray = isset($resume->penyebab_luar) ? json_decode(json_decode($resume->penyebab_luar ?? '[]', true), true) : [];
+$penyebabLuarString = is_array($penyebabLuarArray) && !empty($penyebabLuarArray) 
     ? implode("\n", $penyebabLuarArray) 
     : 'Data tidak valid atau kosong';
 @endphp
@@ -335,9 +335,9 @@ $penyebabLuarString = is_array($penyebabLuarArray)
             <div class="form-group">
                 <label for="pdischarge_icd_9">Kode ICD-9-CM</label>
                 @php
-                    $tindakan = json_decode($resume->tindakan ?? '[]', true);
+                    $tindakan = isset($resume) ? json_decode($resume->tindakan ?? '[]', true) : [];
                 @endphp
-                <textarea class="form-control" name="pdischarge_icd_9" id="pdischarge_icd_9" rows="4" {{ $resume->tindakan ? 'readonly' : '' }}>
+                <textarea class="form-control" name="pdischarge_icd_9" id="pdischarge_icd_9" rows="4" {{ isset($resume->tindakan) ? 'readonly' : '' }}>
 @if(is_array($tindakan) && count($tindakan) > 0)
 @foreach ($tindakan as $item)
 {{ $item['kode_icd9'] ?? '' }}
@@ -350,14 +350,14 @@ Tidak ada data ICD-9
             <div class="form-group">
                 <label for="pdischarge_icd_10">Kode ICD-10</label>
                 @php
-                    $firstDecode = !empty($resume->penyebab_luar_icd) ? json_decode($resume->penyebab_luar_icd, true) : '';
+                    $firstDecode = isset($resume) && !empty($resume->penyebab_luar_icd) ? json_decode($resume->penyebab_luar_icd, true) : '';
                     $penyebabLuarIcdArray = is_string($firstDecode) ? json_decode($firstDecode, true) : $firstDecode;
                     $penyebabLuarIcdString = is_array($penyebabLuarIcdArray) 
                         ? implode(', ', $penyebabLuarIcdArray) 
                         : 'Data tidak valid atau kosong';
                 @endphp
-                <textarea name="pdischarge_icd_10" id="pdischarge_icd_10" class="form-control" rows="4" {{ $resume->penyebab_luar_icd ? 'readonly' : '' }}>{{ trim($penyebabLuarIcdString) }}</textarea>
-                    <!-- {{ $resume->penyebab_luar_icd ? 'readonly' : '' }} -->
+                <textarea name="pdischarge_icd_10" id="pdischarge_icd_10" class="form-control" rows="4" {{ isset($resume->penyebab_luar_icd) ? 'readonly' : '' }}>{{ trim($penyebabLuarIcdString) }}</textarea>
+                    <!-- {{ isset($resume->penyebab_luar_icd) ? 'readonly' : '' }} -->
 
             </textarea>
             </div>
