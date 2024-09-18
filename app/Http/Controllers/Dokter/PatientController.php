@@ -154,9 +154,8 @@ class PatientController extends Controller
                 'm_registrasi.reg_tgl'
             ])
             ->orderByDesc('m_registrasi.reg_tgl');
-        
-        
         }
+
         $data = $datamypatient->get();
 
         if (isset($request->no_ajax)) {
