@@ -692,6 +692,7 @@ class NyaaViewInjectorSupportController extends AaaBaseController
                 $dtx_a_add['td'] = $request->td;
                 $dtx_a_add['hr'] = $request->hr;
                 $dtx_a_add['rr'] = $request->rr;
+                $dtx_a_add['spo2'] = $request->spo2;
             } elseif ($mode == '4') {
                 $dtx_a_add['waktu'] = $request->waktu;
                 $dtx_a_add['kejadian'] = $request->kejadian;
