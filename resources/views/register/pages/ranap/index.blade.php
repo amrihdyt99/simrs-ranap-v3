@@ -246,10 +246,11 @@
         let api = this.api();
        $(row).find('.print-admisi').click(function() {
           var reg = $(this).data('reg_no');
-          console.log(reg);
+          let url = "{{ route('register.ranap.slipadmisi',':reg_no') }}"
+          url = url.replace(':reg_no', reg)
           $.ajax({
             type: "get",
-            url: "/ranap/slipadmisi/" + reg,
+            url: url,
             success: function(data) {
               $('#report-admisi').empty().html(data);
               var iframe = document.getElementById('iframe-admisi');
@@ -273,12 +274,12 @@
         });
         $(row).find('.print-generalconsent').click(function() {
           var reg = $(this).data('reg_no');
-          console.log(reg);
+          let url = "{{ route('register.ranap.gc1', ':reg_no') }}"
+          url = url.replace(':reg_no', reg)
           $.ajax({
             type: "get",
-            url: "/ranap/gc1/" + reg,
+            url: url,
             success: function(data) {
-              console.log(data);
               $('#report-generalConsent').empty().html(data);
               var iframe = document.getElementById('iframe-generalConsent');
               iframe.contentDocument.open();
