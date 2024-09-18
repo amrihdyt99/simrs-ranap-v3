@@ -55,18 +55,25 @@
     </div>
 </div>
 
-<div class="form-group row">
+{{-- <div class="form-group row">
     <label for="jumlah" class="col-sm-2 col-form-label">Jumlah</label>
     <div class="input-group col-sm-10">
         <input id="jumlah" class="form-control" type="number" name="jumlah" />
+    </div>
+</div> --}}
+
+<div class="form-group row">
+    <label for="jumlah" class="col-sm-2 col-form-label">Balance</label>
+    <div class="input-group col-sm-10">
+        <input id="balance" class="form-control" disabled type="number" />
     </div>
 </div>
 
 <div class="form-group row">
     <label for="tanggal_pemberian" class="col-sm-2 col-form-label">Tanggal Pemberian</label>
     <div class="input-group col-sm-10">
-        <input type="datetime-local" id="tanggal_pemberian" class="datetime-auto form-control ui-datepicker"
-            name="tanggal_pemberian" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" />
+        <input type="datetime-local" id="tanggal_waktu_pemberian" class="form-control ui-datepicker"
+            name="tanggal_waktu_pemberian" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" />
     </div>
 </div>
 
