@@ -14,8 +14,13 @@ class FinChangeSepNoMRegistrasiTable extends Migration
     public function up()
     {
         Schema::connection('mysql2')->table('m_registrasi', function (Blueprint $table) {
-            $table->string('reg_sep_no')->nullable()->change();
+            $table->dropColumn('reg_sep_no');
         });
+
+        Schema::connection('mysql2')->table('m_registrasi', function (Blueprint $table) {
+            $table->string('reg_sep_no')->nullable();
+        });
+
     }
 
     /**
@@ -25,8 +30,5 @@ class FinChangeSepNoMRegistrasiTable extends Migration
      */
     public function down()
     {
-        Schema::table('m_registrasi', function (Blueprint $table) {
-            //
-        });
     }
 }
