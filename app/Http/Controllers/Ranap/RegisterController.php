@@ -121,7 +121,7 @@ class RegisterController extends Controller
                                             <a class="dropdown-item" href="' . $url_barcode . '">Print Barcode</a>
                                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
                                             <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button>'
-                                            . '</div>
+                    . '</div>
                                     </div>';
                 return $button_dropdown;
             })
@@ -546,17 +546,17 @@ class RegisterController extends Controller
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')  
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->leftJoin('businesspartner','m_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
+            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
             ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
-            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*','businesspartner.BusinessPartnerName as reg_cara_bayar_name')
+            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*', 'businesspartner.BusinessPartnerName as reg_cara_bayar_name')
             // ->get()->first();
 
             // $data['datapasien'] = $datamypatient;
             ->first();
-    
+
         if ($datamypatient) {
             $ranap_reg = $datamypatient->reg_lama;
             if ($ranap_reg) {
@@ -577,8 +577,8 @@ class RegisterController extends Controller
         }
 
         $data['datamypatient'] = $datamypatient;
-        $data['datapasien'] = $datamypatient; 
-    
+        $data['datapasien'] = $datamypatient;
+
         return view('rekam_medis.slip_admisi', $data);
     }
 
@@ -636,9 +636,9 @@ class RegisterController extends Controller
         $data['ttd_admisi'] = $request->signature;
         DB::connection('mysql2')->table('m_registrasi')->where(['reg_no' => $regno])->update($data);
         return redirect()->route('register.ranap.slipadmisi', ['reg_no' => $regno])
-        ->with('signatures_saved', true);
+            ->with('signatures_saved', true);
     }
-    
+
     function uploadGc2(Request $request)
     {
         $regno = $request->reg_no;
@@ -648,7 +648,7 @@ class RegisterController extends Controller
         $data['ttd_gc_hal_dua'] = $request->signature;
         DB::connection('mysql2')->table('m_registrasi')->where(['reg_no' => $regno])->update($data);
         return redirect()->route('register.ranap.gc2', ['reg_no' => $regno])
-        ->with('signatures_saved', true);
+            ->with('signatures_saved', true);
     }
 
     function addPasienBaru(Request $request)
@@ -859,14 +859,12 @@ class RegisterController extends Controller
             else $this->updatePasien();
             DB::beginTransaction();
             $this->updateDataRegistration(request()->reg_no);
-
+            $this->createBedHistoryFirstTime(request()->reg_no);
             RegistrasiPJawab::where('reg_no', request()->reg_no)->delete();
-
             if (isset(request()->pj_pasien) && count(request()->pj_pasien) > 0) {
                 // Add penanggung jawab pasien
                 RegistrasiPJawab::insert(request()->pj_pasien);
             }
-
             // dd($param_pasien);
             DB::commit();
 
@@ -874,7 +872,7 @@ class RegisterController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            //dd($th->getMessage());
+            // dd($th->getMessage());
             abort(500, $th->getMessage());
         }
     }
