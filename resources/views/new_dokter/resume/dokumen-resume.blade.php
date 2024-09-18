@@ -358,23 +358,23 @@
             <tbody>
                 <tr>
                     <td>
-                        <input type="checkbox" name="alasan_pulang[]" value="Sembuh" {{ isset($data->alasan_pulang) && in_array('Sembuh', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> SEMBUH
+                        <input type="checkbox" name="alasan_pulang[]" value="Sembuh" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Sembuh', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> SEMBUH
                     </td>
                     <td>
-                        <input type="checkbox" name="alasan_pulang[]" value="Dapat berobat jalan" {{ isset($data->alasan_pulang) && in_array('Dapat berobat jalan', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> DAPAT BEROBAT JALAN
+                        <input type="checkbox" name="alasan_pulang[]" value="Dapat berobat jalan" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Dapat berobat jalan', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> DAPAT BEROBAT JALAN
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <input type="checkbox" name="alasan_pulang[]" value="Pulang atas permintaan sendiri" {{ isset($data->alasan_pulang) && in_array('Pulang atas permintaan sendiri', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PULANG ATAS PERMINTAAN SENDIRI
+                        <input type="checkbox" name="alasan_pulang[]" value="Pulang atas permintaan sendiri" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Pulang atas permintaan sendiri', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PULANG ATAS PERMINTAAN SENDIRI
                     </td>
                     <td>
-                        <input type="checkbox" name="alasan_pulang[]" value="Pindah ke RS lain" {{ isset($data->alasan_pulang) && in_array('Pindah ke RS lain', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PINDAH KE RS LAIN {{ isset($data->rs_lain_ke) ? $data->rs_lain_ke : '' }}, ALASAN: {{ isset($data->rs_lain_alasan) ? $data->rs_lain_alasan : '' }}
+                        <input type="checkbox" name="alasan_pulang[]" value="Pindah ke RS lain" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Pindah ke RS lain', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PINDAH KE RS LAIN {{ isset($data->rs_lain_ke) ? $data->rs_lain_ke : '' }}, ALASAN: {{ isset($data->rs_lain_alasan) ? $data->rs_lain_alasan : '' }}
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="checkbox" name="alasan_pulang[]" value="Meninggal" {{ isset($data->alasan_pulang) && in_array('Meninggal', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> MENINGGAL
+                        <input type="checkbox" name="alasan_pulang[]" value="Meninggal" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Meninggal', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> MENINGGAL
                     </td>
                 </tr>
             </tbody>
@@ -386,10 +386,10 @@
                 <td rowspan="3" style="width: 30%;">KONDISI PASIEN PULANG <br>(tidak diisi bila pasien meninggal)</td>
                 <td style="width: 10%;">KONDISI :</td>
                 <td style="width: 10%;">
-                    <input type="checkbox" name="kondisi_pulang[]" value="Mandiri" {{ isset($data->kondisi_pulang) && in_array('Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> MANDIRI
+                    <input type="checkbox" name="kondisi_pulang[]" value="Mandiri" {{ isset($data->kondisi_pulang) && is_array(json_decode($data->kondisi_pulang)) && in_array('Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> MANDIRI
                 </td>
                 <td style="width: 10%;">
-                    <input type="checkbox" name="kondisi_pulang[]" value="Cacat" {{ isset($data->kondisi_pulang) && in_array('Cacat', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> CACAT
+                    <input type="checkbox" name="kondisi_pulang[]" value="Cacat" {{ isset($data->kondisi_pulang) && is_array(json_decode($data->kondisi_pulang)) && in_array('Cacat', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> CACAT
                 </td>
                 <td style="width: 10%;">TD :</td>
                 <td style="width: 10%;">HR :</td>
@@ -398,7 +398,7 @@
             </tr>
             <tr>
                 <td colspan="3"> 
-                    <input type="checkbox" name="kondisi_pulang[]" value="Tidak Mandiri" {{ isset($data->kondisi_pulang) && in_array('Tidak Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> Tidak Mandiri, karena memakai alat bantu : Infus / OGT / NGT / WSD / Spalk / lain-lain : {{ isset($data->alat_bantu_sebutkan) ? $data->alat_bantu_sebutkan : '' }} (sebutkan)
+                    <input type="checkbox" name="kondisi_pulang[]" value="Tidak Mandiri" {{ isset($data->kondisi_pulang) && is_array(json_decode($data->kondisi_pulang)) && in_array('Tidak Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> Tidak Mandiri, karena memakai alat bantu : Infus / OGT / NGT / WSD / Spalk / lain-lain : {{ isset($data->alat_bantu_sebutkan) ? $data->alat_bantu_sebutkan : '' }} (sebutkan)
                 </td>
                 <td>{{ isset($data->td) ? $data->td : '' }}</td>
                 <td>{{ isset($data->hr) ? $data->hr : '' }}</td>
