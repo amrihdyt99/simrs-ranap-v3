@@ -120,13 +120,88 @@
                         <span style="margin-top: 60px;">(............................................)</span>
                     </div>
                     <div class="flex-col" style="width: 100%">
-                        <span>Palembang, {{ \Carbon\Carbon::now()->format('d F Y') }}</span>
-                        <span>Dokter Yang Memeriksa,</span>
-                        <span style="margin-top: 60px;">({{ $data['dokter_poli'] }})</span>
-                    </div>
+                        @if ($signature)
+                            <img src="{{ $signature }}" alt="Doctor's Signature" style="width: 200px; height: 100px;">
+                        @else
+                            <canvas id="doctor-signature" style="border:1px solid #000; width: 200px; height: 100px;"></canvas>
+                            <button type="button" id="save-doctor-signature" class="btn btn-sm btn-primary mt-2 no-print" style="width: 200px; margin-right: 10px;">Simpan Tanda Tangan</button>
+                            <button type="button" id="clear-doctor-signature" class="btn btn-sm btn-secondary mt-2 no-print" style="width: 200px;">Hapus Tanda Tangan</button>
+                            <input type="hidden" id="doctor-signature-input" name="signature_doctor" value="">
+                            <input type="hidden" id="reg_no" name="reg_no" value="{{ $reg_no }}">
+                            <input type="hidden" id="medrec" name="medrec" value="{{ $medrec }}">
+                        @endif
+                        <span style="margin-top: 10px;">({{ $data['dokter_poli'] }})</span>
+                    </div>          
                 </div>
             </div>
         </div>
     </div>
+    <div style="page-break-after: always"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+$(document).ready(function() {
+    const initializeCanvas = () => {
+        const canvas = document.getElementById('doctor-signature');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        canvas.width = 200;
+        canvas.height = 100;
+        const existingSignature = "{{ $signature }}";
+        if (existingSignature) {
+            const img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = existingSignature;
+        }
+        canvas.addEventListener('mousedown', (e) => {
+            drawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!drawing) return;
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            drawing = false;
+            ctx.closePath();
+        });
+        document.getElementById('clear-doctor-signature').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        document.getElementById('save-doctor-signature').addEventListener('click', () => {
+            const signature = canvas.toDataURL('image/png');
+            const reg_no = document.getElementById('reg_no').value;
+            const medrec = document.getElementById('medrec').value;
+            $.ajax({
+                url: "{{ route('save_signature') }}",
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    ttd_dokter: signature,
+                    reg_no: reg_no,
+                    medrec: medrec
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Tanda tangan berhasil disimpan.');
+                    } else {
+                        alert('Terjadi kesalahan: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        });
+    };
+    initializeCanvas();
+});
+</script>
+
 </body>
 </html>

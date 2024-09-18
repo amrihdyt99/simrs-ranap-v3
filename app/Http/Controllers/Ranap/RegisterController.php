@@ -108,7 +108,7 @@ class RegisterController extends Controller
                 $url_barcode = route('register.ranap.barcode', ['reg_no' => $reg_no]);
                 $url_lengkapi_pendaftaran = route('register.ranap.lengkapi-pendaftaran', ['reg_no' => $reg_no]);
                 $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
-                $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
+                //$gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
                 $url_rawat_intensif = route('register.ranap.rawat-intensif', ['reg_no' => $reg_no]);
 
                 $button_dropdown = '<div class="dropdown">
@@ -116,49 +116,15 @@ class RegisterController extends Controller
                                             Action
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="' . $url_admisi . '" target="_blank">Admisi</a>
+                                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
                                             <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
-                                            <a href="#" class="dropdown-item" id="viewGcBtn-' . $reg_no . '">General Consent</a>'
-                    . '<script>
-                                        document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
-                                                    e.preventDefault();
-                                                    fetch("' . $gc1Url . '")
-                                                        .then(response => response.text())
-                                                        .then(content => {
-                                                            const viewWindow = window.open("", "_blank");
-                                                            viewWindow.document.write(content);
-                                                            viewWindow.document.close();
-                                                        })
-                                                        .catch(error => console.error("Error:", error));
-                                                });
-                                            </script>
                                             <a class="dropdown-item" href="' . $url_barcode . '">Print Barcode</a>
-                                            <a class="dropdown-item" href="' . $url_rawat_intensif . '" target="_blank">Rawat Intensif</a> <!-- Tambahkan tombol Rawat Intensif -->
-                                        </div>
+                                            <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
+                                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button>'
+                    . '</div>
                                     </div>';
                 return $button_dropdown;
             })
-            // ->editColumn('dok_data', function ($query) use ($request) {
-            //     $reg_no = $query->reg_no;
-            //     $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
-            //     $gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
-
-            //     return ('<a href="#" class="btn btn-sm btn-outline-primary" id="viewGcBtn-' . $reg_no . '"><i class="mr-2 fa fa-print"></i>General Consent</a>'
-            //         . '<script>
-            //     document.getElementById("viewGcBtn-' . $reg_no . '").addEventListener("click", function(e) {
-            //         e.preventDefault();
-            //         Promise.all([
-            //             fetch("' . $gc1Url . '").then(response => response.text()),
-            //             fetch("' . $gc2Url . '").then(response => response.text())
-            //         ]).then(contents => {
-            //             const combinedContent = contents.join("<hr>");
-            //             const viewWindow = window.open("", "_blank");
-            //             viewWindow.document.write(combinedContent);
-            //             viewWindow.document.close();
-            //         }).catch(error => console.error("Error:", error));
-            //     });
-            // </script>');
-            // })
             ->editColumn('status', function ($query) use ($request) {
                 if ($query->reg_status == null) {
                     $reg = str_replace("/", "_", $query->reg_no);
@@ -577,20 +543,42 @@ class RegisterController extends Controller
 
     function cetakSlipAdmisi($regno)
     {
-
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
+            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
             ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
-            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
-            ->get()->first();
+            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*', 'businesspartner.BusinessPartnerName as reg_cara_bayar_name')
+            // ->get()->first();
 
+            // $data['datapasien'] = $datamypatient;
+            ->first();
+
+        if ($datamypatient) {
+            $ranap_reg = $datamypatient->reg_lama;
+            if ($ranap_reg) {
+                $response = \Illuminate\Support\Facades\Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/' . str_replace('/', '_', $ranap_reg));
+                if ($response->successful()) {
+                    $dataFromApi = $response->json();
+                    if (!empty($dataFromApi)) {
+                        $datamypatient->poli_asal = $dataFromApi['poli_asal'] ?? null;
+                    } else {
+                        $datamypatient->poli_asal = null;
+                    }
+                } else {
+                    $datamypatient->poli_asal = null;
+                }
+            } else {
+                $datamypatient->poli_asal = null;
+            }
+        }
+
+        $data['datamypatient'] = $datamypatient;
         $data['datapasien'] = $datamypatient;
 
-        // dd($data['datapasien']);
         return view('rekam_medis.slip_admisi', $data);
     }
 
@@ -647,8 +635,10 @@ class RegisterController extends Controller
         //$data['ttd_admisi']='admisi_'.str_replace('/','_',$regno).'.png';
         $data['ttd_admisi'] = $request->signature;
         DB::connection('mysql2')->table('m_registrasi')->where(['reg_no' => $regno])->update($data);
-        return redirect()->back();
+        return redirect()->route('register.ranap.slipadmisi', ['reg_no' => $regno])
+            ->with('signatures_saved', true);
     }
+
     function uploadGc2(Request $request)
     {
         $regno = $request->reg_no;
@@ -657,7 +647,8 @@ class RegisterController extends Controller
         //$data['ttd_admisi']='admisi_'.str_replace('/','_',$regno).'.png';
         $data['ttd_gc_hal_dua'] = $request->signature;
         DB::connection('mysql2')->table('m_registrasi')->where(['reg_no' => $regno])->update($data);
-        return redirect()->back();
+        return redirect()->route('register.ranap.gc2', ['reg_no' => $regno])
+            ->with('signatures_saved', true);
     }
 
     function addPasienBaru(Request $request)
@@ -868,14 +859,12 @@ class RegisterController extends Controller
             else $this->updatePasien();
             DB::beginTransaction();
             $this->updateDataRegistration(request()->reg_no);
-
+            $this->createBedHistoryFirstTime(request()->reg_no);
             RegistrasiPJawab::where('reg_no', request()->reg_no)->delete();
-
             if (isset(request()->pj_pasien) && count(request()->pj_pasien) > 0) {
                 // Add penanggung jawab pasien
                 RegistrasiPJawab::insert(request()->pj_pasien);
             }
-
             // dd($param_pasien);
             DB::commit();
 
@@ -883,7 +872,7 @@ class RegisterController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            //dd($th->getMessage());
+            // dd($th->getMessage());
             abort(500, $th->getMessage());
         }
     }

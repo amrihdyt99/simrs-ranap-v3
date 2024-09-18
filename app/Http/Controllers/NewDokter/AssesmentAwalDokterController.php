@@ -98,21 +98,29 @@ class AssesmentAwalDokterController extends Controller
         $param = array_merge($param, $main_params);
 
         try {
-            if (!isset($check_)) {
-                DB::table('rs_pasien_diagnosa')->insert($param);
+            if ($r->pdiag_dokter != $r->dpjp_utama) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Diagnosa hanya bisa ditambahkan oleh DPJP utama'
+                ]);
             } else {
-                if ($r->pdiag_kategori != 'utama') {
+                if (!isset($check_)) {
                     DB::table('rs_pasien_diagnosa')->insert($param);
                 } else {
-                    DB::table('rs_pasien_diagnosa')
-                        ->where('pdiag_id', $check_->pdiag_id)
-                        ->update($param);
+                    if ($r->pdiag_kategori != 'utama') {
+                        DB::table('rs_pasien_diagnosa')->insert($param);
+                    } else {
+                        DB::table('rs_pasien_diagnosa')
+                            ->where('pdiag_id', $check_->pdiag_id)
+                            ->update($param);
+                    }
                 }
-            }
 
-            return response()->json(
-                ['success' => true]
-            );
+                return response()->json(
+                    ['success' => true]
+                );
+            }
+            
         } catch (\Throwable $th) {
             return response()->json(
                 ['success' => false, 'msg' => $th]
@@ -597,13 +605,6 @@ class AssesmentAwalDokterController extends Controller
 
     function klik_soap(Request $request)
     {
-        $cek = DB::connection('mysql')->table('rs_pasien_cppt')->where('status_review', '99')->where('soapdok_reg', $request->reg_no)->where('soapdok_dokter', $request->soapdok_dokter)->first();
-        if ($cek) {
-            return response()->json([
-                'success' => true,
-                'kode' => $cek->soapdok_id
-            ]);
-        }
         $paramscppt = array(
             'dpjp_utama' => $request->dpjp_utama,
             'soapdok_reg' => $request->reg_no,
@@ -612,7 +613,22 @@ class AssesmentAwalDokterController extends Controller
             'soapdok_dokter' => $request->soapdok_dokter,
             'nama_ppa' => $request->nama_ppa,
             'soapdok_bed' => $request->bed,
+            'bertindak_sebagai' => $request->bertindak_sebagai
         );
+
+        $cek = DB::connection('mysql')->table('rs_pasien_cppt')->where('status_review', '99')->where('soapdok_reg', $request->reg_no)->where('soapdok_dokter', $request->soapdok_dokter)->first();
+        
+        if ($cek) {
+            $simpancppt = DB::connection('mysql')
+                ->table('rs_pasien_cppt')
+                ->where('soapdok_id', $cek->soapdok_id)
+                ->update($paramscppt);
+
+            return response()->json([
+                'success' => true,
+                'kode' => $cek->soapdok_id
+            ]);
+        }
 
         $simpancppt = DB::connection('mysql')
             ->table('rs_pasien_cppt')
@@ -707,6 +723,7 @@ class AssesmentAwalDokterController extends Controller
             $item['is_dokter'] = $value->is_dokter;
             $item['soapdok_bed'] = $value->soapdok_bed;
             $item['dpjp_utama'] = $value->dpjp_utama;
+            $item['bertindak_sebagai'] = $value->bertindak_sebagai;
             $item['reg_dokter'] = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $value->soapdok_reg)->first()->reg_dokter ?? '';
 
             $request->merge([

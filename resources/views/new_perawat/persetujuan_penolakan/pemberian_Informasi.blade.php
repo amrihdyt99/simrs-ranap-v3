@@ -294,9 +294,10 @@
 
 </form>
 
-<div class="card mt-5">
-    <div class="card-header">
+<div class="card mt-5" id="print-section">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h5><b>PEMBERIAN INFORMASI</b></h5>
+        <button class="btn btn-primary d-print-none" onclick="printSection()">Cetak</button>
     </div>
     <div class="card-body">
         @php
@@ -500,29 +501,31 @@
             <tr>
                 <td>
                     Dengan ini menyatakan bahwa saya telah menerangkan hal-hal di atas secara benar
-                    dan jelas dan memberikan kesempatan untuk bertanya dan/atau berdiskus
+                    dan jelas dan memberikan kesempatan untuk bertanya dan/atau berdiskusi
                 </td>
-                <td>
-                    Tanda tangan Dokter
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>.....................................</td>
             </tr>
             <tr>
                 <td>
                     Dengan ini menyatakan bahwa saya telah menerima informasi sebagaimana di atas yang saya beri
                     tanda/paraf di kolom kanannya, dan telah memahaminya
                 </td>
-                <td>
-                    Tanda tangan penerima informasi
-                </td>
             </tr>
-            <tr>
-                <td></td>
-                <td>.......................................</td>
-            </tr>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 50px;">
+            <div style="text-align: center;">
+                Tanda tangan Dokter
+                <br><br><br>
+                .....................................
+            </div>
+            <div style="text-align: center;">
+                Tanda tangan penerima informasi
+                <br><br><br>
+                .......................................
+            </div>
+        </div>
+
+        <table style="width: 100%; margin-top: 50px;">
             <tr>
                 <td colspan="2" style="text-align: center;">
                     <h6 style="margin: 0;"><b>Bila pasien tidak kompeten atau tidak mau menerima informasi,
@@ -533,12 +536,23 @@
         </table>
     </div>
 </div>
+<script>
+    function printSection() {
+        var printContents = document.getElementById('print-section').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload();
+    }
+</script>
 
 {{-- persetujuan tindakan medis --}}
 @if (isset($persetujuan))
-    <div class="card mt-5">
-        <div class="card-header">
+    <div class="card mt-5" id="print-section-persetujuan">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5><b>PERSETUJUAN TINDAKAN MEDIS</b></h5>
+            <button class="btn btn-primary d-print-none" onclick="printSectionPersetujuan()">Cetak</button>
         </div>
         <div class="card-body">
             <table style="width: 100%;">
@@ -713,11 +727,22 @@
             </table>
         </div>
     </div>
+    <script>
+        function printSectionPersetujuan() {
+            var printContents = document.getElementById('print-section-persetujuan').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            location.reload();
+        }
+    </script>
 @endif
 @if (isset($penolakan))
-    <div class="card mt-5">
-        <div class="card-header">
+    <div class="card mt-5" id="print-section-penolakan">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5><b>PENOLAKAN TINDAKAN MEDIS</b></h5>
+            <button class="btn btn-primary d-print-none" onclick="printSectionPenolakan()">Cetak</button>
         </div>
         <div class="card-body">
             {{-- penolakan tindakan medis --}}
@@ -896,6 +921,16 @@
             </table>
         </div>
     </div>
+    <script>
+        function printSectionPenolakan() {
+            var printContents = document.getElementById('print-section-penolakan').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            location.reload();
+        }
+    </script>
 @endif
 
 
