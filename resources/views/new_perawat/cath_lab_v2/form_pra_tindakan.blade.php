@@ -1436,6 +1436,6 @@
             </tbody>
         </table>
 
-        <button type="button" id="btn_pra_tindakan" class="btn btn-success float-right">Simpan</button>
+        <button type="button" id="btn_pra_tindakan" onclick="simpanPraTindakan()" class="btn btn-success float-right">Simpan</button>
     </div>
 </form>
