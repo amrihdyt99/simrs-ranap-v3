@@ -54,9 +54,9 @@ function getResumeBaseData(){
 
             let data = {}
 
-            data.keluhan_utama = assesment.keluhan_utama
-            data.riwayat_penyakit = assesment.riwayat_penyakit_sekarang
-            data.pemeriksaan_fisik = assesment.pemeriksaan_multi_organ+`\ntoraks : `+(assesment.toraks ?? '-')+`\njantung : `+(assesment.jantung ?? '-')+`\nabdomen : `+(assesment.abdomen ?? '-')+`\nekstremitas atas bawah : `+(assesment.ekstremitas_atas_bawah ?? '-')+`\ngenetalia dan anus : `+(assesment.genetalia_dan_anus ?? '-')
+            data.keluhan_utama = assesment.keluhan_utama ?? ''
+            data.riwayat_penyakit = assesment.riwayat_penyakit_sekarang ?? ''
+            data.pemeriksaan_fisik = ( assesment.pemeriksaan_multi_organ ?? '')+`\ntoraks : `+(assesment.toraks ?? '-')+`\njantung : `+(assesment.jantung ?? '-')+`\nabdomen : `+(assesment.abdomen ?? '-')+`\nekstremitas atas bawah : `+(assesment.ekstremitas_atas_bawah ?? '-')+`\ngenetalia dan anus : `+(assesment.genetalia_dan_anus ?? '-')
             data.diagnosa = diagnosa
             data.prosedur = prosedur
             data.instruksi_ranap = instruksi_ranap

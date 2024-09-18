@@ -1407,7 +1407,7 @@
                             $row_lainnya = ''
                             $row_diagnosa = ''
 
-                            if (dataSoap[i].order_lab.length > 0) {
+                            if (dataSoap[i].order_lab && dataSoap[i].order_lab.length > 0) {
                                 $.each(dataSoap[i].order_lab, function(i_lab, item_lab){
                                     $row_lab += `
                                         `+(i_lab == 0 ? '<br><b>Laboratorium</b><br>' : '')+`
@@ -1415,7 +1415,7 @@
                                     `
                                 })
                             }
-                            if (dataSoap[i].order_radiologi.length > 0) {
+                            if (dataSoap[i].order_radiologi && dataSoap[i].order_radiologi.length > 0) {
                                 $.each(dataSoap[i].order_radiologi, function(i_lab, item_lab){
                                     $row_lab += `
                                         `+(i_lab == 0 ? '<br><b>Radiologi</b><br>' : '')+`
@@ -1423,7 +1423,7 @@
                                     `
                                 })
                             }
-                            if (dataSoap[i].order_obat.length > 0) {
+                            if (dataSoap[i].order_obat && dataSoap[i].order_obat.length > 0) {
                                 $.each(dataSoap[i].order_obat, function(i_lab, item_lab){
                                     $row_lab += `
                                         `+(i_lab == 0 ? '<br><b>Obat</b><br>' : '')+`
@@ -1431,7 +1431,7 @@
                                     `
                                 })
                             }
-                            if (dataSoap[i].order_lainnya.length > 0) {
+                            if (dataSoap[i].order_lainnya && dataSoap[i].order_lainnya.length > 0) {
                                 $.each(dataSoap[i].order_lainnya, function(i_lab, item_lab){
                                     $row_lab += `
                                         `+(i_lab == 0 ? '<br><b>Tindakan Lainnya</b><br>' : '')+`
@@ -1439,7 +1439,7 @@
                                     `
                                 })
                             }
-                            if (dataSoap[i].diagnosa.length > 0) {
+                            if (dataSoap[i].diagnosa && dataSoap[i].diagnosa.length > 0) {
                                 $.each(dataSoap[i].diagnosa, function(i_diagnosa, item_diagnosa){
                                     $row_diagnosa += `
                                         `+item_diagnosa.ID_ICD10+` - `+item_diagnosa.NM_ICD10+`<br> 
@@ -1447,23 +1447,25 @@
                                 })
                             }
 
-                            let roleSoap = JSON.parse(dataSoap[i].bertindak_sebagai)
                             let contentRoleSoap = ''
                             
-                            if (roleSoap) {
-                                $.each(roleSoap, function(sub_i, sub_item){
-                                    contentRoleSoap += sub_item+(roleSoap.length != sub_i + 1 ? ', ' : '')
-                                })
+                            if (dataSoap[i].bertindak_sebagai) {
+                                let roleSoap = JSON.parse(dataSoap[i].bertindak_sebagai)
+                                if (roleSoap) {
+                                    $.each(roleSoap, function(sub_i, sub_item){
+                                        contentRoleSoap += sub_item+(roleSoap.length != sub_i + 1 ? ', ' : '')
+                                    })
+                                }
                             }
 
                             table = table + "<tr>"
-                            table = table + "<td>"+dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu+"</td>"
-                            table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+" "+(contentRoleSoap ? '<br><br>('+contentRoleSoap+')' : '')+"</td>"
+                            table = table + "<td>"+(dataSoap[i].updated_at ? moment(dataSoap[i].updated_at).format('YYYY-MM-DD HH:mm:ss') : dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu)+"</td>"
+                            table = table + "<td class='text-center'>"+(dataSoap[i].nama_ppa ? dataSoap[i].nama_ppa : dataSoap[i].name)+" "+(contentRoleSoap ? '<br><br>('+contentRoleSoap+')' : dataSoap[i].soapdok_posisi ? '<br><br><b>( '+dataSoap[i].soapdok_posisi+' )</b>' : '')+"</td>"
                             table = table + `<td>
-                                (S) `+(dataSoap[i].soapdok_subject ?? '')+`<br/><br/>
-                                (O) `+(dataSoap[i].soapdok_object ?? '')+`<br/><br/>
-                                (A) <div class="ml-3">`+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '')+`</div><br/><br/>
-                                (P) `
+                                <b>(S)</b> `+(dataSoap[i].soapdok_subject ?? '')+`<br/><br/>
+                                <b>(O)</b> `+(dataSoap[i].soapdok_object ?? '')+`<br/><br/>
+                                <b>(A)</b> `+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '')+`<br/><br/>
+                                <b>(P)</b> `
                                     +(dataSoap[i].soapdok_planning ?? '')+`<br/><br><br>
                                     <b>Tindakan Penunjang & Obat :</b>
                                     <span class="pl-3">`+$row_lab+'<br>'+$row_radiologi+'<br>'+$row_obat+'<br>'+$row_lainnya+`</span>
