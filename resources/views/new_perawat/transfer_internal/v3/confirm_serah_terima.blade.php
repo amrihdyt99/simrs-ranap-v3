@@ -83,45 +83,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="col-lg-12">
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label>Lab (lembar)</label>
-                <input type="text" class="form-control" name="transfer_terima_lab" value="{{$transfer_internal->transfer_terima_lab}}">
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label>X-Ray (lembar)</label>
-                <input type="text" class="form-control" name="transfer_terima_xray" value="{{$transfer_internal->transfer_terima_xray}}">
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label>MRI (lembar)</label>
-                <input type="text" class="form-control" name="transfer_terima_mri" value="{{$transfer_internal->transfer_terima_mri}}">
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label>CT Scan (lembar)</label>
-                <input type="text" class="form-control" name="transfer_terima_ct_scan" value="{{$transfer_internal->transfer_terima_ct_scan}}">
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group"><label>EKG (lembar)</label>
-                <input type="text" class="form-control" name="transfer_terima_ekg" value="{{$transfer_internal->transfer_terima_ekg}}">
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label>Echo (lembar)</label>
-                <input type="text" class="form-control" name="transfer_terima_echo" value="{{$transfer_internal->transfer_terima_echo}}">
-              </div>
-            </div>
-          </div>
-        </div>
+        @if ($type == 'edit' || $type == 'terima')
         <div class="col-sm-12 pb-3" style>
           <button type="button" class="protecc btn btn-sm btn-info" onclick="nyaa_act(this,'ModalBase_orig_transferinternal_diagnostik','ModalBase')" nyaa-mode="add">Tambah Data Diagnostik Baru</button>
         </div>
@@ -155,13 +117,56 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
             </table>
           </div>
         </div>
+        @else
+        <div class="col-sm-12">
+          <div class="w-100">
+            <table id="dttb_transfer_internal5" nyaa-urldatatable="{{ $url_form }}"
+              nyaa-columns='[
+                    {"data": "id", "name": "id"},
+                    {"data": "lab", "name": "lab"},
+                    {"data": "xray", "name": "xray"},
+                    {"data": "mri", "name": "mri"},
+                    {"data": "ct_scan", "name": "ct_scan"},
+                    {"data": "ekg", "name": "ekg"},
+                    {"data": "echo", "name": "echo"}
+                ]'
+              nyaa-kode_transfer_internal="{{ $transfer_internal->kode_transfer_internal }}"
+              class="w-100 table table-sm table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Lab (lembar)</th>
+                  <th>X-Ray (lembar)</th>
+                  <th>MRI (lembar)</th>
+                  <th>CT Scan (lembar)</th>
+                  <th>EKG (lembar)</th>
+                  <th>Echo (lembar)</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+        @endif
       </div>
     </div>
   </div>
 </div>
-<div class="float-left">
-  <button class="btn btn-success btn_transfer_internal" type="button">Simpan</button>
+@if ($type == 'terima')
+<div class="container mt-3">
+  <div class="card">
+    <div class="card-header container-fluid">
+      <div class="row">
+        <div class="col-md-8">
+          <h3><b>KONFIRMASI TRANSFER INTERNAL</b></h3>
+        </div>
+        <div class="col-md-4 float-right">
+          <button class="btn btn-info text-white" id="confirmTransfer" type="button">Konfirmasi Transfer Internal Pasien</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+@endif
 
 <div id="ModalBase_orig_transferinternal_diagnostik" style="display:none!important;">
   <div class="modal-dialog modal-lg">

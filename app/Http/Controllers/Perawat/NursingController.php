@@ -701,10 +701,10 @@ class NursingController extends Controller
                 'transfer_dokumen_yang_disertakan' => json_encode($request->transfer_dokumen_yang_disertakan),
                 'transfer_alat_terpasang' => $request->transfer_alat_terpasang,
                 'transfer_deleted' => 0,
-                'ditransfer_oleh_user_id' => auth()->user()->id,
+                'ditransfer_oleh_user_id' => auth()->user()->username,
                 'ditransfer_oleh_nama' => auth()->user()->name,
                 'ditransfer_waktu' => Carbon::now(),
-                'diterima_oleh_user_id' => $perawat->id,
+                'diterima_oleh_user_id' => $perawat->username,
                 'diterima_oleh_nama' => $perawat->name,
                 // 'diterima_waktu' => $request->diterima_waktu,
                 'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
@@ -729,21 +729,12 @@ class NursingController extends Controller
                 'created_at' => Carbon::now(),
             ];
 
-            $check_ = DB::connection('mysql')
-                ->table('transfer_internal')
-                ->where('transfer_reg', $request->transfer_reg)
-                ->first();
-
-            if ($check_) {
-                $update = DB::connection('mysql')->table('transfer_internal')
-                    ->where('transfer_reg', $request->transfer_reg)
-                    ->update($data);
-            } else {
-                // $data['kode_transfer_internal']=app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_datetimeuuid4();
-                $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
-                $store = DB::connection('mysql')->table('transfer_internal')
-                    ->insert($data);
-            }
+            $update = DB::connection('mysql')->table('transfer_internal')
+                ->where([
+                    ['transfer_reg', $request->transfer_reg],
+                    ['kode_transfer_internal', $request->kode_transfer_internal]
+                ])
+                ->update($data);
 
             // Save signatures
             $this->saveSignature($request);

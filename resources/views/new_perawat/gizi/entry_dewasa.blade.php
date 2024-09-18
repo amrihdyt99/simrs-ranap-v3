@@ -8,34 +8,34 @@
 <div class="form-group row">
     <div class="col-lg-3">
         <label for="">BB (Kg)</label>
-        <input type="text" name="dewasa_bb" value="{{$assesment_gizi_dewasa->dewasa_bb}}" class="form-control" placeholder="BB">
+        <input type="number" name="dewasa_bb" value="{{$assesment_gizi_dewasa->dewasa_bb}}" class="form-control" placeholder="BB">
     </div>
     <div class="col-lg-3">
         <label for="">BBI (cm)</label>
-        <input type="text" name="bbi" value="{{$assesment_gizi_dewasa->bbi}}" class="form-control" placeholder="BBI">
+        <input type="number" name="bbi" value="{{$assesment_gizi_dewasa->bbi}}" class="form-control" placeholder="BBI">
     </div>
     <div class="col-lg-3">
         <label for="">TL (cm)</label>
-        <input type="text" name="dewasa_tl" value="{{$assesment_gizi_dewasa->dewasa_tl}}" class="form-control" placeholder="TL">
+        <input type="number" name="dewasa_tl" value="{{$assesment_gizi_dewasa->dewasa_tl}}" class="form-control" placeholder="TL">
     </div>
     <div class="col-lg-3">
         <label for="">LLA (cm)</label>
-        <input type="text" name="dewasa_lla" value="{{$assesment_gizi_dewasa->dewasa_lla}}" class="form-control" placeholder="LLA">
+        <input type="number" name="dewasa_lla" value="{{$assesment_gizi_dewasa->dewasa_lla}}" class="form-control" placeholder="LLA">
     </div>
 </div>
 <div class="form-group row">
     <div class="col-lg-3">
         <label for="">TB (cm)</label>
-        <input type="text" name="dewasa_tb" value="{{$assesment_gizi_dewasa->dewasa_tb}}" class="form-control" placeholder="TB">
+        <input type="number" name="dewasa_tb" value="{{$assesment_gizi_dewasa->dewasa_tb}}" class="form-control" placeholder="TB">
     </div>
     <div class="col-lg-3">
         <label for="">IMT (kg/m)</label>
-        <input type="text" name="dewasa_imt" value="{{$assesment_gizi_dewasa->dewasa_imt}}" class="form-control" placeholder="IMT">
+        <input type="number" name="dewasa_imt" value="{{$assesment_gizi_dewasa->dewasa_imt}}" class="form-control" placeholder="IMT">
     </div>
     <div class="col-lg-3"></div>
     <div class="col-lg-3">
         <label for="">%LLA</label>
-        <input type="text" name="dewasa_lla_lainnya" value="{{$assesment_gizi_dewasa->dewasa_lla_lainnya}}" class="form-control" placeholder="%LLA">
+        <input type="number" name="dewasa_lla_lainnya" value="{{$assesment_gizi_dewasa->dewasa_lla_lainnya}}" class="form-control" placeholder="%LLA">
     </div>
 </div>
 

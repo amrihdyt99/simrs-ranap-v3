@@ -8,6 +8,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
     <div class="col-lg-12">
         <h4>{{ $judul_form }}</h4>
         <div class="row">
+            @if ($type == 'edit' || $type == 'terima')
             <div class="col-sm-12 pb-3" style>
                 <button type="button" class="protecc btn btn-sm btn-info" onclick="nyaa_act(this,'ModalBase_orig_transferinternal_sttsps','ModalBase')" nyaa-mode="add">Tambah Data Baru</button>
             </div>
@@ -39,6 +40,34 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
                     </table>
                 </div>
             </div>
+            @else
+            <div class="col-sm-12">
+                <div class="w-100">
+                    <table id="dttb_transfer_internal3" nyaa-urldatatable="{{ $url_form }}"
+                        nyaa-columns='[
+                    {"data": "id", "name": "id"},
+                    {"data": "waktu", "name": "waktu"},
+                    {"data": "kesadaran", "name": "kesadaran"},
+                    {"data": "td", "name": "td"},
+                    {"data": "hr", "name": "hr"},
+                    {"data": "rr", "name": "rr"}
+                ]'
+                        nyaa-kode_transfer_internal="{{ $transfer_internal->kode_transfer_internal }}"
+                        class="w-100 table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Waktu</th>
+                                <th>Kesadaran</th>
+                                <th>TD (mmHg)</th>
+                                <th>HR (x/mnt)</th>
+                                <th>RR (x/mnt)</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            @endif
         </div>
         <div id="ModalBase_orig_transferinternal_sttsps" style="display:none!important;">
             <div class="modal-dialog modal-lg">

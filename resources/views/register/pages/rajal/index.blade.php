@@ -112,10 +112,11 @@
                   </button>
                 </div>
                 <div class="modal-body" id="slip-pernyataan-ranap">
-                  
+                  <!-- Konten untuk dicetak -->
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                  <button type="button" class="btn btn-primary" onclick="printModalContent()">Cetak</button>
                 </div>
               </div>
             </div>
@@ -207,7 +208,7 @@
             const formatted_url = url.replace(':id', registration_number)
 
             // trigger dismiss modal cancelRegModal
-            
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -261,6 +262,7 @@
                 url: formatted_url,
                 success: function (response) {
                     $("#slip-pernyataan-ranap").html(response)
+                    initializeCanvas(); // Inisialisasi canvas setelah konten dimuat
                 },
                 error: function (xhr, status, error) {
                     Swal.fire(
@@ -271,5 +273,71 @@
                 }
             });
         }
+        const initializeCanvas = () => {
+            const canvas = document.getElementById('doctor-signature');
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+            canvas.width = 200; 
+            canvas.height = 100; 
+            canvas.onmousedown = (e) => {
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            };
+            canvas.onmousemove = (e) => {
+                if (!drawing) return;
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            };
+            canvas.onmouseup = () => {
+                drawing = false;
+                ctx.closePath();
+            };
+            document.getElementById('clear-doctor-signature').onclick = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            };
+            document.getElementById('save-doctor-signature').onclick = () => 
+                document.getElementById('doctor-signature-input').value = canvas.toDataURL('image/png');
+        }
     </script>
+@endpush
+
+@push('nyaa_scripts')
+<script>
+    const printModalContent = () => {
+        const originalContents = document.body.innerHTML; // Simpan konten asli
+        const modalContents = document.getElementById('slip-pernyataan-ranap').innerHTML; // Ambil konten modal
+
+        // Ganti konten body dengan konten modal
+        document.body.innerHTML = `
+            <html>
+                <head>
+                    <style>
+                        @media print {
+                            body, html {
+                                margin: 0;
+                                padding: 0;
+                                width: 100%;
+                                height: 100%;
+                                overflow: hidden;
+                            }
+                            #slip-pernyataan-ranap {
+                                width: 100%;
+                                height: 100%;
+                                page-break-inside: avoid;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${modalContents}
+                </body>
+            </html>
+        `;
+
+        window.print(); // Panggil fungsi print
+        document.body.innerHTML = originalContents; // Kembalikan konten asli
+        location.reload(); // Reload halaman untuk mengembalikan event listener
+    }
+</script>
 @endpush

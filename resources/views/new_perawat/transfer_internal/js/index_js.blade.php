@@ -5,7 +5,6 @@
   }
 
   function loadCreateTfInternalFunc() {
-    nyaa_dttb_transferinternal_load_all();
     loadSelect2TfInternal();
     $('.btn_transfer_internal').on('click', function() {
       simpanTransferInternal();
@@ -51,15 +50,21 @@
           searchable: true,
         },
         {
-          data: "UnitAsal",
-          name: "UnitAsal",
+          data: "bed_code_asal",
+          name: "bed_code_asal",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_asal + '] ' + row.bed_asal_name + ' - ' + row.bed_asal_unit + ' - ' + row.bed_asal_class;
+          }
         }, {
-          data: "UnitTujuan",
-          name: "UnitTujuan",
+          data: "bed_code_tujuan",
+          name: "bed_code_tujuan",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_tujuan + '] ' + row.bed_tujuan_name + ' - ' + row.bed_tujuan_unit + ' - ' + row.bed_tujuan_class;
+          }
         }, {
           data: "transfer_waktu_hubungi",
           name: "transfer_waktu_hubungi",
@@ -90,39 +95,70 @@
       ],
       rowCallback: function(row, data) {
         let api = this.api();
-        $(row).find('.btn-delete').click(function() {
-          let pk = $(this).data('id'),
-            url = `/ranap/vclaim-manual/delete/` + pk;
-          Swal.fire({
-            title: "Anda Yakin ?",
-            text: "Data tidak dapat dikembalikan setelah di hapus!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Tidak, Batalkan",
-          }).then((result) => {
-            if (result.value) {
-              $.ajax({
-                url: url,
-                type: "POST",
-                data: {
-                  _token: '{{ csrf_token() }}',
-                  _method: 'POST'
-                },
-                error: function(response) {
-                  neko_notify('Error', 'Data gagal dihapus !');
-                },
-                success: function(response) {
-                  if (response.status === "success") {
-                    neko_simpan_success();
-                    api.draw();
-                  } else {
-                    neko_notify('Error', 'Data gagal dihapus !');
-                  }
-                }
-              });
-            }
+        $(row).find('.btn-edit-transfer').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+              'type': 'edit'
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.edit_transfer_internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              nyaa_dttb_transferinternal_edit_load_all();
+              loadCreateTfInternalFunc();
+            },
+            error: function(data) {
+              clear_show_error();
+            },
+          });
+        });
+        $(row).find('.btn-detail-transfer').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+              'type': 'detail'
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.edit_transfer_internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              nyaa_dttb_transferinternal_load_all();
+              loadCreateTfInternalFunc();
+
+            },
+            error: function(data) {
+              clear_show_error();
+            },
+          });
+        });
+        $(row).find('.btn-print-transfer').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.print-transfer-internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              printTransferInternal();
+
+            },
+            error: function(data) {
+              clear_show_error();
+            },
           });
         });
       }
@@ -163,15 +199,21 @@
           searchable: true,
         },
         {
-          data: "UnitAsal",
-          name: "UnitAsal",
+          data: "bed_code_asal",
+          name: "bed_code_asal",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_asal + '] ' + row.bed_asal_name + ' - ' + row.bed_asal_unit + ' - ' + row.bed_asal_class;
+          }
         }, {
-          data: "UnitTujuan",
-          name: "UnitTujuan",
+          data: "bed_code_tujuan",
+          name: "bed_code_tujuan",
           orderable: true,
           searchable: true,
+          render: function(data, type, row, meta) {
+            return '[' + row.bed_code_tujuan + '] ' + row.bed_tujuan_name + ' - ' + row.bed_tujuan_unit + ' - ' + row.bed_tujuan_class;
+          }
         }, {
           data: "transfer_waktu_hubungi",
           name: "transfer_waktu_hubungi",
@@ -204,15 +246,19 @@
         let api = this.api();
         $(row).find('.btn-confirm-tf').click(function() {
           clear_show_load();
+          let kode_transfer = $(this).data('transfer_code');
           $.ajax({
             type: "POST",
             data: {
               "reg_no": regno,
               "medrec": medrec,
+              "kode_transfer": kode_transfer,
             },
             url: "{{route('nyaa_universal.view_injector.perawat.create-serah-terima-transfer-internal')}}",
             success: function(data) {
               inject_view_data(data);
+              nyaa_dttb_transferinternal_load_all();
+              confirmTransferInternal();
               loadCreateTfInternalFunc();
             },
             error: function(data) {
@@ -279,10 +325,12 @@
             data: {
               "reg_no": regno,
               "medrec": medrec,
+              'type': 'edit',
             },
             url: "{{route('nyaa_universal.view_injector.perawat.create_transfer_internal')}}",
             success: function(data) {
               inject_view_data(data);
+              nyaa_dttb_transferinternal_edit_load_all();
               loadCreateTfInternalFunc();
             },
             error: function(data) {
@@ -400,6 +448,52 @@
           };
         }
       }
+    });
+  }
+
+  function confirmTransferInternal() {
+    $('#confirmTransfer').click(function(e) {
+      Swal.fire({
+        title: "Konfirmasi Serah Terima Transfer Internal ?",
+        text: "Transfer yang telah dikonfirmasi tidak bisa dikembalikan !",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Konfirmasi !",
+        cancelButtonText: "Tidak, Batalkan",
+      }).then((result) => {
+        if (result.value) {
+          $.ajax({
+            url: "{{route('perawat.confirm_serah_terima')}}",
+            type: "POST",
+            data: $('form#form_transfer_internal').serialize() + "&medrec=" + medrec + "&transfer_reg=" + regno,
+            error: function(response) {
+              neko_notify('Error', 'Data gagal disimpan !');
+            },
+            success: function(response) {
+              if (response.status === "success") {
+                neko_simpan_success();
+                api.draw();
+              } else {
+                neko_notify('Error', 'Data gagal disimpan !');
+              }
+            }
+          });
+        }
+      });
+    });
+  }
+
+  function printTransferInternal() {
+    $(document).ready(function() {
+      $('#btnPrintTransferInternal').click(function() {
+        var printContent = $('#printTransferInternalContent').html(); // Get the div content
+        var originalContent = $('body').html(); // Backup the entire page's content
+
+        $('body').html(printContent); // Replace body content with the div content
+        window.print(); // Trigger the print
+        $('body').html(originalContent); // Restore original page content
+      });
     });
   }
 </script>

@@ -60,8 +60,10 @@ Route::prefix('nyx-sistem')
                 Route::post('assesment_nurrse_note', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'assesment_nurrse_note'])->name('assesment_nurrse_note');
                 Route::post('nurse_transfer_internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'nurse_transfer_internal'])->name('nurse_transfer_internal');
                 Route::post('create_transfer_internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'create_transfer_internal'])->name('create_transfer_internal');
+                Route::post('edit_transfer_internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'edit_transfer_internal'])->name('edit_transfer_internal');
                 Route::post('serah-terima-transfer-internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'terima_transfer_internal'])->name('serah-terima-transfer-internal');
                 Route::post('create-serah-terima-transfer-internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'confirm_view_terima'])->name('create-serah-terima-transfer-internal');
+                Route::post('print-transfer-internal', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'print_transfer_internal'])->name('print-transfer-internal');
                 Route::post('nurse_admin_nurse', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'nurse_admin_nurse'])->name('nurse_admin_nurse');
                 Route::post('nurse_transfusi_darah', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'nurse_transfusi_darah'])->name('nurse_transfusi_darah');
                 Route::post('nurse_obgyn', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'nurse_obgyn'])->name('nurse_obgyn');
