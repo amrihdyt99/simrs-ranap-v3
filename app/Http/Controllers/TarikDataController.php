@@ -290,11 +290,14 @@ class TarikDataController extends Controller
     public function user_rajal()
     {
         $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs-rajal/api/master/users');
+        //delete data yg baru ditarik jika double
+        DB::connection('mysql2')->table('users')->whereYear('created_at', 2024)->delete();
+
         foreach ($data as $kue) {
-            DB::connection('mysql2')
-                ->table('users')->insert([
+            DB::connection('mysql2')->table('users')->updateOrInsert(
+                ['name' => $kue['name']],
+                [
                     'level_user' => $kue['level_user'],
-                    'name' => $kue['name'],
                     'username' => $kue['username'],
                     'email_verified_at' => $kue['email_verified_at'],
                     'password' => $kue['password'],
@@ -304,14 +307,17 @@ class TarikDataController extends Controller
                     'is_active' => $kue['is_active'],
                     'remember_token' => $kue['remember_token'],
                     'created_at' => Carbon::now(),
-                    'updated_at' => $kue['updated_at'],
+                    'updated_at' => Carbon::now(),
                     'user_active_by' => $kue['updated_at'],
                     'user_active_at' => Carbon::now(),
                     'is_deleted' => 0,
-                ]);
+                ]
+            );
         }
+
         echo 'Alhamdulillah';
     }
+
 
     public function curl_nih($url)
     {
