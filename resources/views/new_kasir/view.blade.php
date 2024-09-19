@@ -223,9 +223,9 @@
                         <br>
                         <div id="load_action_button" class="float-right">Memuat data ...</div>
                         <div id="action_button">
-                            <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
+                            <!-- <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
                             <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button>
-                            <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button>
+                            <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button> -->
                             <button id="btn-validasi-billing" class="btn btn-info float-right mb-3">KONFIRMASI PEMBAYARAN</button>
                         </div>
                     </div>
@@ -264,6 +264,10 @@
 
     var payer = ''
 
+    $(document).ready(function() {
+
+    });
+
     $('body').on('click', '#btn-validasi-billing', function() {
         $('#modalValidasiBayar').modal('show');
         $('#input-validation-store').prop('checked', false);
@@ -277,9 +281,34 @@
     $('#action_button').hide()
     $('#action_button button[id*="btn"]').hide()
 
-    $(document).ready(function() {
-        // getItem('LAIN')
-    })
+    $(async function() {
+        $.ajax({
+            type: "POST",
+            url: "{{ route('tarif.tindakanbaru') }}",
+            data: {
+                "type": "X0001^01",
+                "class": "{{ $pasien->reg_class }}",
+                "reg": $reg
+            },
+
+            success: function(data) {
+                var dataJSON = data.data;
+                var opt = '<option value="" >Pilih tindakan</option>';
+                $.each(dataJSON, function(index, row) {
+                    opt += '<option value="' + row.ItemCode + '" data-id="' + row.ItemCode + '" data-type="Lainnya" data-name="' + row.ItemName1 + '" data-price="' + row.PersonalPrice + '">' + row.ItemCode + ' - ' + row.ItemName1 + '</option>';
+                });
+                $('#select-tindakan-lain').html(opt);
+                $('#select-tindakan-lain').select2({
+                    dropdownParent: $('#modalEntryOrder')
+                });
+
+                // Initialize Select2 after populating options
+                //console.log(data.data);
+                //let html = document.getElementById("panel-nursing").innerHTML = data;
+            },
+        });
+    });
+
 
     function getItem($type = '') {
         $.ajax({
