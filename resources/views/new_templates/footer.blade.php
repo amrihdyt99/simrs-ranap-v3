@@ -1,36 +1,36 @@
     @php
-        function tgl_indo($tanggal){
-            $bulan = array (
-                1 =>   'Januari',
-                'Februari',
-                'Maret',
-                'April',
-                'Mei',
-                'Juni',
-                'Juli',
-                'Agustus',
-                'September',
-                'Oktober',
-                'November',
-                'Desember'
-            );
-            $pecahkan = explode('-', $tanggal);
+    function tgl_indo($tanggal){
+    $bulan = array (
+    1 => 'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
+    );
+    $pecahkan = explode('-', $tanggal);
 
-            // variabel pecahkan 0 = tahun
-            // variabel pecahkan 1 = bulan
-            // variabel pecahkan 2 = tanggal
+    // variabel pecahkan 0 = tahun
+    // variabel pecahkan 1 = bulan
+    // variabel pecahkan 2 = tanggal
 
-            return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
-        }
+    return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
+    }
     @endphp
     <script src="{{asset('')}}new_assets/vendors/base/vendor.bundle.base.js"></script>
     <script src="{{asset('')}}new_assets/js/jquery-ui.js"></script>
     <script src="{{asset('')}}new_assets/js/template.js"></script>
     <script src="{{asset('')}}new_assets/vendors/chart.js/Chart.min.js"></script>
     <script src="{{asset('')}}new_assets/vendors/progressbar.js/progressbar.min.js"></script>
-		<script src="{{asset('')}}new_assets/vendors/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js"></script>
-		<script src="{{asset('')}}new_assets/vendors/justgage/raphael-2.1.4.min.js"></script>
-		<script src="{{asset('')}}new_assets/vendors/justgage/justgage.js"></script>
+    <script src="{{asset('')}}new_assets/vendors/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js"></script>
+    <script src="{{asset('')}}new_assets/vendors/justgage/raphael-2.1.4.min.js"></script>
+    <script src="{{asset('')}}new_assets/vendors/justgage/justgage.js"></script>
     <script src="{{asset('')}}new_assets/js/dashboard.js"></script>
     <script src="{{asset('')}}new_assets/js/select2.min.js"></script>
     <script src="{{asset('')}}new_assets/js/moment.min.js"></script>
@@ -47,9 +47,9 @@
         $user_ = "{{auth()->user()->id}}";
         $user_perawat_ = "{{auth()->user()->perawat_id}}";
         $poli_ = "{{session()->get('poli_kode')}}";
-        var regno="{{$reg}}"
-        var medrec="{{$dataPasien->MedicalNo}}"
-        var classcode="{{$dataPasien->reg_class}}"
+        var regno = "{{$reg}}"
+        var medrec = "{{$dataPasien->MedicalNo}}"
+        var classcode = "{{$dataPasien->reg_class}}"
 
 
 
@@ -70,7 +70,7 @@
             var randomString = '';
             for (var i = 0; i < len; i++) {
                 var randomPoz = Math.floor(Math.random() * charSet.length);
-                randomString += charSet.substring(randomPoz,randomPoz+1);
+                randomString += charSet.substring(randomPoz, randomPoz + 1);
             }
             return randomString;
         }
@@ -79,7 +79,7 @@
             if (typeof variable !== 'string') {
                 return false;
             }
-            
+
             try {
                 JSON.parse(variable);
                 return true;
@@ -93,28 +93,28 @@
             $(elm).append(newOption).trigger('change');
         }
 
-        function getAlert(_reg){
+        function getAlert(_reg) {
             $.ajax({
                 url: '{{url("")}}/api/getAlert',
                 data: {
-                    reg_no: _reg 
+                    reg_no: _reg
                 },
-                success: function(resp){
+                success: function(resp) {
                     console.log(resp)
                     $('#alert_indikator').html('')
 
                     if (resp.alergi == 'Ya' && resp.asper_hasil) {
                         $('[id="alert_blink"]').show()
                     }
-                    
+
                     if (resp.alergi == 'Ya') {
                         $('#alert_indikator').append(`
-                            <p class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: `+resp.nama_alergi+`">Allergy</p>
+                            <p class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: ` + resp.nama_alergi + `">Allergy</p>
                         `)
                     }
 
                     if (resp.asper_hasil) {
-                        $('#alert_indikator').append(`<p class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Resiko jatuh : `+resp.asper_hasil+`">Fall risk</p>`)
+                        $('#alert_indikator').append(`<p class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Resiko jatuh : ` + resp.asper_hasil + `">Fall risk</p>`)
                     }
                 }
             })
@@ -122,178 +122,178 @@
 
         $('#partial-panel').hide();
 
-            function outputUpdateWithDesc(vol) {
-                $text = " Tidak Nyeri";
+        function outputUpdateWithDesc(vol) {
+            $text = " Tidak Nyeri";
 
-                if (vol==1){
-                    $text = " Tidak Nyeri"
-                }else if (vol==2){
-                    $text = " Nyeri Ringan"
-                }else if (vol==3){
-                    $text = " Sedikit Nyeri"
-                }else if (vol==4){
-                    $text = " Nyeri Sedang"
-                }else if (vol==5){
-                    $text = " Nyeri Berat"
-                }else if (vol==6){
-                    $text = " Nyeri Sangat Berat"
-                }else{
-                    $text = "";
-                }
-                if ($poli_ == 'HD001') {
-                    document.querySelector('#hd_skala').value = vol+$text;
-                } else {
-                    document.querySelector('#skala').value = vol+$text;
-                }
+            if (vol == 1) {
+                $text = " Tidak Nyeri"
+            } else if (vol == 2) {
+                $text = " Nyeri Ringan"
+            } else if (vol == 3) {
+                $text = " Sedikit Nyeri"
+            } else if (vol == 4) {
+                $text = " Nyeri Sedang"
+            } else if (vol == 5) {
+                $text = " Nyeri Berat"
+            } else if (vol == 6) {
+                $text = " Nyeri Sangat Berat"
+            } else {
+                $text = "";
+            }
+            if ($poli_ == 'HD001') {
+                document.querySelector('#hd_skala').value = vol + $text;
+            } else {
+                document.querySelector('#skala').value = vol + $text;
+            }
+        }
+
+        // console.log(getAge('02/08/1999'));
+
+        function getAge(dateString) {
+            var now = new Date();
+            var today = new Date(now.getYear(), now.getMonth(), now.getDate());
+
+            var yearNow = now.getYear();
+            var monthNow = now.getMonth();
+            var dateNow = now.getDate();
+
+            var dob = new Date(dateString.substring(6, 10),
+                dateString.substring(0, 2) - 1,
+                dateString.substring(3, 5)
+            );
+
+            var yearDob = dob.getYear();
+            var monthDob = dob.getMonth();
+            var dateDob = dob.getDate();
+
+            var age = {};
+            var ageString = "";
+            var yearString = "";
+            var monthString = "";
+            var dayString = "";
+
+
+            yearAge = yearNow - yearDob;
+
+            if (monthNow >= monthDob)
+                var monthAge = monthNow - monthDob;
+            else {
+                yearAge--;
+                var monthAge = 12 + monthNow - monthDob;
             }
 
-            // console.log(getAge('02/08/1999'));
+            if (dateNow >= dateDob)
+                var dateAge = dateNow - dateDob;
+            else {
+                monthAge--;
+                var dateAge = 31 + dateNow - dateDob;
 
-            function getAge(dateString) {
-                var now = new Date();
-                var today = new Date(now.getYear(),now.getMonth(),now.getDate());
-
-                var yearNow = now.getYear();
-                var monthNow = now.getMonth();
-                var dateNow = now.getDate();
-
-                var dob = new Date(dateString.substring(6,10),
-                                    dateString.substring(0,2)-1,
-                                    dateString.substring(3,5)
-                                    );
-
-                var yearDob = dob.getYear();
-                var monthDob = dob.getMonth();
-                var dateDob = dob.getDate();
-
-                var age = {};
-                var ageString = "";
-                var yearString = "";
-                var monthString = "";
-                var dayString = "";
-
-
-                yearAge = yearNow - yearDob;
-
-                if (monthNow >= monthDob)
-                    var monthAge = monthNow - monthDob;
-                else {
-                    yearAge--;
-                    var monthAge = 12 + monthNow -monthDob;
-                }
-
-                if (dateNow >= dateDob)
-                    var dateAge = dateNow - dateDob;
-                else {
-                    monthAge--;
-                    var dateAge = 31 + dateNow - dateDob;
-
-                    if (monthAge < 0) {
+                if (monthAge < 0) {
                     monthAge = 11;
                     yearAge--;
-                    }
-                }
-
-                age = {
-                    years: yearAge,
-                    months: monthAge,
-                    days: dateAge
-                    };
-
-                if ( age.years > 1 ) yearString = " thn";
-                else yearString = " thn";
-                if ( age.months> 1 ) monthString = " bln";
-                else monthString = " bln";
-                if ( age.days > 1 ) dayString = " hari";
-                else dayString = " hari";
-
-
-                if ( (age.years > 0) && (age.months > 0) && (age.days > 0) )
-                    ageString = age.years + yearString + ", " + age.months + monthString + ", and " + age.days + dayString;
-                else if ( (age.years == 0) && (age.months == 0) && (age.days > 0) )
-                    ageString = age.days + dayString;
-                else if ( (age.years > 0) && (age.months == 0) && (age.days == 0) )
-                    ageString = age.years + yearString + " old. Happy Birthday!!";
-                else if ( (age.years > 0) && (age.months > 0) && (age.days == 0) )
-                    ageString = age.years + yearString + " and " + age.months + monthString;
-                else if ( (age.years == 0) && (age.months > 0) && (age.days > 0) )
-                    ageString = age.months + monthString + " and " + age.days + dayString;
-                else if ( (age.years > 0) && (age.months == 0) && (age.days > 0) )
-                    ageString = age.years + yearString + " and " + age.days + dayString;
-                else if ( (age.years == 0) && (age.months > 0) && (age.days == 0) )
-                    ageString = age.months + monthString;
-                else ageString = "Oops! Could not calculate age!";
-
-                return ageString;
-            }
-
-            function getYear(dateString) {
-                var now = new Date();
-                var today = new Date(now.getYear());
-
-                var yearNow = now.getYear();
-
-                var dob = new Date(dateString);
-
-                var yearDob = dob.getYear();
-                var age = {};
-                var ageString = "";
-                var yearString = "";
-
-
-                yearAge = yearNow - yearDob;
-
-                return yearAge;
-            }
-
-            function setChecked($name, $value, $prefix=""){
-                if ($value != null){
-                    if($value.indexOf('[')>-1){
-                        $data = JSON.parse($value);
-                        if(typeof $data == "object"){
-                            $.each($data, function(i, item){
-                                $($prefix+' input[name="'+$name+'"][value="'+item+'"]').prop('checked', true);
-                            })
-                        }
-                    }else{
-                        $($prefix+' input[name="'+$name+'"][value="'+$value+'"]').prop('checked', true);
-                    }
                 }
             }
 
-            function checkbox($name, $value){
-                if ($value != null) {
-                    $.each($value, function(i, data){
-                        $('input[name="'+$name+'"][value="'+data+'"]').prop('checked', true);
-                    });
+            age = {
+                years: yearAge,
+                months: monthAge,
+                days: dateAge
+            };
+
+            if (age.years > 1) yearString = " thn";
+            else yearString = " thn";
+            if (age.months > 1) monthString = " bln";
+            else monthString = " bln";
+            if (age.days > 1) dayString = " hari";
+            else dayString = " hari";
+
+
+            if ((age.years > 0) && (age.months > 0) && (age.days > 0))
+                ageString = age.years + yearString + ", " + age.months + monthString + ", and " + age.days + dayString;
+            else if ((age.years == 0) && (age.months == 0) && (age.days > 0))
+                ageString = age.days + dayString;
+            else if ((age.years > 0) && (age.months == 0) && (age.days == 0))
+                ageString = age.years + yearString + " old. Happy Birthday!!";
+            else if ((age.years > 0) && (age.months > 0) && (age.days == 0))
+                ageString = age.years + yearString + " and " + age.months + monthString;
+            else if ((age.years == 0) && (age.months > 0) && (age.days > 0))
+                ageString = age.months + monthString + " and " + age.days + dayString;
+            else if ((age.years > 0) && (age.months == 0) && (age.days > 0))
+                ageString = age.years + yearString + " and " + age.days + dayString;
+            else if ((age.years == 0) && (age.months > 0) && (age.days == 0))
+                ageString = age.months + monthString;
+            else ageString = "Oops! Could not calculate age!";
+
+            return ageString;
+        }
+
+        function getYear(dateString) {
+            var now = new Date();
+            var today = new Date(now.getYear());
+
+            var yearNow = now.getYear();
+
+            var dob = new Date(dateString);
+
+            var yearDob = dob.getYear();
+            var age = {};
+            var ageString = "";
+            var yearString = "";
+
+
+            yearAge = yearNow - yearDob;
+
+            return yearAge;
+        }
+
+        function setChecked($name, $value, $prefix = "") {
+            if ($value != null) {
+                if ($value.indexOf('[') > -1) {
+                    $data = JSON.parse($value);
+                    if (typeof $data == "object") {
+                        $.each($data, function(i, item) {
+                            $($prefix + ' input[name="' + $name + '"][value="' + item + '"]').prop('checked', true);
+                        })
+                    }
+                } else {
+                    $($prefix + ' input[name="' + $name + '"][value="' + $value + '"]').prop('checked', true);
                 }
             }
+        }
 
-            function clickTab(id, title = null){
-                var id_cppt = $('#soapdok_id').val()
-               
-                    $('div[id*="panel-"]').hide();
-                    $('div[id*="tab-"]').removeClass('active');
+        function checkbox($name, $value) {
+            if ($value != null) {
+                $.each($value, function(i, data) {
+                    $('input[name="' + $name + '"][value="' + data + '"]').prop('checked', true);
+                });
+            }
+        }
 
-                    $('#panel-'+id).show();
-                    $('#tab-'+id).addClass('active');
+        function clickTab(id, title = null) {
+            var id_cppt = $('#soapdok_id').val()
 
-                    if (title) {
-                        $('#title_cppt').text(title);
-                        $('#title-cpoe').text(title);
+            $('div[id*="panel-"]').hide();
+            $('div[id*="tab-"]').removeClass('active');
 
-                        $('.btn-cpoe').attr('id', '');
-                        $('.btn-cpoe').attr('onclick', '');
+            $('#panel-' + id).show();
+            $('#tab-' + id).addClass('active');
 
-                        $('.btn-cpoe').attr('id', 'tab-'+id);
-                        $('.btn-cpoe').attr('onclick', 'clickTab("'+id+'")');
+            if (title) {
+                $('#title_cppt').text(title);
+                $('#title-cpoe').text(title);
 
-                        $('#btn-save-cpoe').attr('value', id);
-                    }
+                $('.btn-cpoe').attr('id', '');
+                $('.btn-cpoe').attr('onclick', '');
 
-                    if (id == 'lab' || id == 'radiologi' || id == 'fisio' || id == 'lainnya') {
-                        $('[id="panel-'+id+'"] [class="row"]').hide()
-                        $('[id="panel-'+id+'"]').append(`
+                $('.btn-cpoe').attr('id', 'tab-' + id);
+                $('.btn-cpoe').attr('onclick', 'clickTab("' + id + '")');
+
+                $('#btn-save-cpoe').attr('value', id);
+            }
+
+            if (id == 'lab' || id == 'radiologi' || id == 'fisio' || id == 'lainnya') {
+                $('[id="panel-' + id + '"] [class="row"]').hide()
+                $('[id="panel-' + id + '"]').append(`
                             <div id="row_loader">
                                 <div class="text-center">
                                     <div class="row">
@@ -303,323 +303,323 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <h6 class="mt-2">Memuat data tindakan `+title+`</h6>     
+                                            <h6 class="mt-2">Memuat data tindakan ` + title + `</h6>     
                                         </div>    
                                     </div>   
                                 </div>    
                             </div>
                         `)
-                    }
-
-                    //alert(id)
-                    if (id == 'lab') {
-                        //disini yang SOAP
-                        $('#row_tindakan').remove();
-                        $("#select-tindakan").empty();
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('tarif.tindakanbaru') }}",
-                            data: {
-                                "type": "X0001^04",
-                                "class":classcode,
-                                "reg": regno
-                            },
-                            success: function(data) {
-                                $('[id="panel-'+id+'"] [class="row"]').show()
-                                $('[id="panel-'+id+'"] #row_loader').remove()
-
-                                var dataJSON=data.data;
-                                if (dataJSON) {
-                                    for(var i=0;i<dataJSON.length;i++){
-                                        $("#select-tindakan")
-                                            .append($("<option></option>")
-                                                .attr("value", dataJSON[i]['ItemCode'] )
-                                                .attr("class", 'row_tindakan')
-                                                .attr("data-id", dataJSON[i]['ItemCode'] )
-                                                .attr("data-type", 'Laboratorium' )
-                                                .attr("data-name", dataJSON[i]['ItemName1'] )
-                                                .attr("data-price", dataJSON[i]['PersonalPrice'] )
-                                                .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
-                                        //console.log(dataJSON[i]['ItemName1'])
-                                    }
-                                }
-                                //let html = document.getElementById("panel-nursing").innerHTML = data;
-                            },
-                        });
-                        $.ajax({
-                            type:"POST",
-                            url:"{{route('get.order.tindakan')}}",
-                            data:{
-                                "id_cppt":id_cppt,
-                                "jenisorder":"lab",
-
-                            },
-                            success:function (data) {
-                                var dataJSON=data.data;
-                                createDataTableCPOE(dataJSON,"table-cpoe");
-                                loadCPOE2()
-                            }
-
-                        })
-
-
-                    } else if (id == 'radiologi') {
-                        $('#row_tindakan').remove();
-                        $("#select-tindakan").empty();
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('tarif.tindakanbaru') }}",
-                            data: {
-                                "type": "X0001^05",
-                                "class":classcode,
-                                "reg": regno
-                            },
-
-                            success: function(data) {
-                                $('[id="panel-'+id+'"] [class="row"]').show()
-                                $('[id="panel-'+id+'"] #row_loader').remove()
-
-                                //console.log(data.data);
-                                var dataJSON=data.data;
-                                for(var i=0;i<dataJSON.length;i++){
-
-                                    $("#select-tindakan")
-                                        .append($("<option></option>")
-                                            .attr("value", dataJSON[i]['ItemCode'] )
-                                            .attr("class", 'row_tindakan')
-                                            .attr("data-id", dataJSON[i]['ItemCode'] )
-                                            .attr("data-type", 'Radiologi' )
-                                            .attr("data-name", dataJSON[i]['ItemName1'] )
-                                            .attr("data-price", dataJSON[i]['PersonalPrice'] )
-                                            .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
-                                    //console.log(dataJSON[i]['ItemName1'])
-                                }
-                                //let html = document.getElementById("panel-nursing").innerHTML = data;
-                            },
-                        });
-
-                        $.ajax({
-                            type:"POST",
-                            url:"{{route('get.order.tindakan')}}",
-                            data:{
-                                "id_cppt":id_cppt,
-                                "jenisorder":"radiologi",
-                                "reg": regno
-                            },
-                            success:function (data) {
-                                var dataJSON=data.data;
-                                createDataTableCPOE(dataJSON,"table-cpoe-radiologi");
-                                loadCPOE2()
-                            }
-
-                        })
-
-                    } else if (id == 'fisio') {
-                        $('#row_tindakan').remove();
-                        $("#select-tindakan").empty();
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('tarif.tindakanbaru') }}",
-                            data: {
-                                "type": "X0001^08",
-                                "class":classcode,
-                                "reg": regno
-                            },
-
-                            success: function(data) {
-                                $('[id="panel-'+id+'"] [class="row"]').show()
-                                $('[id="panel-'+id+'"] #row_loader').remove()
-                                //console.log(data.data);
-                                var dataJSON=data.data;
-                                for(var i=0;i<dataJSON.length;i++){
-                                    $("#select-tindakan")
-                                        .append($("<option></option>")
-                                            .attr("value", dataJSON[i]['ItemCode'] )
-                                            .attr("class", 'row_tindakan')
-                                            .attr("data-id", dataJSON[i]['ItemCode'] )
-                                            .attr("data-type", 'Fisioterapi' )
-                                            .attr("data-name", dataJSON[i]['ItemName1'] )
-                                            .attr("data-price", dataJSON[i]['PersonalPrice'] )
-                                            .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']+ " - "+dataJSON[i]['PersonalPrice']));
-                                    //console.log(dataJSON[i]['ItemName1'])
-                                }
-                                //let html = document.getElementById("panel-nursing").innerHTML = data;
-                            },
-                        });
-                        $.ajax({
-                            type:"POST",
-                            url:"{{route('get.order.tindakan')}}",
-                            data:{
-                                "id_cppt":id_cppt,
-                                "jenisorder":"fisio",
-
-                            },
-                            success:function (data) {
-                                var dataJSON=data.data;
-                                createDataTableCPOE(dataJSON,"table-cpoe-fisio");
-                                loadCPOE2()
-                            }
-
-                        })
-
-                    } else if (id == 'lainnya') {
-                        $('#row_tindakan').remove();
-                        $("#select-tindakan").empty();
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('tarif.tindakanbaru') }}",
-                            data: {
-                                "type": "X0001^01",
-                                "class":classcode,
-                                "reg": regno
-                            },
-
-                            success: function(data) {
-                                $('[id="panel-'+id+'"] [class="row"]').show()
-                                $('[id="panel-'+id+'"] #row_loader').remove()
-
-                                //console.log(data.data);
-                                var dataJSON=data.data;
-                                for(var i=0;i<dataJSON.length;i++){
-                                    $("#select-tindakan")
-                                        .append($("<option></option>")
-                                            .attr("value", dataJSON[i]['ItemCode'] )
-                                            .attr("class", 'row_tindakan')
-                                            .attr("data-id", dataJSON[i]['ItemCode'] )
-                                            .attr("data-type", 'Lainnya' )
-                                            .attr("data-name", dataJSON[i]['ItemName1'] )
-                                            .attr("data-price", dataJSON[i]['PersonalPrice'] )
-                                            .text(dataJSON[i]['ItemCode']+" - "+dataJSON[i]['ItemName1']));
-                                    //console.log(dataJSON[i]['ItemName1'])
-                                }
-                                //let html = document.getElementById("panel-nursing").innerHTML = data;
-                            },
-                        });
-                        $.ajax({
-                            type:"POST",
-                            url:"{{route('get.order.tindakan')}}",
-                            data:{
-                                "id_cppt":id_cppt,
-                                "jenisorder":"lainnya",
-
-                            },
-                            success:function (data) {
-                                var dataJSON=data.data;
-                                createDataTableCPOE(dataJSON,"table-cpoe-lainnya");
-                                loadCPOE2()
-                            }
-
-                        })
-                    }else if(id=='pemeriksaan-penunjang'){
-                        console.log("pemeriksaan penunjang")
-                        getPemeriksaanDokter()
-                    }
-                    else if(id=='nursing'){
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ route('newperawat.patient.nursing',['reg_no'=>$reg]) }}",
-                           /* data: {
-                                "reg_no": regno,
-                            },*/
-
-                            success: function(data) {
-                                //console.log(data);
-                                let html = document.getElementById("panel-nursing").innerHTML = data;
-                            },
-                        });
-
-
-                    }else if(id=="prescribe"){
-                        getOrderObat()
-                    }else if(id=="nyeri"){
-
-                    }else if(id=="checklist"){
-                        $.ajax({
-                            type: "POST",
-                            data:{
-                                "reg_no": regno,
-                                "medrec":medrec,
-                            },
-
-                            url: "{{route('checklist.pasien')}}",
-                            /* data: {
-                                 "reg_no": regno,
-                             },*/
-
-                            success: function(data) {
-                                //console.log(data);
-                                let html = document.getElementById("panel-checklist").innerHTML = data;
-                            },
-                        });
-                    }else if(id=="nursing-note"){
-                        $.ajax({
-                            type: "POST",
-                            data:{
-                                "reg_no": regno,
-                                "medrec_no":medrec,
-                            },
-
-                            url: "{{route('get.nursing.note')}}",
-                            /* data: {
-                                 "reg_no": regno,
-                             },*/
-
-                            success: function(data) {
-                                //console.log(data);
-                                var dataJSON=data.data;
-                                var bodyTable=document.getElementById('body-tindakan-perawat')
-                                bodyTable.innerHTML="";
-                                for(var i=0;i<dataJSON.length;i++){
-                                    var tr=document.createElement('tr')
-                                    var col1=document.createElement('td')
-                                    var col2=document.createElement('td')
-                                    var col3=document.createElement('td')
-                                    var col4=document.createElement('td')
-
-                                    col1.innerHTML=dataJSON[i]['tgl_note']
-                                    col2.innerHTML=dataJSON[i]['jam_note']
-                                    col3.innerHTML=dataJSON[i]['catatan']
-                                    col4.innerHTML=dataJSON[i]['id_nurse']
-                                    tr.appendChild(col1)
-                                    tr.appendChild(col2)
-                                    tr.appendChild(col3)
-                                    tr.appendChild(col4)
-                                    bodyTable.appendChild(tr)
-                                }
-
-
-                            },
-                        });
-                    }else if(id=="physician-team"){
-                        var pilihDokter = $('#kode_dokter');
-                        $.ajax({
-                            url: "{{ route('get.dokter') }}",
-                            type: "GET",
-                            dataType: "json",
-                            success: function (data) {
-                                $.each(data.data, function (key, value) {
-                                    pilihDokter.append('<option value="' + value.ParamedicCode + '">' + value.ParamedicName + '</option>');
-                                });
-                            }
-                        });
-
-                        getPhysicianTeam()
-                    }
-
-                
             }
-        function getPhysicianTeam(){
+
+            //alert(id)
+            if (id == 'lab') {
+                //disini yang SOAP
+                $('#row_tindakan').remove();
+                $("#select-tindakan").empty();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tarif.tindakanbaru') }}",
+                    data: {
+                        "type": "X0001^04",
+                        "class": classcode,
+                        "reg": regno
+                    },
+                    success: function(data) {
+                        $('[id="panel-' + id + '"] [class="row"]').show()
+                        $('[id="panel-' + id + '"] #row_loader').remove()
+
+                        var dataJSON = data.data;
+                        if (dataJSON) {
+                            for (var i = 0; i < dataJSON.length; i++) {
+                                $("#select-tindakan")
+                                    .append($("<option></option>")
+                                        .attr("value", dataJSON[i]['ItemCode'])
+                                        .attr("class", 'row_tindakan')
+                                        .attr("data-id", dataJSON[i]['ItemCode'])
+                                        .attr("data-type", 'Laboratorium')
+                                        .attr("data-name", dataJSON[i]['ItemName1'])
+                                        .attr("data-price", dataJSON[i]['PersonalPrice'])
+                                        .text(dataJSON[i]['ItemCode'] + " - " + dataJSON[i]['ItemName1'] + " - " + dataJSON[i]['PersonalPrice']));
+                                //console.log(dataJSON[i]['ItemName1'])
+                            }
+                        }
+                        //let html = document.getElementById("panel-nursing").innerHTML = data;
+                    },
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('get.order.tindakan')}}",
+                    data: {
+                        "id_cppt": id_cppt,
+                        "jenisorder": "lab",
+
+                    },
+                    success: function(data) {
+                        var dataJSON = data.data;
+                        createDataTableCPOE(dataJSON, "table-cpoe");
+                        loadCPOE2()
+                    }
+
+                })
+
+
+            } else if (id == 'radiologi') {
+                $('#row_tindakan').remove();
+                $("#select-tindakan").empty();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tarif.tindakanbaru') }}",
+                    data: {
+                        "type": "X0001^05",
+                        "class": classcode,
+                        "reg": regno
+                    },
+
+                    success: function(data) {
+                        $('[id="panel-' + id + '"] [class="row"]').show()
+                        $('[id="panel-' + id + '"] #row_loader').remove()
+
+                        //console.log(data.data);
+                        var dataJSON = data.data;
+                        for (var i = 0; i < dataJSON.length; i++) {
+
+                            $("#select-tindakan")
+                                .append($("<option></option>")
+                                    .attr("value", dataJSON[i]['ItemCode'])
+                                    .attr("class", 'row_tindakan')
+                                    .attr("data-id", dataJSON[i]['ItemCode'])
+                                    .attr("data-type", 'Radiologi')
+                                    .attr("data-name", dataJSON[i]['ItemName1'])
+                                    .attr("data-price", dataJSON[i]['PersonalPrice'])
+                                    .text(dataJSON[i]['ItemCode'] + " - " + dataJSON[i]['ItemName1'] + " - " + dataJSON[i]['PersonalPrice']));
+                            //console.log(dataJSON[i]['ItemName1'])
+                        }
+                        //let html = document.getElementById("panel-nursing").innerHTML = data;
+                    },
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('get.order.tindakan')}}",
+                    data: {
+                        "id_cppt": id_cppt,
+                        "jenisorder": "radiologi",
+                        "reg": regno
+                    },
+                    success: function(data) {
+                        var dataJSON = data.data;
+                        createDataTableCPOE(dataJSON, "table-cpoe-radiologi");
+                        loadCPOE2()
+                    }
+
+                })
+
+            } else if (id == 'fisio') {
+                $('#row_tindakan').remove();
+                $("#select-tindakan").empty();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tarif.tindakanbaru') }}",
+                    data: {
+                        "type": "X0001^08",
+                        "class": classcode,
+                        "reg": regno
+                    },
+
+                    success: function(data) {
+                        $('[id="panel-' + id + '"] [class="row"]').show()
+                        $('[id="panel-' + id + '"] #row_loader').remove()
+                        //console.log(data.data);
+                        var dataJSON = data.data;
+                        for (var i = 0; i < dataJSON.length; i++) {
+                            $("#select-tindakan")
+                                .append($("<option></option>")
+                                    .attr("value", dataJSON[i]['ItemCode'])
+                                    .attr("class", 'row_tindakan')
+                                    .attr("data-id", dataJSON[i]['ItemCode'])
+                                    .attr("data-type", 'Fisioterapi')
+                                    .attr("data-name", dataJSON[i]['ItemName1'])
+                                    .attr("data-price", dataJSON[i]['PersonalPrice'])
+                                    .text(dataJSON[i]['ItemCode'] + " - " + dataJSON[i]['ItemName1'] + " - " + dataJSON[i]['PersonalPrice']));
+                            //console.log(dataJSON[i]['ItemName1'])
+                        }
+                        //let html = document.getElementById("panel-nursing").innerHTML = data;
+                    },
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('get.order.tindakan')}}",
+                    data: {
+                        "id_cppt": id_cppt,
+                        "jenisorder": "fisio",
+
+                    },
+                    success: function(data) {
+                        var dataJSON = data.data;
+                        createDataTableCPOE(dataJSON, "table-cpoe-fisio");
+                        loadCPOE2()
+                    }
+
+                })
+
+            } else if (id == 'lainnya') {
+                $('#row_tindakan').remove();
+                $("#select-tindakan").empty();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tarif.tindakanbaru') }}",
+                    data: {
+                        "type": "X0001^01",
+                        "class": classcode,
+                        "reg": regno
+                    },
+
+                    success: function(data) {
+                        $('[id="panel-' + id + '"] [class="row"]').show()
+                        $('[id="panel-' + id + '"] #row_loader').remove()
+
+                        //console.log(data.data);
+                        var dataJSON = data.data;
+                        for (var i = 0; i < dataJSON.length; i++) {
+                            $("#select-tindakan")
+                                .append($("<option></option>")
+                                    .attr("value", dataJSON[i]['ItemCode'])
+                                    .attr("class", 'row_tindakan')
+                                    .attr("data-id", dataJSON[i]['ItemCode'])
+                                    .attr("data-type", 'Lainnya')
+                                    .attr("data-name", dataJSON[i]['ItemName1'])
+                                    .attr("data-price", dataJSON[i]['PersonalPrice'])
+                                    .text(dataJSON[i]['ItemCode'] + " - " + dataJSON[i]['ItemName1']));
+                            //console.log(dataJSON[i]['ItemName1'])
+                        }
+                        //let html = document.getElementById("panel-nursing").innerHTML = data;
+                    },
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('get.order.tindakan')}}",
+                    data: {
+                        "id_cppt": id_cppt,
+                        "jenisorder": "lainnya",
+
+                    },
+                    success: function(data) {
+                        var dataJSON = data.data;
+                        createDataTableCPOE(dataJSON, "table-cpoe-lainnya");
+                        loadCPOE2()
+                    }
+
+                })
+            } else if (id == 'pemeriksaan-penunjang') {
+                console.log("pemeriksaan penunjang")
+                getPemeriksaanDokter()
+            } else if (id == 'nursing') {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('newperawat.patient.nursing',['reg_no'=>$reg]) }}",
+                    /* data: {
+                         "reg_no": regno,
+                     },*/
+
+                    success: function(data) {
+                        //console.log(data);
+                        let html = document.getElementById("panel-nursing").innerHTML = data;
+                    },
+                });
+
+
+            } else if (id == "prescribe") {
+                getOrderObat()
+            } else if (id == "nyeri") {
+
+            } else if (id == "checklist") {
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        "reg_no": regno,
+                        "medrec": medrec,
+                    },
+
+                    url: "{{route('checklist.pasien')}}",
+                    /* data: {
+                         "reg_no": regno,
+                     },*/
+
+                    success: function(data) {
+                        //console.log(data);
+                        let html = document.getElementById("panel-checklist").innerHTML = data;
+                    },
+                });
+            } else if (id == "nursing-note") {
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        "reg_no": regno,
+                        "medrec_no": medrec,
+                    },
+
+                    url: "{{route('get.nursing.note')}}",
+                    /* data: {
+                         "reg_no": regno,
+                     },*/
+
+                    success: function(data) {
+                        //console.log(data);
+                        var dataJSON = data.data;
+                        var bodyTable = document.getElementById('body-tindakan-perawat')
+                        bodyTable.innerHTML = "";
+                        for (var i = 0; i < dataJSON.length; i++) {
+                            var tr = document.createElement('tr')
+                            var col1 = document.createElement('td')
+                            var col2 = document.createElement('td')
+                            var col3 = document.createElement('td')
+                            var col4 = document.createElement('td')
+
+                            col1.innerHTML = dataJSON[i]['tgl_note']
+                            col2.innerHTML = dataJSON[i]['jam_note']
+                            col3.innerHTML = dataJSON[i]['catatan']
+                            col4.innerHTML = dataJSON[i]['id_nurse']
+                            tr.appendChild(col1)
+                            tr.appendChild(col2)
+                            tr.appendChild(col3)
+                            tr.appendChild(col4)
+                            bodyTable.appendChild(tr)
+                        }
+
+
+                    },
+                });
+            } else if (id == "physician-team") {
+                var pilihDokter = $('#kode_dokter');
+                $.ajax({
+                    url: "{{ route('get.dokter') }}",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        $.each(data.data, function(key, value) {
+                            pilihDokter.append('<option value="' + value.ParamedicCode + '">' + value.ParamedicName + '</option>');
+                        });
+                    }
+                });
+
+                getPhysicianTeam()
+            }
+
+
+        }
+
+        function getPhysicianTeam() {
             var tablePhysicianTeam = $('#table-physician-team');
             tablePhysicianTeam.empty();
             $.ajax({
                 url: "{{ route('get.physicianteam') }}",
                 type: "post",
-                data:{
-                    regno:regno
+                data: {
+                    regno: regno
                 },
-                success: function (data) {
+                success: function(data) {
                     console.log(data);
-                    $.each(data.data, function (key, value) {
+                    $.each(data.data, function(key, value) {
                         $('#table-physician-team').append('<tr><td>' + value.ParamedicCode + '</td><td>' + value.ParamedicName + '</td><td>' + value.kategori + '</td></tr>');
                     });
                 }
@@ -645,42 +645,43 @@
                     regno: regno,
                 },
                 dataType: "json",
-                success: function (data) {
+                success: function(data) {
                     console.log(data);
                     getPhysicianTeam();
                 }
             });
         }
+
         function deletePhysicianTeam(e) {
             $(e).parent().parent().remove();
         }
 
-            function createDataTableCPOE(dataJSON,namatable){
-                var bodyTable=document.getElementById(namatable)
-                bodyTable.innerHTML="";
-                if (dataJSON) {
-                    let total_tind = dataJSON.length;
+        function createDataTableCPOE(dataJSON, namatable) {
+            var bodyTable = document.getElementById(namatable)
+            bodyTable.innerHTML = "";
+            if (dataJSON) {
+                let total_tind = dataJSON.length;
                 if (namatable == 'table-cpoe-radiologi' && total_tind == 1) {
                     $('.tmbh_rad').hide()
                 }
-                for(var i=0;i<dataJSON.length;i++){
-                    var tr=document.createElement('tr');
-                    var col1=document.createElement('td');
-                    var col2=document.createElement('td');
-                    var col3=document.createElement('td');
-                    var col4=document.createElement('td');
-                    var col5=document.createElement('td');
-                    var col6=document.createElement('td');
-                    var col7=document.createElement('td');
-                    var buttonDelete=document.createElement('button');
-                    buttonDelete.setAttribute('class','btn btn-danger btn-sm');
-                    buttonDelete.setAttribute('onclick','hapus_item('+dataJSON[i]['id']+')')
-                    col1.innerHTML=dataJSON[i]['waktu_order']
-                    col2.innerHTML=dataJSON[i]['jenis_order']
-                    col3.innerHTML=dataJSON[i]['order_no']
-                    col4.innerHTML=dataJSON[i]['item_name']
-                    col5.innerHTML=dataJSON[i]['harga_jual']
-                    col6.innerHTML=dataJSON[i]['ParamedicName']
+                for (var i = 0; i < dataJSON.length; i++) {
+                    var tr = document.createElement('tr');
+                    var col1 = document.createElement('td');
+                    var col2 = document.createElement('td');
+                    var col3 = document.createElement('td');
+                    var col4 = document.createElement('td');
+                    var col5 = document.createElement('td');
+                    var col6 = document.createElement('td');
+                    var col7 = document.createElement('td');
+                    var buttonDelete = document.createElement('button');
+                    buttonDelete.setAttribute('class', 'btn btn-danger btn-sm');
+                    buttonDelete.setAttribute('onclick', 'hapus_item(' + dataJSON[i]['id'] + ')')
+                    col1.innerHTML = dataJSON[i]['waktu_order']
+                    col2.innerHTML = dataJSON[i]['jenis_order']
+                    col3.innerHTML = dataJSON[i]['order_no']
+                    col4.innerHTML = dataJSON[i]['item_name']
+                    col5.innerHTML = dataJSON[i]['harga_jual']
+                    col6.innerHTML = dataJSON[i]['ParamedicName']
                     col7.appendChild(buttonDelete);
                     tr.appendChild(col1)
                     tr.appendChild(col2)
@@ -702,77 +703,78 @@
                     //
                     // bodyTable.appendChild(rowtindakan)
                 }
-                }else{
-                    $('.tmbh_rad').show()
-                }
-                
+            } else {
+                $('.tmbh_rad').show()
             }
 
-            function clickTabSmall(id){
-                $('body').on('click','#sm-tab-'+id, function(){
-                    $('div[id*="sm-panel-"]').hide();
-                    $('div[id*="sm-tab-"]').removeClass('active');
+        }
 
-                    $('#sm-panel-'+id).show();
-                    $('#sm-tab-'+id).addClass('active');
-                });
-            }
+        function clickTabSmall(id) {
+            $('body').on('click', '#sm-tab-' + id, function() {
+                $('div[id*="sm-panel-"]').hide();
+                $('div[id*="sm-tab-"]').removeClass('active');
 
-            function nextPage(page, contains){
-                $('div[id*="'+contains+'"]').hide();
+                $('#sm-panel-' + id).show();
+                $('#sm-tab-' + id).addClass('active');
+            });
+        }
 
-                $(page).show();
-            }
-            function nextTab(target, contains){
-                $('[href="'+target+'"]').tab('show');
-                // unused: contains
-            }
+        function nextPage(page, contains) {
+            $('div[id*="' + contains + '"]').hide();
 
-            function prevPage(page, contains){
-                $('div[id*="'+contains+'"]').hide();
+            $(page).show();
+        }
 
-                $(page).show();
-            }
+        function nextTab(target, contains) {
+            $('[href="' + target + '"]').tab('show');
+            // unused: contains
+        }
 
-            function condition(data){
-                $data = (data) ? data : '-';
+        function prevPage(page, contains) {
+            $('div[id*="' + contains + '"]').hide();
 
-                return $data;
-            }
-            function resetSelect2(id){
-                $(id).val(null).trigger("change");
-            }
+            $(page).show();
+        }
 
-            function resetForm(id){
-                // $(id+' input').val('');
-                // $(id+' input[type=radio]').prop('checked', false);
-                // $(id+' input[type=checkbox]').prop('checked', false);
-                // $(id+' textarea').text('');
-                $(id)[0].reset();
-            }
+        function condition(data) {
+            $data = (data) ? data : '-';
 
+            return $data;
+        }
+
+        function resetSelect2(id) {
+            $(id).val(null).trigger("change");
+        }
+
+        function resetForm(id) {
+            // $(id+' input').val('');
+            // $(id+' input[type=radio]').prop('checked', false);
+            // $(id+' input[type=checkbox]').prop('checked', false);
+            // $(id+' textarea').text('');
+            $(id)[0].reset();
+        }
     </script>
 
     <script>
-        function addVital(kategori,formid){
-            var dataString="";
+        function addVital(kategori, formid) {
+            var dataString = "";
 
-            if(kategori=='blood pressure'){
+            if (kategori == 'blood pressure') {
                 var input = document.getElementsByName('datablood[]');
                 console.log(input.length)
-               /* for (var i = 0; i < input.length; i++) {
-                    var a = input[i].value;
-                    console.log(a)
-                }*/
-                dataString=input[0].value+"/"+input[1].value
-              $.ajax({
+                /* for (var i = 0; i < input.length; i++) {
+                     var a = input[i].value;
+                     console.log(a)
+                 }*/
+                dataString = input[0].value + "/" + input[1].value
+                $.ajax({
                     type: "POST",
                     url: "{{ route('newperawat.addvitalsign') }}",
                     data: {
                         "reg_no": regno,
-                        "kategori":kategori,
-                        "med_rec":medrec,
-                        "data":dataString
+                        "kategori": kategori,
+                        "med_rec": medrec,
+                        "data": dataString
                     },
 
                     success: function(data) {
@@ -780,21 +782,21 @@
                         //let html = document.getElementById("panel-nursing").innerHTML = data;
                     },
                 });
-            }else{
+            } else {
                 var input = document.getElementsByName('data[]');
                 for (var i = 0; i < input.length; i++) {
                     var a = input[i].value;
-                    dataString=dataString+a
+                    dataString = dataString + a
                 }
                 $.ajax({
                     type: "POST",
                     url: "{{ route('newperawat.addvitalsign') }}",
-                     data: {
-                         "reg_no": regno,
-                         "kategori":kategori,
-                         "med_rec":medrec,
-                         "data":dataString
-                     },
+                    data: {
+                        "reg_no": regno,
+                        "kategori": kategori,
+                        "med_rec": medrec,
+                        "data": dataString
+                    },
 
                     success: function(data) {
                         console.log(data);
@@ -802,47 +804,47 @@
                     },
                 });
             }
-           /* console.log(formid)
-            const form=document.getElementById(formid)
-            const formElements = Array.from(form.elements);
+            /* console.log(formid)
+             const form=document.getElementById(formid)
+             const formElements = Array.from(form.elements);
 
-            formElements.forEach(element => {
-                console.log(element);
-            });*/
+             formElements.forEach(element => {
+                 console.log(element);
+             });*/
         }
 
-        function orderobat(){
+        function orderobat() {
             if (window.confirm('Kirim ke farmasi sekarang ?')) {
-                var tableOrder=document.getElementById('table-row-prescribe')
-                var arrayKode=[]
-                var arrayNamaObat=[]
-                var arrayQty=[]
-                var arrayDosis=[]
-                var arrayHargaSatuan=[]
-                var arrayKeterangan=[]
-                var arrayJenisObat=[]
-                var arrayHari=[]
-                var arrayDurasi=[]
-                for(var i=0;i<tableOrder.rows.length;i++){
-                    var jenisObat=document.getElementById('jenis'+i)
-                    var kodeObat=document.getElementById('kode_obat'+i)
-                    var namaObat=document.getElementById('nama_obat'+i)
-                    var qtyObat=document.getElementById('qty'+i)
-                    var dosisObat=document.getElementById('dosis'+i)
-                    var hargaSatuanObat=document.getElementById('hargasatuan'+i)
-                    var keteranganObat=document.getElementById('keterangan'+i)
-                    var hariObat=document.getElementById('hari'+i)
-                    var durasiObat=document.getElementById('durasi'+i)
+                var tableOrder = document.getElementById('table-row-prescribe')
+                var arrayKode = []
+                var arrayNamaObat = []
+                var arrayQty = []
+                var arrayDosis = []
+                var arrayHargaSatuan = []
+                var arrayKeterangan = []
+                var arrayJenisObat = []
+                var arrayHari = []
+                var arrayDurasi = []
+                for (var i = 0; i < tableOrder.rows.length; i++) {
+                    var jenisObat = document.getElementById('jenis' + i)
+                    var kodeObat = document.getElementById('kode_obat' + i)
+                    var namaObat = document.getElementById('nama_obat' + i)
+                    var qtyObat = document.getElementById('qty' + i)
+                    var dosisObat = document.getElementById('dosis' + i)
+                    var hargaSatuanObat = document.getElementById('hargasatuan' + i)
+                    var keteranganObat = document.getElementById('keterangan' + i)
+                    var hariObat = document.getElementById('hari' + i)
+                    var durasiObat = document.getElementById('durasi' + i)
                     arrayKode.push(kodeObat.value)
                     arrayNamaObat.push(namaObat.innerText)
                     arrayQty.push(qtyObat.value)
                     arrayDosis.push(dosisObat.value)
                     arrayJenisObat.push(jenisObat.innerText)
 
-                    if(hargaSatuanObat.value=="" || hargaSatuanObat.value==null){
+                    if (hargaSatuanObat.value == "" || hargaSatuanObat.value == null) {
                         arrayHargaSatuan.push("0")
-                        hargaSatuanObat.innerText="0"
-                    }else{
+                        hargaSatuanObat.innerText = "0"
+                    } else {
                         arrayHargaSatuan.push(hargaSatuanObat.value)
                     }
                     arrayKeterangan.push(keteranganObat.value)
@@ -854,24 +856,25 @@
 
                 //console.log(arrayKode)
                 $.ajax({
-                    url: '{{route('dokter.order.obat')}}',
+                    url: '{{route('
+                    dokter.order.obat ')}}',
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        'reg_no':regno,
-                        'kode_dokter':"{{auth()->user()->dokter_id}}",
-                        'service_unit':"{{$dataPasien->service_unit}}",
-                        'item_code[]':arrayKode,
-                        'qty[]':arrayQty,
-                        'dosis[]':arrayDosis,
-                        'ket_dosis[]':arrayKeterangan,
-                        'harga_jual[]':arrayHargaSatuan,
-                        'item_name[]':arrayNamaObat,
-                        'hari[]':arrayHari,
-                        'durasi[]':arrayDurasi,
+                        'reg_no': regno,
+                        'kode_dokter': "{{auth()->user()->dokter_id}}",
+                        'service_unit': "{{$dataPasien->service_unit}}",
+                        'item_code[]': arrayKode,
+                        'qty[]': arrayQty,
+                        'dosis[]': arrayDosis,
+                        'ket_dosis[]': arrayKeterangan,
+                        'harga_jual[]': arrayHargaSatuan,
+                        'item_name[]': arrayNamaObat,
+                        'hari[]': arrayHari,
+                        'durasi[]': arrayDurasi,
 
                     },
-                    success: function(resp){
+                    success: function(resp) {
                         if (resp.success == true) {
                             //console.log(resp.data)
                             // $('#modalPrescribe').modal('hide');
@@ -881,7 +884,7 @@
                             alert('Tidak ada order obat yang dikirim')
                         }
                     },
-                    error: function(){
+                    error: function() {
                         alert('Gagal menyimpan data, mohon hubungi tim Administrator');
                     }
                 });
@@ -889,15 +892,18 @@
         }
 
 
-        function orderfarmasi(datafarmasi){
-            const obj={"akseskunci":"229470a5-fe98-479e-ba3f-5c5b8eec7c88","data":JSON.stringify(datafarmasi)}
+        function orderfarmasi(datafarmasi) {
+            const obj = {
+                "akseskunci": "229470a5-fe98-479e-ba3f-5c5b8eec7c88",
+                "data": JSON.stringify(datafarmasi)
+            }
             $.ajax({
                 url: 'http://rsud.sumselprov.go.id/farmasi/web-apis/job-order/order',
                 type: 'POST',
                 dataType: 'json',
-                contentType:'apllication/json',
+                contentType: 'apllication/json',
                 data: JSON.stringify(obj),
-                success: function(resp){
+                success: function(resp) {
                     console.log(resp)
 
                     if (resp.status_kode == 200) {
@@ -906,44 +912,44 @@
                         alert('Tidak ada order obat yang dikirim')
                     }
                 },
-                error: function(){
+                error: function() {
                     alert('Gagal menyimpan data, mohon hubungi tim Administrator');
                 }
             });
         }
 
-        function simpanorder(datafarmasi){
-            const obj=datafarmasi
-            var tableOrder=document.getElementById('table-row-prescribe')
-            var arrayKode=[]
-            var arrayNamaObat=[]
-            var arrayQty=[]
-            var arrayDosis=[]
-            var arrayHargaSatuan=[]
-            var arrayKeterangan=[]
-            var arrayJenisObat=[]
-            var arrayHari=[]
-            var arrayDurasi=[]
-            for(var i=0;i<tableOrder.rows.length;i++){
-                var jenisObat=document.getElementById('jenis'+i)
-                var kodeObat=document.getElementById('kode_obat'+i)
-                var namaObat=document.getElementById('nama_obat'+i)
-                var qtyObat=document.getElementById('qty'+i)
-                var dosisObat=document.getElementById('dosis'+i)
-                var hargaSatuanObat=document.getElementById('hargasatuan'+i)
-                var keteranganObat=document.getElementById('keterangan'+i)
-                var hariObat=document.getElementById('hari'+i)
-                var durasiObat=document.getElementById('durasi'+i)
+        function simpanorder(datafarmasi) {
+            const obj = datafarmasi
+            var tableOrder = document.getElementById('table-row-prescribe')
+            var arrayKode = []
+            var arrayNamaObat = []
+            var arrayQty = []
+            var arrayDosis = []
+            var arrayHargaSatuan = []
+            var arrayKeterangan = []
+            var arrayJenisObat = []
+            var arrayHari = []
+            var arrayDurasi = []
+            for (var i = 0; i < tableOrder.rows.length; i++) {
+                var jenisObat = document.getElementById('jenis' + i)
+                var kodeObat = document.getElementById('kode_obat' + i)
+                var namaObat = document.getElementById('nama_obat' + i)
+                var qtyObat = document.getElementById('qty' + i)
+                var dosisObat = document.getElementById('dosis' + i)
+                var hargaSatuanObat = document.getElementById('hargasatuan' + i)
+                var keteranganObat = document.getElementById('keterangan' + i)
+                var hariObat = document.getElementById('hari' + i)
+                var durasiObat = document.getElementById('durasi' + i)
                 arrayKode.push(kodeObat.value)
                 arrayNamaObat.push(namaObat.innerText)
                 arrayQty.push(qtyObat.value)
                 arrayDosis.push(dosisObat.value)
                 arrayJenisObat.push(jenisObat.innerText)
 
-                if(hargaSatuanObat.value=="" || hargaSatuanObat.value==null){
+                if (hargaSatuanObat.value == "" || hargaSatuanObat.value == null) {
                     arrayHargaSatuan.push("0")
-                    hargaSatuanObat.innerText="0"
-                }else{
+                    hargaSatuanObat.innerText = "0"
+                } else {
                     arrayHargaSatuan.push(hargaSatuanObat.value)
                 }
                 arrayKeterangan.push(keteranganObat.value)
@@ -954,25 +960,26 @@
             }
 
             $.ajax({
-                url: '{{route('simpan.order.obat')}}',
+                url: '{{route('
+                simpan.order.obat ')}}',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    'reg_no':regno,
-                    'ordernumber':obj.order_no,
-                    'kode_dokter':"{{auth()->user()->dokter_id}}",
-                    'service_unit':"{{$dataPasien->service_unit}}",
-                    'item_code[]':arrayKode,
-                    'qty[]':arrayQty,
-                    'dosis[]':arrayDosis,
-                    'ket_dosis[]':arrayKeterangan,
-                    'harga_jual[]':arrayHargaSatuan,
-                    'item_name[]':arrayNamaObat,
-                    'hari[]':arrayHari,
-                    'durasi[]':arrayDurasi,
+                    'reg_no': regno,
+                    'ordernumber': obj.order_no,
+                    'kode_dokter': "{{auth()->user()->dokter_id}}",
+                    'service_unit': "{{$dataPasien->service_unit}}",
+                    'item_code[]': arrayKode,
+                    'qty[]': arrayQty,
+                    'dosis[]': arrayDosis,
+                    'ket_dosis[]': arrayKeterangan,
+                    'harga_jual[]': arrayHargaSatuan,
+                    'item_name[]': arrayNamaObat,
+                    'hari[]': arrayHari,
+                    'durasi[]': arrayDurasi,
 
                 },
-                success: function(resp){
+                success: function(resp) {
                     if (resp.success == true) {
                         console.log("masuk untuk hide modal")
 
@@ -984,65 +991,64 @@
                         alert('Tidak ada order obat yang dikirim')
                     }
                 },
-                error: function(){
+                error: function() {
                     alert('Gagal menyimpan data, mohon hubungi tim Administrator');
                 }
             });
         }
-
     </script>
 
     <script>
-        function getOrderObat(){
+        function getOrderObat() {
             $.ajax({
                 type: "POST",
                 url: "{{ route('dokter.getobat') }}",
                 data: {
-                    "id_cppt":id_cppt
+                    "id_cppt": id_cppt
 
                 },
 
                 success: function(data) {
-                    var success=data.success;
-                    if(success==true){
-                        var tablebodyobat=document.getElementById('table-prescribe')
-                        tablebodyobat.innerHTML=""
-                        for(var i=0;i<data.data.length;i++){
-                            var tr=document.createElement('tr')
-                            var col1=document.createElement('td')
-                            var col2=document.createElement('td')
-                            var col3=document.createElement('td')
-                            var col4=document.createElement('td')
-                            var col5=document.createElement('td')
-                            var col6=document.createElement('td')
-                            var col7=document.createElement('td')
-                            var col8=document.createElement('td')
+                    var success = data.success;
+                    if (success == true) {
+                        var tablebodyobat = document.getElementById('table-prescribe')
+                        tablebodyobat.innerHTML = ""
+                        for (var i = 0; i < data.data.length; i++) {
+                            var tr = document.createElement('tr')
+                            var col1 = document.createElement('td')
+                            var col2 = document.createElement('td')
+                            var col3 = document.createElement('td')
+                            var col4 = document.createElement('td')
+                            var col5 = document.createElement('td')
+                            var col6 = document.createElement('td')
+                            var col7 = document.createElement('td')
+                            var col8 = document.createElement('td')
 
-                            var labelJenis=document.createElement('label')
-                            labelJenis.id='jenis_order_obat'+i
-                            labelJenis.innerText="satuan"
-                            var labelKode=document.createElement('label')
-                            labelKode.id='kode_order_obat'+i
-                            labelKode.innerText=data.data[i].item_code
-                            var labelNama=document.createElement('label')
-                            labelNama.id='nama_order_obat'+i
-                            labelNama.innerText=data.data[i].item_name
-                            var labelQty=document.createElement('label')
-                            labelQty.id='qty_order_obat'+i
-                            labelQty.innerText=data.data[i].qty
-                            var labelDosis=document.createElement('label')
-                            labelDosis.id='dosis_order_obat'+i
-                            labelDosis.innerText=data.data[i].dosis
-                            var labelFrekuensi=document.createElement('label')
-                            labelFrekuensi.id='frekuensi_order_obat'+i
-                            labelFrekuensi.innerText=data.data[i].ket_dosis
-                            var labelKeterangan=document.createElement('label')
-                            labelKeterangan.id='keterangan_order_obat'+i
-                            labelKeterangan.innerText=data.data[i].ket_dosis
-                            var btnAksi=document.createElement('button')
-                            btnAksi.id='delete_order_obat'+i
-                            btnAksi.className='btn btn-danger'
-                            btnAksi.value="delete"
+                            var labelJenis = document.createElement('label')
+                            labelJenis.id = 'jenis_order_obat' + i
+                            labelJenis.innerText = "satuan"
+                            var labelKode = document.createElement('label')
+                            labelKode.id = 'kode_order_obat' + i
+                            labelKode.innerText = data.data[i].item_code
+                            var labelNama = document.createElement('label')
+                            labelNama.id = 'nama_order_obat' + i
+                            labelNama.innerText = data.data[i].item_name
+                            var labelQty = document.createElement('label')
+                            labelQty.id = 'qty_order_obat' + i
+                            labelQty.innerText = data.data[i].qty
+                            var labelDosis = document.createElement('label')
+                            labelDosis.id = 'dosis_order_obat' + i
+                            labelDosis.innerText = data.data[i].dosis
+                            var labelFrekuensi = document.createElement('label')
+                            labelFrekuensi.id = 'frekuensi_order_obat' + i
+                            labelFrekuensi.innerText = data.data[i].ket_dosis
+                            var labelKeterangan = document.createElement('label')
+                            labelKeterangan.id = 'keterangan_order_obat' + i
+                            labelKeterangan.innerText = data.data[i].ket_dosis
+                            var btnAksi = document.createElement('button')
+                            btnAksi.id = 'delete_order_obat' + i
+                            btnAksi.className = 'btn btn-danger'
+                            btnAksi.value = "delete"
 
                             col1.append(labelJenis)
                             col2.appendChild(labelKode)
@@ -1078,36 +1084,37 @@
     </script>
 
     <script>
-        function addorder(){
-            if(window.confirm('apakah anda ingin mengirim tindakan?')){
-                var kategori=$('#btn-save-cpoe').attr('value')
+        function addorder() {
+            if (window.confirm('apakah anda ingin mengirim tindakan?')) {
+                var kategori = $('#btn-save-cpoe').attr('value')
 
                 $.ajax({
-                    url: '{{route('order.tindakan')}}',
+                    url: '{{route('
+                    order.tindakan ')}}',
                     type: 'POST',
                     dataType: 'json',
-                    data: $('#form-cpoe-dokter').serialize()+"&jenisorder="+kategori,
-                    success: function(resp){
-                        if(resp.success==true){
+                    data: $('#form-cpoe-dokter').serialize() + "&jenisorder=" + kategori,
+                    success: function(resp) {
+                        if (resp.success == true) {
                             alert(resp.message)
                             $('body #modalCPOE').hide();
 
                             getSoapDokter()
                             loadCPOE2()
-                            if(kategori=="lab"){
+                            if (kategori == "lab") {
                                 //console.log("ini lab")
                                 //console.log(resp.data)
                                 // orderToLab(resp.data)
                                 clickTab('lab', 'Laboratorium')
-                            }else if(kategori=="radiologi"){
+                            } else if (kategori == "radiologi") {
                                 alert('Tindakan radiologi berhasil ditambah, segera dikirim apabila cppt sudah di simpan')
                                 clickTab('radiologi', 'Radiologi')
                                 //kirim saat save cppt
                                 // orderToRadiologi(resp.data)
                             }
-                            
+
                             $('#table-item-cpoe').html('')
-                        }else{
+                        } else {
                             alert(resp.message)
                         }
                         // if (resp == 404) {
@@ -1127,14 +1134,14 @@
     <script>
         //order ke api lab
 
-        function orderToLab(datajson){
+        function orderToLab(datajson) {
             var settings = {
                 "url": "http://rsud.sumselprov.go.id/labor/api/last-order",
                 "method": "GET",
                 "timeout": 0,
             };
 
-            $.ajax(settings).done(function (response) {
+            $.ajax(settings).done(function(response) {
                 console.log(response)
                 var form = new FormData();
                 form.append("job_order_no", response.data.NextNoOrder);
@@ -1182,7 +1189,7 @@
                     "data": form
                 };
 
-                $.ajax(setting2).done(function (resp) {
+                $.ajax(setting2).done(function(resp) {
                     console.log(resp);
                 });
             });
@@ -1194,7 +1201,7 @@
 
     <script>
         //order ke api radiologi
-        function orderToRadiologi(datajson){
+        function orderToRadiologi(datajson) {
 
             var settings = {
                 "url": "http://rsud.sumselprov.go.id/labor/api/last-order",
@@ -1202,7 +1209,7 @@
                 "timeout": 0,
             };
 
-            $.ajax(settings).done(function (response) {
+            $.ajax(settings).done(function(response) {
                 var form = new FormData();
                 form.append("job_order_no", response.data.NextNoOrder);
                 form.append("registration_no", "QREG/RI/202201280011");
@@ -1249,7 +1256,7 @@
                     "data": form
                 };
 
-                $.ajax(settingsorder).done(function (responseorder) {
+                $.ajax(settingsorder).done(function(responseorder) {
                     console.log(responseorder);
                 });
             })
@@ -1258,7 +1265,7 @@
     </script>
 
     <script>
-        function getSoapPerawat(){
+        function getSoapPerawat() {
             console.log("tester")
             $.ajax({
                 url: "{{route('get.soap.new.perawat')}}",
@@ -1268,45 +1275,45 @@
                     //"_token": "{{ csrf_token() }}",
                     "regno": regno
                 },
-                success: function(data){
-                    var datasoap=data.data;
+                success: function(data) {
+                    var datasoap = data.data;
                     var table = $('#table-cppt-perawat');
                     table.empty();
-                    for(var i=0;i<datasoap.length;i++){
+                    for (var i = 0; i < datasoap.length; i++) {
                         var date = new Date(datasoap[i].created_at);
-                        var statusVerifikasi=datasoap[i].status_review;
+                        var statusVerifikasi = datasoap[i].status_review;
                         var tanggal = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
                         var row = $('<tr>');
                         row.append($('<td>').text(datasoap[i].soap_tanggal));
                         row.append($('<td>').text(datasoap[i].nama_ppa));
-                        var trS=document.createElement('tr');
-                        var trO=document.createElement('tr');
-                        var trA=document.createElement('tr');
-                        var trP=document.createElement('tr');
+                        var trS = document.createElement('tr');
+                        var trO = document.createElement('tr');
+                        var trA = document.createElement('tr');
+                        var trP = document.createElement('tr');
                         trS.appendChild(document.createTextNode(datasoap[i].soapdok_subject));
                         trO.appendChild(document.createTextNode(datasoap[i].soapdok_object));
                         trA.appendChild(document.createTextNode(datasoap[i].soapdok_assesment));
                         trP.appendChild(document.createTextNode(datasoap[i].soapdok_planning));
-                        row.append($('<td>').append(trS,trO,trA,trP));
+                        row.append($('<td>').append(trS, trO, trA, trP));
                         row.append($('<td>').text(""));
-                        if(statusVerifikasi==1){
-                            var btnShowQR=document.createElement('button')
-                            btnShowQR.type='button'
-                            btnShowQR.className='btn btn-success'
-                            btnShowQR.innerText='Lihat QRCode'
-                            btnShowQR.id='btnShowQR'+i
-                            btnShowQR.value=datasoap[i].id
-                            var trNamaVerifikasi=document.createElement('tr')
-                            var trTglVerifikasi=document.createElement('tr')
+                        if (statusVerifikasi == 1) {
+                            var btnShowQR = document.createElement('button')
+                            btnShowQR.type = 'button'
+                            btnShowQR.className = 'btn btn-success'
+                            btnShowQR.innerText = 'Lihat QRCode'
+                            btnShowQR.id = 'btnShowQR' + i
+                            btnShowQR.value = datasoap[i].id
+                            var trNamaVerifikasi = document.createElement('tr')
+                            var trTglVerifikasi = document.createElement('tr')
                             trNamaVerifikasi.appendChild(document.createTextNode(datasoap[i].nama_verifikasi))
                             trTglVerifikasi.appendChild(document.createTextNode(datasoap[i].tanggal_verifikasi))
                             //btnShowQR.setAttribute('onclick','showQR(this)')
-                            row.append($('<td>').append(trNamaVerifikasi,trTglVerifikasi,btnShowQR));
+                            row.append($('<td>').append(trNamaVerifikasi, trTglVerifikasi, btnShowQR));
                             //row.append($('<td>').text("Sudah diverifikasi\nOleh Dr Khalif"));
 
                             // //change color
                             // row.css("background-color", "#00ff00");
-                        }else{
+                        } else {
                             row.append($('<td>').text("Belum diverifikasi"));
                             row.css("background-color", "#d5b3b3");
                         }
@@ -1315,14 +1322,12 @@
                 }
             });
         }
-
-
     </script>
     <script>
-        function loadCPOE2(){
-            var levelUser="{{Auth::user()->level_user}}";
+        function loadCPOE2() {
+            var levelUser = "{{Auth::user()->level_user}}";
             var id_cppt = $('#soapdok_id').val()
-            if(levelUser=="dokter"){
+            if (levelUser == "dokter") {
                 $.ajax({
                     url: "{{ route('get.cpoe.dokter') }}",
                     type: "POST",
@@ -1330,27 +1335,27 @@
                     data: {
                         "id_cppt": id_cppt,
                     },
-                    success: function (data) {
+                    success: function(data) {
                         //console.log(data)
-                        var dataLab= data.dataLab
+                        var dataLab = data.dataLab
                         var dataradiologi = data.dataradiologi
-                        var datafisio=data.datafisio
-                        var dataobat=data.dataobat
-                        var planning=""
-                        for(var i=0; i<dataLab.length; i++){
-                            planning=planning+"(Lab)"+dataLab[i].item_name+"\n"
+                        var datafisio = data.datafisio
+                        var dataobat = data.dataobat
+                        var planning = ""
+                        for (var i = 0; i < dataLab.length; i++) {
+                            planning = planning + "(Lab)" + dataLab[i].item_name + "\n"
                         }
 
-                        for(var i=0; i<dataradiologi.length; i++){
-                            planning=planning+"(Rad)"+dataradiologi[i].item_name+"\n"
+                        for (var i = 0; i < dataradiologi.length; i++) {
+                            planning = planning + "(Rad)" + dataradiologi[i].item_name + "\n"
                         }
 
-                        for(var i=0; i<datafisio.length; i++){
-                            planning=planning+"(Fisio)"+datafisio[i].item_name+"\n"
+                        for (var i = 0; i < datafisio.length; i++) {
+                            planning = planning + "(Fisio)" + datafisio[i].item_name + "\n"
                         }
 
-                        for(var i=0; i<dataobat.length; i++){
-                            planning=planning+"(Obat)"+dataobat[i].item_name+"\n"
+                        for (var i = 0; i < dataobat.length; i++) {
+                            planning = planning + "(Obat)" + dataobat[i].item_name + "\n"
                         }
 
                         $('#planning').val(planning)
@@ -1362,7 +1367,7 @@
 
 
     <script>
-        function getSoapDokter(){
+        function getSoapDokter() {
             $.ajax({
                 url: "{{ route('get.soap.dokter') }}",
                 type: "POST",
@@ -1370,16 +1375,16 @@
                 data: {
                     "reg_no": regno,
                 },
-                beforeSend: function(){
+                beforeSend: function() {
                     $('#table-cppt-dokter').html(`
                         <tr>
                             <td colspan="5" class="text-center">Memuat data...</td>    
                         </tr>
                     `)
-                },  
-                success: function (data) {
+                },
+                success: function(data) {
                     $('#table-cppt-dokter').html(``)
-                    
+
                     var dataSoap = data.data_soap
 
                     if (dataSoap.length > 0) {
@@ -1393,12 +1398,12 @@
                         });
 
                         var table = ""
-                        for(var i=0; i<dataSoap.length; i++){
+                        for (var i = 0; i < dataSoap.length; i++) {
                             var statusVerifikasi = dataSoap[i].status_review
                             var soapdok_dokter = dataSoap[i].soapdok_dokter
                             var reg_dokter = dataSoap[i].reg_dokter
-                            var is_dokter=dataSoap[i].is_dokter
-                            var utama=dataSoap[i].dpjp_utama
+                            var is_dokter = dataSoap[i].is_dokter
+                            var utama = dataSoap[i].dpjp_utama
 
                             $row_lab = ''
                             $row_radiologi = ''
@@ -1407,76 +1412,76 @@
                             $row_diagnosa = ''
 
                             if (dataSoap[i].order_lab.length > 0) {
-                                $.each(dataSoap[i].order_lab, function(i_lab, item_lab){
+                                $.each(dataSoap[i].order_lab, function(i_lab, item_lab) {
                                     $row_lab += `
-                                        `+(i_lab == 0 ? '<br><b>Laboratorium</b><br>' : '')+`
-                                        - `+item_lab.item_name+`<br>    
+                                        ` + (i_lab == 0 ? '<br><b>Laboratorium</b><br>' : '') + `
+                                        - ` + item_lab.item_name + `<br>    
                                     `
                                 })
                             }
                             if (dataSoap[i].order_radiologi.length > 0) {
-                                $.each(dataSoap[i].order_radiologi, function(i_lab, item_lab){
+                                $.each(dataSoap[i].order_radiologi, function(i_lab, item_lab) {
                                     $row_lab += `
-                                        `+(i_lab == 0 ? '<br><b>Radiologi</b><br>' : '')+`
-                                        - `+item_lab.item_name+`<br>    
+                                        ` + (i_lab == 0 ? '<br><b>Radiologi</b><br>' : '') + `
+                                        - ` + item_lab.item_name + `<br>    
                                     `
                                 })
                             }
                             if (dataSoap[i].order_obat.length > 0) {
-                                $.each(dataSoap[i].order_obat, function(i_lab, item_lab){
+                                $.each(dataSoap[i].order_obat, function(i_lab, item_lab) {
                                     $row_lab += `
-                                        `+(i_lab == 0 ? '<br><b>Obat</b><br>' : '')+`
-                                        - `+item_lab.item_name+`<br>    
+                                        ` + (i_lab == 0 ? '<br><b>Obat</b><br>' : '') + `
+                                        - ` + item_lab.item_name + `<br>    
                                     `
                                 })
                             }
                             if (dataSoap[i].order_lainnya.length > 0) {
-                                $.each(dataSoap[i].order_lainnya, function(i_lab, item_lab){
+                                $.each(dataSoap[i].order_lainnya, function(i_lab, item_lab) {
                                     $row_lab += `
-                                        `+(i_lab == 0 ? '<br><b>Tindakan Lainnya</b><br>' : '')+`
-                                        - `+item_lab.item_name+`<br>    
+                                        ` + (i_lab == 0 ? '<br><b>Tindakan Lainnya</b><br>' : '') + `
+                                        - ` + item_lab.item_name + `<br>    
                                     `
                                 })
                             }
                             if (dataSoap[i].diagnosa.length > 0) {
-                                $.each(dataSoap[i].diagnosa, function(i_diagnosa, item_diagnosa){
+                                $.each(dataSoap[i].diagnosa, function(i_diagnosa, item_diagnosa) {
                                     $row_diagnosa += `
-                                        `+item_diagnosa.ID_ICD10+` - `+item_diagnosa.NM_ICD10+`<br>    
+                                        ` + item_diagnosa.ID_ICD10 + ` - ` + item_diagnosa.NM_ICD10 + `<br>    
                                     `
                                 })
                             }
 
                             table = table + "<tr>"
-                            table = table + "<td>"+dataSoap[i].soap_tanggal+'<br>'+dataSoap[i].soap_waktu+"</td>"
-                            table = table + "<td class='text-center'>"+dataSoap[i].nama_ppa+"</td>"
+                            table = table + "<td>" + dataSoap[i].soap_tanggal + '<br>' + dataSoap[i].soap_waktu + "</td>"
+                            table = table + "<td class='text-center'>" + dataSoap[i].nama_ppa + "</td>"
                             table = table + `<td>
-                                (S) `+(dataSoap[i].soapdok_subject ?? '')+`<br/><br/>
-                                (O) `+(dataSoap[i].soapdok_object ?? '')+`<br/><br/>
-                                (A) <div class="ml-3">`+(dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '')+`</div><br/><br/>
-                                (P) `
-                                    +(dataSoap[i].soapdok_planning ?? '')+`<br/><br><br>
+                                (S) ` + (dataSoap[i].soapdok_subject ?? '') + `<br/><br/>
+                                (O) ` + (dataSoap[i].soapdok_object ?? '') + `<br/><br/>
+                                (A) <div class="ml-3">` + (dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '') + `</div><br/><br/>
+                                (P) ` +
+                                (dataSoap[i].soapdok_planning ?? '') + `<br/><br><br>
                                     <b>Tindakan Penunjang & Obat :</b>
-                                    <span class="pl-3">`+$row_lab+'<br>'+$row_radiologi+'<br>'+$row_obat+'<br>'+$row_lainnya+`</span>
+                                    <span class="pl-3">` + $row_lab + '<br>' + $row_radiologi + '<br>' + $row_obat + '<br>' + $row_lainnya + `</span>
                                 </td>`
-                            table = table + "<td>"+(dataSoap[i].soapdok_instruksi ?? '')+"</td>"
+                            table = table + "<td>" + (dataSoap[i].soapdok_instruksi ?? '') + "</td>"
                             // if(is_dokter=="1"){
                             //     table = table + "<td class='text-center'></td>"
                             // }else{
-                                if(statusVerifikasi==0){
-                                    if (reg_dokter != utama) {
-                                        table = table + "<td class='text-center'>" +
+                            if (statusVerifikasi == 0) {
+                                if (reg_dokter != utama) {
+                                    table = table + "<td class='text-center'>" +
                                         "<button class='btn btn-secondary''>Menunggu Verif DPJP Utama</button>" +
                                         "</td>"
-                                    }else{
-                                        table = table + "<td class='text-center'>" +
-                                            "<button class='btn btn-danger' onclick='updateverifikasi("+dataSoap[i].soapdok_id+")'>Verifikasi</button>" +
-                                            "</td>"
-                                    }
-                                }else{
+                                } else {
                                     table = table + "<td class='text-center'>" +
-                                        "<button class='btn btn-primary' >Sudah Diverifikasi</button>" +
+                                        "<button class='btn btn-danger' onclick='updateverifikasi(" + dataSoap[i].soapdok_id + ")'>Verifikasi</button>" +
                                         "</td>"
                                 }
+                            } else {
+                                table = table + "<td class='text-center'>" +
+                                    "<button class='btn btn-primary' >Sudah Diverifikasi</button>" +
+                                    "</td>"
+                            }
                             // }
 
                             table = table + "</tr>"
@@ -1495,29 +1500,29 @@
     </script>
 
     <script>
-        function getRekomendasiRajal(){
+        function getRekomendasiRajal() {
             $.ajax({
-                url: "http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/"+medrec,
+                url: "http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/" + medrec,
                 type: "GET",
                 dataType: "JSON",
-                success: function (data) {
-                    var table ="";
+                success: function(data) {
+                    var table = "";
                     var tanggal = data.created_at
                     var dpjp = data.ranap_dpjp
                     var rekomendasi_paket = data.rekomendasi_tindakan
-                    var listTindakan =""
+                    var listTindakan = ""
                     var item_id = data.ranap_rekomendasi_tindakan
 
                     var ranap_diagnosa = data.ranap_diagnosa
                     var ranap_indikasi = data.ranap_indikasi
-                    for(var i=0; i<rekomendasi_paket.length; i++){
-                        listTindakan = listTindakan + "<li>"+rekomendasi_paket[i].ItemName1+"</li>"
+                    for (var i = 0; i < rekomendasi_paket.length; i++) {
+                        listTindakan = listTindakan + "<li>" + rekomendasi_paket[i].ItemName1 + "</li>"
                     }
 
                     table = table + "<tr>"
-                    table = table + "<td class='text-center'>"+tanggal+"</td>"
-                    table = table + "<td class='text-center'>"+dpjp+"</td>"
-                    table = table + "<td><ul>"+listTindakan+"</ul></td>"
+                    table = table + "<td class='text-center'>" + tanggal + "</td>"
+                    table = table + "<td class='text-center'>" + dpjp + "</td>"
+                    table = table + "<td><ul>" + listTindakan + "</ul></td>"
                     table = table + "<td><button class='btn btn-primary' onclick='getDetailPaket(\"" + ranap_diagnosa + "\", \"" + ranap_indikasi + "\" , \"" + item_id + "\")'>Terima</button></td>";
                     table = table + "</tr>"
 
@@ -1525,37 +1530,36 @@
                 }
             })
         }
-
     </script>
     <script>
-        function getDetailPaket(ranap_diagnosa, ranap_indikasi,item_id){
+        function getDetailPaket(ranap_diagnosa, ranap_indikasi, item_id) {
             //http://rsud.sumselprov.go.id/simrs-rajal/api/emr/cpoe/data_detail_paket/11347
             $.ajax({
-                url:"http://rsud.sumselprov.go.id/simrs-rajal/api/emr/cpoe/data_detail_paket/11347",
-                type:"GET",
-                dataType:"JSON",
-                success:function(data){
+                url: "http://rsud.sumselprov.go.id/simrs-rajal/api/emr/cpoe/data_detail_paket/11347",
+                type: "GET",
+                dataType: "JSON",
+                success: function(data) {
                     console.log(data)
                     console.log(ranap_diagnosa)
                     console.log(ranap_indikasi)
-                    searchPaket(data,ranap_diagnosa,ranap_indikasi,item_id)
+                    searchPaket(data, ranap_diagnosa, ranap_indikasi, item_id)
                 }
 
             })
         }
         //cari harga paket
-        function searchPaket(data,ranap_diagnosa,ranap_indikasi,item_id){
+        function searchPaket(data, ranap_diagnosa, ranap_indikasi, item_id) {
             console.log("search paket")
             $.ajax({
-                url:"http://rsud.sumselprov.go.id/simrs-rajal/api/emr/cpoe/data_all_item/X0001%5E01/002",
-                type:"GET",
-                dataType:"JSON",
-                success:function(response){
+                url: "http://rsud.sumselprov.go.id/simrs-rajal/api/emr/cpoe/data_all_item/X0001%5E01/002",
+                type: "GET",
+                dataType: "JSON",
+                success: function(response) {
                     console.log(item_id)
-                    for(var i=0;i<response.length;i++){
-                        if(response[i].ItemID==item_id){
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].ItemID == item_id) {
                             console.log(response[i])
-                            storePaket(data,ranap_diagnosa,ranap_indikasi,response[i].ItemID,response[i].ItemName1,response[i].PersonalPrice)
+                            storePaket(data, ranap_diagnosa, ranap_indikasi, response[i].ItemID, response[i].ItemName1, response[i].PersonalPrice)
                         }
                     }
 
@@ -1564,7 +1568,7 @@
             })
         }
         //store paket ke CPPT dan Order
-        function storePaket(data,ranap_diagnosa, ranap_indikasi,item_code,nama_paket,harga_paket){
+        function storePaket(data, ranap_diagnosa, ranap_indikasi, item_code, nama_paket, harga_paket) {
             $.ajax({
                 url: "{{ route('order.paket') }}",
                 type: "POST",
@@ -1575,18 +1579,18 @@
                     "ranap_diagnosa": ranap_diagnosa,
                     "ranap_indikasi": ranap_indikasi,
                     "med_rec": medrec,
-                    "soapdok_dokter":"{{ auth()->user()->dokter_id}}",
-                    "nama_ppa":"{{ auth()->user()->name}}",
-                    "nama_paket":nama_paket,
-                    "harga_paket":harga_paket,
-                    "item_code":item_code,
+                    "soapdok_dokter": "{{ auth()->user()->dokter_id}}",
+                    "nama_ppa": "{{ auth()->user()->name}}",
+                    "nama_paket": nama_paket,
+                    "harga_paket": harga_paket,
+                    "item_code": item_code,
                 },
-                success: function (data) {
+                success: function(data) {
                     //console.log(data)
-                    if(data.success==true){
+                    if (data.success == true) {
                         alert("Data Berhasil Disimpan")
                         window.location.reload()
-                    }else{
+                    } else {
                         alert("Data Gagal Disimpan")
                     }
                 }
