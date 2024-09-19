@@ -70,6 +70,7 @@ Route::get('register/informasi-pasien/checkMRN', [RegisterDataController::class,
 
 Route::get('/register/cancelation', [RegistrationCancelationController::class, 'index'])->name('cancelation.index');
 Route::post('/register/cancelation/{reg_no}', [RegistrationCancelationController::class, 'cancelRegistration'])->name('cancel_registration');
+Route::delete('/register/cancelation/{id}', [RegistrationCancelationController::class, 'cancelRegistrationCancelation'])->name('cancelation.delete');
 
 Route::prefix('register')->name('register.')->group(function () {
     Route::prefix('slip-register')->name('slip-register.')->group(function () {

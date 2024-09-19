@@ -39,6 +39,7 @@
                     <th>Nama Pasien</th>
                     <th>Alasan</th>
                     <th>Asal</th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
               </table>
@@ -151,8 +152,59 @@
           data: "asal",
           name: "asal",
         },
+        {
+          data: "action",
+          name: "action",
+          orderable: false,
+          searchable: false,
+        }
       ],
     });
+  }
+
+  function cancelRegistration(id) {
+    // console.log(id);
+    let url = "{{  route('cancelation.delete',':id') }}"
+    url = url.replace(':id', id)
+    console.log(url);
+    Swal.fire({
+      title: 'Yakin ingin membatalkan pasien ini?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        $.ajax({
+          url,
+          type: "DELETE",
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          success: function(r) {
+            // show swal fire success
+            Swal.fire({
+              title: 'Berhasil',
+              text: 'Pasien berhasil dibatalkan',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              location.reload();
+            })
+            
+          },
+          error: function(err) {
+            // show swal fire error
+            Swal.fire({
+              title: 'Gagal',
+              text: 'Pasien gagal dibatalkan',
+              icon: 'error',
+              confirmButtonText: 'Ok'
+            })
+          }
+        });
+      }
+    })
   }
 </script>
 @endpush
