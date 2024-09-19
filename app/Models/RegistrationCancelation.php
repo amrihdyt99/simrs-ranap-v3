@@ -9,4 +9,6 @@ class RegistrationCancelation extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public $incrementing = false;
 }
