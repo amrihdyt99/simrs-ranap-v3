@@ -180,7 +180,7 @@
                                                     <div class="form-group row">
                                                         <div class="col-lg-6">
                                                             <label class="label-admisi">NIK Keluarga Pasien</label>
-                                                            <input type="number" class="form-control" name="SSN[]" placeholder="NIK penanggungjawab pasien" re>
+                                                            <input type="number" class="form-control" name="SSN[]" placeholder="NIK penanggungjawab pasien">
                                                         </div>
                                                         <div class="col-lg-6">
                                                             <label class="label-admisi">Nama Keluarga Pasien</label>
@@ -190,17 +190,28 @@
                                                     <div class="form-group row">
                                                         <div class="col-lg-6">
                                                             <label class="label-admisi">Tanggal Lahir</label>
-                                                            <input type="date" class="form-control" name="DateOfBirth[]">
+                                                            <input type="date" class="form-control" name="DateOfBirth[]" placeholder="Jenis Kelamin">
                                                         </div>
+                                                        <div class="col-lg-6">
+                                                            <label class="label-admisi">Jenis Kelamin</label>
+                                                            <select name="Sex[]" class="form-control">
+                                                                <option value=""></option>
+                                                                <option value="0001^X">Tidak Diketahui</option>
+                                                                <option value="0001^M">Laki-laki</option>
+                                                                <option value="0001^F">Perempuan</option>
+                                                                <option value="0001^U">Tidak Dapat Ditentukan</option>
+                                                                <option value="0001^N">Tidak Mengisi</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
                                                         <div class="col-lg-6">
                                                             <label class="label-admisi">Pekerjaan</label>
                                                             <input type="text" class="form-control" name="Job[]" placeholder="Pekerjaan">
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <div class="col-lg-12">
+                                                        <div class="col-lg-6">
                                                             <label class="label-admisi">Alamat Keluarga Pasien</label>
-                                                            <input type="text" class="form-control" name="Address[]" placeholder="Alamat Keluarga Pasien">
+                                                            <input type="text" class="form-control" name="Address[]" placeholder="Alamat Keluarga Pasien" style="width: 100%;">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
