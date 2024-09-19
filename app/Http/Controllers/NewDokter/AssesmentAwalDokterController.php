@@ -721,6 +721,7 @@ class AssesmentAwalDokterController extends Controller
             $item['tanggal_verifikasi'] = $value->tanggal_verifikasi;
             $item['nama_verifikasi'] = $value->nama_verifikasi;
             $item['is_dokter'] = $value->is_dokter;
+            $item['soapdok_posisi'] = $value->is_dokter == 1 ? 'Dokter' : 'Perawat';
             $item['soapdok_bed'] = $value->soapdok_bed;
             $item['dpjp_utama'] = $value->dpjp_utama;
             $item['bertindak_sebagai'] = $value->bertindak_sebagai;
@@ -748,9 +749,50 @@ class AssesmentAwalDokterController extends Controller
             array_push($data_soap, $item);
         }
 
+        foreach ($data_soap as $new_key => $new_value) {
+            $data_soap[$new_key]['updated_at'] = $new_value['soap_tanggal'].' '.$new_value['soap_waktu'];
+        }
+        
+        // GET DATA SOAP FROM RAJAL
+        $dataSoapFromRajal = getService(urlSimrs().'api/emr/cppt/latest/'.str_replace('/', '_', $request->reg_no), true);
+
+        $dataSoapFromRajal = count($dataSoapFromRajal[0]) > 0 ? $dataSoapFromRajal[0] : [];
+
+
+        $dataTindakanFromRajal = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$request->reg_no, true);
+
+        if (count($dataTindakanFromRajal) > 0) {
+            foreach ($dataTindakanFromRajal as $key_tindakan => $value_tindakan) {
+                $dataTindakanFromRajal[$key_tindakan]['id'] = $value_tindakan['cpoe_kode'];
+                $dataTindakanFromRajal[$key_tindakan]['waktu_order'] = $value_tindakan['cpoe_created'];
+                $dataTindakanFromRajal[$key_tindakan]['jenis_order'] = $value_tindakan['cpoe_jenis'];
+                $dataTindakanFromRajal[$key_tindakan]['order_no'] = $value_tindakan['cpoe_kode'];
+                $dataTindakanFromRajal[$key_tindakan]['item_name'] = $value_tindakan['cpoe_name'];
+                $dataTindakanFromRajal[$key_tindakan]['harga_jual'] = $value_tindakan['cpoe_tarif'];
+                $dataTindakanFromRajal[$key_tindakan]['ParamedicName'] = $value_tindakan['cpoe_dokter'];
+            }
+        }
+
+        if (count($dataSoapFromRajal)) {
+            foreach ($dataSoapFromRajal as $key_soap_rajal => $value_soap_rajal) {
+                $filteredData = array_filter($dataTindakanFromRajal, function($item_tindakan) use ($value_soap_rajal) {
+                    return $item_tindakan['cpoe_dokter_kode'] == $value_soap_rajal['reg_dokter_kode'];
+                });
+                
+                $dataSoapFromRajal[$key_soap_rajal]['soapdok_posisi'] = ucfirst($value_soap_rajal['level_user']);
+                $dataSoapFromRajal[$key_soap_rajal]['order_lainnya'] = $filteredData;
+            }
+        }
+
+        $dataSoapMerged =  array_merge($data_soap, $dataSoapFromRajal);
+
+        usort($dataSoapMerged, function ($a, $b) {
+            return strtotime($b['updated_at']) - strtotime($a['updated_at']);
+        });
+
         return response()->json([
             'success' => true,
-            'data_soap' => $data_soap
+            'data_soap' => $dataSoapMerged,
         ]);
     }
 

@@ -85,6 +85,7 @@ class NewNursingController extends Controller
         ]);
         $valData['nama_dokter'] = $request->nama_dokter;
         $valData['nama_obat'] = $request->kode_obat;
+        $valData['shift'] = $request->user_shift;
 
         $data_perjam = $request->data_perjam ?? [];
         $form_pemberian_obat_display = [
@@ -151,7 +152,8 @@ class NewNursingController extends Controller
             'tanggal_pemberian' => $dateTimeNow->toDateTimeString(),
             'data' => $request->data,
             'med_rec' => $request->med_rec,
-            'jam_pemberian' => $dateTimeNow->toTimeString()
+            'jam_pemberian' => $dateTimeNow->toTimeString(),
+            'shift' => $request->user_shift,
         );
         //$sql="SELECT * FROM vital_sign WHERE id_pasien=? AND tanggal=?";
         /* if($request->kategori=="blood pressure"){
@@ -269,7 +271,8 @@ class NewNursingController extends Controller
             'drain' => $request->drain,
             'iwl_muntah' => $request->iwl_muntah,
             'jumlah' => $request->jumlah,
-            'balance' => $totalBalance
+            'balance' => $totalBalance,
+            'shift' => $request->user_shift,
         );
 
         $simpan = DB::connection('mysql')
@@ -2783,7 +2786,8 @@ class NewNursingController extends Controller
             'kategori' => $request->kategori,
             'data' => $request->data,
             'tanggal_pemberian' => $dateTimeNow->toDateTimeString(),
-            'jam_pemberian' => $dateTimeNow->toTimeString()
+            'jam_pemberian' => $dateTimeNow->toTimeString(),
+            'shift' => $request->user_shift,
         );
 
         $simpan = DB::connection('mysql')

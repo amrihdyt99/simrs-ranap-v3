@@ -13,9 +13,16 @@ class FinChangeTransferInternalColumSecTable extends Migration
      */
     public function up()
     {
+        // Schema::table('transfer_internal', function (Blueprint $table) {
+        //     $table->dropColumn([
+        //         'ditransfer_oleh_user_id',
+        //         'diterima_oleh_user_id'
+        //     ]);
+        // });
+
         Schema::table('transfer_internal', function (Blueprint $table) {
-            $table->string('ditransfer_oleh_user_id', 50)->nullable()->change();
-            $table->string('diterima_oleh_user_id', 50)->nullable()->change();
+            $table->string('ditransfer_oleh_user_id', 50)->nullable();
+            $table->string('diterima_oleh_user_id', 50)->nullable();
         });
     }
 

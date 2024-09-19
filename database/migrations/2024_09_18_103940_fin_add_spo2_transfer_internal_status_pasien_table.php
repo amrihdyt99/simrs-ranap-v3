@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class FinChangeSepNoMRegistrasiTable extends Migration
+class FinAddSpo2TransferInternalStatusPasienTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,9 @@ class FinChangeSepNoMRegistrasiTable extends Migration
      */
     public function up()
     {
-        Schema::connection('mysql2')->table('m_registrasi', function (Blueprint $table) {
-            $table->dropColumn('reg_sep_no');
+        Schema::table('transfer_internal_status_pasien', function (Blueprint $table) {
+            $table->string('spo2')->nullable()->after('rr');
         });
-
-        Schema::connection('mysql2')->table('m_registrasi', function (Blueprint $table) {
-            $table->string('reg_sep_no')->nullable();
-        });
-
     }
 
     /**
@@ -30,5 +25,6 @@ class FinChangeSepNoMRegistrasiTable extends Migration
      */
     public function down()
     {
+        //
     }
 }

@@ -21,7 +21,7 @@ class ShiftSession
 
         if ($user) {
             if (!session()->has('shift_options')) {
-                session(['shift_options' => ['pagi', 'siang', 'sore', 'malam']]);
+                session(['shift_options' => ['pagi', 'siang', 'malam']]);
             }
         }
 

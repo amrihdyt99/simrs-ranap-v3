@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class FinChangeHistoryBedTable extends Migration
+class ModifyColumnsInMBedHistory extends Migration
 {
     /**
      * Run the migrations.
@@ -15,20 +15,18 @@ class FinChangeHistoryBedTable extends Migration
     {
         Schema::connection('mysql2')->table('m_bed_history', function (Blueprint $table) {
             $table->dropColumn([
-                'HistoryRefCode',
-                'RequestTransferDate',
-                'RequestTransferTime',
-                'RequestedBy',
-                'ReceivedBy',
+                'TableRef',
+                'ReceiveTransferDate',
+                'ReceiveTransferTime',
+                'Description',
             ]);
         });
 
         Schema::connection('mysql2')->table('m_bed_history', function (Blueprint $table) {
-            $table->string('HistoryRefCode')->nullable();
-            $table->date('RequestTransferDate')->nullable();
-            $table->time('RequestTransferTime')->nullable();
-            $table->string('RequestedBy', 100)->nullable();
-            $table->string('ReceivedBy', 100)->nullable();
+            $table->string('TableRef')->nullable();
+            $table->date('ReceiveTransferDate')->nullable();
+            $table->time('ReceiveTransferTime')->nullable();
+            $table->string('Description')->nullable();
         });
     }
 
@@ -39,6 +37,8 @@ class FinChangeHistoryBedTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('m_bed_history', function (Blueprint $table) {
+            //
+        });
     }
 }

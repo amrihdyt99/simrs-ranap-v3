@@ -48,8 +48,7 @@
                         <td>&nbsp;</td>
                         <td colspan="2"><strong>Dari poli / IGD</strong></td>
                         <td>:</td>
-                        <td colspan="4">&nbsp;</td>
-                    </tr>
+                        <td colspan="4">&nbsp;{{ $datamypatient->poli_asal ?? 'IGD'}} </td>                    
                     <tr>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>

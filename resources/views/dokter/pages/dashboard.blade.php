@@ -154,6 +154,7 @@
           return;
         }
       }
+      console.log(selectedRoom)
       if (selectedRoom) {
         $.ajax({
           url: '{{url("")}}/dokter/takeOver',
