@@ -186,12 +186,6 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <div class="col-lg-12">
-                                                            <label class="label-admisi">Alamat Keluarga Pasien</label>
-                                                            <input type="text" class="form-control" name="Address[]" value="{{ $kel->Address }}">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
                                                         <div class="col-lg-6">
                                                             <label class="label-admisi">Tanggal Lahir</label>
                                                             <input type="date" class="form-control" name="DateOfBirth[]" value="{{ $kel->DateOfBirth }}">
@@ -199,6 +193,23 @@
                                                         <div class="col-lg-6">
                                                             <label class="label-admisi">Pekerjaan</label>
                                                             <input type="text" class="form-control" name="Job[]" value="{{ $kel->Job }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-lg-6">
+                                                            <label class="label-admisi">Jenis Kelamin</label>
+                                                            <select name="Sex[]" class="form-control">
+                                                                <option value=""></option>
+                                                                <option value="0001^X" {{ $kel->Sex == '0001^X' ? 'selected' : '' }}>Tidak Diketahui</option>
+                                                                <option value="0001^M" {{ $kel->Sex == '0001^M' ? 'selected' : '' }}>Laki-laki</option>
+                                                                <option value="0001^F" {{ $kel->Sex == '0001^F' ? 'selected' : '' }}>Perempuan</option>
+                                                                <option value="0001^U" {{ $kel->Sex == '0001^U' ? 'selected' : '' }}>Tidak Dapat Ditentukan</option>
+                                                                <option value="0001^N" {{ $kel->Sex == '0001^N' ? 'selected' : '' }}>Tidak Mengisi</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <label class="label-admisi">Alamat Keluarga Pasien</label>
+                                                            <input type="text" class="form-control" name="Address[]" value="{{ $kel->Address }}">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -248,12 +259,23 @@
                                                             <input type="date" class="form-control" name="DateOfBirth[]">
                                                         </div>
                                                         <div class="col-lg-6">
-                                                            <label class="label-admisi">Pekerjaan</label>
-                                                            <input type="text" class="form-control" name="Job[]">
-                                                         </div>
+                                                            <label class="label-admisi">Jenis Kelamin</label>
+                                                            <select name="Sex[]" class="form-control">
+                                                                <option value=""></option>
+                                                                <option value="0001^X">Tidak Diketahui</option>
+                                                                <option value="0001^M">Laki-laki</option>
+                                                                <option value="0001^F">Perempuan</option>
+                                                                <option value="0001^U">Tidak Dapat Ditentukan</option>
+                                                                <option value="0001^N">Tidak Mengisi</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <div class="col-lg-12">
+                                                        <div class="col-lg-6">
+                                                            <label class="label-admisi">Pekerjaan</label>
+                                                            <input type="text" class="form-control" name="Job[]">
+                                                        </div>
+                                                        <div class="col-lg-6">
                                                             <label class="label-admisi">Alamat Keluarga Pasien</label>
                                                             <input type="text" class="form-control" name="Address[]">
                                                         </div>

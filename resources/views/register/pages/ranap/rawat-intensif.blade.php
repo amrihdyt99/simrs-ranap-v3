@@ -42,7 +42,7 @@
             <table class="full-width" border="1">
                 <tbody>
                     <tr>
-                        <td class="no-border">Saya yang bertanda tangan di bawah ini:</td>
+                        <td class="no-border" colspan="2">Saya yang bertanda tangan di bawah ini:</td>
                     </tr>
                     <tr>
                         <td class="no-border">Nama</td>
@@ -61,34 +61,33 @@
                         <td class="no-border">: </td>
                     </tr>
                     <tr>
-                        <td class="no-border">Dengan ini menyatakan SETUJU/MENOLAK perawatan di INSTALASI RAWAT INTENSIF</td>
+                        <td class="no-border" colspan="2">Dengan ini menyatakan SETUJU/MENOLAK perawatan di INSTALASI RAWAT INTENSIF</td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                     </tr>
                     <tr>
-                        <td class="no-border">Terhadap diri saya sendiri/*_________________ saya :</td>
-                        <td class="no-border"></td>
+                        <td class="no-border" colspan="2">Terhadap diri saya sendiri/*_________________ saya :</td>
                     </tr>
                     <tr>
                         <td class="no-border">Nama</td>
-                        <td class="no-border">:  {{ $data_pasien['nama_lengkap']}}</td>
+                        <td class="no-border">:{{ $data_pasien['nama_lengkap']}}</td>
                     </tr>
                     <tr>
                         <td class="no-border">Umur</td>
-                        <td class="no-border">: {{ $data_pasien['usia'] }}</td>
+                        <td class="no-border">:{{ $data_pasien['usia'] }}</td>
                     </tr>
                     <tr>
                         <td class="no-border">Jenis Kelamin</td>
-                        <td class="no-border">: {{ $data_pasien['jenis_kelamin'] }}</td>
+                        <td class="no-border">:{{ $data_pasien['jenis_kelamin'] }}</td>
                     </tr>
                     <tr>
                         <td class="no-border">Alamat</td>
-                        <td class="no-border">: {{ $data_pasien['alamat']}}</td>
+                        <td class="no-border">:{{ $data_pasien['alamat']}}</td>
                     </tr>
                     <tr>
                         <td class="no-border">No. RM</td>
-                        <td class="no-border">: {{ $data_pasien['medical_no'] }}</td>
+                        <td class="no-border">:{{ $data_pasien['medical_no'] }}</td>
                     </tr>
                     <!-- <tr>
                         <td colspan="2">Saya menyatakan mengerti:</td>
