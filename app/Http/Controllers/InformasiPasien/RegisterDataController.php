@@ -23,7 +23,8 @@ class RegisterDataController extends Controller
     {
         try {
             $newMRN = $this->generateMRN();
-
+    
+            // Data pasien
             $pasienData = [
                 'MedicalNo' => $newMRN,
                 'SSN' => $request->ssn,
@@ -42,25 +43,38 @@ class RegisterDataController extends Controller
                 'IsActive' => true,
             ];
             Pasien::create($pasienData);
-
+    
+            // Log data keluarga untuk debugging
+            Log::info('Data keluarga:', $request->all());
+    
+            // Data keluarga pasien
             $keluargaData = array_map(function ($key) use ($request, $newMRN) {
                 return [
-                    'MedicalNo' => $request->MedicalNo[$key] ?? '',
+                    'MedicalNo' => $newMRN,
+                    'FamilyMedicalNo' => $request->FamilyMedicalNo[$key] ?? null, // Tambahkan input untuk FamilyMedicalNo
                     'GCRelationShip' => $request->GCRelationShip[$key],
                     'PhoneNo' => $request->PhoneNo[$key] ?? null,
                     'SSN' => $request->SSN[$key] ?? null,
                     'FamilyName' => $request->FamilyName[$key] ?? null,
                     'Address' => $request->Address[$key] ?? null,
                     'DateOfBirth' => $request->DateOfBirth[$key] ?? null,
-                    'Job' => $request->Job[$key] ?? null,
+                    'Job' => $request->Job[$key] ?? '', // Pastikan 'Job' tidak null
                     'MobilePhoneNo' => $request->MobilePhoneNo[$key] ?? null,
                     'Picture' => $request->Picture[$key] ?? null,
                     'IsEmergencyContact' => $request->IsEmergencyContact[$key] ?? null,
+                    'Sex' => $request->Sex[$key] ?? null,
                 ];
             }, array_keys($request->GCRelationShip));
-            PasienInformasi::insert($keluargaData);
+    
+            // Log data keluarga yang akan disimpan
+            Log::info('Keluarga Data:', $keluargaData);
+    
+            // Menyimpan data keluarga pasien ke tabel `m_keluarga_pasien`
+            DB::connection('mysql2')->table('m_keluarga_pasien')->insert($keluargaData);
+    
             return redirect()->route('register.informasi-pasien.index');
         } catch (\Throwable $th) {
+            Log::error('Error:', ['message' => $th->getMessage()]);
             return back()->withErrors('Terjadi kesalahan: ' . $th->getMessage());
         }
     }
@@ -155,6 +169,10 @@ class RegisterDataController extends Controller
 
             PasienInformasi::where('MedicalNo', $medicalNo)->delete();
             $keluargaData = array_map(function ($key) use ($request, $medicalNo) {
+                $job = $request->Job[$key] ?? null;
+                if (strlen($job) > 50) { // Misalnya, jika panjang maksimal kolom Job adalah 50 karakter
+                    throw new \Exception('Panjang data Job melebihi batas yang diizinkan.');
+                }
                 return [
                     'MedicalNo' => $medicalNo,
                     'GCRelationShip' => $request->GCRelationShip[$key],
@@ -163,10 +181,11 @@ class RegisterDataController extends Controller
                     'FamilyName' => $request->FamilyName[$key] ?? null,
                     'Address' => $request->Address[$key] ?? null,
                     'DateOfBirth' => $request->DateOfBirth[$key] ?? null,
-                    'Job' => $request->Job[$key] ?? null,
+                    'Job' => $job,
                     'MobilePhoneNo' => $request->MobilePhoneNo[$key] ?? null,
                     'Picture' => $request->Picture[$key] ?? null,
                     'IsEmergencyContact' => $request->IsEmergencyContact[$key] ?? null,
+                    'Sex' => $request->Sex[$key] ?? null,
                 ];
             }, array_keys($request->GCRelationShip));
             PasienInformasi::insert($keluargaData);
