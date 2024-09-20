@@ -296,7 +296,7 @@ function getPrescribeRowSelect(data, category, serial, update = 0) {
 }
 
 function getPrescribeHeader(category, data = '') {
-    var baseurl = 'http://rsud.sumselprov.go.id/farmasi/web-apis/';
+    var baseurl = 'https://rsud.sumselprov.go.id/farmasi/web-apis/';
 
     var med_form = baseurl + 'data-induk/select2/bentukan-sediaan';
 

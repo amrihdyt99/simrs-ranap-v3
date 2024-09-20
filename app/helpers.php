@@ -9,7 +9,7 @@ function keyPharmacy(){
 
 function domain($path = 1) {
     if ($path == 1) {
-        $domain = 'http://rsud.sumselprov.go.id/';
+        $domain = 'https://rsud.sumselprov.go.id/';
     } else {
         $domain = 'http://192.168.80.113/';
     }
