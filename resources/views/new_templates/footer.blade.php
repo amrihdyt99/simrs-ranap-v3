@@ -960,7 +960,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
         }
 
         $.ajax({
-            url: `{{route('simpan.order.obat ')}}`,
+            url: `{{route('simpan.order.obat')}}`,
             type: 'POST',
             dataType: 'json',
             data: {
