@@ -19,7 +19,7 @@ class RegistrationCancelationController extends Controller
             return datatables()->of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="cancelRegistration(\'' . $row->reg_no . '\')">Batalkan</a>';
+                    $btn = '<a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="cancelRegistration(\'' . $row->id . '\')">Batalkan</a>';
                     return $btn;
                 })
                 ->addColumn('asal', function ($row) {
@@ -53,6 +53,20 @@ class RegistrationCancelationController extends Controller
             DB::commit();
 
             return $this->responseData(200, 'Registrasi berhasil dibatalkan');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->internalServerError($th->getMessage());
+        }
+    }
+
+    public function cancelRegistrationCancelation($id)
+    {
+        try {
+            DB::beginTransaction();
+            $reg_cancel = RegistrationCancelation::find($id);
+            if ($reg_cancel) $reg_cancel->delete();
+            DB::commit();
+            return $this->responseData(200, 'Data registrasi berhasil dihapus');
         } catch (\Throwable $th) {
             DB::rollBack();
             return $this->internalServerError($th->getMessage());

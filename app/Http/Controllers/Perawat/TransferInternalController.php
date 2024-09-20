@@ -29,7 +29,8 @@ class TransferInternalController extends Controller
                             FROM `$dbMaster`.`m_bed`
                             LEFT JOIN `$dbMaster`.`m_ruangan` ON `$dbMaster`.`m_ruangan`.`RoomID` = `$dbMaster`.`m_bed`.`room_id`
                             LEFT JOIN `$dbMaster`.`m_room_class` ON `$dbMaster`.`m_room_class`.`ClassCode` = `$dbMaster`.`m_bed`.`class_code`
-                            LEFT JOIN `$dbMaster`.`m_unit_departemen` ON `$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id`
+                            LEFT JOIN `$dbMaster`.`m_unit_departemen` ON 
+                                (`$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id` OR `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode` = `$dbMaster`.`m_bed`.`service_unit_id`)
                             LEFT JOIN `$dbMaster`.`m_unit` ON `$dbMaster`.`m_unit`.`ServiceUnitCode` = `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode`
                         ) AS `bed_asal` on `bed_asal`.`bed_id` = `internal`.`transfer_unit_asal`
                         LEFT JOIN (
@@ -38,11 +39,12 @@ class TransferInternalController extends Controller
                             FROM `$dbMaster`.`m_bed`
                             LEFT JOIN `$dbMaster`.`m_ruangan` ON `$dbMaster`.`m_ruangan`.`RoomID` = `$dbMaster`.`m_bed`.`room_id`
                             LEFT JOIN `$dbMaster`.`m_room_class` ON `$dbMaster`.`m_room_class`.`ClassCode` = `$dbMaster`.`m_bed`.`class_code`
-                            LEFT JOIN `$dbMaster`.`m_unit_departemen` ON `$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id`
+                            LEFT JOIN `$dbMaster`.`m_unit_departemen` ON
+                            (`$dbMaster`.`m_unit_departemen`.`ServiceUnitID` = `$dbMaster`.`m_bed`.`service_unit_id` OR `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode` = `$dbMaster`.`m_bed`.`service_unit_id`)
                             LEFT JOIN `$dbMaster`.`m_unit` ON `$dbMaster`.`m_unit`.`ServiceUnitCode` = `$dbMaster`.`m_unit_departemen`.`ServiceUnitCode`
                         ) AS `bed_tujuan` on `bed_tujuan`.`bed_id` = `internal`.`transfer_unit_tujuan`
                         WHERE `internal`.`transfer_reg` = '$request->reg_no' 
-                    ORDER BY `internal`.`transfer_id` DESC";
+                        ORDER BY `internal`.`transfer_id` DESC";
 
             $data = DB::select($query);
 

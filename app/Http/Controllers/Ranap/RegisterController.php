@@ -33,6 +33,7 @@ class RegisterController extends Controller
 
     public function index(Request $request)
     {
+
         if ($request->ajax()) return $this->ajax_index($request);
         return view('register.pages.ranap.index');
     }
@@ -68,7 +69,8 @@ class RegisterController extends Controller
 
     public function ajax_index($request)
     {
-        $business_partner = (object)$this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business')['data'] ?? [];
+        $response = $this->fetchApi('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business');
+        $business_partner = isset($response['data']) ? (object)$response['data'] : (object)[];
         $data = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -118,7 +120,7 @@ class RegisterController extends Controller
                                         <div class="dropdown-menu">
                                             <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
                                             <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
-                                            <a class="dropdown-item" href="' . $url_barcode . '">Print Barcode</a>
+                                            <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
                                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
                                             <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button>'
                     . '</div>
