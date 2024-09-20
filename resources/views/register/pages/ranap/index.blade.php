@@ -302,10 +302,12 @@
         });
         $(row).find('.print-rawatintensif').click(function() {
           var reg = $(this).data('reg_no');
+          let url = "{{ route('register.ranap.rawat-intensif', ':reg_no') }}"
+          url = url.replace(':reg_no', reg)
           console.log(reg);
           $.ajax({
             type: "get",
-            url: "/ranap/rawat-intensif/" + reg,
+            url,
             success: function(data) {
               console.log(data);
               $('#report-rawatIntensif').empty().html(data);
