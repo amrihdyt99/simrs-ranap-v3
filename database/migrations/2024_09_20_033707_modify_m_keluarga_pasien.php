@@ -14,6 +14,18 @@ class ModifyMKeluargaPasien extends Migration
     public function up()
     {
         Schema::connection('mysql2')->table('m_keluarga_pasien', function (Blueprint $table) {
+            $table->dropColumn([
+                'Job',
+                'Address',
+                'PhoneNo',
+                'MobilePhoneNo',
+                'GCRelationShip',
+                'SSN',
+                'Picture',
+                'IsEmergencyContact'
+            ]);
+        });
+        Schema::connection('mysql2')->table('m_keluarga_pasien', function (Blueprint $table) {
             $table->string('Job', 255)->nullable()->change();
             $table->string('Address', 255)->nullable()->change();
             $table->string('PhoneNo', 20)->nullable()->change();
