@@ -48,8 +48,8 @@
                                         <label for="signature-pad-user">Tanda Tangan :</label>
                                         <div id="signature-pad-user" class="d-flex align-items-center">
                                             <div class="rounded p-2 me-2"
-                                                style="border: solid 1px black; width: 360px; height: 110px; position: relative;">
-                                                <canvas id="the_canvas_user" width="350" height="100">Your browser does
+                                                style="border: solid 1px black; width: 260px; height: 160px; position: relative; overflow: hidden;">
+                                                <canvas id="the_canvas_user" width="260" height="160">Your browser does
                                                     not support the HTML canvas tag.</canvas>
                                             </div>
                                             <div>
@@ -93,7 +93,7 @@
                 img.onload = function() {
                     // Gambar tanda tangan ke canvas
                     var context = canvas.getContext('2d');
-                    context.drawImage(img, 0, 0);
+                    context.drawImage(img, 0, 0, canvas.width, canvas.height);
                 };
             }
 
@@ -105,13 +105,10 @@
 
             // Fungsi untuk menyimpan tanda tangan ke dalam elemen input
             function saveSignature() {
-                if (signaturePad.isEmpty()) {
-                    alert('Please provide a signature first.');
-                    return;
+                if (!signaturePad.isEmpty()) {
+                    var dataURL = signaturePad.toDataURL(); // Mengambil data URL dari tanda tangan
+                    $('#signature_user').val(dataURL); // Menyimpan data URL ke dalam elemen input tersembunyi
                 }
-                var dataURL = signaturePad.toDataURL(); // Mengambil data URL dari tanda tangan
-                console.log(dataURL); // Debug: Tampilkan data URL di konsol
-                $('#signature_user').val(dataURL); // Menyimpan data URL ke dalam elemen input tersembunyi
             }
 
             // Simpan tanda tangan saat formulir dikirim

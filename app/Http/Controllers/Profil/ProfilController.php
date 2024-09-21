@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Profil;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -22,43 +23,57 @@ class ProfilController extends Controller
         return $x;
     }
 
-    public function index(){
+    public function index()
+    {
         $context = [
             'user_detail' => $this->universal_function()->detect_component_user()->user_detail,
         ];
         // dd($context);
         return view('profil-saya.index')
-        ->with($context)
-        ->with(get_object_vars($this));
+            ->with($context)
+            ->with(get_object_vars($this));
     }
 
     public function update_password(Request $request)
     {
         $rules = [
-            /*
-            'password'            => 'required|min:6',
-            */
             'password' => [
                 'required',
                 'string',
-                'min:8',
             ],
             'konfirmasi_password' => 'required|same:password',
         ];
         $custom_message = [
             'password.required'            => 'Gagal. Silahkan isi Password. ',
-            'password.min'                 => 'Gagal. Panjang Password minimal 8 karakter. ',
             'konfirmasi_password.required' => 'Gagal. Silahkan isi Konfirmasi Password. ',
             'konfirmasi_password.same'     => 'Gagal. Isian Password Baru dan Konfirmasi Password Baru harus sama. Silahkan coba lagi. ',
         ];
         $request->validate($rules, $custom_message);
 
         User::find(Auth::user()->id)->update([
-            'password'=> Hash::make($request->konfirmasi_password),
+            'password' => Hash::make($request->konfirmasi_password),
         ]);
 
         return redirect()->route('profil_saya.index')
-        ->with('success_message', 'Password / Kata Sandi baru berhasil disimpan.');
+            ->with('success_message', 'Password / Kata Sandi baru berhasil disimpan.');
     }
 
+    public function update_signature(Request $request)
+    {
+        $rules = [
+            'ttd_user' => 'required',
+        ];
+        $custom_message = [
+            'ttd_user.required' => 'Gagal. Silahkan isi Tanda Tangan. ',
+        ];
+        $request->validate($rules, $custom_message);
+
+        User::find(Auth::user()->id)->update([
+            'signature' => $request->ttd_user,
+        ]);
+
+        return redirect()->route('profil_saya.index')
+            ->with('success_message', 'Tanda Tangan berhasil disimpan.');
+    }
 }
+
