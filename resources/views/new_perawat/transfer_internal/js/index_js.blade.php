@@ -384,6 +384,7 @@
   }
 
   function loadSelect2TfInternal() {
+    let bed_tujuan_id = $('#select-bed-tujuan').val();
     $(async function() {
       $.ajax({
         type: "get",
@@ -403,12 +404,14 @@
           });
 
           // Set the default value if `bed_id` is not empty
-          if (bed_id) {
-            $('#select-bed-tujuan').val(bed_id).trigger('change');
+          if (bed_tujuan_id) {
+            $('#select-bed-tujuan').val(bed_tujuan_id).trigger('change');
           }
         }
       });
 
+      let perawat_tujuan_id = $('#select-petugas-tujuan').val();
+      console.log(perawat_tujuan_id);
       $.ajax({
         type: "get",
         url: "{{ route('transfer-internal.getPerawat') }}",
@@ -416,7 +419,7 @@
         success: function(r) {
           var opt = '<option value="" disabled>Pilih perawat tujuan</option>';
           $.each(r.data, function(index, row) {
-            opt += '<option value="' + row.id + '">' + row.name + '</option>';
+            opt += '<option value="' + row.username + '">' + row.name + '</option>';
           });
           $('#select-petugas-tujuan').html(opt);
 
@@ -425,10 +428,9 @@
             theme: 'bootstrap4',
             placeholder: "Pilih perawat tujuan"
           });
-
           // Set the default value if `bed_id` is not empty
-          if (bed_id) {
-            $('#select-petugas-tujuan').val(bed_id).trigger('change');
+          if (perawat_tujuan_id) {
+            $('#select-petugas-tujuan').val(perawat_tujuan_id).trigger('change');
           }
         }
       });
@@ -459,7 +461,7 @@
                 neko_simpan_success();
                 api.draw();
               } else {
-                neko_notify('Error', 'Data gagal disimpan !');
+                neko_notify('Error', response.message);
               }
             }
           });

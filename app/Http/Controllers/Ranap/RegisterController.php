@@ -863,7 +863,7 @@ class RegisterController extends Controller
             $this->updateDataRegistration(request()->reg_no);
             $this->createBedHistoryFirstTime(request()->reg_no);
             RegistrasiPJawab::where('reg_no', request()->reg_no)->delete();
-            if (isset(request()->pj_pasien) && count(request()->pj_pasien) > 0) {
+            if (request()->pj_pasien != null) {
                 // Add penanggung jawab pasien
                 RegistrasiPJawab::insert(request()->pj_pasien);
             }

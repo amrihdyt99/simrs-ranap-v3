@@ -24,12 +24,17 @@
         </div>
         <div class="col-lg-6">
             <div class="form-group"><label>Unit tujuan</label>
+                @if ($type == 'terima' || $type == 'detail')
+                <input type="hidden" class="form-control" name="transfer_unit_tujuan" value="{{ $ruangan_tujuan->bed_id }}">
+                <input type="text" id="bed-tujuan" class="form-control" value="{{ ($ruangan_tujuan->bed_code ?? '') . ' - ' . ($ruangan_tujuan->ruang ?? '') . ' - ' . ($ruangan_tujuan->kelompok ?? '') . ' - ' . ($ruangan_tujuan->kelas ?? '') }}" disabled>
+                @else
                 <select name="transfer_unit_tujuan" id="select-bed-tujuan" class="form-control">
                     @if (isset($ruangan_tujuan))
                     <option value="{{$ruangan_tujuan->bed_id}}"
                         selected>{{ $ruangan_tujuan->bed_code . ' - ' . $ruangan_tujuan->ruang . ' - ' . $ruangan_tujuan->kelompok . ' - ' . $ruangan_tujuan->kelas }}</option>
                     @endif
                 </select>
+                @endif
             </div>
         </div>
         <div class="col-lg-6">
@@ -49,7 +54,8 @@
                     value="{{ $transfer_internal->transfer_waktu_hubungi }}"></div>
         </div>
         <div class="col-lg-6">
-            <div class="form-group"><label>Tanggal dan waktu transfer</label><input type="datetime-local"
+            <div class="form-group"><label>Tanggal dan waktu transfer</label>
+                <input type="datetime-local"
                     class="form-control" name="ditransfer_waktu" value="{{ $transfer_internal->ditransfer_waktu }}">
             </div>
         </div>
