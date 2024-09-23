@@ -249,6 +249,8 @@ trait RanapRegistrationTrait
                 'HistoryRefCode' => $registration->reg_lama,
                 'ToUnitServiceID' => $serviceUnitRoom->ServiceUnitID,
                 'ToBedID' => $registration->bed,
+                'ToClassCode' => $registration->reg_class,
+                'ToChargeClassCode' => $registration->charge_class_code,
                 'CreatedBy' => auth()->user()->name,
                 'ReceiveTransferDate' => now()->toDateString(),
                 'ReceiveTransferTime' => now()->toTimeString(),
