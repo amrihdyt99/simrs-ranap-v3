@@ -411,7 +411,6 @@
       });
 
       let perawat_tujuan_id = $('#select-petugas-tujuan').val();
-      console.log(perawat_tujuan_id);
       $.ajax({
         type: "get",
         url: "{{ route('transfer-internal.getPerawat') }}",
@@ -434,6 +433,25 @@
           }
         }
       });
+
+      let class_code = $('#temp_class_bed').val();
+      $('#select-class-bed').select2({
+        theme: 'bootstrap4',
+        placeholder: "-",
+      });
+      if (class_code) {
+        $('#select-class-bed').val(class_code).trigger('change');
+      }
+
+      let class_charge_code = $('#temp_charge_class_bed').val();
+      console.log(class_charge_code);
+      $('#select-charge-class-bed').select2({
+        theme: 'bootstrap4',
+        placeholder: "-",
+      });
+      if (class_charge_code) {
+        $('#select-charge-class-bed').val(class_charge_code).trigger('change');
+      }
     })
   }
 

@@ -301,24 +301,6 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function nurse_transfer_internal(Request $request)
     {
-        $datapasien = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
-            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where('m_registrasi.reg_medrec', $request->medrec)
-            ->where('m_registrasi.reg_no', $request->reg_no)
-            ->select([
-                'm_registrasi.*',
-                'm_pasien.*',
-                'm_paramedis.ParamedicName',
-                'm_paramedis.FeeAmount',
-                'm_ruangan_baru.*',
-                'm_kelas_ruangan_baru.*',
-            ])
-            ->first();
-
         $cek_transfer_ongoing = DB::connection('mysql')
             ->table('transfer_internal')
             ->where([
@@ -327,56 +309,10 @@ class NyaaViewInjectorController extends AaaBaseController
             ])
             ->count();
 
-        $transfer_internal = DB::connection('mysql')
-            ->table('transfer_internal')
-            ->where([
-                ['transfer_reg', $request->reg_no],
-                ['status_transfer', 0],
-            ])
-            ->first();
-
-        $transfer_internal_alat_terpasang = DB::connection('mysql')
-            ->table('transfer_internal_alat_terpasang')
-            ->where('reg_no', $request->reg_no)
-            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-            })
-            ->get();
-
-        $transfer_internal_kejadian = DB::connection('mysql')
-            ->table('transfer_internal_kejadian')
-            ->where('reg_no', $request->reg_no)
-            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-            })
-            ->get();
-
-        $transfer_internal_obat_dibawa = DB::connection('mysql')
-            ->table('transfer_internal_obat_dibawa')
-            ->where('reg_no', $request->reg_no)
-            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-            })
-            ->get();
-
-        $transfer_internal_status_pasien = DB::connection('mysql')
-            ->table('transfer_internal_status_pasien')
-            ->where('reg_no', $request->reg_no)
-            ->when($transfer_internal && $transfer_internal->kode_transfer_internal, function ($query) use ($transfer_internal) {
-                return $query->where('kode_transfer_internal', $transfer_internal->kode_transfer_internal);
-            })
-            ->get();
-
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
-            'transfer_internal' => optional($transfer_internal),
-            'datapasien' => optional($datapasien),
-            'transfer_internal_alat_terpasang' => $transfer_internal_alat_terpasang,
-            'transfer_internal_obat_dibawa' => $transfer_internal_obat_dibawa,
-            'transfer_internal_status_pasien' => $transfer_internal_status_pasien,
-            'transfer_internal_kejadian' => $transfer_internal_kejadian,
-            'cek_transfer_ongoing'  => $cek_transfer_ongoing
+            'cek_transfer_ongoing'  => $cek_transfer_ongoing,
         );
 
         return view('new_perawat.transfer_internal.v3.riwayat_transfer')
@@ -402,6 +338,10 @@ class NyaaViewInjectorController extends AaaBaseController
                 'm_kelas_ruangan_baru.*',
             ])
             ->first();
+
+        $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
+
+
 
         $cek_transfer_ongoing = DB::connection('mysql')
             ->table('transfer_internal')
@@ -495,6 +435,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'cek_transfer_ongoing'  => $cek_transfer_ongoing,
             'ruangan_asal' => $ruangan_asal,
             'ruangan_tujuan' => $ruangan_tujuan,
+            'class_bed' => $class_bed,
             'type'  => $request->type,
         );
 
@@ -621,7 +562,7 @@ class NyaaViewInjectorController extends AaaBaseController
             DB::connection('mysql')->table('transfer_internal')
                 ->insert($data);
 
-
+            $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
 
             $transfer_internal = DB::connection('mysql')
                 ->table('transfer_internal')
@@ -653,6 +594,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 'transfer_internal' => optional($transfer_internal),
                 'datapasien' => optional($datapasien),
                 'ruangan_asal'  => optional($ruangan_asal),
+                'class_bed' => $class_bed,
                 'type'  => 'edit',
             );
 
@@ -713,13 +655,14 @@ class NyaaViewInjectorController extends AaaBaseController
                 ])
                 ->first();
 
-
-
             $transfer_internal = DB::connection('mysql')
                 ->table('transfer_internal')
                 ->where('transfer_reg', $request->reg_no)
                 ->where('kode_transfer_internal', $request->kode_transfer)
                 ->first();
+
+            $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
+
 
             $ruangan_asal = DB::connection('mysql2')
                 ->table('m_registrasi')
@@ -794,6 +737,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 'transfer_internal_kejadian' => $transfer_internal_kejadian,
                 'ruangan_asal' => $ruangan_asal,
                 'ruangan_tujuan' => $ruangan_tujuan,
+                'class_bed' => $class_bed,
                 'type'  => 'terima'
             );
 
