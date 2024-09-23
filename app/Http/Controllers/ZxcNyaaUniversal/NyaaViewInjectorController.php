@@ -420,7 +420,9 @@ class NyaaViewInjectorController extends AaaBaseController
             ->first();
 
         $ruangan_asal = DB::connection('mysql2')
-            ->table('m_bed')
+            ->table('m_registrasi')
+            ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+            ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
@@ -430,9 +432,10 @@ class NyaaViewInjectorController extends AaaBaseController
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-            ->where('bed_id', $datapasien->bed)
+            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+            ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
-
 
         $ruangan_tujuan = DB::connection('mysql2')
             ->table('m_bed')
@@ -599,6 +602,14 @@ class NyaaViewInjectorController extends AaaBaseController
                 ])
                 ->first();
 
+            $ruangan_asal = DB::connection('mysql2')
+                ->table('m_registrasi')
+                ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+                ->select('ToBedID')
+                ->where('m_registrasi.reg_no', $request->reg_no)
+                ->orderBy('m_bed_history.ReceiveTransferDate', 'DESC')
+                ->orderBy('m_bed_history.ReceiveTransferTime', 'DESC')
+                ->first();
 
             // $data['kode_transfer_internal'] = 'TI20240913112430346';
             $data['kode_transfer_internal'] = app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->generate_code_transfer_internal();
@@ -619,7 +630,9 @@ class NyaaViewInjectorController extends AaaBaseController
                 ->first();
 
             $ruangan_asal = DB::connection('mysql2')
-                ->table('m_bed')
+                ->table('m_registrasi')
+                ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+                ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
                 ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
                 ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
                 // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
@@ -629,7 +642,9 @@ class NyaaViewInjectorController extends AaaBaseController
                 })
                 ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
                 ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-                ->where('bed_id', $datapasien->bed)
+                ->where('m_registrasi.reg_no', $request->reg_no)
+                ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+                ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
                 ->first();
 
             $context = array(
@@ -707,24 +722,26 @@ class NyaaViewInjectorController extends AaaBaseController
                 ->first();
 
             $ruangan_asal = DB::connection('mysql2')
-                ->table('m_bed')
+                ->table('m_registrasi')
+                ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+                ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
                 ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
                 ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-                // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
                 ->leftJoin('m_unit_departemen', function ($join) {
                     $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
                         ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
                 })
                 ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
                 ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-                ->where('bed_id', $datapasien->bed)
+                ->where('m_registrasi.reg_no', $request->reg_no)
+                ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+                ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
                 ->first();
 
             $ruangan_tujuan = DB::connection('mysql2')
                 ->table('m_bed')
                 ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
                 ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-                // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
                 ->leftJoin('m_unit_departemen', function ($join) {
                     $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
                         ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
@@ -821,7 +838,9 @@ class NyaaViewInjectorController extends AaaBaseController
             ->first();
 
         $ruangan_asal = DB::connection('mysql2')
-            ->table('m_bed')
+            ->table('m_registrasi')
+            ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+            ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
@@ -831,7 +850,9 @@ class NyaaViewInjectorController extends AaaBaseController
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-            ->where('bed_id', $datapasien->bed)
+            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+            ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
 
 
@@ -1126,7 +1147,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
             ->where('m_registrasi.reg_no', "=", $reg_no)
             ->get();
-        
+
         // $nurse_transfusi_darah = DB::connection('mysql')
         // ->table('monitoring_transfusi_darah')
         // ->where('reg_no', $request->reg_no)
@@ -1427,14 +1448,14 @@ class NyaaViewInjectorController extends AaaBaseController
             ->first();
 
         $rs_pasien_intra_tindakan = DB::connection('mysql')
-        ->table('rs_pasien_intra_tindakan')
-        ->where('no_reg', $request->reg_no)
-        ->first();
-    
+            ->table('rs_pasien_intra_tindakan')
+            ->where('no_reg', $request->reg_no)
+            ->first();
+
         $pra_tindakan = DB::connection('mysql')
-        ->table('rs_catatan_keperawatan_pra_tindakan')
-        ->where('reg_no', $request->reg_no)
-        ->first();
+            ->table('rs_catatan_keperawatan_pra_tindakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
 
         $paska_tindakan = DB::connection('mysql')
             ->table('rs_paska_tindakan')
@@ -1442,9 +1463,9 @@ class NyaaViewInjectorController extends AaaBaseController
             ->first();
 
         $observasi_paska = DB::connection('mysql')
-        ->table('rs_observasi_paska_tindakan')
-        ->where('reg_no', $request->reg_no)
-        ->first();
+            ->table('rs_observasi_paska_tindakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
 
         $context = array(
             'reg' => $request->reg_no,
