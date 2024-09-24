@@ -684,6 +684,7 @@ class OrderObatController extends Controller
                     'id_cppt' => $request->cpoe_cppt,
                     'dokter_order' => $request->kode_dokter,
                     'deleted' => 0,
+                    'created_by_id' => $request->user_id ?? null,
                 ];
 
                 $sub_item = [
@@ -692,6 +693,7 @@ class OrderObatController extends Controller
                     'item_name' => $request->cpoe_nama[$key],
                     'harga_jual' => $request->cpoe_tarif[$key],
                     'qty' => 1,
+                    'created_by_name' => $request->name ?? null,
                 ];
 
                 $check_existing_item = DB::table('job_orders_dt')

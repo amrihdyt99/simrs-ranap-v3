@@ -31,9 +31,9 @@
                         </td>
                         <td>
                             @if($row->pvalidation_code == null)
-                            <span class="badge text teal px-4">Belum Dibayar</span>
+                            <span class="badge text px-4" style="background-color: red">Belum Dibayar</span>
                             @else
-                            <span class="badge text teal px-4">Sudah Dibayar</span>
+                            <span class="badge text px-4" style="background-color: green">Sudah Dibayar</span>
                             @endif
                         </td>
                         <td>{{$row->reg_tgl}}</td>

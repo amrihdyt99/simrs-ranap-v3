@@ -8,6 +8,7 @@ use App\Models\Pasien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class BillingController extends Controller
 {
@@ -65,6 +66,7 @@ class BillingController extends Controller
             ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
             ->select([
                 'a.*',
+                'a.id as id_dt',
                 'b.*',
                 DB::raw("(select ParamedicName from rs_m_paramedic where ParamedicCode = kode_dokter) as ParamedicName")
             ])
@@ -73,9 +75,10 @@ class BillingController extends Controller
         // return $lainnya;
 
         foreach ($lainnya as $key => $value) {
+            $item['ItemUId'] = Str::random(5);
             $item['ItemReg'] = $value->reg_no;
-            $item['ItemCode'] = $value->id;
-            $item['ItemOrder'] = $value->order_no;
+            $item['ItemCode'] = $value->item_code;
+            $item['ItemOrder'] = $value->id_dt;
             $item['ItemOrderCode'] = $value->order_no;
             $item['ItemTanggal'] = $value->waktu_order;
             $item['ItemName1'] = $value->item_name;
@@ -101,6 +104,7 @@ class BillingController extends Controller
 
         foreach ($obat_ as $key => $value) {
             foreach ($value->job_order_dt as $k => $v) {
+                $item['ItemUId'] = Str::random(5);
                 $item['ItemReg'] = $value->reg_no;
                 $item['ItemCode'] = $v->item_code;
                 $item['ItemOrderCode'] = $value->order_no;
@@ -120,11 +124,30 @@ class BillingController extends Controller
             }
         }
 
-        $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $request->reg_ri));
+        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromLab($request->reg_ri));
+        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri));
+
+        $validation = DB::table('rs_pasien_billing_validation')
+            ->where('pvalidation_reg', $request->reg_ri)
+            ->where('pvalidation_status', 1)
+            ->first();
+
+        return [
+            'order' => $order_penunjang,
+            'validation' => $validation,
+            // 'validation' => DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg_ri)->first()
+        ];
+    }
+
+    public function getOrderFromLab($reg_no) {
+        $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $reg_no));
+
+        $order_penunjang = [];
 
         if (isset($lab->code) && $lab->code == 200) {
             foreach ($lab->data as $key => $value) {
                 foreach ($value->item_order as $sub_key => $sub_value) {
+                    $item['ItemUId'] = Str::random(5);
                     $item['ItemReg'] = $value->no_reg;
                     $item['ItemCode'] = $sub_value->kode_tindakan;
                     $item['ItemOrderCode'] = $value->no_order;
@@ -138,19 +161,53 @@ class BillingController extends Controller
                     $item['ItemJumlah'] = 1;
                     $item['ItemDokter'] = $value->dokter_order;
                     $item['ItemPoli'] = $value->poli_order;
-                    $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
+                    // $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
+                    $item['ItemReview'] = 1;
 
-                    if ($sub_value->status_cancel == 'N') {
+                    if ($sub_value->status_cancel == 'N' && $sub_value->status_failed == 'N') {
                         array_push($order_penunjang, $item);
                     }
                 }
             }
         }
 
-        return [
-            'order' => $order_penunjang,
-            // 'validation' => DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg_ri)->first()
-        ];
+        return $order_penunjang;
+    }
+
+    public function getOrderFromRadiology($reg_no){
+        $rad = json_decode(getService(urlLabRadiology().'/api/status-order-radiologi-v2?regno='.$reg_no));
+
+        $order_penunjang = [];
+                        
+        if (isset($rad->code) && $rad->code == 200) {
+            foreach ($rad->data as $key => $value) {
+                foreach ($value->item_order as $sub_key => $sub_value) {
+                    $item['ItemUId'] = Str::random(5);
+                    $item['ItemReg'] = $value->no_reg;
+                    $item['ItemCode'] = $sub_value->kode_tindakan;
+                    $item['ItemOrderCode'] = $value->no_order;
+                    $item['ItemOrder'] = '';
+                    $item['ItemTanggal'] = $value->waktu_tanggal_order;
+                    $item['ItemName1'] = $sub_value->nama_tindakan;
+                    $item['ItemBundle'] = 0;
+                    $item['ItemTindakan'] = 'Radiologi';
+                    $item['ItemTarif'] = $sub_value->tarif_personal;
+                    $item['ItemTarifAwal'] = $sub_value->tarif_personal;
+                    $item['ItemJumlah'] = 1;
+                    $item['ItemDokter'] = $value->dokter_order;
+                    $item['ItemPoli'] = $value->poli_order;
+                    // $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
+                    $item['ItemReview'] = 1;
+
+                    if ($sub_value->status_cancel == 'N' && $sub_value->status_failed == 'N') {
+                        array_push($order_penunjang, $item);
+                    }
+                }
+
+            }
+        }
+
+        return $order_penunjang;
     }
 
     function addTindakan(Request $request)

@@ -19,7 +19,7 @@
           <hr>
           <div class="form-group">
             <label for="">Multi jenis pembayaran</label>
-            <select name="pvalidation_multi_payer" id="multi_payer" class="select2 form-control" width="100%">
+            <select name="pvalidation_multi_payer" id="multi_payer" width="100%">
               <option value="">-- Pilih jenis pembayaran lainnya --</option>
               {{-- @foreach (DB::table('rs_m_business_partner')->whereNotIn('BusinessPartnerID', [$reg->reg_corporate])->get() as $item)
                     <option value="{{$item->BusinessPartnerName}}">{{$item->BusinessPartnerName}}</option>
@@ -30,19 +30,24 @@
           <div id="panel-selisih" class="mt-3"></div>
 
           <label for="" class=" mt-3">Metode Pembayaran</label>
-          <div class="form-group-check">
-            <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" value="Kredit">
-            <label for="" class="mr-3">Kredit</label>
-            <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" value="Debit">
-            <label for="" class="mr-3">Debit</label>
-            <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" value="Discount Global">
-            <label for="" class="mr-3">Discount Global</label>
-            <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" value="Virtual Account">
-            <label for="" class="mr-3">Virtual Account</label>
-            <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" value="Cash">
-            <label for="" class="mr-3">Cash</label>
-            <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" value="Transfer">
-            <label for="" class="mr-3">Transfer</label>
+          <div class="form-group-check row">
+            <div class="col-lg-10">
+              <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="Kredit">
+              <label for="" class="mr-3">Kredit</label>
+              <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="Debit">
+              <label for="" class="mr-3">Debit</label>
+              <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="Discount Global">
+              <label for="" class="mr-3">Discount Global</label>
+              <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="Virtual Account">
+              <label for="" class="mr-3">Virtual Account</label>
+              <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="Transfer">
+              <label for="" class="mr-3">Transfer</label>
+            </div>
+            
+            <div class="col-lg-2">
+              <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="Cash">
+              <label for="" class="mr-3">Cash</label>
+            </div>
           </div>
 
           <div id="pay-method" class="my-3"></div>

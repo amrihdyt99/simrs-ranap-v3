@@ -18,6 +18,13 @@ class HomeController extends Controller
                     JOIN $dbMaster.m_pasien AS m_pasien  ON registrasi.reg_medrec = m_pasien.MedicalNo
                     LEFT JOIN $dbInap.rs_pasien_billing_validation AS billing  ON registrasi.reg_no = billing.pvalidation_reg";
         $data['pasien'] = DB::select($sql);
+
+        usort($data['pasien'], function($a, $b) {
+            $timeA = strtotime($a->reg_tgl . ' ' . $a->reg_jam);
+            $timeB = strtotime($b->reg_tgl . ' ' . $b->reg_jam);
+            return $timeB - $timeA; // Sorting in descending order
+        });
+
         // dd($data);
         return view('kasir.billing.listtagihan', $data);
     }
