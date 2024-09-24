@@ -173,17 +173,7 @@ class RegisterController extends Controller
 
     public function rawatIntensif($reg_no)
     {
-        $reg_no = str_replace("_", "/", $reg_no);
-        $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
-        $data_pasien = [
-            'nama_lengkap' => $data_registration->pasien->PatientName,
-            'medical_no' => $data_registration->reg_medrec,
-            'tgl_lahir' => $data_registration->pasien->DateOfBirth,
-            'jenis_kelamin' => $data_registration->pasien->GCSex,
-            'usia' => $this->formatUsia($data_registration->pasien->DateOfBirth),
-            'alamat' => $data_registration->pasien->PatientAddress,
-            'tgl_registrasi' => Carbon::parse($data_registration->reg_tgl)->format('d F Y'),
-        ];
+        $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
         return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
     }
 
@@ -545,41 +535,7 @@ class RegisterController extends Controller
 
     function cetakSlipAdmisi($regno)
     {
-        $datamypatient = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
-            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
-            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
-            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*', 'businesspartner.BusinessPartnerName as reg_cara_bayar_name')
-            // ->get()->first();
-
-            // $data['datapasien'] = $datamypatient;
-            ->first();
-
-        if ($datamypatient) {
-            $ranap_reg = $datamypatient->reg_lama;
-            if ($ranap_reg) {
-                $response = \Illuminate\Support\Facades\Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/' . str_replace('/', '_', $ranap_reg));
-                if ($response->successful()) {
-                    $dataFromApi = $response->json();
-                    if (!empty($dataFromApi)) {
-                        $datamypatient->poli_asal = $dataFromApi['poli_asal'] ?? null;
-                    } else {
-                        $datamypatient->poli_asal = null;
-                    }
-                } else {
-                    $datamypatient->poli_asal = null;
-                }
-            } else {
-                $datamypatient->poli_asal = null;
-            }
-        }
-
-        $data['datamypatient'] = $datamypatient;
-        $data['datapasien'] = $datamypatient;
+        $data = $this->getDataSlipAdmisi($regno);
 
         return view('rekam_medis.slip_admisi', $data);
     }
@@ -598,20 +554,7 @@ class RegisterController extends Controller
 
     function gc1($regno)
     {
-        $datamypatient = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
-            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
-            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
-            ->get()->first();
-
-        $pj_pasien = RegistrasiPJawab::where('reg_no', $this->parseRegNoByUnderScore($regno))->get();
-
-        $data['datapasien'] = $datamypatient;
-        $data['pj_pasien'] = $pj_pasien;
+        $data = $this->getDataGeneralConsent($regno);
         return view('document.general_consentbaru', $data);
     }
     function gc2($regno)
