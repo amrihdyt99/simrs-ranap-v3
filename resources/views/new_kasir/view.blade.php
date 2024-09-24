@@ -223,9 +223,9 @@
                         <br>
                         <div id="load_action_button" class="float-right">Memuat data ...</div>
                         <div id="action_button">
-                            <!-- <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
+                            <!-- <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button> -->
                             <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button>
-                            <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button> -->
+                            <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button>
                             <button id="btn-validasi-billing" class="btn btn-info float-right mb-3">KONFIRMASI PEMBAYARAN</button>
                         </div>
                     </div>
@@ -1110,21 +1110,14 @@
 
     $('#btn-confirm-kwitansi').click(function() {
         $.ajax({
-            url: '{{url("auth/api/kasir/kwitansi")}}',
-            type: 'POST',
-            dataType: 'json',
+            url: '{{ route("kasir.cetak.kwitansi") }}',
+            type: 'GET',
             data: $('#form-confirm-kwitansi').serialize(),
-            success: function(resp) {
-                if (resp == 200) {
-                    $('#modalKwitansi').modal('hide');
-                    $pic = $('[name="pic_pengesahan"]').val();
-                    $reg_split = $reg.split('/').join('');
-                    window.open("{{url('auth/billing/kwitansi')}}/" + $reg_no + '/' + $pic, '_blank');
-                } else {
-                    alert('Gagal cetak kwitansi');
-                }
+            success: function(data) {
+                $('#printKwitansiContent').empty().html(data);
+                $('#modalPrintKwitansi').modal('show');
             },
-            error: function(resp) {
+            error: function(error) {
                 console.log(error);
             }
         });
@@ -1420,5 +1413,19 @@
             timer = setTimeout(callback, ms);
         };
     })();
+
+    $(document).ready(function() {
+        $('#btn-print-kwitansi').click(function() {
+            $('#modalKwitansi').modal('hide');
+            $('#modalPrintKwitansi').modal('hide');
+            $('.modal-backdrop').remove();
+            var printContent = $('#printKwitansiContent').html(); // Get the div content
+            var originalContent = $('body').html(); // Backup the entire page's content
+
+            $('body').html(printContent); // Replace body content with the div content
+            window.print(); // Trigger the print
+            $('body').html(originalContent); // Restore original page content
+        });
+    });
 </script>
 @endsection
