@@ -25,7 +25,7 @@
           </li>
           <li class="nav-item">
               <a class="{{ Request::segment(1) == "register" && Request::segment(2) == "cancelation" ? "active text-bold text-primary" : "" }} nav-link"  href="{{ route('cancelation.index') }}">
-                  <span>Batal Registrasi</span>
+                  <span>Batal Instruksi Ranap</span>
               </a>
           </li>
       </ul>
