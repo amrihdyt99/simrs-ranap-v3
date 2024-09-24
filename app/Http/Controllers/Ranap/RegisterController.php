@@ -173,7 +173,7 @@ class RegisterController extends Controller
 
     public function rawatIntensif($reg_no)
     {
-        $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
+
         return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
     }
 
@@ -535,7 +535,6 @@ class RegisterController extends Controller
 
     function cetakSlipAdmisi($regno)
     {
-        $data = $this->getDataSlipAdmisi($regno);
 
         return view('rekam_medis.slip_admisi', $data);
     }
