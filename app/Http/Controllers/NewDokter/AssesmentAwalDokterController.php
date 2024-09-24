@@ -350,8 +350,8 @@ class AssesmentAwalDokterController extends Controller
     {
         $cek_rad = DB::table('job_orders_dt as a')
             ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
-            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR dikirim_ke_farmasi = 0", [$id])
             ->where('jenis_order', 'radiologi')
+            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR (a.id_cppt = ? AND dikirim_ke_farmasi = 0)", [$id, $id])
             ->select([
                 'a.*',
                 'dikirim_ke_farmasi',
@@ -360,7 +360,7 @@ class AssesmentAwalDokterController extends Controller
             ->get();
 
         if (count($cek_rad) > 0) {
-            $ono = genKode(null, null, null, null, 'RLAB');
+            $ono = genKode(null, null, null, null, 'RIMG');
 
             $reg = DB::connection('mysql2')
                 ->table('m_registrasi')
@@ -480,8 +480,8 @@ class AssesmentAwalDokterController extends Controller
     {
         $cek_lab = DB::table('job_orders_dt as a')
             ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
-            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR dikirim_ke_farmasi = 0", [$id])
             ->where('jenis_order', 'lab')
+            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR (a.id_cppt = ? AND dikirim_ke_farmasi = 0)", [$id, $id])
             ->select([
                 'a.*',
                 'dikirim_ke_farmasi',
