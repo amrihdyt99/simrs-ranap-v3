@@ -175,6 +175,11 @@ class RegisterController extends Controller
     {
         $reg_no = str_replace("_", "/", $reg_no);
         $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
+
+        if ($data_registration->reg_class == 7) {
+            return response()->json(['message' => 'Surat ini tidak bisa dibuka dikarenakan kelas tidak sesuai'], 403);
+        }
+
         $data_pasien = [
             'nama_lengkap' => $data_registration->pasien->PatientName,
             'medical_no' => $data_registration->reg_medrec,
@@ -550,13 +555,10 @@ class RegisterController extends Controller
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
-            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
+            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.reg_class', '=', 'm_kelas_ruangan_baru.id')
             ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
             ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
-            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*', 'businesspartner.BusinessPartnerName as reg_cara_bayar_name')
-            // ->get()->first();
-
-            // $data['datapasien'] = $datamypatient;
+            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.nama_kelas', 'm_kelas_ruangan_baru.tarif_kelas', 'businesspartner.BusinessPartnerName as reg_cara_bayar_name')
             ->first();
 
         if ($datamypatient) {
