@@ -635,6 +635,13 @@ IRD--}}
                         <td>&nbsp;</td>
                         <td align="right">&nbsp;</td>
                     </tr>
+                    <tr>
+                        <td colspan="10">
+                            <div style="display: flex; align-items: center; justify-content: center; margin-top: 5px; margin-bottom: 5px;">
+                                {{ $qrcode }}
+                            </div>
+                        </td>
+                    </tr>
                 </table>
             </td>
         </tr>
