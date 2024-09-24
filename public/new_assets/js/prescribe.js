@@ -296,7 +296,7 @@ function getPrescribeRowSelect(data, category, serial, update = 0) {
 }
 
 function getPrescribeHeader(category, data = '') {
-    var baseurl = 'http://rsud.sumselprov.go.id/farmasi/web-apis/';
+    var baseurl = 'https://rsud.sumselprov.go.id/farmasi/web-apis/';
 
     var med_form = baseurl + 'data-induk/select2/bentukan-sediaan';
 
@@ -1485,6 +1485,7 @@ function takeHomePrescribe(){
         success: function(resp){
             if (resp.data.length > 0) {
                 let row_items = ''
+                let obat_pulang_text = ''
 
                 $.each(resp.data, function(i, item){
                     $.each(item.obat, function(sub_i, sub_item){
@@ -1498,16 +1499,19 @@ function takeHomePrescribe(){
                                 +`</td>
                             </tr>
                         `
+                        obat_pulang_text += sub_item.ItemName1 + ' - ' + sub_item.qty + ' ' + sub_item.dosis_kode + '\n'
                     })
                 })
 
                 $('[id="obat-pulang-table"] tbody').html(row_items)
+                $('#pdischarge_obat').val(obat_pulang_text.trim())
             } else {
                 $('[id="obat-pulang-table"] tbody').html(`
                     <tr>
                         <td colspan="5" class="text-center">Tidak ada data</td>
                     </tr>  
                 `)
+                $('#pdischarge_obat').val('')
             }
         }
     })

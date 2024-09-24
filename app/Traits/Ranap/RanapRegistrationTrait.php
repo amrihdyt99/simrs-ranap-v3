@@ -235,4 +235,28 @@ trait RanapRegistrationTrait
         }
         return $asal;
     }
+
+    public function createBedHistoryFirstTime($reg_no)
+    {
+        $registration = RegistrationInap::where('reg_no', $reg_no)->first();
+        $bedHistoryExist = DB::connection('mysql2')->table('m_bed_history')->where('RegNo', $reg_no)->first();
+        $bed = DB::connection('mysql2')->table('m_bed')->where('bed_id', $registration->bed)->first();
+        $serviceUnitRoom = DB::connection('mysql2')->table('m_service_unit_room')->where('RoomID', $bed->room_id)->first();
+        if (!$bedHistoryExist && $serviceUnitRoom) {
+            $paramBedHistory = array(
+                'RegNo' => $registration->reg_no,
+                'MedicalNo' => $registration->reg_medrec,
+                'HistoryRefCode' => $registration->reg_lama,
+                'ToUnitServiceID' => $serviceUnitRoom->ServiceUnitID,
+                'ToBedID' => $registration->bed,
+                'ToClassCode' => $registration->reg_class,
+                'ToChargeClassCode' => $registration->charge_class_code,
+                'CreatedBy' => auth()->user()->name,
+                'ReceiveTransferDate' => now()->toDateString(),
+                'ReceiveTransferTime' => now()->toTimeString(),
+                'TableRef' => 'm_registrasi'
+            );
+            DB::connection('mysql2')->table('m_bed_history')->insert($paramBedHistory);
+        }
+    }
 }

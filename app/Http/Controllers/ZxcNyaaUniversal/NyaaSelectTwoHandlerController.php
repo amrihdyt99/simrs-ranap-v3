@@ -18,7 +18,8 @@ class NyaaSelectTwoHandlerController extends Controller
 
     public function businesspartner(Request $request)
     {
-        $cxx = DB::table('businesspartner')
+        $cxx = DB::connection('mysql2')
+            ->table('businesspartner')
             ->where('BusinessPartnerName', 'LIKE', '%' . $request->input('term', '') . '%')
             ->where('aktif', 1)
             ->take($this->select2_take())

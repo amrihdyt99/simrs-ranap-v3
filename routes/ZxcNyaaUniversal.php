@@ -109,4 +109,5 @@ Route::prefix('nyx-sistem')
 Route::prefix('/profil-saya')->middleware(['auth'])->name('profil_saya.')->group(function () {
     Route::get('/', [ProfilController::class, 'index'])->name('index');
     Route::post('/update-password', [ProfilController::class, 'update_password'])->name('update_password');
+    Route::patch('/update-signature', [ProfilController::class, 'update_signature'])->name('update_signature');
 });

@@ -13,12 +13,12 @@ class AmrModifyEdukasiDropForeignKey extends Migration
      */
     public function up()
     {
-        Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
-            // Gantilah 'foreign_key_name' dengan nama foreign key yang ingin Anda hapus
-            $table->dropColumn('user_id');
+        // Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
+        //     // Gantilah 'foreign_key_name' dengan nama foreign key yang ingin Anda hapus
+        //     $table->dropColumn('user_id');
 
-            $table->integer('user_id')->nullable();
-        });
+        //     $table->integer('user_id')->nullable();
+        // });
     }
 
     /**

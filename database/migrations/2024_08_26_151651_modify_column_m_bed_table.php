@@ -14,7 +14,11 @@ class ModifyColumnMBedTable extends Migration
     public function up()
     {
         Schema::connection('mysql2')->table('m_bed', function (Blueprint $table) {
-           $table->unsignedInteger('bed_id')->autoIncrement()->change();
+            $table->dropColumn('bed_id');
+        });
+
+        Schema::connection('mysql2')->table('m_bed', function (Blueprint $table) {
+            $table->unsignedInteger('bed_id')->autoIncrement();
         });
     }
 

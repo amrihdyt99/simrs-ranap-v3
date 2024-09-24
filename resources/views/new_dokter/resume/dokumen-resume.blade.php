@@ -96,97 +96,93 @@
             <tr>
                 <td>Tgl Assesment</td>
                 <!-- <td>: {{ now()->format('Y-m-d') }}</td> -->
-                <td>: {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
+                <td>: {{ isset($data->created_at) ? \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') : 'N/A' }}</td>
             </tr>
             <tr>
                 <td colspan="3" class="text-center">RINGKASAN PERAWATAN PASIEN <br> (Tulislah dengan huruf cetak)</td>
             </tr>
             <tr>
                 <td>Alergi :</td>
-                <td><input type="checkbox" value="tidak" {{ $data->riwayat_alergi === 'Tidak' ? 'checked' : '' }}> TIDAK</td>
-                <td><input type="checkbox" value="ya" {{ $data->riwayat_alergi === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN : {{ $data->riwayat_alergi_lain }}</td>
+                <td><input type="checkbox" value="tidak" {{ isset($data->riwayat_alergi) && $data->riwayat_alergi === 'Tidak' ? 'checked' : '' }}> TIDAK</td>
+                <td><input type="checkbox" value="ya" {{ isset($data->riwayat_alergi) && $data->riwayat_alergi === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN : {{ isset($data->riwayat_alergi_lain) ? $data->riwayat_alergi_lain : '' }}</td>
             </tr>
             <tr>
                 <td colspan="3">ANAMNESIS</td>
             </tr>
             <tr>
-                <td colspan="3">- KELUHAN UTAMA : {{ $data->keluhan_utama }}</td>
+                <td colspan="3">- KELUHAN UTAMA : {{ isset($data->keluhan_utama) ? $data->keluhan_utama : 'N/A' }}</td>
             </tr>
             <tr>
-                <td colspan="3">- RIWAYAT PERJALANAN PENYAKIT : {{ $data->riwayat_penyakit }}</td>
+                <td colspan="3">- RIWAYAT PERJALANAN PENYAKIT : {{ isset($data->riwayat_penyakit) ? $data->riwayat_penyakit : 'N/A' }}</td>
             </tr>
             <tr>
-                <td colspan="3">PEMERIKSAAN FISIK: {{ $data->pemeriksaan_fisik }}</td>
-
+                <td colspan="3">PEMERIKSAAN FISIK: {{ isset($data->pemeriksaan_fisik) ? $data->pemeriksaan_fisik : 'N/A' }}</td>
             </tr>
-            <!-- <tr>
-                <td colspan="3">{{ $data->pemeriksaan_fisik }}</td>
-            </tr>
-            <tr> -->
+            <tr>
                 <td colspan="3">TEMUAN KLINIK HASIL PEMERIKSAAN PENUNJANG:</td>
             </tr>
             <tr>
                 <td>- Pemeriksaan Laboratorium yang mendukung diagnosis</td>
-                <td colspan="2">: {{ $data->pemeriksaan_lab }}</td>
+                <td colspan="2">: {{ isset($data->pemeriksaan_lab) ? $data->pemeriksaan_lab : 'N/A' }}</td>
             </tr>
             <tr>
-                <td colspan="3">{{ $data->temuan_klinik }}</td>
+                <td colspan="3">{{ isset($data->temuan_klinik) ? $data->temuan_klinik : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>Pemeriksaan Radiologi</td>
                 <td>
-                    <input type="checkbox" name="pemeriksaan_radiologi" value="Ya" {{ $data->pemeriksaan_radiologi === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN : {{ $data->radiologi_keterangan }}
+                    <input type="checkbox" name="pemeriksaan_radiologi" value="Ya" {{ isset($data->pemeriksaan_radiologi) && $data->pemeriksaan_radiologi === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN : {{ isset($data->radiologi_keterangan) ? $data->radiologi_keterangan : '' }}
                 </td>
                 <td>
-                    <input type="checkbox" name="pemeriksaan_radiologi" value="Tidak" {{ $data->pemeriksaan_radiologi === 'Tidak' ? 'checked' : '' }}> TIDAK
+                    <input type="checkbox" name="pemeriksaan_radiologi" value="Tidak" {{ isset($data->pemeriksaan_radiologi) && $data->pemeriksaan_radiologi === 'Tidak' ? 'checked' : '' }}> TIDAK
                 </td>
             </tr>
             <tr>
                 <td>Pemeriksaan PA</td>
                 <td>
-                    <input type="checkbox" name="pemeriksaan_pa" value="Ya" {{ $data->pemeriksaan_pa === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN (termasuk nomor PA) : {{ $data->pa_keterangan }}
+                    <input type="checkbox" name="pemeriksaan_pa" value="Ya" {{ isset($data->pemeriksaan_pa) && $data->pemeriksaan_pa === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN (termasuk nomor PA) : {{ isset($data->pa_keterangan) ? $data->pa_keterangan : '' }}
                 </td>
                 <td>
-                    <input type="checkbox" name="pemeriksaan_pa" value="Tidak" {{ $data->pemeriksaan_pa === 'Tidak' ? 'checked' : '' }}> TIDAK
+                    <input type="checkbox" name="pemeriksaan_pa" value="Tidak" {{ isset($data->pemeriksaan_pa) && $data->pemeriksaan_pa === 'Tidak' ? 'checked' : '' }}> TIDAK
                 </td>
             </tr>
             <tr>
                 <td>Terpasang Implant</td>
                 <td>
-                    <input type="checkbox" name="terpasang_implant" value="Ya" {{ $data->terpasang_implant === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN jenis dan nomor registrasi: {{ $data->implant_keterangan }}
+                    <input type="checkbox" name="terpasang_implant" value="Ya" {{ isset($data->terpasang_implant) && $data->terpasang_implant === 'Ya' ? 'checked' : '' }}> YA, SEBUTKAN jenis dan nomor registrasi: {{ isset($data->implant_keterangan) ? $data->implant_keterangan : '' }}
                 </td>
                 <td>
-                    <input type="checkbox" name="terpasang_implant" value="Tidak" {{ $data->terpasang_implant === 'Tidak' ? 'checked' : '' }}> TIDAK
+                    <input type="checkbox" name="terpasang_implant" value="Tidak" {{ isset($data->terpasang_implant) && $data->terpasang_implant === 'Tidak' ? 'checked' : '' }}> TIDAK
                 </td>
             </tr>
             <tr>
-                <td colspan="3">- Lain-lain (USG, ECG, Echocardiografi, EEG, Bronchoscopy, Endoscopy, dan lain-lain), sebutkan jika ada: {{ $data->lain_lain }}</td>
+                <td colspan="3">- Lain-lain (USG, ECG, Echocardiografi, EEG, Bronchoscopy, Endoscopy, dan lain-lain), sebutkan jika ada: {{ isset($data->lain_lain) ? $data->lain_lain : '' }}</td>
             </tr>
             <tr>
                 <td>Pemeriksaan Penunjang yang Tertunda</td>
                 <td>
-                    <input type="checkbox" name="pemeriksaan_penunjang" value="Tidak" {{ $data->pemeriksaan_penunjang_yang_tertunda === 'Tidak' ? 'checked' : '' }}> TIDAK ADA
+                    <input type="checkbox" name="pemeriksaan_penunjang" value="Tidak" {{ isset($data->pemeriksaan_penunjang_yang_tertunda) && $data->pemeriksaan_penunjang_yang_tertunda === 'Tidak' ? 'checked' : '' }}> TIDAK ADA
                 </td>
                 <td>
-                    <input type="checkbox" name="pemeriksaan_penunjang" value="Ada" {{ $data->pemeriksaan_penunjang_yang_tertunda === 'Ada' ? 'checked' : '' }}> ADA, SEBUTKAN : {{ $data->penunjang_keterangan }}
+                    <input type="checkbox" name="pemeriksaan_penunjang" value="Ada" {{ isset($data->pemeriksaan_penunjang_yang_tertunda) && $data->pemeriksaan_penunjang_yang_tertunda === 'Ada' ? 'checked' : '' }}> ADA, SEBUTKAN : {{ isset($data->penunjang_keterangan) ? $data->penunjang_keterangan : '' }}
                 </td>
             </tr>
             <tr>
-                <td>Alasan penundaan : {{ $data->alasan_penundaan }}</td>
-                <td>Tanggal Pengambilan : {{ $data->tanggal_pengembalian }}</td>
-                <td>di {{ $data->lokasi_pengembalian }}</td>
+                <td>Alasan penundaan : {{ isset($data->alasan_penundaan) ? $data->alasan_penundaan : 'N/A' }}</td>
+                <td>Tanggal Pengambilan : {{ isset($data->tanggal_pengembalian) ? $data->tanggal_pengembalian : 'N/A' }}</td>
+                <td>di {{ isset($data->lokasi_pengembalian) ? $data->lokasi_pengembalian : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>INDIKASI RAWAT</td>
-                <td colspan="2">{{ $data->indikasi_rawat }}</td>
+                <td colspan="2">{{ isset($data->indikasi_rawat) ? $data->indikasi_rawat : 'N/A' }}</td>
             </tr>
             <tr>
                 <td>DIAGNOSIS MASUK</td>
-                <td colspan="2">{{ $data->diagnosis_masuk }}</td>
+                <td colspan="2">{{ isset($data->diagnosis_masuk) ? $data->diagnosis_masuk : 'N/A' }}</td>
             </tr>
             <tr id="diagnosis-utama">
-    <td colspan="2">DIAGNOSIS UTAMA (Hanya ada Satu Diagnosis Utama) : {{ $data->diagnosis_utama->NM_ICD10 }}</td>
-    <td>KODE ICD-10: {{ $data->diagnosis_utama->ID_ICD10 }}</td>
+    <td colspan="2">DIAGNOSIS UTAMA (Hanya ada Satu Diagnosis Utama) : {{ isset($data->diagnosis_utama->NM_ICD10) ? $data->diagnosis_utama->NM_ICD10 : 'N/A' }}</td>
+    <td>KODE ICD-10: {{ isset($data->diagnosis_utama->ID_ICD10) ? $data->diagnosis_utama->ID_ICD10 : 'N/A' }}</td>
 </tr>
         </tbody>
     </table>
@@ -353,32 +349,36 @@
         </tbody>
     </table>
 
-    <table>
-        <tbody>
-            <tr>
-                <td>ALASAN PULANG</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" name="alasan_pulang[]" value="Sembuh" {{ isset($data->alasan_pulang) && in_array('Sembuh', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> SEMBUH
-                </td>
-                <td>
-                    <input type="checkbox" name="alasan_pulang[]" value="Dapat berobat jalan" {{ isset($data->alasan_pulang) && in_array('Dapat berobat jalan', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> DAPAT BEROBAT JALAN
-                </td>
-                <td>
-                    <input type="checkbox" name="alasan_pulang[]" value="Pulang atas permintaan sendiri" {{ isset($data->alasan_pulang) && in_array('Pulang atas permintaan sendiri', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PULANG ATAS PERMINTAAN SENDIRI
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" name="alasan_pulang[]" value="Pindah ke RS lain" {{ isset($data->alasan_pulang) && in_array('Pindah ke RS lain', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PINDAH KE RS LAIN {{ $data->rs_lain_ke }}, ALASAN: {{ $data->rs_lain_alasan }}
-                </td>
-                <td>
-                    <input type="checkbox" name="alasan_pulang[]" value="Meninggal" {{ isset($data->alasan_pulang) && in_array('Meninggal', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> MENINGGAL
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">ALASAN PULANG</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="checkbox" name="alasan_pulang[]" value="Sembuh" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Sembuh', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> SEMBUH
+                    </td>
+                    <td>
+                        <input type="checkbox" name="alasan_pulang[]" value="Dapat berobat jalan" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Dapat berobat jalan', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> DAPAT BEROBAT JALAN
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" name="alasan_pulang[]" value="Pulang atas permintaan sendiri" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Pulang atas permintaan sendiri', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PULANG ATAS PERMINTAAN SENDIRI
+                    </td>
+                    <td>
+                        <input type="checkbox" name="alasan_pulang[]" value="Pindah ke RS lain" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Pindah ke RS lain', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> PINDAH KE RS LAIN {{ isset($data->rs_lain_ke) ? $data->rs_lain_ke : '' }}, ALASAN: {{ isset($data->rs_lain_alasan) ? $data->rs_lain_alasan : '' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="checkbox" name="alasan_pulang[]" value="Meninggal" {{ isset($data->alasan_pulang) && is_array(json_decode($data->alasan_pulang)) && in_array('Meninggal', json_decode($data->alasan_pulang)) ? 'checked' : '' }}> MENINGGAL
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
     <table>
         <tbody>
@@ -386,10 +386,10 @@
                 <td rowspan="3" style="width: 30%;">KONDISI PASIEN PULANG <br>(tidak diisi bila pasien meninggal)</td>
                 <td style="width: 10%;">KONDISI :</td>
                 <td style="width: 10%;">
-                    <input type="checkbox" name="kondisi_pulang[]" value="Mandiri" {{ isset($data->kondisi_pulang) && in_array('Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> MANDIRI
+                    <input type="checkbox" name="kondisi_pulang[]" value="Mandiri" {{ isset($data->kondisi_pulang) && is_array(json_decode($data->kondisi_pulang)) && in_array('Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> MANDIRI
                 </td>
                 <td style="width: 10%;">
-                    <input type="checkbox" name="kondisi_pulang[]" value="Cacat" {{ isset($data->kondisi_pulang) && in_array('Cacat', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> CACAT
+                    <input type="checkbox" name="kondisi_pulang[]" value="Cacat" {{ isset($data->kondisi_pulang) && is_array(json_decode($data->kondisi_pulang)) && in_array('Cacat', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> CACAT
                 </td>
                 <td style="width: 10%;">TD :</td>
                 <td style="width: 10%;">HR :</td>
@@ -398,12 +398,12 @@
             </tr>
             <tr>
                 <td colspan="3"> 
-                    <input type="checkbox" name="kondisi_pulang[]" value="Tidak Mandiri" {{ isset($data->kondisi_pulang) && in_array('Tidak Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> Tidak Mandiri, karena memakai alat bantu : Infus / OGT / NGT / WSD / Spalk / lain-lain : {{ $data->alat_bantu_sebutkan }} (sebutkan)
+                    <input type="checkbox" name="kondisi_pulang[]" value="Tidak Mandiri" {{ isset($data->kondisi_pulang) && is_array(json_decode($data->kondisi_pulang)) && in_array('Tidak Mandiri', json_decode($data->kondisi_pulang)) ? 'checked' : '' }}> Tidak Mandiri, karena memakai alat bantu : Infus / OGT / NGT / WSD / Spalk / lain-lain : {{ isset($data->alat_bantu_sebutkan) ? $data->alat_bantu_sebutkan : '' }} (sebutkan)
                 </td>
-                <td>{{$data->td}}</td>
-                <td>{{$data->hr}}</td>
-                <td>{{$data->rr}}</td>
-                <td>{{$data->t}}</td>
+                <td>{{ isset($data->td) ? $data->td : '' }}</td>
+                <td>{{ isset($data->hr) ? $data->hr : '' }}</td>
+                <td>{{ isset($data->rr) ? $data->rr : '' }}</td>
+                <td>{{ isset($data->t) ? $data->t : '' }}</td>
             </tr>
             <tr>
                 <!-- <td colspan="7">/ Spalk / lain-lain : ....................................................(sebutkan)</td> -->
@@ -455,39 +455,39 @@
         <tbody>
             <tr>
                 <td style="width: 25%;">□ Kontrol di RSUD Siti Fatimah Prov. Sumsel</td>
-                <td style="width: 25%;">□ Rujukan RS lain<br><br>Tanggal : {{$data->tanggal_rs_lain}}<br><br>□ ke RS : {{$data->nama_rs_lain}}</td>
+                <td style="width: 25%;">□ Rujukan RS lain<br><br>Tanggal : {{ isset($data->tanggal_rs_lain) ? $data->tanggal_rs_lain : '' }}<br><br>□ ke RS : {{ isset($data->nama_rs_lain) ? $data->nama_rs_lain : '' }}</td>
                 <td colspan="2" style="text-align: center;">□ HOME CARE</td>
             </tr>
             <tr>
-                <td>Tanggal: {{$data->tanggal_kontrol_rsud}}</td>
-                <td>□ Rujuk Balik<br><br>Tanggal: {{$data->tanggal_rujuk_balik}}</td>
+                <td>Tanggal: {{ isset($data->tanggal_kontrol_rsud) ? $data->tanggal_kontrol_rsud : '' }}</td>
+                <td>□ Rujuk Balik<br><br>Tanggal: {{ isset($data->tanggal_rujuk_balik) ? $data->tanggal_rujuk_balik : '' }}</td>
                 <td colspan="1">Perawatan yang akan dilakukan</td>
                 <td colspan="1">Tanggal</td>
             </tr>
             <tr>
-                <td>□ Klinik: {{$data->klinik}}</td>
-                <td>□ RS: {{$data->nama_rs_rujuk_balik}}</td>
+                <td>□ Klinik: {{ isset($data->klinik) ? $data->klinik : '' }}</td>
+                <td>□ RS: {{ isset($data->nama_rs_rujuk_balik) ? $data->nama_rs_rujuk_balik : '' }}</td>
                 <td>□ Pergantian Dower Catheter, NGT, Double Lumen</td>
-                <td>{{$data->tanggal_pergantian_catheter}}</td>
+                <td>{{ isset($data->tanggal_pergantian_catheter) ? $data->tanggal_pergantian_catheter : '' }}</td>
             </tr>
             <tr>
-                <td>□ Dokter: {{$data->dokter}}</td>
-                <td>□ Puskesmas: {{$data->puskesmas}}</td>
+                <td>□ Dokter: {{ isset($data->dokter) ? $data->dokter : '' }}</td>
+                <td>□ Puskesmas: {{ isset($data->puskesmas) ? $data->puskesmas : '' }}</td>
                 <td>□ Terapi Rehabilitasi</td>
-                <td>{{$data->tanggal_terapi_rehabilitan}}</td>
+                <td>{{ isset($data->tanggal_terapi_rehabilitan) ? $data->tanggal_terapi_rehabilitan : '' }}</td>
             </tr>
             <tr>
                 <td></td>
                 <td>□ Dokter Praktek Pribadi:</td>
                 <td>□ Rawat Luka</td>
-                <td>{{$data->tanggal_terapi_rehabilitan}}</td>
+                <td>{{ isset($data->tanggal_rawat_luka) ? $data->tanggal_rawat_luka : '' }}</td>
             </tr>
             <tr>
                 <td></td>
                 <td></td>
-                <td>□ Lainnya: {{$data->perawatan_lainnya_detail}}</td>
+                <td>□ Lainnya: {{ isset($data->perawatan_lainnya_detail) ? $data->perawatan_lainnya_detail : '' }}</td>
                 <!-- <td>□ Lainnya: </td> -->
-                <td>{{$data->tanggal_perawatan_lainnya}}</td>
+                <td>{{ isset($data->tanggal_perawatan_lainnya) ? $data->tanggal_perawatan_lainnya : '' }}</td>
             </tr>
         </tbody>
     </table>
@@ -497,13 +497,13 @@
             <tr>
                 <td>EDUKASI PASIEN</td>
                 <td>
-                    <input type="checkbox" name="edukasi_penyakit" value="1" {{ !empty($data->edukasi_penyakit) ? 'checked' : '' }}> Penyakit: {{$data->edukasi_penyakit}}
+                    <input type="checkbox" name="edukasi_penyakit" value="1" {{ isset($data->edukasi_penyakit) && !empty($data->edukasi_penyakit) ? 'checked' : '' }}> Penyakit: {{ isset($data->edukasi_penyakit) ? $data->edukasi_penyakit : '' }}
                 </td>
                 <td>
-                    <input type="checkbox" name="edukasi_diet" value="1" {{ !empty($data->edukasi_diet) ? 'checked' : '' }}> Diet: {{$data->edukasi_diet}}
+                    <input type="checkbox" name="edukasi_diet" value="1" {{ isset($data->edukasi_diet) && !empty($data->edukasi_diet) ? 'checked' : '' }}> Diet: {{ isset($data->edukasi_diet) ? $data->edukasi_diet : '' }}
                 </td>
                 <td>
-                    <input type="checkbox" name="edukasi_alat_bantu" value="1" {{ !empty($data->edukasi_alat_bantu) ? 'checked' : '' }}> Alat bantu bila ada: {{$data->edukasi_alat_bantu}}
+                    <input type="checkbox" name="edukasi_alat_bantu" value="1" {{ isset($data->edukasi_alat_bantu) && !empty($data->edukasi_alat_bantu) ? 'checked' : '' }}> Alat bantu bila ada: {{ isset($data->edukasi_alat_bantu) ? $data->edukasi_alat_bantu : '' }}
                 </td>
             </tr>
         </tbody>
@@ -516,8 +516,7 @@
     <table style="width: 100%;" border="1">
     <tbody>
         <tr >
-            <td colspan="2" style="text-align: left; border: none;" >Palembang, {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
-            <!-- <td>: {{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td> -->
+            <td colspan="2" style="text-align: left; border: none;" >Palembang, {{ isset($data->created_at) ? \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') : '' }}</td>
         </tr>
         <tr>
             <td style="width: 50%; text-align: center; border: none;">
@@ -528,7 +527,7 @@
                     <canvas id="signature-pad-pasien" style="border: 1px solid #000; width: 300px; height: 150px;"></canvas>
                     <button type="button" onclick="clearSignature('signature-pad-pasien')">Clear</button>
                 @endif
-                <br>(<input type="text" id="input-nama-pasien-keluarga" name="nama_pasien_keluarga" value="{{ $data->nama_pasien_keluarga }}" {{ !empty($data->nama_pasien_keluarga) ? 'style=display:none;' : '' }}> {{$data->nama_pasien_keluarga}} )
+                <br>(<input type="text" id="input-nama-pasien-keluarga" name="nama_pasien_keluarga" value="{{ isset($data->nama_pasien_keluarga) ? $data->nama_pasien_keluarga : '' }}" {{ !empty($data->nama_pasien_keluarga) ? 'style=display:none;' : '' }}> {{ isset($data->nama_pasien_keluarga) ? $data->nama_pasien_keluarga : '' }} )
             </td>
             <td style="width: 50%; text-align: center; border: none;">
                 Dokter Penanggung Jawab Pelayanan (DPJP)<br><br>
@@ -538,7 +537,7 @@
                     <canvas id="signature-pad" style="border: 1px solid #000; width: 300px; height: 150px;"></canvas>
                     <button type="button" onclick="clearSignature('signature-pad')">Clear</button>
                 @endif
-                <br>( {{ app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->get_paraedic_name($data->dokter_id) }} )
+                <br>( {{ isset($data->dokter_id) ? app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->get_paraedic_name($data->dokter_id) : '' }} )
             </td>
         </tr>
     </tbody>
@@ -546,11 +545,11 @@
 
 <form id="signature-form" method="POST" action="{{ route('resume.saveSignature') }}">
     @csrf
-    <input type="hidden" name="reg_no" value="{{ $data->reg_no }}">
+    <input type="hidden" name="reg_no" value="{{ isset($data->reg_no) ? $data->reg_no : '' }}">
     <input type="hidden" name="ttd_dokter" id="ttd_dokter">
     <input type="hidden" name="ttd_pasien" id="ttd_pasien">
     <input type="hidden" name="nama_pasien_keluarga" id="nama_pasien_keluarga">
-    @if (!$data->signature_exists)
+    @if (isset($data->signature_exists) && !$data->signature_exists)
         <button type="submit" id="save-button">Save Signature</button>
     @endif
 </form>

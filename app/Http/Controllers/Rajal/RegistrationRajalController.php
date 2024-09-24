@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rajal;
 use App\Http\Controllers\Controller;
 use App\Models\RegistrationCancelation;
 use App\Models\RegistrationInap;
+use App\Models\SlipPernyataanRanap;
 use App\Traits\Master\MasterPasienTrait;
 use App\Traits\Ranap\RanapRegistrationTrait;
 use Illuminate\Http\Request;
@@ -21,12 +22,18 @@ class RegistrationRajalController extends Controller
     public function indexRajal()
     {
         // dd(auth()->user());
-        $response = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran');
-        $data = json_decode($response->body(), true);
+        try {
+            $response = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran');
+            $data = json_decode($response->body(), true);
+        } catch (\Throwable $th) {
+            $data = [];
+        }
 
         $non_exist_data_reg = collect($data)->filter(function ($value, $key) {
             return !$this->findExistRegistrationData($value['ranap_reg']) && !$this->findExistRegistrationCancelation($value['ranap_reg']);
         })->values()->all();
+
+
 
         // dd($non_exist_data_reg);
 
@@ -107,11 +114,44 @@ class RegistrationRajalController extends Controller
         $data = json_decode($data_reg->body(), true);
         $data_pasien = Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/master/getPasien?medrec=' . $data['reg_medrec']);
         $data_pasien = json_decode($data_pasien->body(), true);
+
+        $userSignature = DB::connection('mysql2')
+            ->table('users')
+            ->where('dokter_id', $data['dokter_poli_kode'])
+            ->value('signature');
         $data['pasien'] = $data_pasien[0] ?? null;
         $data['pasien']['date_of_birth'] = date('d-m-Y', strtotime($data['pasien']['DateOfBirth']));
-        // dd($data);
+
+        $slipPernyataanRanap = SlipPernyataanRanap::where('reg_no', $reg_no)->first();
+        $signature = $slipPernyataanRanap ? $slipPernyataanRanap->ttd_dokter : $userSignature;
+
         return response()->view('register.pages.rajal.slip-pernyataan-ranap', [
-            'data' => $data
+            'data' => $data,
+            'reg_no' => $data['ranap_reg'],
+            'medrec' => $data['reg_medrec'],
+            'signature' => $signature
         ]);
+    }
+
+    public function saveSignature(Request $request)
+    {
+        if ($request->ajax()) {
+            try {
+                $ttd_dokter = $request->input('ttd_dokter');
+                $reg_no = $request->input('reg_no');
+                $medrec = $request->input('medrec');
+
+                // Simpan ke database
+                $slipPernyataanRanap = new SlipPernyataanRanap;
+                $slipPernyataanRanap->reg_no = $reg_no;
+                $slipPernyataanRanap->medrec = $medrec;
+                $slipPernyataanRanap->ttd_dokter = $ttd_dokter;  // Simpan Base64 string
+                $slipPernyataanRanap->save();
+
+                return response()->json(['success' => true, 'message' => 'Signature saved successfully.']);
+            } catch (\Throwable $th) {
+                return response()->json(['success' => false, 'message' => $th->getMessage()], 500);
+            }
+        }
     }
 }

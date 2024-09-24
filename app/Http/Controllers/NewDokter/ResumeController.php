@@ -196,7 +196,7 @@ class ResumeController extends Controller
             ->where('reg_no', $request->reg_no)
             ->first();
         
-            $perawatanSelanjutnya = DB::table('perawatan_selanjutnya')
+        $perawatanSelanjutnya = DB::table('perawatan_selanjutnya')
             ->where('reg_no', $request->reg_no)
             ->first();
  
@@ -214,17 +214,20 @@ class ResumeController extends Controller
             ])
             ->first();
 
+        $userSignature = null;
+        if ($resumeData) {
             $userSignature = DB::connection('mysql2')
-            ->table('users')
+                ->table('users')
                 ->where('dokter_id', $resumeData->dokter_id)
                 ->value('signature');
-    
-            if ($resumeData && empty($resumeData->ttd_dokter) && !empty($userSignature)) {
-                DB::table('rs_pasien_resume')
-                    ->where('reg_no', $request->reg_no)
-                    ->update(['ttd_dokter' => $userSignature]);
-                $resumeData->ttd_dokter = $userSignature;
-            }
+        }
+
+        if ($resumeData && empty($resumeData->ttd_dokter) && !empty($userSignature)) {
+            DB::table('rs_pasien_resume')
+                ->where('reg_no', $request->reg_no)
+                ->update(['ttd_dokter' => $userSignature]);
+            $resumeData->ttd_dokter = $userSignature;
+        }
 
         if ($resumeData && $additionalData) {
             $data = (object) array_merge((array) $resumeData, (array) $additionalData);
@@ -237,15 +240,15 @@ class ResumeController extends Controller
 
         $data->signature_exists = !empty($resumeData->ttd_dokter) && !empty($resumeData->ttd_pasien);
         
-        $diagnosisUtama = collect(json_decode($data->diagnosa))->firstWhere('pdiag_kategori', 'utama');
-        $diagnosisSekunder = collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'sekunder');
-        $diagnosisKlausa = collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'klausa');
-        $tindakan = collect(json_decode($data->tindakan))->values(); 
-        $prosedur = collect(json_decode($data->prosedur)); 
-        $terapi = collect(json_decode($data->terapi));
+        $diagnosisUtama = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->firstWhere('pdiag_kategori', 'utama') : null;
+        $diagnosisSekunder = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'sekunder') : collect();
+        $diagnosisKlausa = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'klausa') : collect();
+        $tindakan = isset($data->tindakan) ? collect(json_decode($data->tindakan))->values() : collect();
+        $prosedur = isset($data->prosedur) ? collect(json_decode($data->prosedur)) : collect();
+        $terapi = isset($data->terapi) ? collect(json_decode($data->terapi)) : collect();
 
-        $penyebab_luar = collect(json_decode($data->penyebab_luar));
-        $penyebab_luar_icd = collect(json_decode($data->penyebab_luar_icd));
+        $penyebab_luar = isset($data->penyebab_luar) ? collect(json_decode($data->penyebab_luar)) : collect();
+        $penyebab_luar_icd = isset($data->penyebab_luar_icd) ? collect(json_decode($data->penyebab_luar_icd)) : collect();
         
         $data->penyebab_luar = $penyebab_luar;
         $data->penyebab_luar_icd = $penyebab_luar_icd;

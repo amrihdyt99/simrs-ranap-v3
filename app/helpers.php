@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController;
 use Carbon\Carbon;
 
 function keyPharmacy(){
@@ -8,7 +9,7 @@ function keyPharmacy(){
 
 function domain($path = 1) {
     if ($path == 1) {
-        $domain = 'http://rsud.sumselprov.go.id/';
+        $domain = 'https://rsud.sumselprov.go.id/';
     } else {
         $domain = 'http://192.168.80.113/';
     }
@@ -185,4 +186,9 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
     } catch (\Throwable $th) {
         throw $th;
     }
+}
+
+function getUni(){
+    $uni = new UniversalFunctionController;
+    return $uni;
 }

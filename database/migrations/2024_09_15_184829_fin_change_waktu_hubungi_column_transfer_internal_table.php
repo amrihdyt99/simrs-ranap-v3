@@ -14,7 +14,13 @@ class FinChangeWaktuHubungiColumnTransferInternalTable extends Migration
     public function up()
     {
         Schema::table('transfer_internal', function (Blueprint $table) {
-            $table->dateTime('transfer_waktu_hubungi')->nullable()->change();
+            $table->dropColumn([
+                'transfer_waktu_hubungi'
+            ]);
+        });
+
+        Schema::table('transfer_internal', function (Blueprint $table) {
+            $table->dateTime('transfer_waktu_hubungi')->nullable();
         });
     }
 

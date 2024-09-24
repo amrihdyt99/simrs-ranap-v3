@@ -67,25 +67,6 @@
 
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function getCurrentDatetime() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0'); 
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            return `${year}-${month}-${day}T${hours}:${minutes}`;
-        }
-
-        const datetimeInputs = document.querySelectorAll('.datetime-auto');
-
-        datetimeInputs.forEach(input => {
-            input.value = getCurrentDatetime();
-        });
-    });
-
-
     $(document).ready(function() {
         function calculateTotalGCS() {
             var e = parseInt($('#data_e').val()) || 0;
@@ -96,5 +77,22 @@
         }
 
         $('#data_e, #data_v, #data_m').on('input', calculateTotalGCS);
+
+        function calculateFluidBalance() {
+            const transfusi = parseInt($('#jumlah_transfusi').val()) || 0;
+            const minum = parseInt($('#minum').val()) || 0;
+            const sonde = parseInt($('#sonde').val()) || 0;
+            const urine = parseInt($('#urine').val()) || 0;
+            const drain = parseInt($('#drain').val()) || 0;
+            const iwlMuntah = parseInt($('#iwl_muntah').val()) || 0;
+
+            const jumlahIntake = transfusi + minum + sonde;
+            const jumlahOutput = urine + drain + iwlMuntah;
+            const balance = jumlahIntake - jumlahOutput;
+
+            $('#balance').val(balance);
+        }
+
+        $('#jumlah_transfusi, #minum, #sonde, #urine, #drain, #iwl_muntah').on('input', calculateFluidBalance);
     });
 </script>

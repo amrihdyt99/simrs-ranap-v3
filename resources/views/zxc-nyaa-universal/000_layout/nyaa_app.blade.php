@@ -68,7 +68,7 @@
         @if(app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->neko()->config->display_menu)
         @include($nyaa_unv_function->detect_component_user()->view->menu_data)
         @endif
-        <div id="pro-banner">
+        {{-- <div id="pro-banner">
           <div class="alert alert-dismissible fade show m-0 p-0" role="alert">
             <div>
               @if (Session::has('success_message'))
@@ -86,7 +86,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-        </div>
+        </div> --}}
         @yield('content')
       </div>
     </div>

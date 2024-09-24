@@ -11,7 +11,7 @@ class TarikDataController extends Controller
 
     public function unit_ruang()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/unit_ruang');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/unit_ruang');
         DB::connection('mysql2')->table('m_service_unit_room')->delete();
         foreach ($data['data'] as $kue) {
             DB::connection('mysql2')
@@ -21,7 +21,7 @@ class TarikDataController extends Controller
     }
     public function unit_item()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/unit_item');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/unit_item');
         DB::connection('mysql2')->table('m_unit_item')->delete();
         foreach ($data['data'] as $kue) {
             DB::connection('mysql2')
@@ -31,7 +31,7 @@ class TarikDataController extends Controller
     }
     public function paramedic()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs-rajal/data_paramedic');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs-rajal/data_paramedic');
         DB::connection('mysql2')->table('m_paramedis')->delete();
         foreach ($data as $kue) {
             DB::connection('mysql2')
@@ -41,7 +41,7 @@ class TarikDataController extends Controller
     }
     public function departemen()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/departemen');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/departemen');
         DB::connection('mysql2')->table('m_unit_departemen')->delete();
         foreach ($data['data']  as $kue) {
             DB::connection('mysql2')
@@ -52,7 +52,7 @@ class TarikDataController extends Controller
 
     public function kelas()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/kelas');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/kelas');
 
         DB::connection('mysql2')->table('m_room_class')->delete();
 
@@ -94,7 +94,7 @@ class TarikDataController extends Controller
 
     public function room()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/room');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/room');
         DB::connection('mysql2')->table('m_ruangan')->delete();
         foreach ($data['data'] as $kue) {
             DB::connection('mysql2')
@@ -115,7 +115,7 @@ class TarikDataController extends Controller
 
     public function location()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/location');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/location');
         DB::connection('mysql2')->table('m_location')->delete();
         foreach ($data['data'] as $kue) {
             DB::connection('mysql2')
@@ -126,7 +126,7 @@ class TarikDataController extends Controller
 
     public function bisnis_partner()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business');
         DB::connection('mysql2')->table('businesspartner')->delete();
         foreach ($data['data'] as $kue) {
             DB::connection('mysql2')
@@ -153,7 +153,7 @@ class TarikDataController extends Controller
     }
     public function bed()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/bed');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/bed');
         foreach ($data['data'] as $kue) {
             $cek = DB::connection('mysql2')->table('m_bed')->where('bed_id', $kue['BedID'])->count();
             if ($cek == 0) {
@@ -208,7 +208,7 @@ class TarikDataController extends Controller
 
     public function regis()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/register');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/register');
         foreach ($data['data'] as $kue) {
             $cek = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $kue['RegistrationNo'])->count();
             if ($cek == 0) {
@@ -277,7 +277,7 @@ class TarikDataController extends Controller
 
     public function nomed($no)
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/patient/' . $no);
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/patient/' . $no);
         $arr = $data['data'];
         $cek = DB::connection('mysql2')->table('m_pasien')->where('MedicalNo', $no)->count();
         if ($cek == 0) {
@@ -289,12 +289,15 @@ class TarikDataController extends Controller
 
     public function user_rajal()
     {
-        $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs-rajal/api/master/users');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs-rajal/api/master/users');
+        //delete data yg baru ditarik jika double
+        // DB::connection('mysql2')->table('users')->whereYear('created_at', 2024)->delete();
+
         foreach ($data as $kue) {
-            DB::connection('mysql2')
-                ->table('users')->insert([
+            DB::connection('mysql2')->table('users')->updateOrInsert(
+                ['name' => $kue['name']],
+                [
                     'level_user' => $kue['level_user'],
-                    'name' => $kue['name'],
                     'username' => $kue['username'],
                     'email_verified_at' => $kue['email_verified_at'],
                     'password' => $kue['password'],
@@ -304,14 +307,17 @@ class TarikDataController extends Controller
                     'is_active' => $kue['is_active'],
                     'remember_token' => $kue['remember_token'],
                     'created_at' => Carbon::now(),
-                    'updated_at' => $kue['updated_at'],
+                    'updated_at' => Carbon::now(),
                     'user_active_by' => $kue['updated_at'],
                     'user_active_at' => Carbon::now(),
                     'is_deleted' => 0,
-                ]);
+                ]
+            );
         }
+
         echo 'Alhamdulillah';
     }
+
 
     public function curl_nih($url)
     {

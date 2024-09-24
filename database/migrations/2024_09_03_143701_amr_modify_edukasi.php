@@ -14,15 +14,29 @@ class AmrModifyEdukasi extends Migration
     public function up()
     {
         Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
-            $table->string('bahasa')->nullable()->change();
-            $table->string('kebutuhan_penerjemah')->nullable()->change();
-            $table->string('baca_tulis')->nullable()->change();
-            $table->string('pendidikan_pasien')->nullable()->change();
-            $table->string('pilihan_tipe_belajar')->nullable()->change();
-            $table->string('hambatan_belajar')->nullable()->change();
-            $table->string('kebutuhan_belajar')->nullable()->change();
-            $table->string('kesediaan_pasien')->nullable()->change();
+            $table->dropColumn([
+                'bahasa', 
+                'kebutuhan_penerjemah', 
+                'baca_tulis', 
+                'pendidikan_pasien', 
+                'pilihan_tipe_belajar', 
+                'hambatan_belajar', 
+                'kebutuhan_belajar', 
+                'kesediaan_pasien'
+            ]);
         });
+
+        Schema::table('rs_edukasi_pasien', function (Blueprint $table) {
+            $table->string('bahasa')->nullable();
+            $table->string('kebutuhan_penerjemah')->nullable();
+            $table->string('baca_tulis')->nullable();
+            $table->string('pendidikan_pasien')->nullable();
+            $table->string('pilihan_tipe_belajar')->nullable();
+            $table->string('hambatan_belajar')->nullable();
+            $table->string('kebutuhan_belajar')->nullable();
+            $table->string('kesediaan_pasien')->nullable();
+        });
+
     }
 
     /**

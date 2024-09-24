@@ -616,7 +616,8 @@
                 drain: $('#drain').val(),
                 iwl_muntah: $('#iwl_muntah').val(),
                 jumlah: $('#jumlah').val(),
-                tanggal_pemberian: $('#tanggal_pemberian').val(),
+                tanggal_pemberian: $('#tanggal_waktu_pemberian').val(),
+                user_shift : "{{ session('user_shift') }}",
             },
             success: function(data) {
                 neko_simpan_success();
@@ -629,53 +630,39 @@
     }
 
     function addVital(kategori, formid) {
-        neko_proses();
+    neko_proses();
         var dataString = "";
-        if (kategori == 'blood pressure') {
+
+        if (kategori === 'blood pressure') {
             var input = document.getElementsByName('datablood[]');
-            dataString = input[0].value + "/" + input[1].value
-            $.ajax({
-                type: "POST",
-                url: "{{ route('newperawat.addvitalsign') }}",
-                data: {
-                    "reg_no": regno,
-                    "kategori": kategori,
-                    "med_rec": medrec,
-                    "data": dataString
-                },
-                success: function(data) {
-                    neko_simpan_success();
-                    $('.left-tab.active').click();
-                },
-                error: function(data) {
-                    neko_simpan_error_noreq();
-                },
-            });
+            dataString = input[0].value + "/" + input[1].value;
         } else {
             var input = document.getElementsByName('data[]');
             for (var i = 0; i < input.length; i++) {
-                var a = input[i].value;
-                dataString = dataString + a
+                dataString += input[i].value;
             }
-            $.ajax({
-                type: "POST",
-                url: "{{ route('newperawat.addvitalsign') }}",
-                data: {
-                    "reg_no": regno,
-                    "kategori": kategori,
-                    "med_rec": medrec,
-                    "data": dataString
-                },
-                success: function(data) {
-                    neko_simpan_success();
-                    $('.left-tab.active').click();
-                },
-                error: function(data) {
-                    neko_simpan_error_noreq();
-                },
-            });
         }
+
+        $.ajax({
+            type: "POST",
+            url: "{{ route('newperawat.addvitalsign') }}",
+            data: {
+                "reg_no": regno,
+                "kategori": kategori,
+                "med_rec": medrec,
+                "data": dataString,
+                "user_shift": "{{ session('user_shift') }}",
+            },
+            success: function(data) {
+                neko_simpan_success();
+                $('.left-tab.active').click();
+            },
+            error: function(data) {
+                neko_simpan_error_noreq();
+            },
+        });
     }
+
 
     function addNursingSpecialtyAll(kategori, data) {
         neko_proses();
@@ -688,7 +675,9 @@
                 "reg_no": regno,
                 "med_rec": medrec,
                 "kategori": kategori,
-                "data": data
+                "data": data,
+                user_shift : "{{ session('user_shift') }}",
+
             },
             success: function(data) {
                 neko_simpan_success();
@@ -702,10 +691,16 @@
 
     function addNursingDrugs() {
         neko_proses();
+        
+        var serializedData = $('#form_nursing_drugs').serialize();
+        var medRec = medrec; 
+        var userId = "{{auth()->user()->id}}";
+        var userShift = "{{ session('user_shift') }}";
+       
         $.ajax({
             url: "{{route('perawat.nursing_drugs_store')}}",
             type: "POST",
-            data: $('#form_nursing_drugs').serialize() + "&medrec=" + medrec + "&user_id=" + "{{auth()->user()->id}}",
+            data: serializedData + "&medrec=" + medRec + "&user_id=" + userId + "&user_shift=" + userShift,
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
@@ -713,8 +708,9 @@
             error: function(data) {
                 neko_simpan_error_noreq();
             },
-        })
+        });
     }
+
 
     // Catatan Keperawatan - Intra Tindakan
     function addTindakanPerawatIntra() {

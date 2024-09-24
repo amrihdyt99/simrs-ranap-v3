@@ -98,21 +98,29 @@ class AssesmentAwalDokterController extends Controller
         $param = array_merge($param, $main_params);
 
         try {
-            if (!isset($check_)) {
-                DB::table('rs_pasien_diagnosa')->insert($param);
+            if ($r->pdiag_dokter != $r->dpjp_utama) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Diagnosa hanya bisa ditambahkan oleh DPJP utama'
+                ]);
             } else {
-                if ($r->pdiag_kategori != 'utama') {
+                if (!isset($check_)) {
                     DB::table('rs_pasien_diagnosa')->insert($param);
                 } else {
-                    DB::table('rs_pasien_diagnosa')
-                        ->where('pdiag_id', $check_->pdiag_id)
-                        ->update($param);
+                    if ($r->pdiag_kategori != 'utama') {
+                        DB::table('rs_pasien_diagnosa')->insert($param);
+                    } else {
+                        DB::table('rs_pasien_diagnosa')
+                            ->where('pdiag_id', $check_->pdiag_id)
+                            ->update($param);
+                    }
                 }
-            }
 
-            return response()->json(
-                ['success' => true]
-            );
+                return response()->json(
+                    ['success' => true]
+                );
+            }
+            
         } catch (\Throwable $th) {
             return response()->json(
                 ['success' => false, 'msg' => $th]
@@ -342,8 +350,8 @@ class AssesmentAwalDokterController extends Controller
     {
         $cek_rad = DB::table('job_orders_dt as a')
             ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
-            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR dikirim_ke_farmasi = 0", [$id])
             ->where('jenis_order', 'radiologi')
+            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR (a.id_cppt = ? AND dikirim_ke_farmasi = 0)", [$id, $id])
             ->select([
                 'a.*',
                 'dikirim_ke_farmasi',
@@ -352,7 +360,7 @@ class AssesmentAwalDokterController extends Controller
             ->get();
 
         if (count($cek_rad) > 0) {
-            $ono = genKode(null, null, null, null, 'RLAB');
+            $ono = genKode(null, null, null, null, 'RIMG');
 
             $reg = DB::connection('mysql2')
                 ->table('m_registrasi')
@@ -472,8 +480,8 @@ class AssesmentAwalDokterController extends Controller
     {
         $cek_lab = DB::table('job_orders_dt as a')
             ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
-            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR dikirim_ke_farmasi = 0", [$id])
             ->where('jenis_order', 'lab')
+            ->whereRaw("(a.id_cppt = ? AND a.order_no is null) OR (a.id_cppt = ? AND dikirim_ke_farmasi = 0)", [$id, $id])
             ->select([
                 'a.*',
                 'dikirim_ke_farmasi',
@@ -597,13 +605,6 @@ class AssesmentAwalDokterController extends Controller
 
     function klik_soap(Request $request)
     {
-        $cek = DB::connection('mysql')->table('rs_pasien_cppt')->where('status_review', '99')->where('soapdok_reg', $request->reg_no)->where('soapdok_dokter', $request->soapdok_dokter)->first();
-        if ($cek) {
-            return response()->json([
-                'success' => true,
-                'kode' => $cek->soapdok_id
-            ]);
-        }
         $paramscppt = array(
             'dpjp_utama' => $request->dpjp_utama,
             'soapdok_reg' => $request->reg_no,
@@ -612,7 +613,22 @@ class AssesmentAwalDokterController extends Controller
             'soapdok_dokter' => $request->soapdok_dokter,
             'nama_ppa' => $request->nama_ppa,
             'soapdok_bed' => $request->bed,
+            'bertindak_sebagai' => $request->bertindak_sebagai
         );
+
+        $cek = DB::connection('mysql')->table('rs_pasien_cppt')->where('status_review', '99')->where('soapdok_reg', $request->reg_no)->where('soapdok_dokter', $request->soapdok_dokter)->first();
+        
+        if ($cek) {
+            $simpancppt = DB::connection('mysql')
+                ->table('rs_pasien_cppt')
+                ->where('soapdok_id', $cek->soapdok_id)
+                ->update($paramscppt);
+
+            return response()->json([
+                'success' => true,
+                'kode' => $cek->soapdok_id
+            ]);
+        }
 
         $simpancppt = DB::connection('mysql')
             ->table('rs_pasien_cppt')
@@ -705,8 +721,10 @@ class AssesmentAwalDokterController extends Controller
             $item['tanggal_verifikasi'] = $value->tanggal_verifikasi;
             $item['nama_verifikasi'] = $value->nama_verifikasi;
             $item['is_dokter'] = $value->is_dokter;
+            $item['soapdok_posisi'] = $value->is_dokter == 1 ? 'Dokter' : 'Perawat';
             $item['soapdok_bed'] = $value->soapdok_bed;
             $item['dpjp_utama'] = $value->dpjp_utama;
+            $item['bertindak_sebagai'] = $value->bertindak_sebagai;
             $item['reg_dokter'] = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $value->soapdok_reg)->first()->reg_dokter ?? '';
 
             $request->merge([
@@ -731,9 +749,50 @@ class AssesmentAwalDokterController extends Controller
             array_push($data_soap, $item);
         }
 
+        foreach ($data_soap as $new_key => $new_value) {
+            $data_soap[$new_key]['updated_at'] = $new_value['soap_tanggal'].' '.$new_value['soap_waktu'];
+        }
+        
+        // GET DATA SOAP FROM RAJAL
+        $dataSoapFromRajal = getService(urlSimrs().'api/emr/cppt/latest/'.str_replace('/', '_', $request->reg_no), true);
+
+        $dataSoapFromRajal = count($dataSoapFromRajal[0]) > 0 ? $dataSoapFromRajal[0] : [];
+
+
+        $dataTindakanFromRajal = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$request->reg_no, true);
+
+        if (count($dataTindakanFromRajal) > 0) {
+            foreach ($dataTindakanFromRajal as $key_tindakan => $value_tindakan) {
+                $dataTindakanFromRajal[$key_tindakan]['id'] = $value_tindakan['cpoe_kode'];
+                $dataTindakanFromRajal[$key_tindakan]['waktu_order'] = $value_tindakan['cpoe_created'];
+                $dataTindakanFromRajal[$key_tindakan]['jenis_order'] = $value_tindakan['cpoe_jenis'];
+                $dataTindakanFromRajal[$key_tindakan]['order_no'] = $value_tindakan['cpoe_kode'];
+                $dataTindakanFromRajal[$key_tindakan]['item_name'] = $value_tindakan['cpoe_name'];
+                $dataTindakanFromRajal[$key_tindakan]['harga_jual'] = $value_tindakan['cpoe_tarif'];
+                $dataTindakanFromRajal[$key_tindakan]['ParamedicName'] = $value_tindakan['cpoe_dokter'];
+            }
+        }
+
+        if (count($dataSoapFromRajal)) {
+            foreach ($dataSoapFromRajal as $key_soap_rajal => $value_soap_rajal) {
+                $filteredData = array_filter($dataTindakanFromRajal, function($item_tindakan) use ($value_soap_rajal) {
+                    return $item_tindakan['cpoe_dokter_kode'] == $value_soap_rajal['reg_dokter_kode'];
+                });
+                
+                $dataSoapFromRajal[$key_soap_rajal]['soapdok_posisi'] = ucfirst($value_soap_rajal['level_user']);
+                $dataSoapFromRajal[$key_soap_rajal]['order_lainnya'] = $filteredData;
+            }
+        }
+
+        $dataSoapMerged =  array_merge($data_soap, $dataSoapFromRajal);
+
+        usort($dataSoapMerged, function ($a, $b) {
+            return strtotime($b['updated_at']) - strtotime($a['updated_at']);
+        });
+
         return response()->json([
             'success' => true,
-            'data_soap' => $data_soap
+            'data_soap' => $dataSoapMerged,
         ]);
     }
 
