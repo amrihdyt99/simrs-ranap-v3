@@ -20,7 +20,8 @@
                         <th>NO REGISTRASI</th>
                         <th>NAMA</th>
                         <th>PAYER</th>
-                        <th>COVER CLASS</th>
+                        <th>RUANGAN</th>
+                        {{-- <th>COVER CLASS</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -31,17 +32,18 @@
                         </td>
                         <td>
                             @if($row->pvalidation_code == null)
-                            <span class="badge text teal px-4">Belum Dibayar</span>
+                            <span class="badge text px-4" style="background-color: red">Belum Dibayar</span>
                             @else
-                            <span class="badge text teal px-4">Sudah Dibayar</span>
+                            <span class="badge text px-4" style="background-color: green">Sudah Dibayar</span>
                             @endif
                         </td>
-                        <td>{{$row->reg_tgl}}</td>
+                        <td>{{$row->reg_tgl}} {{$row->reg_jam}}</td>
                         <td>{{$row->reg_medrec}}</td>
                         <td>{{$row->reg_no}}</td>
                         <td>{{$row->PatientName}}</td>
-                        <td>{{$row->reg_cara_bayar}}</td>
-                        <td>REHAP MEDIK</td>
+                        <td>{{$row->Payer}}</td>
+                        <td>{{$row->RoomName ?? '-'}} <br> {{$row->ServiceUnitName ?? '-'}} <br> {{$row->charge_class_code ? 'Kelas '.$row->charge_class_code : '-'}}</td>
+                        {{-- <td>{{$row->charge_class_code}}</td> --}}
                     </tr>
                     @endforeach
 

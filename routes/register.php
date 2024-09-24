@@ -77,3 +77,9 @@ Route::prefix('register')->name('register.')->group(function () {
         Route::get('/rajal/{reg_no}', [RegistrationRajalController::class, 'slipRegister'])->where('reg_no', '(.*)')->name('rajal');
     });
 });
+
+Route::prefix('agreement')->name('agreement.')->group(function () {
+    Route::get('/admisi/{reg_no}', [Ranap\AgreementController::class, 'slipAdmisi'])->where('reg_no', '(.*)')->name('admisi');
+    Route::get('/general-consent/{reg_no}', [Ranap\AgreementController::class, 'generalConsent'])->where('reg_no', '(.*)')->name('general-consent');
+    Route::get('/rawat-intensif/{reg_no}', [Ranap\AgreementController::class, 'rawatIntensif'])->where('reg_no', '(.*)')->name('rawat-intensif');
+});

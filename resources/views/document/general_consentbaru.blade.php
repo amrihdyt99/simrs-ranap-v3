@@ -231,6 +231,9 @@
                 <td style="text-align:right"><b>RM RI 001.1/ Hal.1-1</b></td>
             </tr>
             </table>
+            <div style="display: flex; align-items: center; justify-content: center; margin-top: 5px; margin-bottom: 5px;">
+                {{ $qrcode }}
+            </div>
             <div style="page-break-after: always"></div>
         </div>
     </div>
