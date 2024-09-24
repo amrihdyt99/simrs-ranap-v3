@@ -130,7 +130,7 @@ class OrderObatController extends Controller
                     ->table('m_unit as a'), 
                 'a.ServiceUnitCode', 
                 $request->service_unit,
-                ['a.*', DB::raw("(select ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode) as ServiceUnitID")]
+                ['a.*', DB::raw("(select ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode limit 1) as ServiceUnitID")]
             );
             
             $service_room = [
@@ -155,6 +155,8 @@ class OrderObatController extends Controller
                     'data' => $get_room_master
                 ]);
             }
+
+            $registration->reg_dokter_care = null;
 
             $patient = getDataKeyValue(DB::connection('mysql2')->table('m_pasien'), 'MedicalNo', $request->medrec);
             $patient->Since = null;

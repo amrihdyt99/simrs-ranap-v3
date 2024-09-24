@@ -37,7 +37,7 @@ class UserController extends Controller
             });
 
         return DataTables()
-            ->queryBuilder($user)
+            ->of($user)
             ->editColumn('aksi_data', function ($query) use ($request) {
                 if ($query->is_deleted == '1') {
                     return '';

@@ -8,10 +8,17 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    function index(){
-        $sql="SELECT m_registrasi.*,m_pasien.PatientName FROM m_registrasi JOIN m_pasien ON
-                m_registrasi.reg_medrec=m_pasien.MedicalNo";
-        $data['pasien']=DB::connection('mysql2')->select($sql);
-        return view('kasir.billing.listtagihan',$data);
+    function index(Request $request)
+    {
+        $dbMaster = DB::connection('mysql2')->getDatabaseName();
+        $dbInap = DB::connection('mysql')->getDatabaseName();
+
+        $sql = "SELECT registrasi.*, m_pasien.PatientName, billing.*
+                    FROM $dbMaster.m_registrasi AS registrasi
+                    JOIN $dbMaster.m_pasien AS m_pasien  ON registrasi.reg_medrec = m_pasien.MedicalNo
+                    LEFT JOIN $dbInap.rs_pasien_billing_validation AS billing  ON registrasi.reg_no = billing.pvalidation_reg";
+        $data['pasien'] = DB::select($sql);
+        // dd($data);
+        return view('kasir.billing.listtagihan', $data);
     }
 }

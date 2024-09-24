@@ -671,7 +671,7 @@ class NursingController extends Controller
             //     'transfer_spo2' => 'required|integer|min:0|max:100',
             // ]);
 
-            $perawat = DB::connection('mysql2')->table('users')->where('id', $request->perawat_tujuan)->first();
+            $perawat = DB::connection('mysql2')->table('users')->where('username', $request->perawat_tujuan)->first();
 
             $data = [
                 'medrec' => $request->medrec,
@@ -680,7 +680,8 @@ class NursingController extends Controller
                 'transfer_data' => $request->data,
                 'transfer_unit_asal' => $request->transfer_unit_asal,
                 'transfer_unit_tujuan' => $request->transfer_unit_tujuan,
-                'transfer_unit_tujuan_petugas' => $request->transfer_unit_tujuan_petugas,
+                'class' => $request->transfer_class,
+                'charge_class' => $request->transfer_charge_class,
                 'transfer_waktu_hubungi' => $request->transfer_waktu_hubungi,
                 'transfer_kategori' => $request->transfer_kategori,
                 'transfer_alasan_masuk' => $request->transfer_alasan_masuk,
