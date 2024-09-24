@@ -24,11 +24,42 @@
         </div>
         <div class="col-lg-6">
             <div class="form-group"><label>Unit tujuan</label>
+                @if ($type == 'terima' || $type == 'detail')
+                <input type="hidden" class="form-control" name="transfer_unit_tujuan" value="{{ $ruangan_tujuan->bed_id }}">
+                <input type="text" id="bed-tujuan" class="form-control" value="{{ ($ruangan_tujuan->bed_code ?? '') . ' - ' . ($ruangan_tujuan->ruang ?? '') . ' - ' . ($ruangan_tujuan->kelompok ?? '') . ' - ' . ($ruangan_tujuan->kelas ?? '') }}" disabled>
+                @else
                 <select name="transfer_unit_tujuan" id="select-bed-tujuan" class="form-control">
                     @if (isset($ruangan_tujuan))
                     <option value="{{$ruangan_tujuan->bed_id}}"
                         selected>{{ $ruangan_tujuan->bed_code . ' - ' . $ruangan_tujuan->ruang . ' - ' . $ruangan_tujuan->kelompok . ' - ' . $ruangan_tujuan->kelas }}</option>
                     @endif
+                </select>
+                @endif
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group"><label>Class</label>
+                <input type="hidden" class="form-control" id="temp_class_bed" value="{{ $transfer_internal->class ?? '' }}">
+                <select name="transfer_class" id="select-class-bed" class="form-control">
+                    @foreach ($class_bed as $row)
+                    <option value="{{ $row->ClassCategoryCode }}">
+                        {{ $row->ClassCategoryName }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+
+            <div class="form-group"><label>Charge Class</label>
+                <input type="hidden" class="form-control" id="temp_charge_class_bed" value="{{ $transfer_internal->charge_class ?? '' }}">
+                <select name="transfer_charge_class" id="select-charge-class-bed" class="form-control">
+                    @foreach ($class_bed as $row)
+                    <option value="{{ $row->ClassCategoryCode }}">
+                        {{ $row->ClassCategoryName }}
+                    </option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -49,7 +80,8 @@
                     value="{{ $transfer_internal->transfer_waktu_hubungi }}"></div>
         </div>
         <div class="col-lg-6">
-            <div class="form-group"><label>Tanggal dan waktu transfer</label><input type="datetime-local"
+            <div class="form-group"><label>Tanggal dan waktu transfer</label>
+                <input type="datetime-local"
                     class="form-control" name="ditransfer_waktu" value="{{ $transfer_internal->ditransfer_waktu }}">
             </div>
         </div>
