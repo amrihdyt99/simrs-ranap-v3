@@ -132,7 +132,7 @@ header("Content-type: text/css; charset: UTF-8");
           <td></td>
           <td></td>
           <td></td>
-          <td width="200px">Palembang, {{date('d/m/Y')}}</td>
+          <td width="300px">Palembang, {{date('d/m/Y')}}</td>
         </tr>
       </thead>
       <tbody>
@@ -141,7 +141,7 @@ header("Content-type: text/css; charset: UTF-8");
           <td></td>
           <td></td>
           <td>
-            <p style="margin-top: 100px; border-top: 1px black solid;">Kasir : {{auth()->user()->user_name}}</p>
+            <p style="margin-top: 100px; border-top: 1px black solid;">{{ $pic }} : {{ $pic_name }}</p>
           </td>
         </tr>
       </tbody>
