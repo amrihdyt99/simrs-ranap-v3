@@ -439,6 +439,10 @@ class NyaaViewInjectorController extends AaaBaseController
             'type'  => $request->type,
         );
 
+        if ($transfer_internal->transfer_rawat_intensif == 1) {
+            $context['type'] = 'intensif';
+        }
+
         return view('new_perawat.transfer_internal.v3.index')
             ->with($context);
     }
@@ -558,6 +562,10 @@ class NyaaViewInjectorController extends AaaBaseController
             $data['ditransfer_oleh_user_id'] = auth()->user()->username;
             $data['ditransfer_oleh_nama'] = auth()->user()->name;
 
+            if ($request->type == 'intensif') {
+                $data['transfer_rawat_intensif'] = 1;
+            }
+
 
             DB::connection('mysql')->table('transfer_internal')
                 ->insert($data);
@@ -597,6 +605,10 @@ class NyaaViewInjectorController extends AaaBaseController
                 'class_bed' => $class_bed,
                 'type'  => 'edit',
             );
+
+            if ($request->type == 'intensif') {
+                $context['type'] = 'intensif';
+            }
 
             DB::commit();
 
