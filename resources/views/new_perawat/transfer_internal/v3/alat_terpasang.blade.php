@@ -8,7 +8,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
     <div class="col-lg-12">
         <h4>{{ $judul_form }}</h4>
         <div class="row">
-            @if ($type == 'edit' || $type == 'terima')
+            @if ($type == 'edit' || $type == 'terima' || $type == 'intensif')
             <div class="col-sm-12 pb-3" style>
                 <button type="button" class="protecc btn btn-sm btn-info" onclick="nyaa_act(this,'ModalBase_orig_transferinternal_altp','ModalBase')" nyaa-mode="add">Tambah Data Baru</button>
             </div>

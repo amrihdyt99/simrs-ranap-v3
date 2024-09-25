@@ -21,7 +21,8 @@ class TransferInternalController extends Controller
                              internal.transfer_unit_tujuan, internal.transfer_waktu_hubungi, internal.ditransfer_waktu, internal.diterima_oleh_user_id,
                              internal.status_transfer, internal.kode_transfer_internal, internal.ditransfer_oleh_user_id,
                              bed_asal.bed_code AS bed_code_asal, bed_asal.RoomName AS bed_asal_name , bed_asal.ServiceUnitName AS bed_asal_unit, bed_asal.ClassName AS bed_asal_class,
-                             bed_tujuan.bed_code AS bed_code_tujuan, bed_tujuan.RoomName AS bed_tujuan_name, bed_tujuan.ServiceUnitName AS bed_tujuan_unit, bed_tujuan.ClassName AS bed_tujuan_class
+                             bed_tujuan.bed_code AS bed_code_tujuan, bed_tujuan.RoomName AS bed_tujuan_name, bed_tujuan.ServiceUnitName AS bed_tujuan_unit, bed_tujuan.ClassName AS bed_tujuan_class,
+                             internal.transfer_rawat_intensif
                         FROM $dbInap.transfer_internal AS internal
                         LEFT JOIN $dbMaster.m_pasien AS pasien on pasien.MedicalNo = internal.medrec
                         LEFT JOIN (
@@ -59,6 +60,8 @@ class TransferInternalController extends Controller
                     if ($row->status_transfer == 1) {
                         $actionBtn .= "<button type='button' class='btn btn-success btn-detail-transfer' data-transfer_code='$row->kode_transfer_internal'><i class='far fa-eye'></i> Detail</button>";
                         $actionBtn .= "<button type='button' class='btn btn-info btn-print-transfer' data-transfer_code='$row->kode_transfer_internal'><i class='fas fa-print'></i> Print Riwayat Transfer</button>";
+                    } else if ($row->transfer_rawat_intensif == 1) {
+                        $actionBtn = "<button type='button' class='btn btn-info btn-edit-transfer-intensif' data-transfer_code='$row->kode_transfer_internal'>Edit</button>";
                     } else if ($row->status_transfer == 0 && $row->ditransfer_oleh_user_id == auth()->user()->username) {
                         $actionBtn = "<button type='button' class='btn btn-info btn-edit-transfer' data-transfer_code='$row->kode_transfer_internal'>Edit</button>";
                     } else if ($row->status_transfer == 0) {
@@ -168,26 +171,46 @@ class TransferInternalController extends Controller
                 //get dokter dpjp
                 $dokter = DB::connection('mysql2')->table('users')->where('dokter_id', $reg->reg_dokter)->first();
                 $perawat_asal = DB::connection('mysql2')->table('users')->where('username', $tf_internal->ditransfer_oleh_user_id)->first();
-                $perawat_tujuan = DB::connection('mysql2')->table('users')->where('username', $tf_internal->diterima_oleh_user_id)->first();
 
-                $data = array(
-                    'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
-                    'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
-                    'transfer_terima_gcs_e' => $request->transfer_terima_gcs_e,
-                    'transfer_terima_gcs_m' => $request->transfer_terima_gcs_m,
-                    'transfer_terima_gcs_v' => $request->transfer_terima_gcs_v,
-                    'transfer_terima_td' => $request->transfer_terima_td,
-                    'transfer_terima_n' => $request->transfer_terima_n,
-                    'transfer_terima_suhu' => $request->transfer_terima_suhu,
-                    'transfer_terima_p' => $request->transfer_terima_p,
-                    'diterima_oleh_user_id' => auth()->user()->username,
-                    'diterima_oleh_nama' => auth()->user()->name,
-                    'status_transfer'   => 1,
-                    'signature_doctor' => $dokter->signature,
-                    'signature_nurse' => $perawat_asal->signature,
-                    'signature_doctor_2' => $dokter->signature,
-                    'signature_nurse_2' => $perawat_tujuan->signature,
-                );
+                if ($tf_internal->transfer_rawat_intensif == 1) {
+                    $data = array(
+                        'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
+                        'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
+                        'transfer_terima_gcs_e' => $request->transfer_terima_gcs_e,
+                        'transfer_terima_gcs_m' => $request->transfer_terima_gcs_m,
+                        'transfer_terima_gcs_v' => $request->transfer_terima_gcs_v,
+                        'transfer_terima_td' => $request->transfer_terima_td,
+                        'transfer_terima_n' => $request->transfer_terima_n,
+                        'transfer_terima_suhu' => $request->transfer_terima_suhu,
+                        'transfer_terima_p' => $request->transfer_terima_p,
+                        'diterima_oleh_nama' => $tf_internal->diterima_oleh_nama,
+                        'status_transfer'   => 1,
+                        'signature_doctor' => $dokter->signature,
+                        'signature_nurse' => $perawat_asal->signature,
+                        'signature_doctor_2' => $dokter->signature,
+                    );
+                } else {
+                    $perawat_tujuan = DB::connection('mysql2')->table('users')->where('username', $tf_internal->diterima_oleh_user_id)->first();
+
+                    $data = array(
+                        'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
+                        'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
+                        'transfer_terima_gcs_e' => $request->transfer_terima_gcs_e,
+                        'transfer_terima_gcs_m' => $request->transfer_terima_gcs_m,
+                        'transfer_terima_gcs_v' => $request->transfer_terima_gcs_v,
+                        'transfer_terima_td' => $request->transfer_terima_td,
+                        'transfer_terima_n' => $request->transfer_terima_n,
+                        'transfer_terima_suhu' => $request->transfer_terima_suhu,
+                        'transfer_terima_p' => $request->transfer_terima_p,
+                        'diterima_oleh_user_id' => auth()->user()->username,
+                        'diterima_oleh_nama' => auth()->user()->name,
+                        'status_transfer'   => 1,
+                        'signature_doctor' => $dokter->signature,
+                        'signature_nurse' => $perawat_asal->signature,
+                        'signature_doctor_2' => $dokter->signature,
+                        'signature_nurse_2' => $perawat_tujuan->signature,
+                    );
+                }
 
 
                 DB::connection('mysql')->table('transfer_internal')
@@ -196,6 +219,7 @@ class TransferInternalController extends Controller
                         ['kode_transfer_internal', $request->kode_transfer_internal]
                     ])
                     ->update($data);
+
 
                 //update bed asal
                 DB::connection('mysql2')->table('m_bed')
