@@ -6,11 +6,17 @@ use App\Models\Bed;
 use App\Models\ICD10;
 use App\Models\KelasKategori;
 use App\Models\Pasien;
+use App\Models\RegistrasiPJawab;
 use App\Models\RegistrationInap;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Milon\Barcode\DNS1D;
+use Milon\Barcode\Facades\DNS1DFacade;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 trait RanapRegistrationTrait
 {
@@ -247,11 +253,106 @@ trait RanapRegistrationTrait
                 'RegNo' => $registration->reg_no,
                 'MedicalNo' => $registration->reg_medrec,
                 'HistoryRefCode' => $registration->reg_lama,
-                'ToUnitServceUnitID' => $serviceUnitRoom->ServiceUnitID,
+                'ToUnitServiceID' => $serviceUnitRoom->ServiceUnitID,
                 'ToBedID' => $registration->bed,
+                'ToClassCode' => $registration->reg_class,
+                'ToChargeClassCode' => $registration->charge_class_code,
                 'CreatedBy' => auth()->user()->name,
+                'ReceiveTransferDate' => now()->toDateString(),
+                'ReceiveTransferTime' => now()->toTimeString(),
+                'TableRef' => 'm_registrasi'
             );
             DB::connection('mysql2')->table('m_bed_history')->insert($paramBedHistory);
         }
+    }
+
+    public function getDataSlipAdmisi($regno)
+    {
+
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
+            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
+            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
+            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*', 'businesspartner.BusinessPartnerName as reg_cara_bayar_name')
+            // ->get()->first();
+
+            // $data['datapasien'] = $datamypatient;
+            ->first();
+
+        if ($datamypatient) {
+            $ranap_reg = $datamypatient->reg_lama;
+            if ($ranap_reg) {
+                $response = \Illuminate\Support\Facades\Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/' . str_replace('/', '_', $ranap_reg));
+                if ($response->successful()) {
+                    $dataFromApi = $response->json();
+                    if (!empty($dataFromApi)) {
+                        $datamypatient->poli_asal = $dataFromApi['poli_asal'] ?? null;
+                    } else {
+                        $datamypatient->poli_asal = null;
+                    }
+                } else {
+                    $datamypatient->poli_asal = null;
+                }
+            } else {
+                $datamypatient->poli_asal = null;
+            }
+        }
+
+        $data['datamypatient'] = $datamypatient;
+        $data['datapasien'] = $datamypatient;
+        $url_qr = route('agreement.admisi', $regno);
+        $data['qrcode'] = QrCode::size(150)->generate($url_qr);
+        return $data;
+    }
+
+    public function getDataGeneralConsent($regno)
+    {
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
+            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
+            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
+            ->get()->first();
+
+        $pj_pasien = RegistrasiPJawab::where('reg_no', $this->parseRegNoByUnderScore($regno))->get();
+
+        $data['datapasien'] = $datamypatient;
+        $data['pj_pasien'] = $pj_pasien;
+        $url_qr = route('agreement.general-consent', $regno);
+        $data['qrcode'] = QrCode::size(150)->generate($url_qr);
+
+        return $data;
+    }
+
+    public function getDataSuratRawatIntensif($reg_no)
+    {
+        $reg_no = str_replace("_", "/", $reg_no);
+        $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
+        $data_pasien = [
+            'nama_lengkap' => $data_registration->pasien->PatientName,
+            'medical_no' => $data_registration->reg_medrec,
+            'tgl_lahir' => $data_registration->pasien->DateOfBirth,
+            'jenis_kelamin' => $data_registration->pasien->GCSex,
+            'usia' => $this->formatUsia($data_registration->pasien->DateOfBirth),
+            'alamat' => $data_registration->pasien->PatientAddress,
+            'tgl_registrasi' => Carbon::parse($data_registration->reg_tgl)->format('d F Y'),
+        ];
+        $url = route('agreement.rawat-intensif', $reg_no);
+        $data_pasien['qrcode'] = QrCode::size(150)->generate($url);
+        return $data_pasien;
+    }
+    private function formatUsia($dateOfBirth)
+    {
+        $date1 = new \DateTime($dateOfBirth);
+        $date2 = new \DateTime();
+        $diff = $date1->diff($date2);
+        return "{$diff->y} Y {$diff->m} m {$diff->d} d";
     }
 }

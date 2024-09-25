@@ -857,8 +857,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
 
             //console.log(arrayKode)
             $.ajax({
-                url: '{{route('
-                dokter.order.obat ')}}',
+                url: `{{route('dokter.order.obat')}}`,
                 type: 'POST',
                 dataType: 'json',
                 data: {
@@ -961,8 +960,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
         }
 
         $.ajax({
-            url: '{{route('
-            simpan.order.obat ')}}',
+            url: `{{route('simpan.order.obat')}}`,
             type: 'POST',
             dataType: 'json',
             data: {
@@ -1090,8 +1088,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
             var kategori = $('#btn-save-cpoe').attr('value')
 
             $.ajax({
-                url: '{{route('
-                order.tindakan ')}}',
+                url: `{{route('order.tindakan')}}`,
                 type: 'POST',
                 dataType: 'json',
                 data: $('#form-cpoe-dokter').serialize() + "&jenisorder=" + kategori,

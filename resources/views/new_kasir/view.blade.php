@@ -223,9 +223,9 @@
                         <br>
                         <div id="load_action_button" class="float-right">Memuat data ...</div>
                         <div id="action_button">
-                            <!-- <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
-                            <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button>
-                            <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button> -->
+                            <!-- <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button> -->
+                            <!-- <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button> -->
+                            <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button>
                             <button id="btn-validasi-billing" class="btn btn-info float-right mb-3">KONFIRMASI PEMBAYARAN</button>
                         </div>
                     </div>
@@ -250,6 +250,7 @@
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
     var $reg_no = $reg.replace(/\//g, '_')
+    var modal = '#modalEntryOrder'
 
     var orders = []
     var selected_orders = []
@@ -265,7 +266,7 @@
     var payer = ''
 
     $(document).ready(function() {
-
+        getPayer()
     });
 
     $('body').on('click', '#btn-validasi-billing', function() {
@@ -290,12 +291,18 @@
                 "class": "{{ $pasien->reg_class }}",
                 "reg": $reg
             },
-
+            beforeSend: function() {
+                $('[id="select-tindakan-lain"]').hide()
+                $('[id="loadTindakan"]').html('<br><br><i class="fas fa-spinner fa-spin"></i> Memuat data')
+            },
             success: function(data) {
+
+                $('[id="select-tindakan-lain"]').show()
+                $('[id="loadTindakan"]').html('')
                 var dataJSON = data.data;
                 var opt = '<option value="" >Pilih tindakan</option>';
                 $.each(dataJSON, function(index, row) {
-                    opt += '<option value="' + row.ItemCode + '" data-id="' + row.ItemCode + '" data-type="Lainnya" data-name="' + row.ItemName1 + '" data-price="' + row.PersonalPrice + '">' + row.ItemCode + ' - ' + row.ItemName1 + '</option>';
+                    opt += '<option value="' + row.ItemCode + '" data-id="' + row.ItemCode + '" data-type="lainnya" data-name="' + row.ItemName1 + '" data-price="' + row.PersonalPrice + '">' + row.ItemCode + ' - ' + row.ItemName1 + '</option>';
                 });
                 $('#select-tindakan-lain').html(opt);
                 $('#select-tindakan-lain').select2({
@@ -312,14 +319,16 @@
 
     function getItem($type = '') {
         $.ajax({
-            url: '{{url("auth/api/cpoe/data")}}/LAIN/' + $reg_no,
-            type: 'GET',
-            dataType: 'json',
-            beforeSend: function() {
-                $('.opt_cpoe').remove();
+            type: "POST",
+            url: "{{ route('tarif.tindakanbaru') }}",
+            data: {
+                "type": "X0001^01",
+                "class": classcode,
+                "reg": regno
             },
-            success: function(resp) {
 
+            success: function(data) {
+                console.log(data)
                 if ($type == 'LAB') {
                     $sub_type = 'Laboraturium';
                 } else if ($type == 'RAD') {
@@ -333,16 +342,12 @@
 
                 $.each(resp, function(i, data) {
                     $opt = `
-                            <option class="opt_cpoe" value="` + data.ItemCode + `" data-price="` + data.PersonalPrice + `" data-type="` + data.cpoe_jenis + `">` + data.ItemName1 + `</option>
+                            <option class="opt_cpoe" value="` + data.ItemUId + `" data-price="` + data.PersonalPrice + `" data-type="` + data.cpoe_jenis + `">` + data.ItemName1 + `</option>
                         `;
 
                     $('#cpoe_tindakan_' + $sub_type).append($opt).trigger('change');
                 });
-
-                $('.cpoe_item').attr('name', 'cpoe_tindakan_' + $sub_type + '[]');
-                $('.cpoe_types').attr('name', 'cpoe_jenis_' + $sub_type);
-                $('.cpoe_tarif').attr('name', 'cpoe_tarif_' + $sub_type + '[]');
-            }
+            },
         });
     }
 
@@ -360,32 +365,64 @@
     });
 
     $('#btn-entry-order').click(function() {
-        $id = $(this).attr('value');
+        $tindakan = $('[class="cpoe_item"]').val();
 
-        $tindakan = $('.cpoe_item').val();
         if ($tindakan == '') {
             alert('Tidak ada order tindakan yang dipilih');
         } else {
             $.ajax({
-                url: '{{url("")}}/auth/api/cpoe/store',
+                url: `{{route('order.tindakan')}}`,
                 type: 'POST',
                 dataType: 'json',
                 data: $('#form-entry-order').serialize(),
-                beforeSend: function() {
-                    $('#btn-entry-order').attr('disabled', true);
-                },
                 success: function(resp) {
-                    $('#btn-entry-order').attr('disabled', false);
-                    if (resp == 200) {
-                        $('#modalEntryOrder').modal('hide')
+                    if (resp.success == true) {
+                        alert(resp.message)
+
+                        $(modal).modal('hide')
                         getDataOrder()
                     } else {
-                        alert('Gagal menyimpan data, mohon hubungi tim Administrator');
+                        alert(resp.message)
                     }
+                    // if (resp == 404) {
+                    //     alert('Anda tidak punya akses untuk menyimpan asesmen');
+                    // } else {
+                    //     //alert('Data SOAP berhasil disimpan');
+                    //     //$('#modalSOAP').modal('hide');
+                    //     //latestSoapdok($subs, '#table-cppt-perawat');
+                    //     //orderCPOE();
+                    // }
                 }
             });
         }
     });
+
+    function selectTindakan(_elm) {
+        let value = $(_elm).find(':selected').attr('data-name')
+
+        $('[name="cpoe_nama[]"]').val(value)
+    }
+
+    function getPayer(_elm = 'multi_payer') {
+        $.ajax({
+            url: '{{url("")}}/nyx-sistem/select2/businesspartner',
+            success: function(resp) {
+                $('[id="' + _elm + '"]' + ' [class="optPayer"]').remove()
+
+                $.each(resp.results, function(i, item) {
+                    $opt = `
+                        <option class="optPayer" value="` + item.id + `">` + item.text + `</option>
+                    `
+
+                    $('[id="' + _elm + '"]').append($opt)
+                })
+
+                $('[id="' + _elm + '"]').select2({
+                    dropdownParent: $('#modalValidasiBayar'),
+                })
+            }
+        })
+    }
 
     getDataOrder()
 
@@ -413,12 +450,12 @@
             },
             beforeSend: function() {
                 $('#panel-order').html(`
-                                            <div class="col-lg-12">
-                                                <div class="d-flex justify-content-center">
-                                                    <div class="lds-dual-ring"></div>
-                                                </div>    
-                                            </div>
-                                        `)
+                    <div class="col-lg-12">
+                        <div class="d-flex justify-content-center">
+                            <div class="lds-dual-ring"></div>
+                        </div>    
+                    </div>
+                `)
             },
             success: function(resp) {
                 $('#load_action_button').hide()
@@ -476,9 +513,9 @@
                                         User Order : <b>` + condition(data.ItemDokter) + `</b> | 
                                         Poli : <b>` + condition(data.ItemPoli) + `</b>
                                     </small>
-                                <span id="checked_status" value="` + data.ItemCode + `">
-                                    <input type="checkbox" id="selecting_items" class="float-right" value="` + data.ItemCode + `" data-category="` + data.ItemTindakan + `">
-                                </span>
+                                    <span id="checked_status" value="` + data.ItemUId + `" data-code="` + data.ItemCode + `" data-id="` + data.ItemOrder + `">
+                                        <input type="checkbox" id="selecting_items" class="float-right" value="` + data.ItemUId + `" data-category="` + data.ItemTindakan + `">
+                                    </span>
                             </li>
                             <hr>
                         `
@@ -490,9 +527,11 @@
 
                 if (resp.validation) {
                     $('[id*="selecting_items"]').remove()
-                    $.each(JSON.parse(resp.validation.pvalidation_selected), function(i, data) {
-                        $('#checked_status[value="' + data.ItemCode + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
+                    $.each(JSON.parse(resp.validation.pvalidation_selected), function(i, data_selected) {
+                        console.log(data_selected)
+                        $('[id="checked_status"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
                     })
+
 
                     total = resp.validation.pvalidation_total
                 }
@@ -514,7 +553,7 @@
                 data: {
                     _token: $('[name="_token"]').val(),
                     item_kode: id_order,
-                    item_jenis: 'Lainnya',
+                    item_jenis: 'lainnya',
                     item_peminta: inputCode,
                     item_alasan: inputRequester,
                 },
@@ -559,13 +598,13 @@
                         // value = parseInt(value)
                     }
 
-                    $object = orders.filter(element => element.ItemCode == value)
+                    $object = orders.filter(element => element.ItemUId == value)
                 }
             }
 
             $.each($object, function(i, data) {
                 selected_orders = selected_orders.filter(function(item) {
-                    return item.ItemCode !== parseInt(data.ItemCode);
+                    return item.ItemUId !== data.ItemUId;
                 });
 
                 selected_orders.push(data)
@@ -588,7 +627,7 @@
                             // value = parseInt(value)
                         }
 
-                        return item.ItemCode !== value;
+                        return item.ItemUId !== value;
                     }
                 });
                 $('[id*="selecting_items"][data-category="all"]').prop('checked', false)
@@ -989,7 +1028,7 @@
                                 </div>
                                 <div class="col-lg-3 mb-2">
                                     <div class="form-group">
-                                    <input type="date" name="pvalidation_tgl_transfer" placeholder="Tanggal Transfer" class="form-control">
+                                    <input type="date" name="pvalidation_tgl_transfer" placeholder="Tanggal Transfer" value="{{date('Y-m-d')}}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-3 mb-2">
@@ -1110,21 +1149,14 @@
 
     $('#btn-confirm-kwitansi').click(function() {
         $.ajax({
-            url: '{{url("auth/api/kasir/kwitansi")}}',
-            type: 'POST',
-            dataType: 'json',
+            url: '{{ route("kasir.cetak.kwitansi") }}',
+            type: 'GET',
             data: $('#form-confirm-kwitansi').serialize(),
-            success: function(resp) {
-                if (resp == 200) {
-                    $('#modalKwitansi').modal('hide');
-                    $pic = $('[name="pic_pengesahan"]').val();
-                    $reg_split = $reg.split('/').join('');
-                    window.open("{{url('auth/billing/kwitansi')}}/" + $reg_no + '/' + $pic, '_blank');
-                } else {
-                    alert('Gagal cetak kwitansi');
-                }
+            success: function(data) {
+                $('#printKwitansiContent').empty().html(data);
+                $('#modalPrintKwitansi').modal('show');
             },
-            error: function(resp) {
+            error: function(error) {
                 console.log(error);
             }
         });
@@ -1420,5 +1452,28 @@
             timer = setTimeout(callback, ms);
         };
     })();
+
+    $(document).ready(function() {
+        $('#btn-print-kwitansi').click(function() {
+            $('#modalKwitansi').modal('hide');
+            $('#modalPrintKwitansi').modal('hide');
+            $('.modal-backdrop').remove();
+
+
+            var modalContent = $('#printKwitansiContent').html(); // Get modal content
+
+            // Create a new window for printing
+            var printWindow = window.open('', '', 'height=500,width=800');
+
+            // Add content to the new window
+            printWindow.document.write(modalContent);
+
+            // Close the document to render the content
+            printWindow.document.close();
+
+            // Trigger the print dialog
+            printWindow.print();
+        });
+    });
 </script>
 @endsection

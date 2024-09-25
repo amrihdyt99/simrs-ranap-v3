@@ -171,9 +171,14 @@
                         </td>
                     </tr>
                 </tbody>
+                <tr>
+                    <td colspan="2">
+                        <div style="display: flex; align-items: center; justify-content: center; margin-top: 5px; margin-bottom: 5px;">
+                            {{ $data_pasien['qrcode'] }}
+                        </div>
+                    </td>
+                </tr>
             </table>
-
-            
         </div>
     </div>
 

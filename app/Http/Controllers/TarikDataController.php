@@ -291,7 +291,7 @@ class TarikDataController extends Controller
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs-rajal/api/master/users');
         //delete data yg baru ditarik jika double
-        DB::connection('mysql2')->table('users')->whereYear('created_at', 2024)->delete();
+        // DB::connection('mysql2')->table('users')->whereYear('created_at', 2024)->delete();
 
         foreach ($data as $kue) {
             DB::connection('mysql2')->table('users')->updateOrInsert(
