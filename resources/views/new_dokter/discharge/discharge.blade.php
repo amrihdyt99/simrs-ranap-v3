@@ -406,6 +406,13 @@ Tidak ada data ICD-9
                 }
             });
         }
+
+        function showDischargePanel() {
+        $('div[id*="panel-"]').hide();
+        $('#panel-discharge').show();
+        $('.left-tab').removeClass('active');
+        $('#tab-discharge').addClass('active');
+        }
         function delete_discharge(id){
             $.ajax({
                 type: "get",
@@ -413,13 +420,21 @@ Tidak ada data ICD-9
                 dataType: "json",
                 success: function (r) {
                     if (r.success) {
+                        localStorage.setItem('showDischargePanel', true);
                         location.reload()
                     }
                 }
             });
         }
+
+        $(document).ready(function() {
+        if (localStorage.getItem('showDischargePanel')) {
+            showDischargePanel();
+            localStorage.removeItem('showDischargePanel'); 
+        }
+    });
     </script>
-    <script>
+    <!-- <script>
         $(document).ready(function(){
             //pdischarge_alasan on change event and show modal
             $('#pdischarge_alasan').on('change', function() {
@@ -430,6 +445,6 @@ Tidak ada data ICD-9
             });
 
         })
-    </script>
+    </script> -->
 
 @endpush

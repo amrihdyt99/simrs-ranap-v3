@@ -468,49 +468,64 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script> 
 <!-- <script type="text/javascript" src="{{ asset('new_assets/signature/signature.js') }}"></script> -->
 
-    <script>
+
+<script>
+    function showEdukasiPanel() {
+        $('div[id*="panel-"]').hide();
+        $('#panel-edukasi').show();
+        $('.left-tab').removeClass('active');
+        $('#tab-edukasi').addClass('active');
+    }
+
     function saveSignature() {
-    var canvasPasien = document.getElementById('signature-pad-pasien');
-    var canvasDokter = document.getElementById('signature-pad-dokter');
-    var ttdPasien = document.getElementById('ttd_pasien');
-    var ttdDokter = document.getElementById('ttd_dokter');
-    
-    ttdPasien.value = canvasPasien.toDataURL('image/png');
-    ttdDokter.value = canvasDokter.toDataURL('image/png');
-}
+        var canvasPasien = document.getElementById('signature-pad-pasien');
+        var canvasDokter = document.getElementById('signature-pad-dokter');
+        var ttdPasien = document.getElementById('ttd_pasien');
+        var ttdDokter = document.getElementById('ttd_dokter');
+        
+        ttdPasien.value = canvasPasien.toDataURL('image/png');
+        ttdDokter.value = canvasDokter.toDataURL('image/png');
+    }
 
-        function storeDoctorEdukasi(title,idform){
-            saveSignature();
-            var queryString = $(idform).serialize()+'&user_id='+$user_+'&med_rec='+$medrec;
-            //alert(queryString[0]);
+    function storeDoctorEdukasi(title, idform) {
+        saveSignature();
+        var queryString = $(idform).serialize() + '&user_id=' + $user_ + '&med_rec=' + $medrec;
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('edukasi.dokter') }}",
-                 data: queryString,
+        $.ajax({
+            type: "POST",
+            url: "{{ route('edukasi.dokter') }}",
+            data: queryString,
+            success: function(data) {
+                alert('berhasil');
+                localStorage.setItem('showEdukasiPanel', true); // Set flag to show edukasi panel
+                location.reload();
+            },
+        });
+    }
 
-                success: function(data) {
-                    //console.log(data);
-                    //let html = document.getElementById("panel-nursing").innerHTML = data;
-                    alert('berhasil')
-                    location.reload()
-                },
-            });
+    function reset_edukasi(id) {
+        $.ajax({
+            type: "get",
+            url: "{{url('api/reset_edukasi_dokter')}}/" + id,
+            dataType: "json",
+            success: function (r) {
+                alert('berhasil Hapus');
+                localStorage.setItem('showEdukasiPanel', true); // Set flag to show edukasi panel
+                location.reload();
+            }
+        });
+    }
+
+    // Check localStorage on page load to show edukasi panel if needed
+    $(document).ready(function() {
+        if (localStorage.getItem('showEdukasiPanel')) {
+            showEdukasiPanel();
+            localStorage.removeItem('showEdukasiPanel'); // Remove the flag after showing the panel
         }
+    });
 
-        function reset_edukasi(id) {
-            $.ajax({
-                type: "get",
-                url: "{{url('api/reset_edukasi_dokter')}}/"+id,
-                dataType: "json",
-                success: function (r) {
-                    alert('berhasil Hapus')
-                    location.reload()
-                    
-                }
-            });
-        }
-    </script>
+</script>
+
     <script>
     let signaturePadPasien, signaturePadDokter;
 
