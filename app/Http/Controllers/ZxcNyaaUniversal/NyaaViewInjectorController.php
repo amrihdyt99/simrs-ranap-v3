@@ -911,101 +911,12 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function nurse_obgyn(Request $request)
     {
-        $pengkajian_awal_bidan = DB::connection('mysql')
-            ->table('pengkajian_awal_bidan')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skor_sad_person = DB::connection('mysql')
-            ->table('skor_sad_person')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $riwayat_menstruasi = DB::connection('mysql')
-            ->table('riwayat_menstruasi')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $riwayat_perkawinan = DB::connection('mysql')
-            ->table('riwayat_perkawinan')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $riwayat_kehamilan = DB::connection('mysql')
-            ->table('riwayat_kehamilan')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skrining_gizi_obgyn = DB::connection('mysql')
-            ->table('skrining_gizi_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skala_wong_baker = DB::connection('mysql')
-            ->table('skala_wong_baker')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $behavior_pain_scale_obgyn = DB::connection('mysql')
-            ->table('behavior_pain_scale_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $adl_obgyn = DB::connection('mysql')
-            ->table('adl_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skrining_resiko_jatuh_obgyn = DB::connection('mysql')
-            ->table('skrining_resiko_jatuh_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kulit = DB::connection('mysql')
-            ->table('pengkajian_kulit')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kebutuhan_aktifitas = DB::connection('mysql')
-            ->table('pengkajian_kebutuhan_aktifitas')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kebutuhan_nutrisi = DB::connection('mysql')
-            ->table('pengkajian_kebutuhan_nutrisi')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kebutuhan_eliminasi = DB::connection('mysql')
-            ->table('pengkajian_kebutuhan_eliminasi')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $laporan_persalinan = DB::connection('mysql')
-            ->table('laporan_persalinan')
-            ->where('reg_no', $request->reg_no)
-            ->first();
-
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
-            'pengkajian_awal_bidan' => optional($pengkajian_awal_bidan),
-            'skor_sad_person' => optional($skor_sad_person),
-            'riwayat_menstruasi' => optional($riwayat_menstruasi),
-            'riwayat_kehamilan' => optional($riwayat_perkawinan),
-            'riwayat_perkawinan' => optional($riwayat_kehamilan),
-            'skrining_gizi_obgyn' => optional($skrining_gizi_obgyn),
-            'skala_wong_baker' => optional($skala_wong_baker),
-            'behavior_pain_scale_obgyn' => optional($behavior_pain_scale_obgyn),
-            'adl_obgyn' => optional($adl_obgyn),
-            'skrining_resiko_jatuh_obgyn' => optional($skrining_resiko_jatuh_obgyn),
-            'pengkajian_kulit' => optional($pengkajian_kulit),
-            'pengkajian_kebutuhan_aktifitas' => optional($pengkajian_kebutuhan_aktifitas),
-            'pengkajian_kebutuhan_nutrisi' => optional($pengkajian_kebutuhan_nutrisi),
-            'pengkajian_kebutuhan_eliminasi' => optional($pengkajian_kebutuhan_eliminasi),
-            'laporan_persalinan' => optional($laporan_persalinan),
         );
-        return view('new_perawat.obgyn.index_master')
+        
+        return view('new_perawat.assesment.obgyn.index_obgyn')
             ->with($context);
     }
 

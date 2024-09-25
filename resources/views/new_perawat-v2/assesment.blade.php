@@ -178,6 +178,14 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
                 @endif
 
+                @if ($dataPasien->kategori_pasien == 'kebidanan')
+                <div class="row">
+                    <div class="left-tab" id="tab-obgyn" onclick="clickTab('obgyn')">
+                        Pengkajian Awal (Obstetri Ginekologi)
+                    </div>
+                </div>
+                @endif
+
                 <div class="row">
                     <div class="left-tab" id="tab-nyeri" onclick="clickTab('nyeri')">
                         Skrinning Nyeri
@@ -220,7 +228,7 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
                 @endif
 
-                @if ($dataPasien->kategori_pasien == 'dewasa')
+                @if ($dataPasien->kategori_pasien == 'dewasa' || $dataPasien->kategori_pasien == 'kebidanan')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-skala-morse" onclick="clickTab('resiko-jatuh-skala-morse')">
                         Resiko Jatuh Skala Morse
@@ -329,13 +337,7 @@ $registrasi_data =  DB::connection('mysql2')
                     <div class="left-tab" id="tab-admin-nurse" onclick="clickTab('admin-nurse')">
                         Admin Nurse
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="left-tab" id="tab-obgyn" onclick="clickTab('obgyn')">
-                        Obgyn
-                    </div>
-                </div>
+                </div> 
 
                 <div class="row">
                     <div class="left-tab" id="tab-bedah" onclick="clickTab('bedah')">

@@ -701,6 +701,7 @@
                     url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
                     success: function(data) {
                         inject_view_data(data);
+                        loadAllFunction();
                     },
                     error: function(data) {
                         clear_show_error();
@@ -1972,3 +1973,5 @@
 @include('new_perawat.resiko_jatuh.skala_morse.js.resiko_jatuh_skala_morse_js')
 @include('new_perawat.transfer_internal.js.index_js')
 @include('new_perawat.monitoring_news.js.entry_news_js')
+@include('new_perawat.assesment.obgyn.js.obgyn_js')
+
