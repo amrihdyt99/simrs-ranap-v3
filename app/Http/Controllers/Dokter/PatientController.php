@@ -40,7 +40,7 @@ class PatientController extends Controller
             ->leftJoin('m_bed', 'm_registrasi.reg_no', '=', 'm_bed.registration_no')
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->leftJoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitCode', '=', 'm_bed.service_unit_id')
+            ->leftJoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
@@ -48,7 +48,7 @@ class PatientController extends Controller
             ->where('m_registrasi.reg_discharge', '!=', '3')
             ->whereRaw("
                 (reg_dokter_care is null or reg_dokter_care not like ?) 
-                and (m_bed.service_unit_id = ? or m_registrasi.service_unit = ?)
+                and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
             ", ['%' . $dokter_code . '%', $ruang, $ruang])
             ->where(function ($query) {
                 $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id) // Dokter utama
@@ -115,7 +115,7 @@ class PatientController extends Controller
             $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
             ->whereRaw("
                 (reg_dokter_care = '' or reg_dokter_care like ?) 
-                and (m_bed.service_unit_id = ? or m_registrasi.service_unit = ?)
+                and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
             ", ['%' . $dokter_code . '%', $ruang, $ruang])
             ->where(function ($query) {
                 $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
