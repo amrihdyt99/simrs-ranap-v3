@@ -326,7 +326,7 @@
               });
             },
             error: function() {
-              neko_d_custom_error('Gagal, Memuat Surat Rawat Intensif');
+              neko_d_custom_error('Gagal, Memuat Surat Rawat Intensif Atau dikarenakan kelas Tidak Sesuai');
             }
           });
         });
