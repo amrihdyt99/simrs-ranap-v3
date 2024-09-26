@@ -143,12 +143,18 @@ class NyaaViewInjectorController extends AaaBaseController
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'edukasi_pasien' => optional($edukasi_pasien),
-            'edukasi_pasien_dokter' => optional($edukasi_pasien_dokter),
+            'edukasi_pasien_dokter' => $edukasi_pasien_dokter ?? (object) null,
             'edukasi_pasien_perawat' => optional($edukasi_pasien_perawat),
             'edukasi_pasien_gizi' => optional($edukasi_pasien_gizi),
             'edukasi_pasien_farmasi' => optional($edukasi_pasien_farmasi),
             'edukasi_pasien_rehab' => optional($edukasi_pasien_rehab),
         );
+
+        if (isset($request->type)) {
+            return view('new_perawat.edukasi.components.edukasi_'.$request->type)
+                ->with($context);
+        }
+
         return view('new_perawat.edukasi.entry_edukasi_pasien')
             ->with($context);
     }

@@ -162,6 +162,16 @@ class AssesmentAwalDokterController extends Controller
         $params = $request->except('_token');
         $cek = DB::connection('mysql')
             ->table('rs_edukasi_pasien_dokter')->where('reg_no', $request->reg_no)->first();
+            
+        $params['ttd_dokter'] = $request->ttd_edukator;
+        $params['ttd_pasien'] = $request->ttd_sasaran;
+        $params['med_rec'] = $request->medrec;
+
+        unset($params['ttd_edukator']);
+        unset($params['ttd_sasaran']);
+        unset($params['medrec']);
+        unset($params['type']);
+
         if ($cek) {
             $simpan = DB::connection('mysql')
                 ->table('rs_edukasi_pasien_dokter')->where('id', $cek->id)
