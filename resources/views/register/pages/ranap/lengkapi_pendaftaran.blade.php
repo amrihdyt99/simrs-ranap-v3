@@ -366,9 +366,9 @@
                                             <label class="label-admisi">Cover Class</label>
                                             <select id="reg_class" name="reg_class" class="form-control select2bs4">
                                                 <option value="">-</option>
-                                                @foreach ($cover_class as $row)
-                                                <option value={{ $row->ClassCategoryCode }}>
-                                                    {{ $row->ClassCategoryName }}
+                                                @foreach ($room_class as $row)
+                                                <option value={{ $row->ClassCode }}>
+                                                    {{ $row->ClassName ?? '-' }}
                                                 </option>
                                                 @endforeach
                                             </select>
@@ -379,9 +379,9 @@
                                             <label class="label-admisi">Charge Class</label>
                                             <select id="charge_class_code" name="charge_class_code" class="form-control select2bs4">
                                                 <option value="">-</option>
-                                                @foreach ($cover_class as $row)
-                                                <option value={{ $row->ClassCategoryCode }}>
-                                                    {{ $row->ClassCategoryName }}
+                                                @foreach ($room_class as $row)
+                                                <option value={{ $row->ClassCode }}>
+                                                    {{ $row->ClassName ?? '-' }}
                                                 </option>
                                                 @endforeach
                                             </select>
