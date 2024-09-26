@@ -140,7 +140,8 @@ class BillingController extends AaaBaseController
         ];
     }
 
-    public function getOrderFromLab($reg_no) {
+    public function getOrderFromLab($reg_no)
+    {
         $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $reg_no));
 
         $order_penunjang = [];
@@ -175,11 +176,12 @@ class BillingController extends AaaBaseController
         return $order_penunjang;
     }
 
-    public function getOrderFromRadiology($reg_no){
-        $rad = json_decode(getService(urlLabRadiology().'/api/status-order-radiologi-v2?regno='.$reg_no));
+    public function getOrderFromRadiology($reg_no)
+    {
+        $rad = json_decode(getService(urlLabRadiology() . '/api/status-order-radiologi-v2?regno=' . $reg_no));
 
         $order_penunjang = [];
-                        
+
         if (isset($rad->code) && $rad->code == 200) {
             foreach ($rad->data as $key => $value) {
                 foreach ($value->item_order as $sub_key => $sub_value) {
@@ -204,7 +206,6 @@ class BillingController extends AaaBaseController
                         array_push($order_penunjang, $item);
                     }
                 }
-
             }
         }
 
@@ -554,9 +555,11 @@ class BillingController extends AaaBaseController
         $terbilang = $this->terbilang($billing->pvalidation_total);
 
         return view('kasir.billing.kwitansi', [
-            'billing'   => $billing,
-            'patient'   => $datamypatient,
-            'terbilang' => $terbilang,
+            'billing'           => $billing,
+            'patient'           => $datamypatient,
+            'terbilang'         => $terbilang,
+            'pic'               => strtoupper($request->pic_pengesahan),
+            'pic_name'          => $request->pvalidation_legitimate,
         ]);
     }
 

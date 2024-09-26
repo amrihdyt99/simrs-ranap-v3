@@ -1458,12 +1458,21 @@
             $('#modalKwitansi').modal('hide');
             $('#modalPrintKwitansi').modal('hide');
             $('.modal-backdrop').remove();
-            var printContent = $('#printKwitansiContent').html(); // Get the div content
-            var originalContent = $('body').html(); // Backup the entire page's content
 
-            $('body').html(printContent); // Replace body content with the div content
-            window.print(); // Trigger the print
-            $('body').html(originalContent); // Restore original page content
+
+            var modalContent = $('#printKwitansiContent').html(); // Get modal content
+
+            // Create a new window for printing
+            var printWindow = window.open('', '', 'height=500,width=800');
+
+            // Add content to the new window
+            printWindow.document.write(modalContent);
+
+            // Close the document to render the content
+            printWindow.document.close();
+
+            // Trigger the print dialog
+            printWindow.print();
         });
     });
 </script>
