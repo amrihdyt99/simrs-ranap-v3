@@ -277,6 +277,8 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
         $('#panel-' + id).show();
         $('#tab-' + id).addClass('active');
 
+        $('[id="table-item-cpoe"]').html('')
+
         if (title) {
             $('#title_cppt').text(title);
             $('#title-cpoe').text(title);

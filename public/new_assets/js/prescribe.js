@@ -449,8 +449,8 @@ $('body').on('click', '[id="store-row-prescribe"]', function(){
             if (resp.success) {
                 orderPrescribeTemp();
                 getPrescribeFormSelect($category)
-            } else if (!resp.success) {
-                alert('Item/dosis/durasi hari/jumlah obat tidak boleh kosong');
+            } else {
+                alert(resp.message);
             }
         },
         error: function(){
