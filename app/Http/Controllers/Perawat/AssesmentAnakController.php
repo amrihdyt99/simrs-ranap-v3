@@ -94,6 +94,43 @@ class AssesmentAnakController extends AaaBaseController
         }
     }
 
+    public function store_skrining_gizi_anak(Request $request)
+    {
+        extract($request->all());
+        $gizi['sebab_malnutrisi'] = json_encode($gizi['sebab_malnutrisi']);
+        // dd($gizi);
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), []);
+            if ($validator->passes()) {
+                $cekGizi = DB::connection('mysql')->table('skrining_gizi_anak')->where('reg_no', $gizi['reg_no'])->count();
+                if ($cekGizi > 0) {
+                    $gizi['updated_by'] = $username;
+                    $gizi['updated_at'] = Carbon::now();
+                    $giziData = DB::connection('mysql')->table('skrining_gizi_anak')->where('reg_no', $gizi['reg_no'])->update($gizi);
+                } else {
+                    $gizi['created_by'] = $username;
+                    $gizi['created_at'] = Carbon::now();
+                    $giziData = DB::connection('mysql')->table('skrining_gizi_anak')->insert($gizi);
+                }
+
+                DB::commit();
+                $response = response()->json([
+                    'status' => 'success',
+                    'message' => 'Data berhasil diperbarui',
+                ]);
+            } else {
+                abort(402, json_encode($validator->errors()->all()));
+            }
+            return $response;
+        } catch (\Throwable $throw) {
+            //throw $th;
+            DB::rollBack();
+            //dd($th->getMessage());
+            abort(500, $throw->getMessage());
+        }
+    }
+
     public function combine_array($arr)
     {
         if (count($arr) > 0) {

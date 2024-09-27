@@ -34,4 +34,31 @@
     });
 
   }
+
+  function storeSkriningGiziAnak() {
+    neko_proses();
+    Swal.fire({
+      title: "Simpan Skrining Gizi Anak?",
+      icon: 'warning',
+      showCloseButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Ya, simpan !",
+      cancelButtonText: "Tidak, Batalkan",
+    }).then((result) => {
+      if (result.value) {
+        $.ajax({
+          url: "{{route('perawat.skrining-gizi-anak.store')}}",
+          type: "POST",
+          data: $('#skrining_gizi_anak_form').serialize(),
+          success: function(data) {
+            neko_simpan_success();
+          },
+          error: function(data) {
+            neko_simpan_error_noreq();
+          },
+        })
+      }
+    });
+
+  }
 </script>

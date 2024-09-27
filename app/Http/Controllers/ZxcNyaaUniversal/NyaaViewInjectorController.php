@@ -270,12 +270,18 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('reg_no', $request->reg_no)
             ->first();
 
+        $gizi = DB::connection('mysql')
+            ->table('skrining_gizi_anak')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'assesment' => optional($assesment_awal_anak),
             'skor_sad' => optional($skor_sad),
             'adl_anak' => optional($adl_anak),
+            'gizi'  => optional($gizi),
         );
         return view('new_perawat.assesment.assesment_anak.index')
             ->with($context);
