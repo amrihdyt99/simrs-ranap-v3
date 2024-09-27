@@ -13,18 +13,34 @@ class HomeController extends Controller
         $dbMaster = DB::connection('mysql2')->getDatabaseName();
         $dbInap = DB::connection('mysql')->getDatabaseName();
 
-        $sql = "SELECT registrasi.*, m_pasien.PatientName, billing.pvalidation_code
-                    FROM $dbMaster.m_registrasi AS registrasi
-                    JOIN $dbMaster.m_pasien AS m_pasien  ON registrasi.reg_medrec = m_pasien.MedicalNo
-                    LEFT JOIN $dbInap.rs_pasien_billing_validation AS billing  ON registrasi.reg_no = billing.pvalidation_reg
-                ";
+        $data['pasien'] = DB::connection('mysql2')
+            ->table('m_registrasi as a');
 
-        $data['pasien'] = DB::select($sql);
+        if ($request->start && $request->end) {
+            $data['pasien'] = $data['pasien']
+                ->whereRaw("CONCAT(a.reg_tgl, ' ', a.reg_jam) >= ?", [$request->start])
+                ->whereRaw("CONCAT(a.reg_tgl, ' ', a.reg_jam) <= ?", [$request->end]);
+        } else {
+            // $data['pasien'] = $data['pasien']
+            //     ->whereDate('reg_tgl', date('Y-m-d'));
+        }
+
+        $data['pasien'] = $data['pasien']
+            ->select([
+                'a.*',
+                DB::raw("CONCAT(a.reg_tgl, ' ', a.reg_jam) as reg_datetime"),
+                DB::raw("(select PatientName from m_pasien where MedicalNo = a.reg_medrec limit 1) as PatientName"),
+                DB::raw("(select pvalidation_code from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no limit 1) as pvalidation_code"),
+                DB::raw("(select pvalidation_status from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no order by created_at desc limit 1) as pvalidation_status"),
+            ])
+            ->orderBy('reg_datetime', 'desc')
+            ->get();
         
         foreach ($data['pasien'] as $key => $value) {
             $serviceUnit = DB::connection('mysql2')
-                ->table('m_unit')
-                ->where('ServiceUnitCode', $value->service_unit)
+                ->table('m_unit as a')
+                ->join('m_unit_departemen as b', 'a.ServiceUnitCode', 'b.ServiceUnitCode')
+                ->where('b.ServiceUnitID', $value->service_unit)
                 ->first();
 
             $payer = DB::connection('mysql2')
@@ -46,11 +62,11 @@ class HomeController extends Controller
             $data['pasien'][$key]->Payer = $payer->BusinessPartnerName ?? null;
         }
 
-        usort($data['pasien'], function($a, $b) {
-            $timeA = strtotime($a->reg_tgl . ' ' . $a->reg_jam);
-            $timeB = strtotime($b->reg_tgl . ' ' . $b->reg_jam);
-            return $timeB - $timeA; // Sorting in descending order
-        });
+        // usort($data['pasien']->toArray(), function($a, $b) {
+        //     $timeA = strtotime($a->reg_tgl . ' ' . $a->reg_jam);
+        //     $timeB = strtotime($b->reg_tgl . ' ' . $b->reg_jam);
+        //     return $timeB - $timeA; // Sorting in descending order
+        // });
 
         // dd($data);
         // return $data;

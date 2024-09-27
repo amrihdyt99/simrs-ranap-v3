@@ -386,7 +386,7 @@ class AssesmentAwalDokterController extends Controller
 
             $data_service_code = DB::connection('mysql2')
                 ->table('m_unit_departemen')
-                ->where('ServiceUnitCode', $reg->service_unit)
+                ->where('ServiceUnitID', $reg->service_unit)
                 ->first();
 
             $diag_pasien = DB::table('rs_pasien_diagnosa')
@@ -529,7 +529,7 @@ class AssesmentAwalDokterController extends Controller
 
             $data_service_code = DB::connection('mysql2')
                 ->table('m_unit_departemen')
-                ->where('ServiceUnitCode', $reg->service_unit)
+                ->where('ServiceUnitID', $reg->service_unit)
                 ->first();
 
             $diag_pasien = DB::table('rs_pasien_diagnosa')

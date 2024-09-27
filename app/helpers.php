@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Kasir\BillingController;
 use App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 function keyPharmacy(){
     return '229470a5-fe98-479e-ba3f-5c5b8eec7c88';
@@ -191,4 +193,18 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
 function getUni(){
     $uni = new UniversalFunctionController;
     return $uni;
+}
+
+function checkPaymentStatus($reg){
+    $callBill = new BillingController;
+
+    $request = new Request;
+
+    $request->merge([
+        'reg_no' => $reg
+    ]);
+
+    $data = $callBill->checkStatus($request);
+
+    return $data;
 }
