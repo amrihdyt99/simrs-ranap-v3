@@ -31,10 +31,10 @@
                             <a href="{{route('kasir.tagihan',["reg_no"=>$row->reg_no])}}"><span class="badge text teal px-4">Proses</span></a>
                         </td>
                         <td>
-                            @if($row->pvalidation_code == null)
-                            <span class="badge text px-4" style="background-color: red">Belum Dibayar</span>
+                            @if($row->pvalidation_status == 1)
+                                <span class="badge text px-4" style="background-color: green">Sudah Dibayar</span>
                             @else
-                            <span class="badge text px-4" style="background-color: green">Sudah Dibayar</span>
+                                <span class="badge text px-4" style="background-color: red">Belum Dibayar</span>
                             @endif
                         </td>
                         <td>{{$row->reg_tgl}} {{$row->reg_jam}}</td>

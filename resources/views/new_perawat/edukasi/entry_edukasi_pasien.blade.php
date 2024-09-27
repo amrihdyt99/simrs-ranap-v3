@@ -1,13 +1,15 @@
 @empty($edukasi_pasien)
-    @php
-        $edukasi_pasien = optional((object) []);
-        $edukasi_pasien_dokter = optional((object) []);
-        $edukasi_pasien_perawat = optional((object) []);
-        $edukasi_pasien_gizi = optional((object) []);
-        $edukasi_pasien_farmasi = optional((object) []);
-        $edukasi_pasien_rehab = optional((object) []);
-    @endphp
+    
 @endempty
+
+@php
+    $edukasi_pasien = optional((object) []);
+    $edukasi_pasien_dokter = optional((object) []);
+    $edukasi_pasien_perawat = optional((object) []);
+    $edukasi_pasien_gizi = optional((object) []);
+    $edukasi_pasien_farmasi = optional((object) []);
+    $edukasi_pasien_rehab = optional((object) []);
+@endphp
 
 <div class="container">
     <div class="card card-primary">
