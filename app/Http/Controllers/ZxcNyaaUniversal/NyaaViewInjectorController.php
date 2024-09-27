@@ -7,6 +7,15 @@ use App\Models\Neonatus\NeonatusFisik;
 use App\Models\Neonatus\NeonatusNyeri;
 use App\Models\Neonatus\NeonatusRekonObat;
 use App\Models\Neonatus\NeonatusTtd;
+use App\Models\Obgyn\ObgynAlergiKeadaanUmum;
+use App\Models\Obgyn\ObgynDataPsikologis;
+use App\Models\Obgyn\ObgynPengkajianKebutuhan;
+use App\Models\Obgyn\ObgynPengkajianKulit;
+use App\Models\Obgyn\ObgynRiwayatKehamilan;
+use App\Models\Obgyn\ObgynRiwayatMenstruasiDanPerkawinan;
+use App\Models\Obgyn\ObgynSkriningFungsional;
+use App\Models\Obgyn\ObgynSkriningGizi;
+use App\Models\Obgyn\ObgynSkriningNyeri;
 use App\Models\Pasien;
 use App\Models\RegistrationInap;
 use App\Traits\Master\MasterBedTraits;
@@ -911,9 +920,28 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function nurse_obgyn(Request $request)
     {
+        $alergi_keadaan_umum = ObgynAlergiKeadaanUmum::where('reg_no', $request->reg_no)->first();
+        $data_psikologis = ObgynDataPsikologis::where('reg_no', $request->reg_no)->first();
+        $menstruasi_dan_perkawinan = ObgynRiwayatMenstruasiDanPerkawinan::where('reg_no', $request->reg_no)->first();
+        $riwayat_kehamilan = ObgynRiwayatKehamilan::where('reg_no', $request->reg_no)->get();
+        $skrining_gizi = ObgynSkriningGizi::where('reg_no', $request->reg_no)->first();
+        $skrining_nyeri = ObgynSkriningNyeri::where('reg_no', $request->reg_no)->first();
+        $skrining_fungsional = ObgynSkriningFungsional::where('reg_no', $request->reg_no)->first();
+        $pengkajian_kulit = ObgynPengkajianKulit::where('reg_no', $request->reg_no)->first();
+        $pengkajian_kebutuhan = ObgynPengkajianKebutuhan::where('reg_no', $request->reg_no)->first();
+        
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
+            'alergi_keadaan_umum' => optional($alergi_keadaan_umum),
+            'data_psikologis' => optional($data_psikologis),
+            'menstruasi_dan_perkawinan' => optional($menstruasi_dan_perkawinan),
+            'riwayat_kehamilan' => $riwayat_kehamilan,
+            'skrining_gizi' => optional($skrining_gizi),
+            'skrining_nyeri' => optional($skrining_nyeri),
+            'skrining_fungsional' => optional($skrining_fungsional),
+            'pengkajian_kulit' => optional($pengkajian_kulit),
+            'pengkajian_kebutuhan' => optional($pengkajian_kebutuhan),
         );
         
         return view('new_perawat.assesment.obgyn.index_obgyn')
