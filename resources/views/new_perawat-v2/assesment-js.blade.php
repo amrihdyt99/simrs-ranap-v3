@@ -359,6 +359,12 @@
     }
 
     // =================================================================================================================================
+    // do not remove this !
+    var clickTabCount = 0;
+
+    if (typeof clickTab === "function") {
+        clickTabCount++;
+    }
 
     if (clickTabCount < 1) {
         nyaa_call_view = function(_type = '') {
@@ -1127,13 +1133,8 @@
 
     // =================================================================================================================================
 
-    // do not remove this !
-    var clickTabCount = 0;
-
-    if (typeof clickTab === "function") {
-        clickTabCount++;
-    }
     
+    console.log(clickTabCount);
     if (clickTabCount < 1) {
         function clickTab(idx, title = '') {
             clear_show_load();
