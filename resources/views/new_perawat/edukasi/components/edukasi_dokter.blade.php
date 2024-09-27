@@ -1,7 +1,7 @@
 @php
-    if (!isset($edukasi_pasien_dokter)) {
-        $edukasi_pasien_dokter = (object) null;
-    }
+if (!isset($edukasi_pasien_dokter)) {
+$edukasi_pasien_dokter = (object) null;
+}
 @endphp
 
 <button type="button" class="btn btn-primary my-3 float-right" onclick="resetEdukasi('#formEdukasiDokter', 'dokter')"><i class="fas fa-redo"></i> Reset Form</button>
@@ -175,10 +175,10 @@
                     <div id="signature-pad-sasaran" style="display: inline-block; border: 1px solid black;">
                         <div style="width: 460px; height: 210px; padding: 3px; position: relative;">
                             @if(isset($edukasi_pasien_dokter->ttd_pasien) && $edukasi_pasien_dokter->ttd_pasien)
-                                <img src="{{ $edukasi_pasien_dokter->ttd_pasien }}" alt="Tanda Tangan Pasien" style="width: 100%; height: 210px;">
+                            <img src="{{ $edukasi_pasien_dokter->ttd_pasien }}" alt="Tanda Tangan Pasien" style="width: 100%; height: 210px;">
                             @else
-                                <canvas id="canvas_sasaran" width="450" height="200" disabled>Your browser does not support
-                                    the HTML canvas tag.</canvas>
+                            <canvas id="canvas_sasaran" width="450" height="200" disabled>Your browser does not support
+                                the HTML canvas tag.</canvas>
                             @endif
                         </div>
                         <div style="margin: 10px; text-align: center;">
@@ -193,10 +193,10 @@
                 <div id="signature-pad-edukator" style="display: inline-block; border: 1px solid black; margin: 0 auto;">
                     <div style="width: 460px; height: 210px; padding: 3px; position: relative;">
                         @if(isset($edukasi_pasien_dokter->ttd_dokter) && $edukasi_pasien_dokter->ttd_dokter != null)
-                            <img src="{{ $edukasi_pasien_dokter->ttd_dokter }}" alt="Tanda Tangan Dokter" style="width: 100%; height: 210px;">
+                        <img src="{{ $edukasi_pasien_dokter->ttd_dokter }}" alt="Tanda Tangan Dokter" style="width: 100%; height: 210px;">
                         @else
-                            <canvas id="canvas_edukator" width="450" height="200" disabled>Your browser does not support the
-                                HTML canvas tag.</canvas>
+                        <canvas id="canvas_edukator" width="450" height="200" disabled>Your browser does not support the
+                            HTML canvas tag.</canvas>
                         @endif
                     </div>
                     <div style="margin: 10px;">

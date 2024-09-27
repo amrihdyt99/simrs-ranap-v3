@@ -5,13 +5,15 @@ use App\Http\Controllers\Perawat\DashboardController;
 use App\Http\Controllers\Perawat\DiagnoseController;
 use App\Http\Controllers\Perawat\NursingController;
 use App\Http\Controllers\Perawat\SummaryController;
+use App\Http\Controllers\Dietitian\DashboardController as DietitianDashboardController;
+use App\Http\Controllers\Dietitian\DetailPasienDietitianController;
 use App\Http\Controllers\Perawat\DetailPasienPerawatController;
 use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/perawat/patient/save_signature', [NursingController::class, 'saveSignature'])->name('saveSignature');
 Route::post('/perawat/save-signature', [NursingController::class, 'saveSignature'])->name('perawat.saveSignature');
-Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi', 'shift'])->group(function () {
+Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi,farmasi', 'shift'])->group(function () {
 
     Route::get('/perawat/dashboard', [DashboardController::class, 'index'])->name('perawat.dashboard');
     Route::post('/save-shift', [DashboardController::class, 'saveShift'])->name('save.shift');
@@ -21,6 +23,8 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
     Route::get('/perawat/detail_pasien_register/{reg_no}', [DetailPasienPerawatController::class, "show2"])->where('reg_no', '(.*)')->name('perawat.patient_detail_registrasi');
     Route::get('/perawat/get_qr_code_pasien/', [DetailPasienPerawatController::class, 'get_qrcode'])->name('perawat.get_patient_qrcode');
     Route::get('/perawat/detail_qrcode_pasien/', [DetailPasienPerawatController::class, 'detail_qrcode'])->name('perawat.patient_detail_qrcode');
+
+
 
 
     Route::prefix('/perawat/menu')->name('perawat.menu.')->group(function () {
@@ -54,6 +58,8 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
         Route::post('/nursing-drugs/store', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'nursing_drugs_store'])->name('perawat.nursing_drugs_store');
         Route::post('/store_assesment_gizi', [NursingController::class, 'store_assesment_gizi'])->name('perawat.store_assesment_gizi_dewasa');
         Route::post('/data_assesment_gizi', [NursingController::class, 'data_assesment_gizi'])->name('perawat.get_data_assesment_gizi');
+
+
 
         Route::post('/store_assesment_dewasa', [NursingController::class, 'store_assesment_dewasa'])->name('perawat.store_assesment_dewasa');
         Route::post('/data_assesment_dewasa', [NursingController::class, 'data_assesment_dewasa'])->name('perawat.get_data_assesment_dewasa');

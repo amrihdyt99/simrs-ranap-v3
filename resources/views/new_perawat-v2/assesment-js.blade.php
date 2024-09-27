@@ -410,6 +410,41 @@
                         },
                     });
                 },
+                // 'edukasi': function() {
+                //     $.ajax({
+                //         type: "POST",
+                //         data: {
+                //             "reg_no": regno,
+                //             "medrec": medrec,
+                //         },
+                //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                //         success: function(data) {
+                //             inject_view_data(data);
+                //         },
+                //         error: function(data) {
+                //             clear_show_error();
+                //         },
+                //     });
+                // },
+
+                'edukasi': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            ttd_edukasi_perawat();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
 
                 'nyeri': function() {
                     $.ajax({
@@ -1125,7 +1160,7 @@
             }
         }();
     }
-    
+
 
     function icuPanel(id) {
         nyaa_call_view[id]()
@@ -1133,7 +1168,7 @@
 
     // =================================================================================================================================
 
-    
+
     if (clickTabCount < 1) {
         function clickTab(idx, title = '') {
             clear_show_load();
@@ -1275,7 +1310,6 @@
     function getSoapPerawat_modal() {
         $('#modalSOAP').modal('show');
     }
-
     // Pengkajian Awal Dewasa
     function assementDewasa_init() {
         $('.kajian_kulit_dewasa').on('click', function() {
@@ -1748,7 +1782,7 @@
     }
 
     // EDUKASI
-    function getEdukasi(_elm = '', _type = ''){
+    function getEdukasi(_elm = '', _type = '') {
         $.ajax({
             type: "POST",
             data: {
@@ -1761,7 +1795,7 @@
             success: function(data) {
                 $('[id="panel-edukasi"] div').html(data)
                 resetEdukasi(_elm, _type)
-                
+
             },
             error: function(data) {
                 clear_show_error();
@@ -1769,17 +1803,17 @@
         });
     }
 
-    function resetEdukasi(_elm = '', _type = ''){
-        $('[id="panel-edukasi"] '+_elm+' [class*="table1"]')
+    function resetEdukasi(_elm = '', _type = '') {
+        $('[id="panel-edukasi"] ' + _elm + ' [class*="table1"]')
             .find('[class*="form-control"], input[type="radio"]')
             .removeAttr('disabled')
-            
+
         ttd_edukasi_perawat()
     }
 
     var signaturePadSasaran = null
     var signaturePadEdukator = null
-    
+
     function ttd_edukasi_perawat() {
         // SASARAN
         let $wrapperSasaran = $('[id*="signature-pad-sasaran"]');

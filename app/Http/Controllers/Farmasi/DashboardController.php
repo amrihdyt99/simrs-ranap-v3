@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dietitian;
+namespace App\Http\Controllers\Farmasi;
 
 use App\Http\Controllers\Controller;
 use App\Models\RegistrationInap;
@@ -62,7 +62,7 @@ class DashboardController extends Controller
             })
             ->editColumn('aksi_data', function ($query) use ($request) {
                 return ('<a href="'
-                    . route('dietitian.patient.summary-v2', ['reg_no' => $query->reg_no])
+                    . route('farmasi.patient.summary-v2', ['reg_no' => $query->reg_no])
                     . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-clipboard-check"></i>Periksa</a>');
             })
             ->escapeColumns([])

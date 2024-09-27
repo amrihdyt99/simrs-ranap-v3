@@ -651,25 +651,25 @@ class NewNursingController extends Controller
         //     ]);
 
         // $simpan_farmasi = DB::connection('mysql')
-        //     ->table('rs_edukasi_pasien_farmasi')
-        //     ->updateOrInsert($paramsawalsearch5, [
-        //         "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
-        //         "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
-        //         "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
-        //         "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
-        //         "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
-        //         "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
-        //         "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
-        //         "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
-        //         "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
-        //         "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
-        //         "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
-        //         "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
-        //         "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
-        //         "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
-        //         "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
-        //         "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
-        //         "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
+            // ->table('rs_edukasi_pasien_farmasi')
+            // ->updateOrInsert($paramsawalsearch5, [
+            //     "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
+            //     "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
+            //     "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
+            //     "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
+            //     "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
+            //     "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
+            //     "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
+            //     "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
+            //     "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
+            //     "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
+            //     "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
+            //     "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
+            //     "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
+            //     "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
+            //     "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
+            //     "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
+            //     "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
         //     ]);
 
         // $simpan_rehab = DB::connection('mysql')
@@ -691,6 +691,116 @@ class NewNursingController extends Controller
         ]);
     }
 
+    public function addEdukasiPasienFarmasi(Request $request)
+    {
+
+        $request->validate([
+            'med_rec' => 'required',
+        ]);
+
+        $paramsawalsearch5 = [
+            'reg_no' => $request->reg_no,
+            'med_rec' => $request->med_rec,
+        ];
+
+        DB::connection('mysql')
+        ->table('rs_edukasi_pasien_farmasi')
+        ->updateOrInsert($paramsawalsearch5, [
+            "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
+            "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
+            "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
+            "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
+            "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
+            "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
+            "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
+            "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
+            "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
+            "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
+            "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
+            "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
+            "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
+            "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
+            "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
+            "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
+            "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
+            "user_id" => $request->user_id,
+        ]);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function getRsEdukasiFarmasi(Request $request)
+    {
+        $regno = $request->reg_no;
+        $medrec = $request->med_rec;
+    
+        $data = DB::connection('mysql')
+            ->table('rs_edukasi_pasien_farmasi')
+            ->where('med_rec', $medrec)
+            ->where('reg_no', $regno)
+            ->first();
+    
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
+
+    public function addEdukasiPasienGizi(Request $request)
+    {
+
+        $request->validate([
+            'med_rec' => 'required',
+        ]);
+
+        $paramsawalsearch4 = [
+            'reg_no' => $request->reg_no,
+            'med_rec' => $request->med_rec,
+        ];
+
+        DB::connection('mysql')
+            ->table('rs_edukasi_pasien_gizi')
+            ->updateOrInsert($paramsawalsearch4, [
+                "edukasi_pentingnya_nutrisi_gizi" => $request->edukasi_pentingnya_nutrisi_gizi,
+                "edukasi_diet_gizi" => $request->edukasi_diet_gizi,
+                "edukasi_lain_lain_gizi" => $request->edukasi_lain_lain_gizi,
+                "tgl_pentingnya_nutrisi_gizi" => $request->tgl_pentingnya_nutrisi_gizi,
+                "tgl_diet_gizi" => $request->tgl_diet_gizi,
+                "tgl_lain_lain_gizi" => $request->tgl_lain_lain_gizi,
+                "tingkat_paham_pentingnya_nutrisi_gizi" => $request->tingkat_paham_pentingnya_nutrisi_gizi,
+                "tingkat_paham_diet_gizi" => $request->tingkat_paham_diet_gizi,
+                "tingkat_paham_lain_lain_gizi" => $request->tingkat_paham_lain_lain_gizi,
+                "tingkat_paham_lain_lain_text_gizi" => $request->tingkat_paham_lain_lain_text_gizi,
+                "metode_edukasi_pentingnya_nutrisi_gizi" => $request->metode_edukasi_pentingnya_nutrisi_gizi,
+                "metode_edukasi_diet_gizi" => $request->metode_edukasi_diet_gizi,
+                "metode_edukasi_lain_lain_gizi" => $request->metode_edukasi_lain_lain_gizi,
+                "user_id" => $request->user_id,
+            ]);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function getRsEdukasiGizi(Request $request)
+    {
+        $regno = $request->reg_no;
+        $medrec = $request->med_rec;
+    
+        $data = DB::connection('mysql')
+            ->table('rs_edukasi_pasien_gizi')
+            ->where('med_rec', $medrec)
+            ->where('reg_no', $regno)
+            ->first();
+    
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
     function addEdukasiPasienPerawat(Request $request){
         $paramsawalsearch3 = array(
             'reg_no' => $request->reg_no,
@@ -726,6 +836,7 @@ class NewNursingController extends Controller
             'success' => true
         ]);
     }
+
 
     function getRsEdukasiPasien(Request $request)
     {
