@@ -249,4 +249,5 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('add-assesment-awal-anak', [AssesmentAnakController::class, 'store_assesment_awal_anak'])->name('assesment-anak-awal.store');
 	Route::post('add-skrining-gizi-anak', [AssesmentAnakController::class, 'store_skrining_gizi_anak'])->name('skrining-gizi-anak.store');
 	Route::post('add-assesment-obgyn', [ObgynController::class, 'store'])->name('obgyn.store');
+	Route::post('add-skrining-nyeri-anak', [AssesmentAnakController::class, 'store_skrining_nyeri_anak'])->name('skrining-nyeri-anak.store');
 });

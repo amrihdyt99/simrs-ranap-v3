@@ -504,7 +504,6 @@
       }
 
       let class_charge_code = $('#temp_charge_class_bed').val();
-      console.log(class_charge_code);
       $('#select-charge-class-bed').select2({
         theme: 'bootstrap4',
         placeholder: "-",

@@ -148,7 +148,8 @@ class TransferInternalController extends Controller
             'transfer_terima_kondisi' => 'required',
         ]);
         if ($validator->passes()) {
-            DB::beginTransaction();
+            DB::connection('mysql')->beginTransaction();
+            DB::connection('mysql2')->beginTransaction();
             try {
                 $tf_internal = DB::connection('mysql')->table('transfer_internal')->where([
                     ['transfer_reg', $request->transfer_reg],
@@ -238,15 +239,32 @@ class TransferInternalController extends Controller
                     ]);
 
                 //Log History Bed
+                $ruangan_asal = DB::connection('mysql2')
+                    ->table('m_registrasi')
+                    ->leftJoin('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+                    ->leftJoin('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
+                    ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+                    ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+                    // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+                    ->leftJoin('m_unit_departemen', function ($join) {
+                        $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+                            ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
+                    })
+                    ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+                    ->select('m_bed_history.ToBedID as bed_id', 'm_bed_history.ToClassCode as class', 'm_bed_history.ToChargeClassCode as charge_class')
+                    ->where('m_registrasi.reg_no', $tf_internal->transfer_reg)
+                    ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+                    ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+                    ->first();
 
                 $history = array(
                     'RegNo' => $request->transfer_reg,
                     'MedicalNo' => $request->medrec,
                     'HistoryRefCode' => $request->kode_transfer_internal,
                     'TableRef' => 'transfer_internal',
-                    'FromBedID' => $request->transfer_unit_asal,
-                    'FromClassCode' => $reg->reg_class,
-                    'FromChargeClassCode' => $reg->charge_class_code,
+                    'FromBedID' => $ruangan_asal->bed_id,
+                    'FromClassCode' => $ruangan_asal->class,
+                    'FromChargeClassCode' => $ruangan_asal->charge_class,
                     'ToBedID'   => $request->transfer_unit_tujuan,
                     'ToClassCode' => $tf_internal->class,
                     'ToChargeClassCode' => $tf_internal->charge_class,
@@ -271,7 +289,8 @@ class TransferInternalController extends Controller
                 ]);
             } catch (\Throwable $throw) {
                 //throw $th;
-                DB::rollBack();
+                DB::connection('mysql')->rollBack();
+                DB::connection('mysql2')->rollBack();
                 // dd($throw->getMessage());
                 abort(500, $throw->getMessage());
             }

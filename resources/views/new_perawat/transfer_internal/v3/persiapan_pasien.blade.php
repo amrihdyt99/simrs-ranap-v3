@@ -43,8 +43,8 @@
                 <input type="hidden" class="form-control" id="temp_class_bed" value="{{ $transfer_internal->class ?? '' }}">
                 <select name="transfer_class" id="select-class-bed" class="form-control">
                     @foreach ($class_bed as $row)
-                    <option value="{{ $row->ClassCategoryCode }}">
-                        {{ $row->ClassCategoryName }}
+                    <option value="{{ $row->ClassCode }}">
+                        {{ $row->ClassName }}
                     </option>
                     @endforeach
                 </select>
@@ -58,8 +58,8 @@
                 <input type="hidden" class="form-control" id="temp_charge_class_bed" value="{{ $transfer_internal->charge_class ?? '' }}">
                 <select name="transfer_charge_class" id="select-charge-class-bed" class="form-control">
                     @foreach ($class_bed as $row)
-                    <option value="{{ $row->ClassCategoryCode }}">
-                        {{ $row->ClassCategoryName }}
+                    <option value="{{ $row->ClassCode }}">
+                        {{ $row->ClassName }}
                     </option>
                     @endforeach
                 </select>
