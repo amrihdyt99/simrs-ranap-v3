@@ -131,6 +131,42 @@ class AssesmentAnakController extends AaaBaseController
         }
     }
 
+    public function store_skrining_nyeri_anak(Request $request)
+    {
+        extract($request->all());
+
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), []);
+            if ($validator->passes()) {
+                $cekNyeri = DB::connection('mysql')->table('skrining_nyeri_anak')->where('reg_no', $nyeri['reg_no'])->count();
+                if ($cekNyeri > 0) {
+                    $nyeri['updated_by'] = $username;
+                    $nyeri['updated_at'] = Carbon::now();
+                    $nyeriData = DB::connection('mysql')->table('skrining_nyeri_anak')->where('reg_no', $nyeri['reg_no'])->update($nyeri);
+                } else {
+                    $nyeri['created_by'] = $username;
+                    $nyeri['created_at'] = Carbon::now();
+                    $nyeriData = DB::connection('mysql')->table('skrining_nyeri_anak')->insert($nyeri);
+                }
+
+                DB::commit();
+                $response = response()->json([
+                    'status' => 'success',
+                    'message' => 'Data berhasil diperbarui',
+                ]);
+            } else {
+                abort(402, json_encode($validator->errors()->all()));
+            }
+            return $response;
+        } catch (\Throwable $throw) {
+            //throw $th;
+            DB::rollBack();
+            //dd($th->getMessage());
+            abort(500, $throw->getMessage());
+        }
+    }
+
     public function combine_array($arr)
     {
         if (count($arr) > 0) {

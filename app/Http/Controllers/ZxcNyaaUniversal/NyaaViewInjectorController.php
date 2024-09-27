@@ -275,6 +275,11 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('reg_no', $request->reg_no)
             ->first();
 
+        $nyeri = DB::connection('mysql')
+            ->table('skrining_nyeri_anak')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
@@ -282,6 +287,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'skor_sad' => optional($skor_sad),
             'adl_anak' => optional($adl_anak),
             'gizi'  => optional($gizi),
+            'nyeri'  => optional($nyeri),
         );
         return view('new_perawat.assesment.assesment_anak.index')
             ->with($context);
@@ -382,9 +388,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ])
             ->first();
 
-        $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
-
-
+        $class_bed = DB::connection('mysql2')->table('m_room_class')->where('isActive', 1)->get();
 
         $cek_transfer_ongoing = DB::connection('mysql')
             ->table('transfer_internal')
@@ -613,7 +617,7 @@ class NyaaViewInjectorController extends AaaBaseController
             DB::connection('mysql')->table('transfer_internal')
                 ->insert($data);
 
-            $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
+            $class_bed = DB::connection('mysql2')->table('m_room_class')->where('isActive', 1)->get();
 
             $transfer_internal = DB::connection('mysql')
                 ->table('transfer_internal')
@@ -716,7 +720,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 ->where('kode_transfer_internal', $request->kode_transfer)
                 ->first();
 
-            $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
+            $class_bed = DB::connection('mysql2')->table('m_room_class')->where('isActive', 1)->get();
 
 
             $ruangan_asal = DB::connection('mysql2')
