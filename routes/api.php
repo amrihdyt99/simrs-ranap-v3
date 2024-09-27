@@ -6,6 +6,7 @@ use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
+use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -244,4 +245,5 @@ Route::prefix('pasien')->name('pasien.')->group(function () {
 
 Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('add-assesment-neonatus', [NeonatusController::class, 'store'])->name('neonatus.store');
+	Route::post('add-assesment-awal-anak', [AssesmentAnakController::class, 'store_assesment_awal_anak'])->name('assesment-anak-awal.store');
 });

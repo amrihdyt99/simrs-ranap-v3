@@ -42,13 +42,11 @@ class SummaryV2Controller extends Controller
         } elseif ($dateDiff->y > 18) {
             $age = 'dewasa';
         } elseif ($dateDiff->y == 0 && $dateDiff->m == 0 && $dateDiff->d <= 28) {
-            $age = 'bayi'; 
-        } 
-        elseif ($dateDiff->y > 3 && $dateDiff->y <= 13) {
-            $age = 'humpty dumpty'; 
-        } 
-        elseif ($dateDiff->y <= 18) {
-            $age = 'anak'; 
+            $age = 'bayi';
+        } elseif ($dateDiff->y > 3 && $dateDiff->y <= 13) {
+            $age = 'humpty dumpty';
+        } elseif ($dateDiff->y <= 18) {
+            $age = 'anak';
         }
 
         // dd($dataPasien->DateOfBirth);

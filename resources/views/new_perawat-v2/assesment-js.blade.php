@@ -1353,20 +1353,20 @@
                     col3.innerHTML = dataJSON[i]['catatan']
                     col4.innerHTML = dataJSON[i]['id_nurse']
                     if (dataJSON[i]['signature']) {
-                    console.log("Signature Base64:", dataJSON[i]['signature']);
-                    col4.innerHTML = `
+                        console.log("Signature Base64:", dataJSON[i]['signature']);
+                        col4.innerHTML = `
                         <div style="text-align: center;">
                             <img src="${dataJSON[i]['signature']}" alt="Signature" style="width: 400px; height: 200px;"/>
                             <p>${dataJSON[i]['id_nurse']}</p>
                         </div>
-                    `; 
-                } else {
-                    col4.innerHTML = `
+                    `;
+                    } else {
+                        col4.innerHTML = `
                         <div style="text-align: center;">
                             <p>${dataJSON[i]['id_nurse']}</p>
                         </div>
                     `;
-                }
+                    }
                     tr.appendChild(col1)
                     tr.appendChild(col2)
                     tr.appendChild(col3)
@@ -1966,6 +1966,7 @@
     }
 </script>
 
+@include('new_perawat.assesment.assesment_anak.js.assesment_anak_js')
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
 @include('new_perawat.resiko_jatuh.humpty_dumpty.js.resiko_jatuh_humpty_dumpty_js')
 @include('new_perawat.resiko_jatuh.geriatri.js.resiko_jatuh_geriatri_js')
@@ -1974,4 +1975,3 @@
 @include('new_perawat.transfer_internal.js.index_js')
 @include('new_perawat.monitoring_news.js.entry_news_js')
 @include('new_perawat.assesment.obgyn.js.obgyn_js')
-
