@@ -10,7 +10,7 @@
     </thead>
     <tbody>
         <tr>
-            <td>Diagnoasa penyebab Tandak & gejala awal</td>
+            <td>Diagnoasa penyebab Tanda & gejala awal</td>
             <td>
                 <div class="form-group">
                     <textarea class="form-control" rows="3" name="edukasi_diagnosa_penyebab_dokter" placeholder="Enter ..." disabled>{{$edukasi_pasien_dokter->edukasi_diagnosa_penyebab_dokter}}</textarea>

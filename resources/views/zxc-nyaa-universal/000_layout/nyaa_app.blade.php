@@ -145,7 +145,7 @@
       }
     </script>
 
-@if (auth()->user()->level_user == 'perawat')
+@if (auth()->user()->level_user == 'perawat' || auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
 <script>
   $(document).ready(function() {
     // Show the modal if shift is not selected

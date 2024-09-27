@@ -428,6 +428,7 @@
                 $.ajax({
                     type: "POST",
                     data: {
+                        "_token": "{{ csrf_token() }}",
                         "reg_no": regno,
                         "medrec": medrec,
                     },
@@ -1209,7 +1210,6 @@
     function getSoapPerawat_modal() {
         $('#modalSOAP').modal('show');
     }
-
     // Pengkajian Awal Dewasa
     function assementDewasa_init() {
         $('.kajian_kulit_dewasa').on('click', function() {
