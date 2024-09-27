@@ -25,7 +25,7 @@ trait RanapRegistrationTrait
     {
         $data['service_unit'] = ServiceUnit::all();
         $data['service_room'] = ServiceRoom::all();
-        $data['room_class'] = RoomClass::all();
+        $data['room_class'] = RoomClass::where('isActive', 1)->select('ClassCode', 'ClassName', 'ClassCategoryCode')->get();
         $data['ruangan_baru'] = DB::connection('mysql2')
             ->table('m_ruangan_baru')
             ->get();

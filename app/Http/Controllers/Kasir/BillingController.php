@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\NewDokter\OrderObatController;
+use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
 use App\Models\Pasien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class BillingController extends Controller
+class BillingController extends AaaBaseController
 {
     /**
      * Display a listing of the resource.
@@ -139,7 +140,8 @@ class BillingController extends Controller
         ];
     }
 
-    public function getOrderFromLab($reg_no) {
+    public function getOrderFromLab($reg_no)
+    {
         $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $reg_no));
 
         $order_penunjang = [];
@@ -174,11 +176,12 @@ class BillingController extends Controller
         return $order_penunjang;
     }
 
-    public function getOrderFromRadiology($reg_no){
-        $rad = json_decode(getService(urlLabRadiology().'/api/status-order-radiologi-v2?regno='.$reg_no));
+    public function getOrderFromRadiology($reg_no)
+    {
+        $rad = json_decode(getService(urlLabRadiology() . '/api/status-order-radiologi-v2?regno=' . $reg_no));
 
         $order_penunjang = [];
-                        
+
         if (isset($rad->code) && $rad->code == 200) {
             foreach ($rad->data as $key => $value) {
                 foreach ($value->item_order as $sub_key => $sub_value) {
@@ -203,7 +206,6 @@ class BillingController extends Controller
                         array_push($order_penunjang, $item);
                     }
                 }
-
             }
         }
 
@@ -539,5 +541,64 @@ class BillingController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function cetakKwitansi(Request $request)
+    {
+        $billing = DB::connection('mysql')->table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->pvalidation_reg)->first();
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no' => $request->pvalidation_reg])
+            ->first();
+
+        $terbilang = $this->terbilang($billing->pvalidation_total);
+
+        return view('kasir.billing.kwitansi', [
+            'billing'           => $billing,
+            'patient'           => $datamypatient,
+            'terbilang'         => $terbilang,
+            'pic'               => strtoupper($request->pic_pengesahan),
+            'pic_name'          => $request->pvalidation_legitimate,
+        ]);
+    }
+
+    public function penyebut($nilai)
+    {
+        $nilai = abs($nilai);
+        $huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+        $temp = "";
+        if ($nilai < 12) {
+            $temp = " " . $huruf[$nilai];
+        } else if ($nilai < 20) {
+            $temp = $this->penyebut($nilai - 10) . " Belas";
+        } else if ($nilai < 100) {
+            $temp = $this->penyebut($nilai / 10) . " Puluh" . $this->penyebut($nilai % 10);
+        } else if ($nilai < 200) {
+            $temp = " Seratus" . $this->penyebut($nilai - 100);
+        } else if ($nilai < 1000) {
+            $temp = $this->penyebut($nilai / 100) . " ratus" . $this->penyebut($nilai % 100);
+        } else if ($nilai < 2000) {
+            $temp = " Seribu" . $this->penyebut($nilai - 1000);
+        } else if ($nilai < 1000000) {
+            $temp = $this->penyebut($nilai / 1000) . " Ribu" . $this->penyebut($nilai % 1000);
+        } else if ($nilai < 1000000000) {
+            $temp = $this->penyebut($nilai / 1000000) . " Juta" . $this->penyebut($nilai % 1000000);
+        } else if ($nilai < 1000000000000) {
+            $temp = $this->penyebut($nilai / 1000000000) . " Milyar" . $this->penyebut(fmod($nilai, 1000000000));
+        } else if ($nilai < 1000000000000000) {
+            $temp = $this->penyebut($nilai / 1000000000000) . " Trilyun" . $this->penyebut(fmod($nilai, 1000000000000));
+        }
+        return $temp;
+    }
+
+    public function terbilang($nilai)
+    {
+        if ($nilai < 0) {
+            $hasil = "minus " . trim($this->penyebut($nilai));
+        } else {
+            $hasil = trim($this->penyebut($nilai));
+        }
+        return $hasil;
     }
 }
