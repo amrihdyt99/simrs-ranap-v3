@@ -10,11 +10,12 @@
           <button class="btn btn-success" id="btnSerahTerimaTfInternal"><i class="fas fa-user-check"></i> Terima Transfer Pasien</button>
         </div>
         @else
-        <div class="col-md-7">
+        <div class="col-md-6">
           <h3><b>TRANSFER INTERNAL</b></h3>
         </div>
-        <div class="col-md-5 float-right">
+        <div class="col-md-6 float-right">
           <div class="btn-group" role="group">
+            <button class="btn btn-warning" id="btnCreateTfIntensif"><i class="fas fa-user-plus"></i> Lakukan Transfer Rawat Intensif</button>
             <button class="btn btn-primary" id="btnCreateTfInternal"><i class="fas fa-user-plus"></i> Lakukan Transfer Internal</button>
             <button class="btn btn-success" id="btnSerahTerimaTfInternal"><i class="fas fa-user-check"></i> Terima Transfer Pasien</button>
           </div>

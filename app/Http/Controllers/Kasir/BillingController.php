@@ -119,7 +119,8 @@ class BillingController extends AaaBaseController
                 $item['ItemJumlah'] = $v->quantity;
                 $item['ItemDokter'] = $value->kode_dokter;
                 $item['ItemPoli'] = $value->kode_poli;
-                $item['ItemReview'] = $value->is_review == false ? 0 : 1;
+                // $item['ItemReview'] = $value->is_review == false ? 0 : 1;
+                $item['ItemReview'] = 1;
 
                 array_push($order_penunjang, $item);
             }
@@ -140,7 +141,8 @@ class BillingController extends AaaBaseController
         ];
     }
 
-    public function getOrderFromLab($reg_no) {
+    public function getOrderFromLab($reg_no)
+    {
         $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $reg_no));
 
         $order_penunjang = [];
@@ -175,11 +177,12 @@ class BillingController extends AaaBaseController
         return $order_penunjang;
     }
 
-    public function getOrderFromRadiology($reg_no){
-        $rad = json_decode(getService(urlLabRadiology().'/api/status-order-radiologi-v2?regno='.$reg_no));
+    public function getOrderFromRadiology($reg_no)
+    {
+        $rad = json_decode(getService(urlLabRadiology() . '/api/status-order-radiologi-v2?regno=' . $reg_no));
 
         $order_penunjang = [];
-                        
+
         if (isset($rad->code) && $rad->code == 200) {
             foreach ($rad->data as $key => $value) {
                 foreach ($value->item_order as $sub_key => $sub_value) {
@@ -204,7 +207,6 @@ class BillingController extends AaaBaseController
                         array_push($order_penunjang, $item);
                     }
                 }
-
             }
         }
 
@@ -479,10 +481,14 @@ class BillingController extends AaaBaseController
         try {
             $data = DB::table('rs_pasien_billing_validation')
                 ->where('pvalidation_reg', $request->reg_no)
-                ->select('pvalidation_status')
+                ->where('pvalidation_status', 1)
+                ->select([
+                    'pvalidation_status',
+                    'id'
+                ])
                 ->first();
 
-            return response()->json($data);
+            return $data;
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -491,6 +497,7 @@ class BillingController extends AaaBaseController
     public function storePayment(Request $request)
     {
         try {
+            // return $request;
             $data = [
                 'pvalidation_code' => genKode(DB::table('rs_pasien_billing_validation'), 'created_at', null, null, 'QARP'),
                 'pvalidation_reg' => $request->reg,
@@ -502,7 +509,10 @@ class BillingController extends AaaBaseController
                 'created_at' => date('Y-m-d H:i:s'),
             ];
 
-            $check_ = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)->count();
+            $check_ = DB::table('rs_pasien_billing_validation')
+                ->where('pvalidation_reg', $request->reg)
+                ->where('pvalidation_status', 1)
+                ->count();
 
             if ($check_ > 0) {
                 $delete = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)
@@ -554,9 +564,11 @@ class BillingController extends AaaBaseController
         $terbilang = $this->terbilang($billing->pvalidation_total);
 
         return view('kasir.billing.kwitansi', [
-            'billing'   => $billing,
-            'patient'   => $datamypatient,
-            'terbilang' => $terbilang,
+            'billing'           => $billing,
+            'patient'           => $datamypatient,
+            'terbilang'         => $terbilang,
+            'pic'               => strtoupper($request->pic_pengesahan),
+            'pic_name'          => $request->pvalidation_legitimate,
         ]);
     }
 
@@ -597,5 +609,37 @@ class BillingController extends AaaBaseController
             $hasil = trim($this->penyebut($nilai));
         }
         return $hasil;
+    }
+    
+    public function storeCancelation(Request $request){
+        try {
+            $data = [
+                'pvalidation_cancel_at' => date('Y-m-d H:i:s'),
+                'pvalidation_cancel_by' => auth()->user()->id,
+                'pvalidation_cancel_by_name' => auth()->user()->name,
+                'pvalidation_cancel_image' => $request->cancel_image,
+                'pvalidation_cancel_desc' => $request->open_desc,
+                'pvalidation_status' => 0
+            ];
+
+            $store = DB::table('rs_pasien_billing_validation')
+                ->where('id', $request->open_id)
+                ->where('pvalidation_status', 1)
+                ->update($data);
+
+            if ($store) {
+                return [
+                    'success' => true,
+                    'msg' => 'Pembayaran berhasil dibatalkan'
+                ];
+            }
+
+            return [
+                'success' => true,
+                'msg' => 'Pembayaran gagal dibatalkan'
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

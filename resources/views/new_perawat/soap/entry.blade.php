@@ -13,7 +13,7 @@
     <tbody id="table-cppt-perawat">
     </tbody>
 </table>
-</script>
+
 
 @push('myscripts')
 

@@ -41,7 +41,10 @@ class RegisterController extends Controller
     public function lengkapiPendaftaran($reg_no)
     {
         $data = $this->getDataFormRegistration();
+        // dd($data['room_class']);
         $registration = $this->getDataRegistrationRanap($this->parseRegNoByUnderScore($reg_no));
+
+        if (!$registration) return redirect()->route('register.ranap.index')->with('error', 'Data registrasi tidak ditemukan');
         $data_bed = $this->getDataBedById($registration->bed ?? '');
         $pasien = $this->getPatientByMedicalRecord($registration->reg_medrec);
         $asal_pasien = $this->getRegistrationOrigin($registration->reg_lama);
@@ -113,18 +116,19 @@ class RegisterController extends Controller
                 //$gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
                 $url_rawat_intensif = route('register.ranap.rawat-intensif', ['reg_no' => $reg_no]);
 
-                $button_dropdown = '<div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
-                                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
-                                            <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
-                                            <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
-                                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button>'
-                    . '</div>
-                                    </div>';
+                $button_dropdown =
+                    '<div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
+                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
+                            <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
+                            <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
+                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
+                        </div>' .
+                    '</div>';
                 return $button_dropdown;
             })
             ->editColumn('status', function ($query) use ($request) {

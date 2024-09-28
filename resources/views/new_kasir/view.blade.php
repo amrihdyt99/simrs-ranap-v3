@@ -223,8 +223,9 @@
                         <br>
                         <div id="load_action_button" class="float-right">Memuat data ...</div>
                         <div id="action_button">
-                            <!-- <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button> -->
-                            <!-- <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button> -->
+=======
+                            <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
+                            {{-- <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button> --}}
                             <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button>
                             <button id="btn-validasi-billing" class="btn btn-info float-right mb-3">KONFIRMASI PEMBAYARAN</button>
                         </div>
@@ -526,7 +527,7 @@
                 getStatusTagihan()
 
                 if (resp.validation) {
-                    $('[id*="selecting_items"]').remove()
+                    $('[id*="selecting_items"]').hide()
                     $.each(JSON.parse(resp.validation.pvalidation_selected), function(i, data_selected) {
                         console.log(data_selected)
                         $('[id="checked_status"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
@@ -534,6 +535,8 @@
 
 
                     total = resp.validation.pvalidation_total
+                } else {
+                    $('[id*="selecting_items"]').show()
                 }
 
                 $('[id="validasi-tagihan"]').html('Rp. ' + formatNumber(formatNumber(parseFloat(total).toFixed(2))))
@@ -899,8 +902,9 @@
                     $('#btn-kwitansi').show();
 
                     if (resp.pvalidation_status == 1 && payer == 'BPJS' || $level_ == 'admin') {
-                        $('#btn_open_invoice').show()
                     }
+                    $('#btn_open_invoice').show()
+                    $('[name="open_id"]').val(resp.id)
                 } else {
                     $('#status-tagihan').text('BELUM DIBAYAR');
                     $('#status-tagihan').addClass('btn btn-danger');
@@ -966,6 +970,30 @@
 
             } else {
                 $('#Debit').remove();
+
+                removeFromArray($(this).val())
+            }
+        }
+
+        if (this.value == 'Virtual Account') {
+            if (this.value == 'Virtual Account' && this.checked) {
+                $row_method = `<div id="VirtualAccount" class="row_method row_no_` + $count + `">
+                                    <h5>Metode Pembayaran dipilih : Virtual Account <span id="formated_value" data-count="` + $count + `"></span></h5>
+                                    <div class="form-group row">
+                                        <div class="col-lg-4">
+                                            <input type="text" name="pvalidation_virtual_account_number" placeholder="Nomor Virtual Account" class="form-control" data-count="` + $count + `" data-method="` + this.value + `">    
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <input type="number" name="pvalidation_virtual_account" placeholder="Jumlah pembayaran Virtual Account" class="form-control amount" data-count="` + $count + `" data-method="` + this.value + `">    
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </div>`;
+
+                $('#pay-method').append($row_method);
+
+            } else {
+                $('#VirtualAccount').remove();
 
                 removeFromArray($(this).val())
             }
@@ -1385,22 +1413,17 @@
             alert('Alasan open invoice harus diisi')
         } else {
             $.ajax({
-                url: '{{url("auth/api/kasir/open_invoice")}}',
+                url: '{{url("")}}/kasir/billing/storeCancelation',
                 type: 'POST',
                 dataType: 'json',
-                data: {
-                    _token: $('[name="_token"]').val(),
-                    reg: $reg,
-                    desc: $('[name="open_desc"]').val(),
-                    payer: payer
-                },
+                data: $('#formOpenInvoice').serialize(),
                 success: function(resp) {
-                    if (resp == 200) {
-                        alert('Open invoice berhasil dilakukan')
+                    if (resp.success) {
+                        alert(resp.msg)
                         $('#modalOpenInvoice').modal('hide');
                         getDataOrder();
                     } else {
-                        alert('Gagal open invoice');
+                        alert(resp.msg);
                     }
                 },
                 error: function(resp) {
@@ -1458,12 +1481,21 @@
             $('#modalKwitansi').modal('hide');
             $('#modalPrintKwitansi').modal('hide');
             $('.modal-backdrop').remove();
-            var printContent = $('#printKwitansiContent').html(); // Get the div content
-            var originalContent = $('body').html(); // Backup the entire page's content
 
-            $('body').html(printContent); // Replace body content with the div content
-            window.print(); // Trigger the print
-            $('body').html(originalContent); // Restore original page content
+
+            var modalContent = $('#printKwitansiContent').html(); // Get modal content
+
+            // Create a new window for printing
+            var printWindow = window.open('', '', 'height=500,width=800');
+
+            // Add content to the new window
+            printWindow.document.write(modalContent);
+
+            // Close the document to render the content
+            printWindow.document.close();
+
+            // Trigger the print dialog
+            printWindow.print();
         });
     });
 </script>

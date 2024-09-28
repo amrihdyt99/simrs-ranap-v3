@@ -75,16 +75,6 @@ class NeonatusController extends Controller
                     NeonatusTtd::create($ttd);
                 }
 
-                NeonatusRekonObat::where('reg_no', $reg_no)->delete();
-
-                foreach ($rekon_obat as $obat) {
-                    $obat['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
-                    $obat['reg_no'] = $reg_no;
-                    $obat['med_rec'] = $request->med_rec;
-                    NeonatusRekonObat::create($obat);
-                }
-
-
 
                 DB::commit();
                 $response = response()->json([

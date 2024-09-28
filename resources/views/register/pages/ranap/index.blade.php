@@ -11,7 +11,6 @@
     <div class="container-fluid">
     </div><!-- /.container-fluid -->
   </section>
-
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
@@ -37,6 +36,7 @@
                   {{-- <button onclick="tarik_regis()" class="btn btn-primary radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button> --}}
                 </div>
               </div>
+             
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -64,65 +64,62 @@
       <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
-<div class="modal fade" id="modalAdmisi" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg custom-width" role="document">
-    <div class="modal-content">
-      <div class="modal-header d-flex justify-content-between">
-        <h5 class="modal-title" id="resultModalLabel">Slip Admisi</h5>
-        <div class="d-flex align-items-center">
-          <button id="printButtonAdmisi" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <div class="modal fade" id="modalAdmisi" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg custom-width" role="document">
+        <div class="modal-content">
+          <div class="modal-header d-flex justify-content-between">
+            <h5 class="modal-title" id="resultModalLabel">Slip Admisi</h5>
+            <div class="d-flex align-items-center">
+              <button id="printButtonAdmisi" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <div class="modal-body">
+            <!-- <iframe id="iframe-admisi" style="width:100%; height:100%;" frameborder="0"></iframe> -->
+            <iframe id="iframe-admisi" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
+          </div>
         </div>
       </div>
-      <div class="modal-body">
-     <!-- <iframe id="iframe-admisi" style="width:100%; height:100%;" frameborder="0"></iframe> -->
-     <iframe id="iframe-admisi" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
-      </div>
     </div>
-  </div>
-</div>
-<div class="modal fade" id="modalGeneralConsent" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg custom-width" role="document">
-    <div class="modal-content">
-      <div class="modal-header d-flex justify-content-between">
-        <h5 class="modal-title" id="resultModalLabel">General Consent</h5>
-        <div class="d-flex align-items-center">
-          <button id="printButtonGC" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <div class="modal fade" id="modalGeneralConsent" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg custom-width" role="document">
+        <div class="modal-content">
+          <div class="modal-header d-flex justify-content-between">
+            <h5 class="modal-title" id="resultModalLabel">General Consent</h5>
+            <div class="d-flex align-items-center">
+              <button id="printButtonGC" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <div class="modal-body">
+            <iframe id="iframe-generalConsent" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe> 
+          </div>
         </div>
       </div>
-      <div class="modal-body">
-      <iframe id="iframe-generalConsent" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe> 
-      </div>
     </div>
-  </div>
-</div>
 
-<div class="modal fade" id="modalRawatIntensif" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg custom-width" role="document">
-    <div class="modal-content">
-      <div class="modal-header d-flex justify-content-between">
-        <h5 class="modal-title" id="resultModalLabel">Surat Rawat Intensif</h5>
-        <div class="d-flex align-items-center">
-          <button id="printButtonIntensif" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <div class="modal fade" id="modalRawatIntensif" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg custom-width" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-between">
+          <h5 class="modal-title" id="resultModalLabel">Surat Rawat Intensif</h5>
+          <div class="d-flex align-items-center">
+            <button id="printButtonIntensif" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
         </div>
-      </div>
-      <iframe id="iframe-rawatIntensif" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
-        </div>
+        <iframe id="iframe-rawatIntensif" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
+          
+        
       </div>
     </div>
-  </div>
-</div>
   </section>
-
-  <!-- /.content -->
 </div>
 @endsection
 
