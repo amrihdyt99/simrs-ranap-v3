@@ -32,6 +32,14 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-lg-2">
+                                                <label for="mrn" class="label-admisi">RM</label>
+                                            </div>
+                                            <div class="col-lg-10">
+                                                <input type="text" name="mrn" id="mrn" class="form-control" value="{{ $pasien->MedicalNo }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-2">
                                                 <label for="nama" class="label-admisi">Nama</label>
                                             </div>
                                             <div class="col-lg-10">
@@ -72,11 +80,19 @@
                                             <div class="col-lg-4 p">
                                                 <select id="jenis_kelamin" name="jenis_kelamin" class="form-control">
                                                     <option value=""></option>
-                                                    <option value="0001^X" {{ $pasien->GCSex == '0001^X' ? 'selected' : '' }}>Tidak Diketahui</option>
-                                                    <option value="0001^M" {{ $pasien->GCSex == '0001^M' ? 'selected' : '' }}>Laki-laki</option>
-                                                    <option value="0001^F" {{ $pasien->GCSex == '0001^F' ? 'selected' : '' }}>Perempuan</option>
-                                                    <option value="0001^U" {{ $pasien->GCSex == '0001^U' ? 'selected' : '' }}>Tidak Dapat Ditentukan</option>
-                                                    <option value="0001^N" {{ $pasien->GCSex == '0001^N' ? 'selected' : '' }}>Tidak Mengisi</option>
+                                                    @empty($pasien->GCSex)
+                                                    <option value="0001^X">Tidak Diketahui</option>
+                                                    <option value="0001^M">Laki-laki</option>
+                                                    <option value="0001^F">Perempuan</option>
+                                                    <option value="0001^U">Tidak Dapat Ditentukan</option>
+                                                    <option value="0001^N">Tidak Mengisi</option>
+                                                    @else
+                                                    <option value="0001^X" {{ $pasien->GCSex === 'Unknown' ? 'selected' : '' }}>Tidak Diketahui</option>
+                                                    <option value="0001^M" {{ $pasien->GCSex === 'Male' ? 'selected' : '' }}>Laki-laki</option>
+                                                    <option value="0001^F" {{ $pasien->GCSex === 'Female' ? 'selected' : '' }}>Perempuan</option>
+                                                    <option value="0001^U" {{ $pasien->GCSex === 'Undertermined' ? 'selected' : '' }}>Tidak Dapat Ditentukan</option>
+                                                    <option value="0001^N" {{ $pasien->GCSex === 'Not Provided' ? 'selected' : '' }}>Tidak Mengisi</option>
+                                                    @endempty
                                                 </select>
                                             </div>
                                             <div class="col-lg-2 mt-1">
@@ -168,7 +184,7 @@
                                                         </div>
                                                         <div class="col-lg-6 mt-2">
                                                             <label class="label-admisi">Nomor MRN</label>
-                                                            <input type="text" class="form-control" name="MedicalNo[]" value="{{ $kel->MedicalNo }}">
+                                                            <input type="text" class="form-control" name="FamilyMedicalNo[]" value="{{ $kel->FamilyMedicalNo }}">
                                                         </div>
                                                         <div class="col-lg-6 mt-2">
                                                             <label class="label-admisi">Nomor Telepon</label>
@@ -235,7 +251,7 @@
                                                         </div>
                                                         <div class="col-lg-6 mt-2">
                                                             <label class="label-admisi">Nomor MRN</label>
-                                                            <input type="text" class="form-control" name="MedicalNo[]">
+                                                            <input type="text" class="form-control" name="FamilyMedicalNo[]">
                                                         </div>
                                                         <div class="col-lg-6 mt-2">
                                                             <label class="label-admisi">Nomor Telepon</label>
@@ -389,27 +405,68 @@
     }
     document.getElementById('tanggal_lahir').addEventListener('change', calculateAge);
 
-    // Autocomplete for MedicalNo
     $(document).ready(function() {
-        $("input[name='MedicalNo[]']").autocomplete({
+        $("input[name='FamilyMedicalNo[]']").autocomplete({
             source: async function(request, response) {
                 const mrn = request.term;
                 const res = await fetch(`{{ route('register.informasi-pasien.checkMRN') }}?mrn=` + mrn);
                 const data = await res.json();
                 response(data.map(item => ({
                     label: `${item.MedicalNo} - ${item.PatientName}`,
-                    value: item.MedicalNo
+                    value: item.MedicalNo,
+                    patientData: item
                 })));
             },
             minLength: 1,
             select: function(event, ui) {
-                $(this).val(ui.item.value);
+                const form = $(this).closest('.family-form');
+                form.find("input[name='FamilyMedicalNo[]']").val(ui.item.value);
+                form.find("input[name='FamilyName[]']").val(ui.item.patientData.PatientName);
+                form.find("input[name='SSN[]']").val(ui.item.patientData.SSN);
+                form.find("input[name='DateOfBirth[]']").val(ui.item.patientData.DateOfBirth);
+                form.find("select[name='Sex[]']").val(ui.item.patientData.GCSex);
+                form.find("input[name='Address[]']").val(ui.item.patientData.PatientAddress);
+                form.find("input[name='PhoneNo[]']").val(ui.item.patientData.MobilePhoneNo1);
                 return false;
             },
             focus: function(event, ui) {
                 $(this).val(ui.item.value);
                 return false;
             }
+        });
+
+        // Setup autofill for dynamically added family forms
+        $('#add-family-form').on('click', function() {
+            setTimeout(function() {
+                $("input[name='FamilyMedicalNo[]']:last").autocomplete({
+                    source: async function(request, response) {
+                        const mrn = request.term;
+                        const res = await fetch(`{{ route('register.informasi-pasien.checkMRN') }}?mrn=` + mrn);
+                        const data = await res.json();
+                        response(data.map(item => ({
+                            label: `${item.MedicalNo} - ${item.PatientName}`,
+                            value: item.MedicalNo,
+                            patientData: item
+                        })));
+                    },
+                    minLength: 1,
+                    select: function(event, ui) {
+                        const form = $(this).closest('.family-form');
+                        form.find("input[name='FamilyMedicalNo[]']").val(ui.item.value);
+                        form.find("input[name='FamilyName[]']").val(ui.item.patientData.PatientName);
+                        form.find("input[name='SSN[]']").val(ui.item.patientData.SSN);
+                        form.find("input[name='DateOfBirth[]']").val(ui.item.patientData.DateOfBirth);
+                        form.find("select[name='Sex[]']").val(ui.item.patientData.GCSex);
+                        form.find("input[name='Address[]']").val(ui.item.patientData.PatientAddress);
+                        form.find("input[name='PhoneNo[]']").val(ui.item.patientData.MobilePhoneNo1);
+                        return false;
+                    },
+                    focus: function(event, ui) {
+                        $(this).val(ui.item.value);
+                        return false;
+                    }
+                });
+            }, 100);
         });
     });
 </script>

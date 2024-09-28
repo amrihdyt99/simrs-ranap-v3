@@ -10,11 +10,13 @@ class NewSoapCOntroller extends Controller
 {
     function addsoap(Request $request)
     {
+        $soaper_assesment = is_array($request->soaper_assesment) ? implode(',', $request->soaper_assesment) : '';
+        // $soaper_assesment = $request->soaper_assesment;
         $params = array(
             'soaper_reg' => $request->soaper_reg,
             'soaper_subject' => $request->soaper_subject,
             'soaper_object' => $request->soaper_object,
-            'soaper_assesment' => $request->soaper_assesment,
+            'soaper_assesment' => $soaper_assesment,
             'soaper_planning' => $request->soaper_planning,
             'soaper_perawat' => $request->soaper_perawat,
             'soaper_poli' => "",
@@ -42,7 +44,7 @@ class NewSoapCOntroller extends Controller
                 'soap_tanggal' => date('Y-m-d'),
                 'soapdok_subject' => $request->soaper_subject,
                 'soapdok_object' => $request->soaper_object,
-                'soapdok_assesment' => $request->soaper_assesment,
+                'soapdok_assesment' => $soaper_assesment,
                 'soapdok_planning' => $request->soaper_planning,
                 'soap_waktu' => date('H:i:s'),
                 'soapdok_dokter' => $request->soaper_perawat,

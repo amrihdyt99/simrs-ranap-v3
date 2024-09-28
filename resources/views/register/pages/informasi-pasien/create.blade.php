@@ -32,6 +32,17 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-lg-2">
+                                                <label for="mrn" class="label-admisi">RM</label>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <input type="text" name="mrn" id="mrn" class="form-control" placeholder="Nomor Rekam Medis">
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <button type="button" class="btn btn-primary" id="searchMrn">Cari MRN</button>
+                                            </div>  
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-2">
                                                 <label for="nama" class="label-admisi">Nama</label>
                                             </div>
                                             <div class="col-lg-10">
@@ -170,7 +181,7 @@
                                                         </div>
                                                         <div class="col-lg-6 mt-2">
                                                             <label class="label-admisi">Nomor MRN</label>
-                                                            <input type="text" class="form-control" name="MedicalNo[]" placeholder="Nomor MRN" onblur="checkMRN(this)">
+                                                            <input type="text" class="form-control" name="FamilyMedicalNo[]" placeholder="Nomor MRN Keluarga" onblur="checkMRN(this)">
                                                         </div>
                                                         <div class="col-lg-6 mt-2">
                                                             <label class="label-admisi">Nomor Telepon</label>
@@ -245,20 +256,62 @@
 @endsection
 @push('nyaa_scripts')
 <script>
+document.getElementById('searchMrn').addEventListener('click', function() {
+    const mrn = document.getElementById('mrn').value;
+    if (mrn) {
+        fetch(`https://rsud.sumselprov.go.id/simrs-rajal/api/master/getPasien?medrec=${mrn}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    const patient = data[0];
+                    document.getElementById('nama').value = patient.PatientName;
+                    document.getElementById('preferred_name').value = patient.PreferredName;
+                    document.getElementById('name_on_card').value = patient.PatientNameOnCard;
+                    document.getElementById('tempat_lahir').value = patient.CityOfBirth;
+                    document.getElementById('tanggal_lahir').value = patient.DateOfBirth.split(' ')[0];
+                    document.getElementById('jenis_kelamin').value = patient.GCSex;
+                    document.getElementById('ssn').value = patient.SSN;
+                    document.getElementById('agama').value = patient.GCReligion;
+                    document.getElementById('telepon_1').value = patient.MobilePhoneNo1;
+                    document.getElementById('gol_darah').value = patient.GCBloodType;
+                    document.getElementById('rhesus').value = patient.BloodRhesus.trim() || ""; 
+                    document.getElementById('alamat').value = patient.PatientAddress || ""; 
+                    calculateAge();
+                } else {
+                    alert('Data pasien tidak ditemukan');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mencari data pasien');
+            });
+    } else {
+        alert('Silakan masukkan MRN terlebih dahulu');
+    }
+});
+
     $(document).ready(function() {
-        $("input[name='MedicalNo[]']").autocomplete({
+        $("input[name='FamilyMedicalNo[]']").autocomplete({
             source: async function(request, response) {
                 const mrn = request.term;
                 const res = await fetch(`{{ route('register.informasi-pasien.checkMRN') }}?mrn=` + mrn);
                 const data = await res.json();
                 response(data.map(item => ({
                     label: `${item.MedicalNo} - ${item.PatientName}`,
-                    value: item.MedicalNo
+                    value: item.MedicalNo,
+                    patientData: item
                 })));
             },
             minLength: 1,
             select: function(event, ui) {
-                $(this).val(ui.item.value);
+                const form = $(this).closest('.family-form');
+                form.find("input[name='FamilyMedicalNo[]']").val(ui.item.value);
+                form.find("input[name='FamilyName[]']").val(ui.item.patientData.PatientName);
+                form.find("input[name='SSN[]']").val(ui.item.patientData.SSN);
+                form.find("input[name='DateOfBirth[]']").val(ui.item.patientData.DateOfBirth);
+                form.find("select[name='Sex[]']").val(ui.item.patientData.GCSex);
+                form.find("input[name='Address[]']").val(ui.item.patientData.PatientAddress);
+                form.find("input[name='PhoneNo[]']").val(ui.item.patientData.MobilePhoneNo1);
                 return false;
             },
             focus: function(event, ui) {

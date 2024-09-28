@@ -540,7 +540,6 @@ class RegisterController extends Controller
     function cetakSlipAdmisi($regno)
     {
         $data = $this->getDataSlipAdmisi($regno);
-
         return view('rekam_medis.slip_admisi', $data);
     }
 

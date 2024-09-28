@@ -1270,32 +1270,70 @@
                     var trA = document.createElement('tr');
                     var trP = document.createElement('tr');
 
-                    trS.appendChild(document.createTextNode('SUBJECT'));
+                    var boldSubject = document.createElement('b');
+                    boldSubject.appendChild(document.createTextNode('SUBJECT'));
+                    trS.appendChild(boldSubject);
                     trS.appendChild(document.createElement('br'));
                     trS.appendChild(document.createTextNode(datasoap[i].soapdok_subject ?? '-'));
 
-                    trO.appendChild(document.createElement('br'));
-                    trO.appendChild(document.createTextNode('OBJECT'));
+                    var boldObject = document.createElement('b');
+                    boldObject.appendChild(document.createTextNode('OBJECT'));
+                    trO.appendChild(boldObject);
                     trO.appendChild(document.createElement('br'));
                     trO.appendChild(document.createTextNode(datasoap[i].soapdok_object ?? '-'));
 
-                    trA.appendChild(document.createElement('br'));
-                    trA.appendChild(document.createTextNode('ASSESMENT'));
+                    var boldAssesment = document.createElement('b');
+                    boldAssesment.appendChild(document.createTextNode('ASSESMENT'));
+                    trA.appendChild(boldAssesment);
                     trA.appendChild(document.createElement('br'));
                     trA.appendChild(document.createTextNode(datasoap[i].soapdok_assesment ?? '-'));
 
-                    trP.appendChild(document.createElement('br'));
-                    trP.appendChild(document.createTextNode('PLANNING'));
+                    var boldPlanning = document.createElement('b');
+                    boldPlanning.appendChild(document.createTextNode('PLANNING'));
+                    trP.appendChild(boldPlanning);
                     trP.appendChild(document.createElement('br'));
                     trP.appendChild(document.createTextNode(datasoap[i].soapdok_planning ?? '-'));
 
-                    row.append($('<td>').append(trS, trO, trA, trP));
-                    row.append($('<td>').text(""));
+                    var trTindakan = document.createElement('tr');
+                    var boldTindakan = document.createElement('b');
+                    boldTindakan.appendChild(document.createTextNode('TINDAKAN PENUNJANG & OBAT :'));
+                    trTindakan.appendChild(boldTindakan);
+                    trTindakan.appendChild(document.createElement('br'));
+
+                    if (datasoap[i].order_lab && datasoap[i].order_lab.length > 0) {
+                        $.each(datasoap[i].order_lab, function(i_lab, item_lab) {
+                            trTindakan.appendChild(document.createTextNode((i_lab == 0 ? 'Laboratorium: ' : '') + item_lab.item_name + (i_lab < datasoap[i].order_lab.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_radiologi && datasoap[i].order_radiologi.length > 0) {
+                        $.each(datasoap[i].order_radiologi, function(i_rad, item_rad) {
+                            trTindakan.appendChild(document.createTextNode((i_rad == 0 ? 'Radiologi: ' : '') + item_rad.item_name + (i_rad < datasoap[i].order_radiologi.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_obat && datasoap[i].order_obat.length > 0) {
+                        $.each(datasoap[i].order_obat, function(i_obat, item_obat) {
+                            trTindakan.appendChild(document.createTextNode((i_obat == 0 ? 'Obat: ' : '') + item_obat.item_name + (i_obat < datasoap[i].order_obat.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_lainnya && datasoap[i].order_lainnya.length > 0) {
+                        $.each(datasoap[i].order_lainnya, function(i_lainnya, item_lainnya) {
+                            trTindakan.appendChild(document.createTextNode((i_lainnya == 0 ? 'Tindakan Lainnya: ' : '') + item_lainnya.item_name + (i_lainnya < datasoap[i].order_lainnya.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    var trInstruksi = document.createElement('tr');
+                    trInstruksi.appendChild(document.createTextNode(datasoap[i].soapdok_instruksi ?? '-'));
+
+                    row.append($('<td>').append(trS, trO, trA, trP, trTindakan));
+                    row.append($('<td>').append(trInstruksi));
                     if (statusVerifikasi == 1) {
                         var btnShowQR = document.createElement('button')
                         btnShowQR.type = 'button'
                         btnShowQR.className = 'btn btn-success'
-                        btnShowQR.innerText = 'Lihat QRCode'
+                        btnShowQR.innerText = 'Lihat QRCode '
                         btnShowQR.id = 'btnShowQR' + datasoap[i].soapdok_reg
                         btnShowQR.value = datasoap[i].id
                         let soap_id = datasoap[i].soapdok_id;
