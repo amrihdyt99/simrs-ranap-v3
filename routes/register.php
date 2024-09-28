@@ -39,6 +39,7 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
 
 Route::prefix('igd')->middleware(['auth', 'role:adminregister'])->group(function () {
     Route::get('/', [IGD\RegisterController::class, 'index'])->name('register.igd.index');
+    Route::post('/', [IGD\RegisterController::class, 'storeRegistration'])->name('register.igd.store-registration');
 
     Route::get('/form', [IGD\RegisterController::class, 'formRegisterIGD'])->name('register.igd.create');
     Route::post('/form', [IGD\RegisterController::class, 'storeRegisterIGD'])->name('register.igd.store');
@@ -69,7 +70,7 @@ Route::get('register/informasi-pasien/checkMRN', [RegisterDataController::class,
 //Route::get('/informasi-pasien', [InformasiPasien\RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
 Route::get('register/informasi-pasien/{mrn}/barcode', [RegisterDataController::class, 'barcodePasien'])->name('register.informasi-pasien.barcode');
 Route::get('/register/cancelation', [RegistrationCancelationController::class, 'index'])->name('cancelation.index');
-Route::post('/register/cancelation/{reg_no}', [RegistrationCancelationController::class, 'cancelRegistration'])->name('cancel_registration');
+Route::post('/register/cancelation/{reg_no}', [RegistrationCancelationController::class, 'cancelRegistration'])->where('reg_no', '(.*)')->name('cancel_registration');
 Route::delete('/register/cancelation/{id}', [RegistrationCancelationController::class, 'cancelRegistrationCancelation'])->name('cancelation.delete');
 
 Route::prefix('register')->name('register.')->group(function () {

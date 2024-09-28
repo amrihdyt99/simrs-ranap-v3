@@ -2,6 +2,7 @@
 
 namespace App\Traits\Master;
 
+use App\Http\Controllers\IGD\IGDServices;
 use App\Models\Pasien;
 use App\Traits\HttpRequestTraits;
 use Carbon\Carbon;
@@ -126,6 +127,45 @@ trait MasterPasienTrait
             // ->offset($offset) // Added pagination offset
             // ->limit($limit) // Added pagination limit
             ->get();
+
+        $data_igd = [];
+        if (!empty($data->reg_lama_igd)) $data_igd = $this->getDataIGDByMedrec($data->reg_medrec);
+        // merge data igd to data
+        $data = $data->merge($data_igd);
         return $data;
+    }
+    public function getDataIGDByMedrec($medrec)
+    {
+        try {
+            $data = Http::get('https://rsud.sumselprov.go.id/simrs-rajal/api/igd/pendaftaran?medrec=' . $medrec);
+            $data = json_decode($data->body(), true);
+            return collect($data)->map(function ($item) {
+                list(
+                    $business_partner,
+                    $room,
+                    $reg_class,
+                    $charge_class
+                ) = [
+                    $this->masterBusinessPartner->findOneById($item['ranap_business_partner']),
+                    $this->masterRuangan->findOneByRoomID($item['ranap_room']),
+                    $this->roomClass->findOne($item['ranap_class']),
+                    $this->roomClass->findOne($item['ranap_charge_class']),
+                ];
+
+                return (object)[
+                    'reg_medrec' => $item['reg_medrec'],
+                    'reg_lama' => $item['original_reg'],
+                    'ranap_class' => $reg_class->ClassName ?? '-',
+                    'ranap_charge_class' => $charge_class->ClassName ?? '-',
+                    'ranap_room' => $room->RoomName ?? '-',
+                    'ranap_business_partner' => $business_partner->BusinessPartnerName ?? '-',
+                    'ranap_diagnosa' => $item['original_indikasi'],
+                    'reg_tgl' => Carbon::parse($this->getDateFromRegistrationNumber($item['ranap_reg']))->format('d-M-Y'),
+                    'dokter' => $item['ranap_dpjp'],
+                ];
+            })->all();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
