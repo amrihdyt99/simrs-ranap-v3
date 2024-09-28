@@ -774,6 +774,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            loadAllFunction();
                         },
                         error: function(data) {
                             clear_show_error();
