@@ -49,9 +49,9 @@ $data_persiapan_pasien = [
 ['item' => 'Lain-lain**'],
 ];
 
-$registrasi_data =  DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+$registrasi_data = DB::connection('mysql2')
+->table('m_registrasi')
+->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
 @endphp
 
 <style>
@@ -131,10 +131,10 @@ $registrasi_data =  DB::connection('mysql2')
         <div class="row">
 
             <div class="col" style="max-width: 15%;">
-            @if (Auth::user()->level_user == 'farmasi')
-            <div class="row">
+                @if (Auth::user()->level_user == 'farmasi')
+                <div class="row">
                     <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
-                        Edukasi 
+                        Edukasi
                     </div>
                 </div>
                 <div class="row">
@@ -142,16 +142,16 @@ $registrasi_data =  DB::connection('mysql2')
                         CPPT
                     </div>
                 </div>
-                                <div class="row">
-                    <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
-                    Rekonsiliasi 
+                <div class="row">
+                    <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
+                        Rekonsiliasi
                     </div>
                 </div>
-            @else
-            @if (Auth::user()->level_user == 'dietitian')
+                @else
+                @if (Auth::user()->level_user == 'dietitian')
                 <div class="row">
                     <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
-                        Edukasi 
+                        Edukasi
                     </div>
                 </div>
                 <div class="row">
@@ -159,7 +159,7 @@ $registrasi_data =  DB::connection('mysql2')
                         CPPT
                     </div>
                 </div>
-            @else
+                @else
                 @if(Auth::user()->level_user=="radiologi")
                 <div class="row">
                     <div class="left-tab active" id="tab-radiologi" onclick="clickTab('radiologi')">
@@ -222,6 +222,12 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
 
                 <div class="row">
+                    <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
+                        Rekonsiliasi Obat
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="left-tab" id="tab-edukasi" onclick="clickTab('edukasi')">
                         Edukasi Pasien
                     </div>
@@ -277,7 +283,7 @@ $registrasi_data =  DB::connection('mysql2')
                     </div>
                 </div>
 
-                
+
 
                 <div class="row">
                     <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
@@ -365,7 +371,7 @@ $registrasi_data =  DB::connection('mysql2')
                     <div class="left-tab" id="tab-admin-nurse" onclick="clickTab('admin-nurse')">
                         Admin Nurse
                     </div>
-                </div> 
+                </div>
 
                 <div class="row">
                     <div class="left-tab" id="tab-bedah" onclick="clickTab('bedah')">
