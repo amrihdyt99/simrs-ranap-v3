@@ -414,7 +414,7 @@ $skrinning = optional((object)[]);
               <label for="obat-obatan">Obat-obatan</label>
             </td>
             <td>
-              <input type="checkbox" id="prosedur" value="Prosedur" name="skrinning[edukasi_ortu][]" {{in_array('Prosedur ',$edukasi) ? 'checked' : ''}}>
+              <input type="checkbox" id="prosedur" value="Prosedur" name="skrinning[edukasi_ortu][]" {{in_array('Prosedur',$edukasi) ? 'checked' : ''}}>
               <label for="prosedur">Prosedur (contoh : cara perawatan luka)</label>
             </td>
           </tr>
@@ -449,7 +449,11 @@ $skrinning = optional((object)[]);
         </tbody>
       </table>
       <input id="edukasi_ket" type="text" class="form-control" name="skrinning[edukasi_ortu_ket]" placeholder="Lainnya..." value="{{ $skrinning->edukasi_ortu_ket }}">
-      <table class="w-100 mt-3" border="1">
+      <hr>
+      <div class="container mt-3">
+        <button class="btn btn-primary" type="button" onclick="storeNeonatus()">Simpan</button>
+      </div>
+      <!-- <table class="w-100 mt-3" border="1">
         <tbody>
           <tr>
             <td>
@@ -466,7 +470,7 @@ $skrinning = optional((object)[]);
             </td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
     </div>
   </div>
 </div>

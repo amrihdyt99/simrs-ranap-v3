@@ -160,7 +160,7 @@ class NyaaViewInjectorController extends AaaBaseController
         );
 
         if (isset($request->type)) {
-            return view('new_perawat.edukasi.components.edukasi_'.$request->type)
+            return view('new_perawat.edukasi.components.edukasi_' . $request->type)
                 ->with($context);
         }
 
@@ -317,7 +317,6 @@ class NyaaViewInjectorController extends AaaBaseController
         $fisik = NeonatusFisik::where('reg_no', $request->reg_no)->first();
         $nyeri = NeonatusNyeri::where('reg_no', $request->reg_no)->first();
         $ttd = NeonatusTtd::where('reg_no', $request->reg_no)->first();
-        $rekon_obat = NeonatusRekonObat::where('reg_no', $request->reg_no)->get();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -325,7 +324,6 @@ class NyaaViewInjectorController extends AaaBaseController
             'fisik' => optional($fisik),
             'skrinning' => optional($nyeri),
             'ttd'   => optional($ttd),
-            'rekon_obat' => $rekon_obat,
         );
         return view("new_perawat.assesment.neonatus")->with($context);
     }
@@ -994,7 +992,7 @@ class NyaaViewInjectorController extends AaaBaseController
         $skrining_fungsional = ObgynSkriningFungsional::where('reg_no', $request->reg_no)->first();
         $pengkajian_kulit = ObgynPengkajianKulit::where('reg_no', $request->reg_no)->first();
         $pengkajian_kebutuhan = ObgynPengkajianKebutuhan::where('reg_no', $request->reg_no)->first();
-        
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
