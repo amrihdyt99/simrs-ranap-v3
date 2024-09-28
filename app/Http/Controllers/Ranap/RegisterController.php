@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ranap;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\IGD\IGDServices;
 use App\Models\Bed;
 use App\Models\ICD10;
 use App\Models\KelasKategori;
@@ -31,9 +32,13 @@ class RegisterController extends Controller
 {
     use RanapRegistrationTrait, MasterPasienTrait, HttpRequestTraits, MasterBedTraits;
 
+    protected $igdService;
+    public function __construct(IGDServices $igdService)
+    {
+        $this->igdService = $igdService;
+    }
     public function index(Request $request)
     {
-
         if ($request->ajax()) return $this->ajax_index($request);
         return view('register.pages.ranap.index');
     }
@@ -45,6 +50,12 @@ class RegisterController extends Controller
         $registration = $this->getDataRegistrationRanap($this->parseRegNoByUnderScore($reg_no));
 
         if (!$registration) return redirect()->route('register.ranap.index')->with('error', 'Data registrasi tidak ditemukan');
+
+        $data_igd = [];
+        if ($registration->reg_lama_igd) {
+            $data_igd = $this->igdService->getDataIGDByMedrec($registration->reg_medrec);
+        }
+
         $data_bed = $this->getDataBedById($registration->bed ?? '');
         $pasien = $this->getPatientByMedicalRecord($registration->reg_medrec);
         $asal_pasien = $this->getRegistrationOrigin($registration->reg_lama);
@@ -64,7 +75,8 @@ class RegisterController extends Controller
             'cover_class' => $data['cover_class'],
             'purpose' => $purpose,
             'pjawab_pasien' => $pjawab_pasien,
-            'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-'
+            'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-',
+            'data_igd' => $data_igd
         ];
         // dd($context['registration']);
         return  view('register.pages.ranap.lengkapi_pendaftaran', $context);
