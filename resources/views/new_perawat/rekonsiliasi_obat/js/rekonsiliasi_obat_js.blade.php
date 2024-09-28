@@ -159,9 +159,46 @@
               neko_notify('success', 'Data berhasil diverifikasi.');
               $("#perawat_signature_img").attr("src", `${data.signature}`);
               $('#signature_perawat').val(data.signature);
+              $("#perawat_username").val(data.username);
               $("#perawat_name").text(data.user_name);
               $("#ttd_perawat_image").removeClass("d-none");
               $('#verif_perawat_btn').addClass('d-none');
+            },
+            error: function(data) {
+              neko_simpan_error();
+            },
+          })
+        }
+      });
+    });
+
+    $('#verif_farmasi_btn').click(function(e) {
+      Swal.fire({
+        title: "Verifikasi Rekonsiliasi Obat ?",
+        icon: 'warning',
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Ya, verifikasi !",
+        cancelButtonText: "Tidak, Batalkan",
+      }).then((result) => {
+        if (result.value) {
+          $.ajax({
+            url: "{{route('perawat.get-rekon-ttd.get')}}",
+            type: "POST",
+            data: {
+              _token: '{{ csrf_token() }}',
+              _method: 'GET',
+              username: "{{ auth()->user()->username }}",
+            },
+            success: function(data) {
+              console.log(data.username);
+              neko_notify('success', 'Data berhasil diverifikasi.');
+              $("#farmasi_signature_img").attr("src", `${data.signature}`);
+              $('#signature_farmasi').val(data.signature);
+              $("#farmasi_name").text(data.user_name);
+              $("#farmasi_username").val(data.username);
+              $("#ttd_farmasi_image").removeClass("d-none");
+              $('#verif_farmasi_btn').addClass('d-none');
             },
             error: function(data) {
               neko_simpan_error();
@@ -186,7 +223,7 @@
         $.ajax({
           url: "{{route('perawat.rekonsiliasi-obat.store')}}",
           type: "POST",
-          data: $('#formRekonsiliasiObat').serialize() + "&rekon_data[med_rec]=" + medrec + "&rekon_data[reg_no]=" + regno + "&rekon_data[perawat_username]=" + "{{ auth()->user()->username }}",
+          data: $('#formRekonsiliasiObat').serialize() + "&rekon_data[med_rec]=" + medrec + "&rekon_data[reg_no]=" + regno,
           success: function(data) {
             neko_simpan_success();
           },

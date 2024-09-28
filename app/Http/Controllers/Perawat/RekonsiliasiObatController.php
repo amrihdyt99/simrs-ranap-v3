@@ -22,11 +22,19 @@ class RekonsiliasiObatController extends AaaBaseController
                 ['med_rec', $request->medrec],
             ])->first();
 
+        $dpjp = DB::connection('mysql2')->table('users')
+            ->leftJoin('m_registrasi', 'm_registrasi.reg_dokter', '=', 'users.dokter_id')
+            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->select('users.username', 'users.name', 'users.signature')
+            ->first();
+
         $perawat = null;
+        $farmasi = null;
 
 
         if (!empty($rekon_data)) {
             $perawat = DB::connection('mysql2')->table('users')->where('username', $rekon_data->perawat_username)->select('name')->first();
+            $farmasi = DB::connection('mysql2')->table('users')->where('username', $rekon_data->farmasi_username)->select('name')->first();
         }
 
         $context = array(
@@ -34,6 +42,8 @@ class RekonsiliasiObatController extends AaaBaseController
             'medrec' => $request->medrec,
             'rekon_data' => optional($rekon_data),
             'perawat' => optional($perawat),
+            'farmasi' => optional($farmasi),
+            'dokter' => optional($dpjp),
         );
 
 
@@ -177,6 +187,7 @@ class RekonsiliasiObatController extends AaaBaseController
                 'message' => 'Data berhasil didapatkan',
                 'signature' => $user->signature,
                 'user_name' => $user->name,
+                'username' => $user->username,
             ]);
         } else {
             abort(500, "Data tanda tangan kosong !");

@@ -143,7 +143,7 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
                 <div class="row">
-                    <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
+                    <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
                         Rekonsiliasi
                     </div>
                 </div>
@@ -222,7 +222,7 @@ $registrasi_data = DB::connection('mysql2')
                 </div>
 
                 <div class="row">
-                    <div class="left-tab" id="tab-nyeri" onclick="clickTab('rekonsiliasi-obat')">
+                    <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
                         Rekonsiliasi Obat
                     </div>
                 </div>
