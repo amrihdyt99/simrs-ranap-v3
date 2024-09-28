@@ -69,7 +69,7 @@ $rekon_data = optional((object)[]);
                 <div class="form-group row ">
                   <label for="inputPassword3" class="col-sm-4 text-sm">Tanggal / Pukul</label>
                   <div class="input-group col-sm-8">
-                    <input id="asper_khusus_abdomen" type="datetime-local" class="form-control text-sm" name="rekon_data[time_ttd_dpjp]" value="">
+                    <input id="asper_khusus_abdomen" type="datetime-local" class="form-control text-sm" name="rekon_data[time_ttd_dpjp]" value="{{ $rekon_data->time_ttd_dpjp ?? '' }}">
                   </div>
                 </div>
               </td>
@@ -77,7 +77,7 @@ $rekon_data = optional((object)[]);
                 <div class="form-group row ">
                   <label for="inputPassword3" class="col-sm-4 text-sm">Tanggal / Pukul</label>
                   <div class="input-group col-sm-8">
-                    <input id="asper_khusus_abdomen" type="datetime-local" class="form-control text-sm" name="rekon_data[time_ttd_farmasi]" value="">
+                    <input id="asper_khusus_abdomen" type="datetime-local" class="form-control text-sm" name="rekon_data[time_ttd_farmasi]" value="{{ $rekon_data->time_ttd_farmasi ?? '' }}" {{ auth()->user()->level_user != 'farmasi' ? 'readonly' : '' }}>
                   </div>
                 </div>
               </td>
@@ -85,7 +85,7 @@ $rekon_data = optional((object)[]);
                 <div class="form-group row ">
                   <label for="inputPassword3" class="col-sm-4 text-sm">Tanggal / Pukul</label>
                   <div class="input-group col-sm-8">
-                    <input id="asper_khusus_abdomen" type="datetime-local" class="form-control text-sm" name="rekon_data[time_ttd_perawat]" value="{{ $rekon_data->time_ttd_perawat ?? '' }}">
+                    <input id="asper_khusus_abdomen" type="datetime-local" class="form-control text-sm" name="rekon_data[time_ttd_perawat]" value="{{ $rekon_data->time_ttd_perawat ?? '' }}" {{ auth()->user()->level_user != 'perawat' ? 'readonly' : '' }}>
                   </div>
                 </div>
               </td>
@@ -109,59 +109,47 @@ $rekon_data = optional((object)[]);
             </tr>
             <tr>
               <td>
-                @if($rekon_data->ttd_dpjp != null)
                 <div class="container">
-                  <div class="row justify-content-center">
-                    <img src="{{$rekon_data->ttd_dpjp}}" width="250" height="150" />
+                  <div class="row justify-content-center text-center">
+                    <input type="hidden" id="signature_dpjp" name="rekon_data[ttd_dpjp]" value="{{$dokter->signature}}">
+                    <input type="hidden" id="dokter_username" name="rekon_data[dokter_username]" value="{{$dokter->username}}">
+                    <img src="{{$dokter->signature}}" width="250" height="150" />
+                    <p id="dokter_name" style="width: 100%;">{{ $dokter->name }}</p>
                   </div>
-                </div>
-                @else
-
-                <div id="signature_rekon_obat_dpjp" class="text-center">
-                  <div class="container">
-                    <div class="row justify-content-center">
-                      <div style="border:solid 1px teal; width:260px;height:160px;padding:3px;position:relative;">
-                        <canvas id="the_canvas" width="250px" height="150px">Your browser does not support the HTML canvas tag.</canvas>
-                      </div>
-                    </div>
-                  </div>
-                  <div style="margin:10px;">
-                    <input type="hidden" id="signature_dpjp" name="rekon_data[ttd_dpjp]">
-                    <button type="button" id="clear_btn_dpjp" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Clear</button>
-                    <button type="button" id="save_ttd_dpjp" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
-                  </div>
-                </div>
-                @endif
               </td>
               <td>
 
                 @if($rekon_data->ttd_farmasi != null)
                 <div class="container">
-                  <div class="row justify-content-center">
+                  <div class="row justify-content-center text-center">
                     <img src="{{$rekon_data->ttd_farmasi}}" width="250" height="150" />
+                    <p id="farmasi_name" style="width: 100%;">{{ $farmasi->name }}</p>
                   </div>
                 </div>
                 @else
-                <div id="signature_rekon_obat_ppds" class="text-center">
-                  <div class="container">
-                    <div class="row justify-content-center">
-                      <div style="border:solid 1px teal; width:260px;height:160px;padding:3px;position:relative;">
-                        <canvas id="the_canvas_ppds" width="250px" height="150px">Your browser does not support the HTML canvas tag.</canvas>
-                      </div>
-                    </div>
+
+                @if (auth()->user()->level_user == 'farmasi')
+                <div class="container">
+                  <div id="ttd_farmasi_image" class="row justify-content-center d-none text-center">
+                    <input type="hidden" id="signature_farmasi" name="rekon_data[ttd_farmasi]">
+                    <input type="hidden" id="farmasi_username" name="rekon_data[farmasi_username]">
+                    <img id="farmasi_signature_img" src="" width="250" height="150" />
+                    <p id="farmasi_name" style="width: 100%;"></p>
                   </div>
-                  <div style="margin:10px;">
-                    <input type="hidden" id="signature_ppds" name="rekon_data[ttd_farmasi]">
-                    <button type="button" id="clear_btn_ppds" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Clear</button>
-                    <button type="button" id="save_ttd_ppds" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
+                  <div id="signature_rekon_obat_farmasi" class="text-center">
+                    <button type="button" id="verif_farmasi_btn" class="btn btn-warning"><span class="glyphicon glyphicon-ok"></span> Verifikasi</button>
                   </div>
                 </div>
+                @else
+                <h4 class="text-center"><span class="badge bg-warning">Data belum diverifikasi oleh farmasi</span></h4>
+                @endif
+
                 @endif
               </td>
               <td>
                 @if ($rekon_data->ttd_perawat != null)
                 <div class="container">
-                  <div id="ttd_perawat_image" class="row justify-content-center">
+                  <div id="ttd_perawat_image" class="row justify-content-center text-center">
                     <img id="perawat_signature_img" src="{{ $rekon_data->ttd_perawat }}" width="250" height="150" />
                     <p id="perawat_name">{{ $perawat->name }}</p>
                   </div>
@@ -169,17 +157,18 @@ $rekon_data = optional((object)[]);
                 @else
                 @if (auth()->user()->level_user == 'perawat')
                 <div class="container">
-                  <div id="ttd_perawat_image" class="row justify-content-center d-none">
+                  <div id="ttd_perawat_image" class="row justify-content-center d-none text-center">
                     <input type="hidden" id="signature_perawat" name="rekon_data[ttd_perawat]">
+                    <input type="hidden" id="perawat_username" name="rekon_data[perawat_username]">
                     <img id="perawat_signature_img" src="" width="250" height="150" />
-                    <p id="perawat_name"></p>
+                    <p id="perawat_name" style="width: 100%;"></p>
                   </div>
                   <div id="signature_rekon_obat_perawat" class="text-center">
                     <button type="button" id="verif_perawat_btn" class="btn btn-warning"><span class="glyphicon glyphicon-ok"></span> Verifikasi</button>
                   </div>
                 </div>
                 @else
-                <h6>Example heading <span class="badge bg-warning">Data belum diverifikasi oleh perawat</span></h6>
+                <h4 class="text-center"><span class="badge bg-warning">Data belum diverifikasi oleh perawat</span></h4>
                 @endif
                 @endif
               </td>
