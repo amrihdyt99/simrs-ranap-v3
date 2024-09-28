@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Perawat\RekonsiliasiObatController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -88,6 +89,7 @@ Route::prefix('nyx-sistem')
                 Route::post('persetujuan_penolakan', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan'])->name('persetujuan_penolakan');
                 Route::post('surat_rujukan', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'surat_rujukan'])->name('surat_rujukan');
                 Route::post('show_qrcode', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'show_qrcode'])->name('show_qrcode');
+                Route::post('rekonsiliasi-obat', [RekonsiliasiObatController::class, 'index'])->name('rekonsiliasi_obat');
             });
         });
 

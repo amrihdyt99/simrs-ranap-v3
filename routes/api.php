@@ -8,6 +8,7 @@ use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\ObgynController;
+use App\Http\Controllers\Perawat\RekonsiliasiObatController;
 use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -260,4 +261,9 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('add-skrining-gizi-anak', [AssesmentAnakController::class, 'store_skrining_gizi_anak'])->name('skrining-gizi-anak.store');
 	Route::post('add-assesment-obgyn', [ObgynController::class, 'store'])->name('obgyn.store');
 	Route::post('add-skrining-nyeri-anak', [AssesmentAnakController::class, 'store_skrining_nyeri_anak'])->name('skrining-nyeri-anak.store');
+	Route::get('get-rekonsiliasi-obat-item', [RekonsiliasiObatController::class, 'get_rekon_obat_data'])->name('rekon-obat-item.get');
+	Route::post('store-rekon-obat-item', [RekonsiliasiObatController::class, 'store_rekon_obat_item'])->name('rekon-obat-item.store');
+	Route::post('delete-rekon-obat-item', [RekonsiliasiObatController::class, 'delete_rekon_obat_item'])->name('rekon-obat-item.delete');
+	Route::get('get-rekon-ttd', [RekonsiliasiObatController::class, 'get_ttd_verif_obat'])->name('get-rekon-ttd.get');
+	Route::post('store-rekonsiliasi-obat', [RekonsiliasiObatController::class, 'store_rekonsiliasi_obat'])->name('rekonsiliasi-obat.store');
 });
