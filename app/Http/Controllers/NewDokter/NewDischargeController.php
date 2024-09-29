@@ -108,6 +108,7 @@ class NewDischargeController extends Controller
             $check_ = DB::table('rs_pasien_discharge_open')
                 ->where('reg_no', $request->reg_no)
                 ->where('is_open', 0)
+                ->where('status', 'waiting')
                 ->first();
                 
             if (isset($check_)) {
@@ -147,6 +148,14 @@ class NewDischargeController extends Controller
     
     public function openDischargeApprove(Request $request){
         try {
+            if (!$request->id && !$request->reg_no) {
+                return [
+                    'code' => 500,
+                    'success' => false,
+                    'message' => 'Approval gagal disimpan, tidak ada id & nomor registrasi yang dikirimkan'
+                ];
+            }
+
             $checkPayment = checkPaymentStatus($request->prescribe_reg);
 
             if (isset($checkPayment) && $checkPayment->pvalidation_status == 1) {
@@ -183,6 +192,13 @@ class NewDischargeController extends Controller
                 ->update($data);
 
             if (isset($store)) {
+                $updateDischarge = DB::connection('mysql2')
+                    ->table('m_registrasi')
+                    ->where('reg_no', $request->reg_no)
+                    ->update([
+                        'reg_discharge' => 0
+                    ]);
+
                 return [
                     'success' => true,
                     'msg' => 'Data berhasil disimpan'
