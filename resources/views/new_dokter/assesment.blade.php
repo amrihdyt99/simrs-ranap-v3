@@ -226,6 +226,7 @@
     @include('new_dokter.modal.resume')
     @include('new_dokter.modal.soap')
     @include('new_dokter.modal.multiorgan')
+    @include('new_dokter.modal.openDischarge')
     @include('new_perawat.modal.assesment')
 @endsection
 

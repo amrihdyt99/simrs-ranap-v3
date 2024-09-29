@@ -45,13 +45,11 @@ class BillingController extends AaaBaseController
             ->get();
 
         $data['reg_no'] = $reg_no;
-        $data['reg_rj'] = 'QREG/RJ/202310190049';
+        $data['reg_rj'] = $datamypatient->reg_lama;
         $data['pasien'] = $datamypatient;
         $data['diagnosis'] = $diagnosisPasien;
         $data['visit'] = $ceksoapdokter;
         $data['paket'] = $historypaket;
-
-        // dd($datamypatient);
 
         return view('new_kasir.view', $data);
         // return view('kasir/billing/daftar_tagihan',$data);
@@ -60,16 +58,19 @@ class BillingController extends AaaBaseController
     public function detailOrders(Request $request)
     {
         $order_penunjang = [];
+        $order_penunjang_prev = [];
 
         $lainnya = DB::table('job_orders_dt as a')
             ->where('a.reg_no', $request->reg_ri)
             ->where('jenis_order', 'lainnya')
+            ->where('a.deleted', 0)
             ->leftjoin('job_orders as b', 'a.order_no', 'b.order_no')
             ->select([
                 'a.*',
                 'a.id as id_dt',
                 'b.*',
-                DB::raw("(select ParamedicName from rs_m_paramedic where ParamedicCode = kode_dokter) as ParamedicName")
+                DB::raw("(select ParamedicName from ".getDatabase('master').".m_paramedis where ParamedicCode = kode_dokter) as ParamedicName"),
+                DB::raw("(select name from ".getDatabase('master').".users where id = created_by_id) as UserName"),
             ])
             ->get();
 
@@ -88,46 +89,25 @@ class BillingController extends AaaBaseController
             $item['ItemTarif'] = $value->harga_jual;
             $item['ItemTarifAwal'] = $value->harga_jual;
             $item['ItemJumlah'] = $value->qty;
-            $item['ItemDokter'] = $value->ParamedicName;
+            $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
 
             array_push($order_penunjang, $item);
         }
 
-        $call_obat = new OrderObatController;
-
-        $request->merge([
-            'reg_no' => $request->reg_ri,
-        ]);
-
-        $obat_ = $call_obat->getFinalOrder($request);
-
-        foreach ($obat_ as $key => $value) {
-            foreach ($value->job_order_dt as $k => $v) {
-                $item['ItemUId'] = Str::random(5);
-                $item['ItemReg'] = $value->reg_no;
-                $item['ItemCode'] = $v->item_code;
-                $item['ItemOrderCode'] = $value->order_no;
-                $item['ItemOrder'] = $v->id;
-                $item['ItemTanggal'] = $value->waktu_order;
-                $item['ItemName1'] = $v->item->item_name;
-                $item['ItemBundle'] = 0;
-                $item['ItemTindakan'] = 'Obat';
-                $item['ItemTarif'] = $v->harga_jual;
-                $item['ItemTarifAwal'] = $v->harga_jual;
-                $item['ItemJumlah'] = $v->quantity;
-                $item['ItemDokter'] = $value->kode_dokter;
-                $item['ItemPoli'] = $value->kode_poli;
-                // $item['ItemReview'] = $value->is_review == false ? 0 : 1;
-                $item['ItemReview'] = 1;
-
-                array_push($order_penunjang, $item);
-            }
-        }
-
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromLab($request->reg_ri));
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri));
+        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromPharmacy($request->reg_ri));
+
+        $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromLab($request->reg_rj));
+        $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
+        $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
+        
+        $recap_penunjang = [
+            ['source' => 'Rawat Inap', 'data' => $order_penunjang],
+            ['source' => str_contains($request->reg_rj, '/RJ/') ? 'Rawat Jalan' : 'IGD', 'data' => $order_penunjang_prev],
+        ];
 
         $validation = DB::table('rs_pasien_billing_validation')
             ->where('pvalidation_reg', $request->reg_ri)
@@ -135,7 +115,7 @@ class BillingController extends AaaBaseController
             ->first();
 
         return [
-            'order' => $order_penunjang,
+            'order' => $recap_penunjang,
             'validation' => $validation,
             // 'validation' => DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg_ri)->first()
         ];
@@ -154,7 +134,7 @@ class BillingController extends AaaBaseController
                     $item['ItemReg'] = $value->no_reg;
                     $item['ItemCode'] = $sub_value->kode_tindakan;
                     $item['ItemOrderCode'] = $value->no_order;
-                    $item['ItemOrder'] = '';
+                    $item['ItemOrder'] = $value->no_order;
                     $item['ItemTanggal'] = $value->waktu_tanggal_order;
                     $item['ItemName1'] = $sub_value->nama_tindakan;
                     $item['ItemBundle'] = 0;
@@ -190,7 +170,7 @@ class BillingController extends AaaBaseController
                     $item['ItemReg'] = $value->no_reg;
                     $item['ItemCode'] = $sub_value->kode_tindakan;
                     $item['ItemOrderCode'] = $value->no_order;
-                    $item['ItemOrder'] = '';
+                    $item['ItemOrder'] = $value->no_order;
                     $item['ItemTanggal'] = $value->waktu_tanggal_order;
                     $item['ItemName1'] = $sub_value->nama_tindakan;
                     $item['ItemBundle'] = 0;
@@ -207,6 +187,45 @@ class BillingController extends AaaBaseController
                         array_push($order_penunjang, $item);
                     }
                 }
+            }
+        }
+
+        return $order_penunjang;
+    }
+
+    public function getOrderFromPharmacy($reg_no){
+
+
+        $call_obat = new OrderObatController;
+        $request = new Request;
+        $order_penunjang = [];
+
+        $request->merge([
+            'reg_no' => $reg_no,
+        ]);
+
+        $obat_ = $call_obat->getFinalOrder($request);
+
+        foreach ($obat_ as $key => $value) {
+            foreach ($value->job_order_dt as $k => $v) {
+                $item['ItemUId'] = Str::random(5);
+                $item['ItemReg'] = $value->reg_no;
+                $item['ItemCode'] = $v->item_code;
+                $item['ItemOrderCode'] = $value->order_no;
+                $item['ItemOrder'] = $v->id;
+                $item['ItemTanggal'] = $value->waktu_order;
+                $item['ItemName1'] = $v->item->item_name;
+                $item['ItemBundle'] = 0;
+                $item['ItemTindakan'] = 'Obat';
+                $item['ItemTarif'] = $v->quantity * $v->harga_jual;
+                $item['ItemTarifAwal'] = $v->harga_jual;
+                $item['ItemJumlah'] = $v->quantity;
+                $item['ItemDokter'] = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode', $value->kode_dokter)->first()->ParamedicName;
+                $item['ItemPoli'] = $value->kode_poli;
+                // $item['ItemReview'] = $value->is_review == false ? 0 : 1;
+                $item['ItemReview'] = 1;
+
+                array_push($order_penunjang, $item);
             }
         }
 
@@ -637,6 +656,34 @@ class BillingController extends AaaBaseController
             return [
                 'success' => true,
                 'msg' => 'Pembayaran gagal dibatalkan'
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function deleteItem(Request $request){
+        try {
+            $delete = DB::table('job_orders_dt')
+                ->where('id', $request->item_kode)
+                ->update([
+                    'deleted' => 1,
+                    'deleted_by' => auth()->user()->id,
+                    'deleted_at' => date('Y-m-d H:i:s'),
+                    'deleted_requester' => $request->item_peminta,
+                    'deleted_reason' => $request->item_alasan,
+                ]);
+
+            if ($delete) {
+                return [
+                    'success' => true,
+                    'msg' => 'Item berhasil dibatalkan'
+                ];
+            }
+
+            return [
+                'success' => true,
+                'msg' => 'Item gagal dibatalkan'
             ];
         } catch (\Throwable $th) {
             throw $th;

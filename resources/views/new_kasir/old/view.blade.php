@@ -13,7 +13,6 @@
         padding: 0.3rem 2.5rem !important;
         font-size: 16px !important;
         vertical-align: middle !important;
-        text-align: start !important;
     }
 
     .table-r thead,
@@ -214,32 +213,15 @@
                     <div class="row">
                         <div class="col">
                             <small class="not_review bg-danger px-4 mr-2"></small> : Belum review | <i class="fas fa-check fa-lg text-success"></i> : Item ditagihkan
-                            <span class="float-right"><input type="checkbox" id="selecting_items" data-category="all" data-source="all"> Pilih semua item</span>
+                            <span class="float-right"><input type="checkbox" id="selecting_items" data-category="all"> Pilih semua item</span>
                         </div>
                     </div>
 
                     <div class="table-responsive">
-                        {{-- <div id="panel-order" class="row equal-height"></div> --}}
-                        <table width="100%" class="table-r mt-5" id="panel-order">
-                            <thead>
-                                <tr class="float-left">
-                                    <th>Kategori</th>
-                                    <th>Nama</th>
-                                    <th>Qty</th>
-                                    <th>Tarif Awal</th>
-                                    <th>Tarif</th>
-                                    <th>User Order</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="7" class="text-center">Memuat data...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div id="panel-order" class="row equal-height"></div>
                         <div id="not_review_transactions"></div>
                         <br>
+                        <div id="load_action_button" class="float-right">Memuat data ...</div>
                         <div id="action_button">
                             <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
                             {{-- <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button> --}}
@@ -467,154 +449,138 @@
                 reg_rj: '{{$reg_rj}}',
             },
             beforeSend: function() {
-                getStatusTagihan()
-
-                $('[id="panel-order"] tbody').html(`
-                    <tr>
-                        <td colspan="7" class="text-center"><div class="lds-dual-ring"></div></td>    
-                    </tr>
+                $('#panel-order').html(`
+                    <div class="col-lg-12">
+                        <div class="d-flex justify-content-center">
+                            <div class="lds-dual-ring"></div>
+                        </div>    
+                    </div>
                 `)
             },
             success: function(resp) {
                 $('#load_action_button').hide()
-                $('[id="panel-order"] tbody').html('')
-                
-                if (resp) {
-                    $.each(resp.order, function(i, item){
-                        $('[id="panel-order"] tbody').append(`
-                            <tr class="bg-warning">
-                                <td colspan="7"><b>`+item.source+`</b></td>    
-                            </tr>
-                        `)
+                $('#panel-order').html('')
 
-                        $.each(item.data, function(sub_i, sub_item) {
-                            sub_item.ItemSource = item.source
-                            orders.push(sub_item)
+                $.each(resp.order, function(i, data) {
+                    orders.push(data)
 
-                            $tindakan = sub_item.ItemTindakan.replace(/ /g, '_')
-                            $tindakan = $tindakan.toLowerCase()
+                    $tindakan = data.ItemTindakan.replace(/ /g, '_')
+                    $tindakan = $tindakan.toLowerCase()
 
-                            $count_header = $(`[id="order_header_`+$tindakan+`"][data-source="`+item.source+`"]`).length
+                    $count_header = $('#order_header_' + $tindakan).length
 
-                            $row_header = `
-                                `+(i != 0 ? `<tr><td colspan="7"><br></td></tr>`: ``)+`
-                                <tr id="order_header_` + $tindakan + `" data-source="`+item.source+`">
-                                    <td class="text-capitalize"><b>`+sub_item.ItemTindakan+`</b></td> 
-                                    <td><input type="checkbox" id="selecting_items" class="float-right" value="all" data-category="` + sub_item.ItemTindakan + `" data-source="`+item.source+`" style="transform: scale(1.2)"></td>   
-                                </tr>
-                            `
+                    $row_header = `
+                            <div class="col-lg-6 px-1 pb-1">
+                                <div class="card card-body card_order">
+                                    <h4 id="order_header_` + $tindakan + `">
+                                        <b>` + data.ItemTindakan + `</b>
+                                        <input type="checkbox" id="selecting_items" class="float-right" value="all" data-category="` + data.ItemTindakan + `">
+                                    </h4>
+                                    <hr style="border-bottom: 1px solid black">
+                                    <ol id="order_detail_` + $tindakan + `"></ol>
+                                </div>
+                            </div>
+                        `
 
-                            if ($count_header < 1) {
-                                $('[id="panel-order"] tbody').append($row_header)
-                            }
-
-                            $review = ''
-                            $class = ''
-                            reviews = []
-                            if (sub_item.ItemReview == 0) {
-                                $class = 'bg-danger text-white p-2'
-
-                                reviews.push({
-                                    'name': data,
-                                    'count': 1
-                                })
-                            }
-
-                            $btn = ''
-                            if (($level_ == 'admin' || $level_ == 'kasir') && sub_item.ItemTindakan == 'lainnya') {
-                                $btn = `<span type="button" onclick="deleteItem('` + sub_item.ItemOrder + `')"><i class="fas fa-trash text-danger"></i></span>`
-                            }
-
-                            $row_detail = ` 
-                                <tr class="` + $class + `" data-source="`+item.source+`">
-                                    <td class="text-capitalize"></td>   
-                                    <td>
-                                        <span id="checked_status" style="margin-right: 10px" value="` + sub_item.ItemUId + `" data-code="` + sub_item.ItemCode + `" data-id="` + sub_item.ItemOrder + `">
-                                            <input type="checkbox" id="selecting_items" class="float-right" value="` + sub_item.ItemUId + `" data-category="` + sub_item.ItemTindakan + `" data-source="`+item.source+`" style="transform: scale(1.2)">
-                                        </span>
-                                        `+sub_item.ItemName1+`
-                                    </td>     
-                                    <td>`+sub_item.ItemJumlah+`</td>     
-                                    <td>Rp. `+formatNumber(parseFloat(sub_item.ItemTarifAwal).toFixed(2))+`</td>     
-                                    <td>Rp. `+formatNumber(parseFloat(sub_item.ItemTarif).toFixed(2))+`</td>     
-                                    <td>`+sub_item.ItemDokter+`</td>     
-                                    <td class="p-3">
-                                        `+$btn+`    
-                                    </td>
-                                </tr>
-                            `
-
-                            $('[id="panel-order"] tbody').append($row_detail)
-                        })
-                    })
-
-                    if (resp.validation) {
-                        $('[id*="selecting_items"]').hide()
-                        $.each(JSON.parse(resp.validation.pvalidation_selected), function(i, data_selected) {
-                            console.log(data_selected)
-                            $('[id="checked_status"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
-                        })
-
-
-                        total = resp.validation.pvalidation_total
-                    } else {
-                        $('[id*="selecting_items"]').show()
+                    if ($count_header < 1) {
+                        $('#panel-order').append($row_header)
                     }
 
-                    $('[id="validasi-tagihan"]').html('Rp. ' + formatNumber(formatNumber(parseFloat(total).toFixed(2))))
+                    $review = ''
+                    $class = ''
+                    reviews = []
+                    if (data.ItemReview == 0) {
+                        $class = 'bg-danger text-white p-2'
+
+                        reviews.push({
+                            'name': data,
+                            'count': 1
+                        })
+                    }
+
+                    $btn = ''
+                    if ($level_ == 'admin' && $level_ == 'kasir' && data.ItemTindakan == 'Biaya Administratif Lainnya') {
+                        $btn = `<span type="button" onclick="deleteItem('` + data.ItemOrder + `')"><i class="fas fa-trash text-danger"></i></span>`
+                    }
+
+                    $row_detail = `
+                            <li class="` + $class + `">
+                                ` + data.ItemName1 + ` 
+                                    ` + $btn + `
+                                    <span class="float-right">` + data.ItemJumlah + ` @` + formatNumber(parseFloat(data.ItemTarifAwal).toFixed(2)) + ` | <b>Rp. ` + formatNumber(parseFloat(data.ItemJumlah) * parseFloat(data.ItemTarif)) + `</b></span><br>
+                                    <small>
+                                        Tanggal : <b>` + condition(data.ItemTanggal) + `</b> | 
+                                        User Order : <b>` + condition(data.ItemDokter) + `</b> | 
+                                        Poli : <b>` + condition(data.ItemPoli) + `</b>
+                                    </small>
+                                    <span id="checked_status" value="` + data.ItemUId + `" data-code="` + data.ItemCode + `" data-id="` + data.ItemOrder + `">
+                                        <input type="checkbox" id="selecting_items" class="float-right" value="` + data.ItemUId + `" data-category="` + data.ItemTindakan + `">
+                                    </span>
+                            </li>
+                            <hr>
+                        `
+
+                    $('#order_detail_' + $tindakan).append($row_detail)
+                })
+
+                getStatusTagihan()
+
+                if (resp.validation) {
+                    $('[id*="selecting_items"]').hide()
+                    $.each(JSON.parse(resp.validation.pvalidation_selected), function(i, data_selected) {
+                        console.log(data_selected)
+                        $('[id="checked_status"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
+                    })
+
+
+                    total = resp.validation.pvalidation_total
                 } else {
-                    $('[id="panel-order"] tbody').html(`
-                        <tr>
-                            <td colspan="7" class="text-center">Tidak ada data order</td>    
-                        </tr>
-                    `)
+                    $('[id*="selecting_items"]').show()
                 }
+
+                $('[id="validasi-tagihan"]').html('Rp. ' + formatNumber(formatNumber(parseFloat(total).toFixed(2))))
             }
         })
     }
 
     function deleteItem(id_order) {
+        let inputCode = prompt("Peminta")
+        let inputRequester = prompt("Alasan")
 
-        if (confirm('Apakah anda yakin akan menghapus item ini ?')) {
-            let inputCode = prompt("Peminta")
-            let inputRequester = prompt("Alasan")
-            
-            if (inputCode && inputRequester) {
-                $.ajax({
-                    url: '{{url("kasir/billing/deleteItem")}}',
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        _token: $('[name="_token"]').val(),
-                        item_kode: id_order,
-                        item_jenis: 'lainnya',
-                        item_peminta: inputCode,
-                        item_alasan: inputRequester,
-                    },
-                    success: function(resp) {
-                        getDataOrder()
-                        orders = []
-                        selected_orders = []
-                        payment_method = []
-                        reviews = []
-                        selected_orders_radiology = []
+        if (inputCode && inputRequester) {
+            $.ajax({
+                url: '{{url("auth/api/kasir/delete_order")}}',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    _token: $('[name="_token"]').val(),
+                    item_kode: id_order,
+                    item_jenis: 'lainnya',
+                    item_peminta: inputCode,
+                    item_alasan: inputRequester,
+                },
+                success: function(resp) {
+                    getDataOrder()
+                    orders = []
+                    selected_orders = []
+                    payment_method = []
+                    reviews = []
+                    selected_orders_radiology = []
 
-                        total = 0
-                        difference = 0
-                        remain = 0
-                        sum_nominal = 0
-                    }
-                })
-            } else {
-                alert('Kolom inputan harus diisi')
-            }
+                    total = 0
+                    difference = 0
+                    remain = 0
+                    sum_nominal = 0
+                }
+            })
+        } else {
+            alert('Kolom inputan harus diisi')
         }
     }
 
     $('body').on('change', '#selecting_items', function() {
         let category = $(this).data('category')
         let value = $(this).val()
-        let source = $(this).data('source')
 
         $host = location.hostname
 
@@ -626,9 +592,9 @@
                 $('#selecting_items:not([data-category="all"])').prop('checked', true)
             } else {
                 if (value == 'all') {
-                    $('#selecting_items[data-category="' + category + '"][data-source="'+source+'"]').prop('checked', true)
+                    $('#selecting_items[data-category="' + category + '"]').prop('checked', true)
 
-                    $object = orders.filter(element => element.ItemTindakan == category && element.ItemSource == source)
+                    $object = orders.filter(element => element.ItemTindakan == category)
                 } else {
                     if ($host == '127.0.0.1' || $host == 'rj.id') {
                         // value = parseInt(value)
@@ -653,11 +619,11 @@
             } else {
                 selected_orders = selected_orders.filter(function(item) {
                     if (value == 'all') {
-                        $('[id="selecting_items"][data-category="' + category + '"][data-source="'+source+'"]').prop('checked', false)
+                        $('[id="selecting_items"][data-category="' + category + '"]').prop('checked', false)
 
-                        return item.ItemTindakan !== category || item.ItemSource !== source;
+                        return item.ItemTindakan !== category;
                     } else {
-                        $('[id="selecting_items"][value="all"][data-category="' + category + '"][data-source="'+source+'"]').prop('checked', false)
+                        $('[id="selecting_items"][value="all"][data-category="' + category + '"]').prop('checked', false)
 
                         if ($host == '127.0.0.1' || $host == 'rj.id') {
                             // value = parseInt(value)
@@ -670,7 +636,6 @@
             }
         }
 
-        console.log(selected_orders)
 
         total = selected_orders.reduce((acc, o) => acc + (parseFloat(o.ItemTarif) * parseFloat(o.ItemJumlah)), 0)
 
@@ -917,14 +882,16 @@
         $.ajax({
             url: '{{url("")}}/kasir/billing/status',
             type: 'get',
+            dataType: 'json',
             data: {
                 reg_no: $reg,
             },
             success: function(resp) {
+                $('#load_action_button').hide()
                 $('#action_button').show()
                 $('#action_button button[id*="btn-"]').show()
 
-                if (resp && resp.pvalidation_status && resp.pvalidation_status == 1) {
+                if (resp.pvalidation_status && resp.pvalidation_status == 1) {
                     $('#status-tagihan').text('SUDAH DIBAYAR');
                     $('#status-tagihan').addClass('btn btn-success');
                     $('#status-tagihan').removeClass('btn btn-danger');

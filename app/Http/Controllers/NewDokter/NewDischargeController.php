@@ -67,4 +67,124 @@ class NewDischargeController extends Controller
             ]);
         }
     }
+
+    public function dataOpenDischargeRequest(Request $request){
+        try {
+            $data = DB::table('rs_pasien_discharge_open as a');
+
+            if ($request->start && $request->end) {
+                $data = $data->whereDate('created_at', '>=', $request->start)
+                    ->whereDate('created_at', '>=', $request->end);
+            }
+
+            if (isset($request->reg_no)) {
+                $data = $data->whereDate('reg_no', $request->reg_no);
+            }
+
+            $data = $data
+                ->select([
+                    'a.*',
+                    DB::raw("(select reg_medrec from ".getDatabase('master').".m_registrasi where reg_no = reg_no limit 1) as reg_medrec"),
+                ])
+                ->get();
+
+            foreach ($data as $key => $value) {
+                $data[$key]->requester_name = $value->created_by;
+                $data[$key]->patient_name = DB::connection('mysql2')
+                    ->table('m_pasien')
+                    ->where('MedicalNo', $value->reg_medrec)
+                    ->first()
+                    ->PatientName;
+            }
+
+            return $data;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function openDischargeRequest(Request $request){
+        try {
+            $check_ = DB::table('rs_pasien_discharge_open')
+                ->where('reg_no', $request->reg_no)
+                ->where('is_open', 0)
+                ->first();
+                
+            if (isset($check_)) {
+                return [
+                    'success' => false,
+                    'msg' => 'Permintaan tidak bisa diproses, saat ini masih ada pengajuan open discharge yang aktif. Mohon hubungi bagian Rekam Medis.'
+                ];
+            }
+
+            $data = [
+                'reg_no' => $request->reg_no,
+                'requester' => $request->requester,
+                'reason' => $request->reason,
+                'status' => 'waiting',
+                'created_by' => $request->name,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            $store = DB::table('rs_pasien_discharge_open')
+                ->insert($data);
+
+            if (isset($store)) {
+                return [
+                    'success' => true,
+                    'msg' => 'Data berhasil disimpan'
+                ];
+            }
+
+            return [
+                'success' => true,
+                'msg' => 'Data gagal disimpan'
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    
+    public function openDischargeApprove(Request $request){
+        try {
+            $check_ = DB::table('rs_pasien_discharge_open')
+                ->where('id', $request->id)
+                ->where('is_open', 1)
+                ->first();
+                
+            if (isset($check_)) {
+                return [
+                    'success' => false,
+                    'msg' => 'Permintaan open discharge ini sudah disetujui'
+                ];
+            }
+
+            $data = [
+                'is_open' => $request->is_open,
+                'status' => $request->is_open == 1 ? 'success' : 'failed',
+                'open_by' => $request->open_by,
+                'open_at' => $request->open_at,
+                'open_text' => $request->open_text,
+                'updated_by' => $request->open_by,
+            ];
+
+            $store = DB::table('rs_pasien_discharge_open')
+                ->where('id', $request->id)
+                ->update($data);
+
+            if (isset($store)) {
+                return [
+                    'success' => true,
+                    'msg' => 'Data berhasil disimpan'
+                ];
+            }
+
+            return [
+                'success' => true,
+                'msg' => 'Data gagal disimpan'
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

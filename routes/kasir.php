@@ -23,9 +23,10 @@ Route::prefix('kasir')->middleware(['auth', 'role:kasir'])->group(function () {
     Route::get('/kasir/billing/{reg_no}', [\App\Http\Controllers\Kasir\BillingController::class, 'detailtagihan'])->where('reg_no', '(.*)')->name('kasir.tagihan');
 
     Route::get('/billing/detail_order', [\App\Http\Controllers\Kasir\BillingController::class, 'detailOrders'])->where('reg_no', '(.*)')->name('kasir.detail.order');
-    Route::get('/billing/status', [\App\Http\Controllers\Kasir\BillingController::class, 'checkStatus'])->where('reg_no', '(.*)');
+    Route::get('/billing/status', [\App\Http\Controllers\Kasir\BillingController::class, 'checkStatus']);
     Route::post('/billing/store_payment', [\App\Http\Controllers\Kasir\BillingController::class, 'storePayment'])->where('reg_no', '(.*)');
     Route::post('/billing/storeCancelation',[\App\Http\Controllers\Kasir\BillingController::class,'storeCancelation']);
+    Route::post('/billing/deleteItem',[\App\Http\Controllers\Kasir\BillingController::class,'deleteItem']);
 
     Route::post('/kasir/billing/addtindakan', [\App\Http\Controllers\Kasir\BillingController::class, 'addTindakan'])->name('kasir.addtindakan');
     Route::get('/kasir/invoice/{regno}', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakinvoice'])->where('regno', '(.*)')->name('kasir.cetak.invoice');
