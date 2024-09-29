@@ -1,4 +1,4 @@
-<table class="table1">
+<table class="table1 w-100">
     <thead>
         <tr>
             <th>Edukator / Topik</th>

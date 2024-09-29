@@ -89,6 +89,14 @@ class UniversalFunctionController extends Controller
             $redirect = true;
             $url = '/casemanager/dashboard';
         }
+        elseif($level_user==='dietitian'){
+            $redirect = true;
+            $url = '/dietitian/dashboard';
+        }
+        elseif($level_user==='farmasi'){
+            $redirect = true;
+            $url = '/farmasi/dashboard';
+        }
         // return
         if($redirect===true){
             return redirect($url);
@@ -743,6 +751,17 @@ class UniversalFunctionController extends Controller
 
         }
 
+        elseif ($value === 'farmasi') {
+            $dtx_extends = 'zxc-nyaa-universal.000_layout.nyaa_app';
+            $dtx_pusherstyles = 'nyaa_parent_styles';
+            $dtx_pusherscripts = 'nyaa_parent_scripts';
+            $dtx_container_extends = 'zxc-nyaa-universal.000_layout.nyaa_app_onlycontent';
+            $dtx_menudata = 'zxc-nyaa-universal.000_layout.navigasi.farmasi';
+
+        }
+
+
+
         // TIDAK ADA MATCH
         else {
             dd('Komponen User tidak ditemukan.');
@@ -787,6 +806,7 @@ class UniversalFunctionController extends Controller
                 'nutritionist' => 'Ahli Gizi / Nutritionist',
                 'dietitian' => 'Ahli Diet / Dietisien',
                 'dokter_gizi' => 'Dokter Spesialis Gizi',
+                'farmasi' => 'Farmasi',
             ];
             if($mode==='get_all'){
                 return $b;
@@ -819,6 +839,7 @@ class UniversalFunctionController extends Controller
                 // 'case_manager' => 'Case Manager',
                 // 'nutritionist' => 'Ahli Gizi / Nutritionist',
                 'dietitian' => 'Ahli Diet / Dietisien',
+                'farmasi' => 'Farmasi',
                 // 'dokter_gizi' => 'Dokter Spesialis Gizi',
             ];
             if($mode==='get_all'){

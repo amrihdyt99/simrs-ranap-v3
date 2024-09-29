@@ -10,6 +10,7 @@ use App\Models\RegistrationInap;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -17,10 +18,15 @@ use Yajra\DataTables\Contracts\DataTable;
 
 class RegisterController extends Controller
 {
+    protected $igdServices;
+    public function __construct(IGDServices $igdServices)
+    {
+        $this->igdServices = $igdServices;
+    }
     public function index()
     {
-        $data['igd'] = RegistrationIGD::all();
-        return view('register.pages.igd.index', $data);
+        if (request()->ajax()) return $this->igdServices->indexDataTable();
+        return view('register.pages.igd.index');
     }
 
     public function formRegisterIGD()
@@ -60,5 +66,10 @@ class RegisterController extends Controller
         RegistrationIGD::create($registrasi);
 
         return redirect()->route('register.igd.index');
+    }
+
+    public function storeRegistration()
+    {
+        return $this->igdServices->storeRegistration();
     }
 }

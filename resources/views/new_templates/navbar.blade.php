@@ -12,10 +12,10 @@
                     </div>
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
-                    @if (auth()->user()->level_user == 'dokter' && Request::is('dokter'))
-                    <button class="btn btn-secondary" onclick="mod_pilih_ruang()" id="title_ruang">RUANG RAWAT</button>
+                    @if (auth()->user()->level_user == 'dokter' || auth()->user()->level_user == 'perawat')
+                    <button class="btn btn-secondary mr-2" onclick="mod_pilih_ruang()" id="title_ruang">RUANG RAWAT</button>
                     @endif
-                    @if (auth()->user()->level_user == 'perawat')
+                    @if (auth()->user()->level_user == 'perawat' || auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
                         <button class="btn btn-secondary" id="trigger_shift_modal">SHIFT PERAWAT</button>
                     @endif
                     <li class="nav-item dropdown" title="Ubah pengaturan akun">
@@ -82,6 +82,8 @@
                 @include('new_templates.partials.radiologi')
                 @elseif (auth()->user()->level_user == 'dietitian')
                 @include('new_templates.partials.dietitian')
+                @elseif (auth()->user()->level_user == 'farmasi')
+                @include('new_templates.partials.farmasi')
                 @endif
                 <li class="nav-item">
                     <a href="{{asset('files/pdf_tes.pdf')}}" target="_blank" class="nav-link">

@@ -211,6 +211,7 @@ trait RanapRegistrationTrait
         $data = $this->getDataPostRegistrationRanap($reg_no);
         RegistrationInap::where('reg_no', $reg_no)->update($data);
         $this->updateRuangan($reg_no);
+        $this->updatePasien();
     }
 
     /**

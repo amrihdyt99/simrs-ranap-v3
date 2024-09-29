@@ -22,9 +22,8 @@ class RegisterDataController extends Controller
     public function store(Request $request)
     {
         try {
-            $newMRN = $this->generateMRN();
+            $newMRN = $request->mrn ?? $this->generateMRN();
     
-            // Data pasien
             $pasienData = [
                 'MedicalNo' => $newMRN,
                 'SSN' => $request->ssn,
@@ -44,14 +43,12 @@ class RegisterDataController extends Controller
             ];
             Pasien::create($pasienData);
     
-            // Log data keluarga untuk debugging
             Log::info('Data keluarga:', $request->all());
     
-            // Data keluarga pasien
             $keluargaData = array_map(function ($key) use ($request, $newMRN) {
                 return [
                     'MedicalNo' => $newMRN,
-                    'FamilyMedicalNo' => $request->FamilyMedicalNo[$key] ?? null, // Tambahkan input untuk FamilyMedicalNo
+                    'FamilyMedicalNo' => $request->FamilyMedicalNo[$key] ?? null, 
                     'GCRelationShip' => $request->GCRelationShip[$key],
                     'PhoneNo' => $request->PhoneNo[$key] ?? null,
                     'SSN' => $request->SSN[$key] ?? null,
@@ -66,10 +63,8 @@ class RegisterDataController extends Controller
                 ];
             }, array_keys($request->GCRelationShip));
     
-            // Log data keluarga yang akan disimpan
             Log::info('Keluarga Data:', $keluargaData);
     
-            // Menyimpan data keluarga pasien ke tabel `m_keluarga_pasien`
             DB::connection('mysql2')->table('m_keluarga_pasien')->insert($keluargaData);
     
             return redirect()->route('register.informasi-pasien.index');
@@ -97,17 +92,17 @@ class RegisterDataController extends Controller
     public function checkMRN(Request $request)
     {
         $mrn = $request->query('mrn');
-        Log::info('Checking MRN:', ['mrn' => $mrn]); // Debug log
+        Log::info('Checking MRN:', ['mrn' => $mrn]); 
 
         $pasienData = DB::connection('mysql2')->table('m_pasien')
             ->where('MedicalNo', 'like', "%{$mrn}%")
-            ->select('MedicalNo', 'PatientName')
+            ->select('MedicalNo', 'PatientName', 'SSN', 'DateOfBirth', 'GCSex', 'PatientAddress', 'MobilePhoneNo1')
             ->get()
             ->toArray();
 
         $keluargaData = DB::connection('mysql2')->table('m_keluarga_pasien')
             ->where('MedicalNo', 'like', "%{$mrn}%")
-            ->select('MedicalNo', 'FamilyName as PatientName')
+            ->select('MedicalNo', 'FamilyName as PatientName', 'SSN', 'DateOfBirth', 'Sex as GCSex', 'Address as PatientAddress', 'PhoneNo as MobilePhoneNo1')
             ->get()
             ->toArray();
 
@@ -117,10 +112,11 @@ class RegisterDataController extends Controller
 
         return response()->json($data);
     }
-
     public function getData()
     {
-        $pasien = Pasien::select(['MedicalNo', 'PatientName', 'DateOfBirth', 'GCSex', 'PatientAddress', 'MobilePhoneNo1']);
+        $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
+            ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec')
+            ->whereNull('m_registrasi.reg_no');
         return DataTables::of($pasien)
             ->addColumn('action', function ($row) {
                 return '
@@ -145,7 +141,7 @@ class RegisterDataController extends Controller
         $keluarga = PasienInformasi::where('MedicalNo', $id)->get();
         return view('register.pages.informasi-pasien.update', compact('pasien', 'keluarga'));
     }
-
+    
     public function update(Request $request, $medicalNo)
     {
         try {
@@ -170,12 +166,13 @@ class RegisterDataController extends Controller
             PasienInformasi::where('MedicalNo', $medicalNo)->delete();
             $keluargaData = array_map(function ($key) use ($request, $medicalNo) {
                 $job = $request->Job[$key] ?? null;
-                if (strlen($job) > 50) { // Misalnya, jika panjang maksimal kolom Job adalah 50 karakter
+                if (strlen($job) > 50) {    
                     throw new \Exception('Panjang data Job melebihi batas yang diizinkan.');
                 }
                 return [
                     'MedicalNo' => $medicalNo,
                     'GCRelationShip' => $request->GCRelationShip[$key],
+                    'FamilyMedicalNo' => $request->FamilyMedicalNo[$key] ?? null,
                     'PhoneNo' => $request->PhoneNo[$key] ?? null,
                     'SSN' => $request->SSN[$key] ?? null,
                     'FamilyName' => $request->FamilyName[$key] ?? null,

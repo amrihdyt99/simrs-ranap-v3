@@ -2,6 +2,7 @@
   function loadAllTfInteralFunc() {
     loadDatatableHistoryTransferInternal();
     createTfInternal();
+    createTfIntensif();
   }
 
   function loadCreateTfInternalFunc() {
@@ -14,6 +15,7 @@
       $('#ModalBase').html('');
       $('.nav-link.active').click();
     });
+    confirmTransferInternal();
   }
 
   function loadDatatableHistoryTransferInternal() {
@@ -155,6 +157,29 @@
               inject_view_data(data);
               printTransferInternal();
 
+            },
+            error: function(data) {
+              clear_show_error();
+            },
+          });
+        });
+        $(row).find('.btn-edit-transfer-intensif').click(function() {
+          let kode_transfer = $(this).data('transfer_code');
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              "kode_transfer_internal": kode_transfer,
+              'type': 'intensif'
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.edit_transfer_internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              nyaa_dttb_transferinternal_load_all();
+              confirmTransferInternal();
+              loadCreateTfInternalFunc();
             },
             error: function(data) {
               clear_show_error();
@@ -342,6 +367,41 @@
     });
   }
 
+  function createTfIntensif() {
+    $('#btnCreateTfIntensif').click(function(e) {
+      Swal.fire({
+        title: "Lakukan Transfer Rawat Intensif ?",
+        icon: 'warning',
+        text: "Transfer Rawat Intensif tidak dapat dibatalkan jika sudah dilakukan",
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Ya, lakukan !",
+        cancelButtonText: "Tidak, Batalkan",
+      }).then((result) => {
+        if (result.value) {
+          clear_show_load();
+          $.ajax({
+            type: "POST",
+            data: {
+              "reg_no": regno,
+              "medrec": medrec,
+              'type': 'intensif',
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.create_transfer_internal')}}",
+            success: function(data) {
+              inject_view_data(data);
+              nyaa_dttb_transferinternal_load_all();
+              loadCreateTfInternalFunc();
+            },
+            error: function(data) {
+              clear_show_error();
+            },
+          });
+        }
+      });
+    });
+  }
+
   function viewSerahTerima() {
     $('#btnSerahTerimaTfInternal').click(function(e) {
       clear_show_load();
@@ -444,7 +504,6 @@
       }
 
       let class_charge_code = $('#temp_charge_class_bed').val();
-      console.log(class_charge_code);
       $('#select-charge-class-bed').select2({
         theme: 'bootstrap4',
         placeholder: "-",

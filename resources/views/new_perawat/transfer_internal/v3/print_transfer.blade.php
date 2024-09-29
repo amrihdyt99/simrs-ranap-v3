@@ -370,6 +370,16 @@
                 </div>
                 ( {{ $dokter->name  }} )
               </td>
+              @if ($transfer_internal->transfer_rawat_intensif == 1)
+              <td style="width: {{ $width_data }}%">
+                <br><br>
+                Nama dan tanda tangan perawat<br>
+                <div class="row justify-content-center">
+                  <img width="200" height="200" style="border:1px solid #000;" />
+                </div>
+                ( {{ $transfer_internal->diterima_oleh_nama  }} )
+              </td>
+              @else
               <td style="width: {{ $width_data }}%">
                 <br><br>
                 Nama dan tanda tangan perawat<br>
@@ -378,6 +388,7 @@
                 </div>
                 ( {{ $perawat_tujuan->name  }} )
               </td>
+              @endif
             </tr>
           </tbody>
         </table>

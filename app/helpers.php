@@ -4,6 +4,7 @@ use App\Http\Controllers\Kasir\BillingController;
 use App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 function keyPharmacy(){
     return '229470a5-fe98-479e-ba3f-5c5b8eec7c88';
@@ -193,6 +194,15 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
 function getUni(){
     $uni = new UniversalFunctionController;
     return $uni;
+}
+
+function getDatabase($name){
+    $db = [
+        'master' => DB::connection('mysql2')->getDatabaseName(),
+        'inap' => DB::connection('mysql')->getDatabaseName(),
+    ];
+
+    return $db[$name];
 }
 
 function checkPaymentStatus($reg){

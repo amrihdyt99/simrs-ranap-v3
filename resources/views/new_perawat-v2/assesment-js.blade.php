@@ -359,6 +359,12 @@
     }
 
     // =================================================================================================================================
+    // do not remove this !
+    var clickTabCount = 0;
+
+    if (typeof clickTab === "function") {
+        clickTabCount++;
+    }
 
     if (clickTabCount < 1) {
         nyaa_call_view = function(_type = '') {
@@ -398,6 +404,41 @@
                             $('#assesment_1').show();
 
                             getAlert(regno)
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+                // 'edukasi': function() {
+                //     $.ajax({
+                //         type: "POST",
+                //         data: {
+                //             "reg_no": regno,
+                //             "medrec": medrec,
+                //         },
+                //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                //         success: function(data) {
+                //             inject_view_data(data);
+                //         },
+                //         error: function(data) {
+                //             clear_show_error();
+                //         },
+                //     });
+                // },
+
+                'edukasi': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            ttd_edukasi_perawat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -574,11 +615,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_dewasa')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            getAssementDewasa();
-                            assementDewasa_init();
-                            $('#save_asesmen_dewasa').click(function() {
-                                asesmenDewasaSubmit();
-                            });
+                            loadAllFunctionDewasa();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -617,6 +654,25 @@
                             inject_view_data(data);
                             loadDatatableRekonObat();
                             loadSignature();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'rekonsiliasi-obat': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.rekonsiliasi_obat')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionRekonsiliasiObat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -733,6 +789,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            loadAllFunction();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1119,7 +1176,7 @@
             }
         }();
     }
-    
+
 
     function icuPanel(id) {
         nyaa_call_view[id]()
@@ -1127,13 +1184,7 @@
 
     // =================================================================================================================================
 
-    // do not remove this !
-    var clickTabCount = 0;
 
-    if (typeof clickTab === "function") {
-        clickTabCount++;
-    }
-    
     if (clickTabCount < 1) {
         function clickTab(idx, title = '') {
             clear_show_load();
@@ -1215,32 +1266,70 @@
                     var trA = document.createElement('tr');
                     var trP = document.createElement('tr');
 
-                    trS.appendChild(document.createTextNode('SUBJECT'));
+                    var boldSubject = document.createElement('b');
+                    boldSubject.appendChild(document.createTextNode('SUBJECT'));
+                    trS.appendChild(boldSubject);
                     trS.appendChild(document.createElement('br'));
                     trS.appendChild(document.createTextNode(datasoap[i].soapdok_subject ?? '-'));
 
-                    trO.appendChild(document.createElement('br'));
-                    trO.appendChild(document.createTextNode('OBJECT'));
+                    var boldObject = document.createElement('b');
+                    boldObject.appendChild(document.createTextNode('OBJECT'));
+                    trO.appendChild(boldObject);
                     trO.appendChild(document.createElement('br'));
                     trO.appendChild(document.createTextNode(datasoap[i].soapdok_object ?? '-'));
 
-                    trA.appendChild(document.createElement('br'));
-                    trA.appendChild(document.createTextNode('ASSESMENT'));
+                    var boldAssesment = document.createElement('b');
+                    boldAssesment.appendChild(document.createTextNode('ASSESMENT'));
+                    trA.appendChild(boldAssesment);
                     trA.appendChild(document.createElement('br'));
                     trA.appendChild(document.createTextNode(datasoap[i].soapdok_assesment ?? '-'));
 
-                    trP.appendChild(document.createElement('br'));
-                    trP.appendChild(document.createTextNode('PLANNING'));
+                    var boldPlanning = document.createElement('b');
+                    boldPlanning.appendChild(document.createTextNode('PLANNING'));
+                    trP.appendChild(boldPlanning);
                     trP.appendChild(document.createElement('br'));
                     trP.appendChild(document.createTextNode(datasoap[i].soapdok_planning ?? '-'));
 
-                    row.append($('<td>').append(trS, trO, trA, trP));
-                    row.append($('<td>').text(""));
+                    var trTindakan = document.createElement('tr');
+                    var boldTindakan = document.createElement('b');
+                    boldTindakan.appendChild(document.createTextNode('TINDAKAN PENUNJANG & OBAT :'));
+                    trTindakan.appendChild(boldTindakan);
+                    trTindakan.appendChild(document.createElement('br'));
+
+                    if (datasoap[i].order_lab && datasoap[i].order_lab.length > 0) {
+                        $.each(datasoap[i].order_lab, function(i_lab, item_lab) {
+                            trTindakan.appendChild(document.createTextNode((i_lab == 0 ? 'Laboratorium: ' : '') + item_lab.item_name + (i_lab < datasoap[i].order_lab.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_radiologi && datasoap[i].order_radiologi.length > 0) {
+                        $.each(datasoap[i].order_radiologi, function(i_rad, item_rad) {
+                            trTindakan.appendChild(document.createTextNode((i_rad == 0 ? 'Radiologi: ' : '') + item_rad.item_name + (i_rad < datasoap[i].order_radiologi.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_obat && datasoap[i].order_obat.length > 0) {
+                        $.each(datasoap[i].order_obat, function(i_obat, item_obat) {
+                            trTindakan.appendChild(document.createTextNode((i_obat == 0 ? 'Obat: ' : '') + item_obat.item_name + (i_obat < datasoap[i].order_obat.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_lainnya && datasoap[i].order_lainnya.length > 0) {
+                        $.each(datasoap[i].order_lainnya, function(i_lainnya, item_lainnya) {
+                            trTindakan.appendChild(document.createTextNode((i_lainnya == 0 ? 'Tindakan Lainnya: ' : '') + item_lainnya.item_name + (i_lainnya < datasoap[i].order_lainnya.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    var trInstruksi = document.createElement('tr');
+                    trInstruksi.appendChild(document.createTextNode(datasoap[i].soapdok_instruksi ?? '-'));
+
+                    row.append($('<td>').append(trS, trO, trA, trP, trTindakan));
+                    row.append($('<td>').append(trInstruksi));
                     if (statusVerifikasi == 1) {
                         var btnShowQR = document.createElement('button')
                         btnShowQR.type = 'button'
                         btnShowQR.className = 'btn btn-success'
-                        btnShowQR.innerText = 'Lihat QRCode'
+                        btnShowQR.innerText = 'Lihat QRCode '
                         btnShowQR.id = 'btnShowQR' + datasoap[i].soapdok_reg
                         btnShowQR.value = datasoap[i].id
                         let soap_id = datasoap[i].soapdok_id;
@@ -1275,7 +1364,6 @@
     function getSoapPerawat_modal() {
         $('#modalSOAP').modal('show');
     }
-
     // Pengkajian Awal Dewasa
     function assementDewasa_init() {
         $('.kajian_kulit_dewasa').on('click', function() {
@@ -1418,20 +1506,20 @@
                     col3.innerHTML = dataJSON[i]['catatan']
                     col4.innerHTML = dataJSON[i]['id_nurse']
                     if (dataJSON[i]['signature']) {
-                    console.log("Signature Base64:", dataJSON[i]['signature']);
-                    col4.innerHTML = `
+                        console.log("Signature Base64:", dataJSON[i]['signature']);
+                        col4.innerHTML = `
                         <div style="text-align: center;">
                             <img src="${dataJSON[i]['signature']}" alt="Signature" style="width: 400px; height: 200px;"/>
                             <p>${dataJSON[i]['id_nurse']}</p>
                         </div>
-                    `; 
-                } else {
-                    col4.innerHTML = `
+                    `;
+                    } else {
+                        col4.innerHTML = `
                         <div style="text-align: center;">
                             <p>${dataJSON[i]['id_nurse']}</p>
                         </div>
                     `;
-                }
+                    }
                     tr.appendChild(col1)
                     tr.appendChild(col2)
                     tr.appendChild(col3)
@@ -1748,7 +1836,7 @@
     }
 
     // EDUKASI
-    function getEdukasi(_elm = '', _type = ''){
+    function getEdukasi(_elm = '', _type = '') {
         $.ajax({
             type: "POST",
             data: {
@@ -1761,7 +1849,7 @@
             success: function(data) {
                 $('[id="panel-edukasi"] div').html(data)
                 resetEdukasi(_elm, _type)
-                
+
             },
             error: function(data) {
                 clear_show_error();
@@ -1769,17 +1857,17 @@
         });
     }
 
-    function resetEdukasi(_elm = '', _type = ''){
-        $('[id="panel-edukasi"] '+_elm+' [class*="table1"]')
+    function resetEdukasi(_elm = '', _type = '') {
+        $('[id="panel-edukasi"] ' + _elm + ' [class*="table1"]')
             .find('[class*="form-control"], input[type="radio"]')
             .removeAttr('disabled')
-            
+
         ttd_edukasi_perawat()
     }
 
     var signaturePadSasaran = null
     var signaturePadEdukator = null
-    
+
     function ttd_edukasi_perawat() {
         // SASARAN
         let $wrapperSasaran = $('[id*="signature-pad-sasaran"]');
@@ -2068,6 +2156,8 @@
     }
 </script>
 
+@include('new_perawat.assesment.assesment_dewasa.js.assesment_dewasa_js')
+@include('new_perawat.assesment.assesment_anak.js.assesment_anak_js')
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
 @include('new_perawat.resiko_jatuh.humpty_dumpty.js.resiko_jatuh_humpty_dumpty_js')
 @include('new_perawat.resiko_jatuh.geriatri.js.resiko_jatuh_geriatri_js')
@@ -2075,3 +2165,5 @@
 @include('new_perawat.resiko_jatuh.skala_morse.js.resiko_jatuh_skala_morse_js')
 @include('new_perawat.transfer_internal.js.index_js')
 @include('new_perawat.monitoring_news.js.entry_news_js')
+@include('new_perawat.assesment.obgyn.js.obgyn_js')
+@include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')

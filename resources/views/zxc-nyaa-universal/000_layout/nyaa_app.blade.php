@@ -145,9 +145,14 @@
       }
     </script>
 
-@if (auth()->user()->level_user == 'perawat')
+@if (auth()->user()->level_user == 'perawat' || auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
 <script>
   $(document).ready(function() {
+    // Inisialisasi Select2 untuk modal shift
+    $('#pilih_shift').select2({
+      dropdownParent: $('#modal_shift')
+    });
+
     // Show the modal if shift is not selected
     if (!@json(session('user_shift'))) {
       $('#modal_shift').modal('show');
@@ -181,6 +186,7 @@
 
     // Show modal on trigger click
     $('#trigger_shift_modal').on('click', function() {
+      $('#modal_pil').modal('hide');
       $('#modal_shift').modal('show');
     });
 
