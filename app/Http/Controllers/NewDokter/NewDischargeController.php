@@ -147,11 +147,11 @@ class NewDischargeController extends Controller
     
     public function openDischargeApprove(Request $request){
         try {
-            if (!$request->id) {
+            if (!$request->id && !$request->reg_no) {
                 return [
                     'code' => 500,
                     'success' => false,
-                    'message' => 'Approval gagal disimpan, tidak ada id yang dikirimkan'
+                    'message' => 'Approval gagal disimpan, tidak ada id & nomor registrasi yang dikirimkan'
                 ];
             }
 
