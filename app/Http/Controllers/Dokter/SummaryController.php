@@ -87,7 +87,6 @@ class SummaryController extends Controller
         $diagnosa = null;
         $prosedur = null;
         $subs = substr($reg, 6, 20);
-        return $dataPasien;
         return view('new_dokter.assesment', compact('data', 'reg', 'patient', 'dataPasien', 'icd9cm', 'icd10', 'diagnosa', 'prosedur', 'subs', 'id_cppt'));
     }
 
