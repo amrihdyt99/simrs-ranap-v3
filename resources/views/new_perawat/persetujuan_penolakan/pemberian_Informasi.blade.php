@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-sm-9">
                     <select name="ParamedicCode" id="ParamedicCode" class="form-control">
-                        <option value="{{ $informasi->ParamedicCode }}" selected>{{ $informasi->ParamedicName }}
+                        <option value="{{ $informasi->ParamedicCode }}" selected>{{ $informasi->ParamedicName ?? $dataPasien->ParamedicName }}
                         </option>
                     </select>
                 </div>
@@ -251,14 +251,15 @@
                         <div style="margin-bottom: 10px; font-size:17px">Tanda tangan Dokter</div>
                         <div id="signature-pad-dokter" style="display: inline-block;">
                             <div
-                                style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                <canvas id="canvas_dokter" width="350" height="100">Your browser does not support
+                                style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                <canvas id="canvas_dokter" width="260" height="160">Your browser does not support
                                     the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px; text-align: center;">
                                 <input type="hidden" id="signature_dokter" name="informasi_ttd_dokter" value="{{$informasi->informasi_ttd_dokter}}">
                                 <button type="button" id="clear_btn_dokter" class="btn btn-danger"
                                     data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                                <input type="text" name="nama_dokter" class="form-control mb-2 mt-2" value="{{$informasi->nama_dokter ?? $dataPasien->ParamedicName}}" placeholder="Nama Dokter">
                             </div>
                         </div>
                     </div>
@@ -274,14 +275,15 @@
                         <div style="margin-bottom: 10px; font-size:17px">Tanda tangan penerima informasi</div>
                         <div id="signature-pad-penerima" style="display: inline-block;">
                             <div
-                                style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                <canvas id="canvas_penerima" width="350" height="100">Your browser does not support
+                                style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                <canvas id="canvas_penerima" width="260" height="160">Your browser does not support
                                     the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px; text-align: center;">
                                 <input type="hidden" id="signature_penerima" name="informasi_ttd_penerima_informasi" value="{{$informasi->informasi_ttd_penerima_informasi}}">
                                 <button type="button" id="clear_btn_penerima" class="btn btn-danger"
                                     data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                                <input type="text" name="nama_penerima_informasi" class="form-control mb-2 mt-2" value="{{$informasi->nama_penerima_informasi}}" placeholder="Nama Penerima Informasi">
                             </div>
                         </div>
                     </div>

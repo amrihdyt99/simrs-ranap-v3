@@ -372,11 +372,11 @@
             <table class="table table-bordered table-sm mt-3 border-dark" style="width: 100%; text-align: center;">
                 <tr>
                     <td style="vertical-align: middle;">
-                        Tanda Tangan Perawat
+                        <p>Tanda Tangan Perawat</p>
                         <div id="signature-pad-perawat" style="display: inline-block; margin: 0 auto;">
                             <div
-                                style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                <canvas id="the_canvas_perawat" width="350px" height="100px">Your browser does not
+                                style="border: solid 1px teal; width: 260px; height: 160px; padding: 3px; position: relative;">
+                                <canvas id="the_canvas_perawat" width="350px" height="160px">Your browser does not
                                     support the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px;">
@@ -386,14 +386,15 @@
                                     data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                     Hapus</button>
                             </div>
+                            <input type="text" name="nama_perawat" class="form-control mb-2" value="{{$data->nama_perawat ?? auth()->user()->name}}" placeholder="Nama Perawat" style="width: 280px; margin: 0 auto;">
                         </div>
                     </td>
                     <td style="vertical-align: middle;">
-                        Tanda Tangan Pasien/Keluarga
+                        <p>Tanda Tangan Pasien/Keluarga</p>
                         <div id="signature-pad-pasien" style="display: inline-block; margin: 0 auto;">
                             <div
-                                style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                <canvas id="the_canvas_pasien" width="350px" height="100px">Your browser does not
+                                style="border: solid 1px teal; width: 260px; height: 160px; padding: 3px; position: relative;">
+                                <canvas id="the_canvas_pasien" width="260px" height="160px">Your browser does not
                                     support the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px;">
@@ -404,6 +405,16 @@
                                     Hapus</button>
                             </div>
                         </div>
+                        @if ($registrasi_pj)
+                            <select name="nama_keluarga_pasien" class="form-control mt-2" style="width: 180px; margin: 0 auto;">
+                                <option value="">Pilih Keluarga</option>
+                                @foreach($registrasi_pj as $pj)
+                                    <option value="{{ $pj->reg_pjawab_nama }}" {{ $data->nama_keluarga_pasien == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <input type="text" name="nama_keluarga_pasien" value="{{$data->nama_keluarga_pasien}}" class="form-control mt-2" placeholder="Nama Keluarga" style="margin: 0 auto; width: 180px;">
+                        @endif
                     </td>
                 </tr>
             </table>
