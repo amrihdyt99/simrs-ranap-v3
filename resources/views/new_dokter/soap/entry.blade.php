@@ -1,6 +1,19 @@
 @if ($dataPasien->reg_discharge == 1)
-    <button class="btn btn-info float-right mb-3" onclick="$('#modalOpenDischarge').modal('show')"><i class="fas fa-paper-plane"></i> Ajukan Open Discharge</button>
-    <p class="text-danger">Pasien sudah discharge, CPPT dan tindakan tidak bisa ditambahkan, silahkan ajukan <b>Open Discharge</b> untuk mendapatkan akses.</p>
+    @if ($dataPasien->discharge)
+        @if ($dataPasien->discharge->status == 'waiting')
+            <p class="text-danger">Open discharge sedang diproses, mohon hubungi petugas rekam medis untuk approval permintaan</p>
+        @else
+            <button class="btn btn-info float-right mb-3" onclick="$('#modalOpenDischarge').modal('show')"><i class="fas fa-paper-plane"></i> Ajukan Open Discharge</button>
+            <p class="text-danger">
+                Open discharge tidak disetujui, <br> 
+                <b>Alasan : {{$dataPasien->discharge->open_text}} - {{$dataPasien->discharge->open_at}}</b><br>
+                Silahkan ajukan ulang open discharge dan hubungi petugas rekam medis untuk approval permintaan
+            </p>
+        @endif
+    @else
+        <button class="btn btn-info float-right mb-3" onclick="$('#modalOpenDischarge').modal('show')"><i class="fas fa-paper-plane"></i> Ajukan Open Discharge</button>
+        <p class="text-danger">Pasien sudah discharge, CPPT dan tindakan tidak bisa ditambahkan, silahkan ajukan <b>Open Discharge</b> untuk mendapatkan akses.</p>
+    @endif
 @else
     <button class="btn btn-success float-right mb-3" id="btn-add-soap"><i class="fas fa-plus"></i> Tambah CPPT</button>
 @endif

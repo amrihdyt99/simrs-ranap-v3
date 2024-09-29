@@ -108,6 +108,7 @@ class NewDischargeController extends Controller
             $check_ = DB::table('rs_pasien_discharge_open')
                 ->where('reg_no', $request->reg_no)
                 ->where('is_open', 0)
+                ->where('status', 'waiting')
                 ->first();
                 
             if (isset($check_)) {
