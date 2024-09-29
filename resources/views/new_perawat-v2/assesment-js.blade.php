@@ -494,6 +494,8 @@
                         success: function(data) {
                             inject_view_data(data);
                             ttd_edukasi_perawat();
+                            loadAllSignatures('gizi');
+                            loadAllSignatures('farmasi');
                         },
                         error: function(data) {
                             clear_show_error();
@@ -2134,6 +2136,45 @@
         $('#save-persetujuan-tindakan-medis').click(function() {
             simpanPersetujuanTindakanMedis();
         });
+    }
+
+    function loadAllSignatures(type) {
+    UniversalSignaturePad(`signature-${type}-sasaran`, `ttd_sasaran_${type}`);
+    UniversalSignaturePad(`signature-${type}-edukator`, `ttd_edukator_${type}`);
+    }
+
+    const UniversalSignaturePads = {};
+
+    function UniversalSignaturePad(canvasId, hiddenInputId) {
+        const canvas = document.getElementById(canvasId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        if (!canvas || !hiddenInput) {
+            
+            return;
+        }
+
+        const button = document.querySelector(`button[data-pad="${canvasId.split('-')[2]}"]`);
+        const signaturePad = new SignaturePad(canvas);
+        UniversalSignaturePads[canvasId] = signaturePad;
+
+        signaturePad.onEnd = function() {
+            hiddenInput.value = signaturePad.toDataURL();
+        };
+
+        if (button) {
+            button.addEventListener('click', function() {
+                signaturePad.clear();
+                hiddenInput.value = '';
+            });
+        }
+
+        if (hiddenInput.value) {
+            const image = new Image();
+            image.onload = function() {
+                canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+            image.src = hiddenInput.value;
+        }
     }
 </script>
 

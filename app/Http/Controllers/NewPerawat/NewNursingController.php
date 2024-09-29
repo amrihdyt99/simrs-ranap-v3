@@ -723,7 +723,10 @@ class NewNursingController extends Controller
             "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
             "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
             "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
-            "user_id" => $request->user_id,
+            "ttd_sasaran" => $request->ttd_sasaran,
+            "ttd_edukator" => $request->ttd_edukator,
+            "nama_sasaran" => $request->nama_sasaran,
+            "nama_edukator" => $request->nama_edukator,
         ]);
 
         return response()->json([
@@ -777,7 +780,10 @@ class NewNursingController extends Controller
                 "metode_edukasi_pentingnya_nutrisi_gizi" => $request->metode_edukasi_pentingnya_nutrisi_gizi,
                 "metode_edukasi_diet_gizi" => $request->metode_edukasi_diet_gizi,
                 "metode_edukasi_lain_lain_gizi" => $request->metode_edukasi_lain_lain_gizi,
-                "user_id" => $request->user_id,
+                "ttd_sasaran" => $request->ttd_sasaran,
+                "ttd_edukator" => $request->ttd_edukator,
+                "nama_sasaran" => $request->nama_sasaran,
+                "nama_edukator" => $request->nama_edukator,
             ]);
 
         return response()->json([
@@ -829,7 +835,8 @@ class NewNursingController extends Controller
             "metode_edukasi_lain_lain_perawat" => $request->metode_edukasi_lain_lain_perawat,
             "ttd_sasaran" => $request->ttd_sasaran,
             "ttd_edukator" => $request->ttd_edukator,
-            "user_id" => $request->user_id,
+            "nama_sasaran" => $request->nama_sasaran,
+            "nama_edukator" => $request->nama_edukator,
         ]);
 
         return response()->json([
@@ -934,6 +941,9 @@ class NewNursingController extends Controller
                 'sebagai_pihak_pasien' => $sebagai_pihak_pasien,
                 'ttd_perawat' => $ttdPerawat,
                 'ttd_pasien' => $ttdPasien,
+                'nama_keluarga_pasien' => $r->nama_keluarga_pasien,
+                'nama_perawat' => $r->nama_perawat,
+                
             ]);
             return response()->json([
                 'success' => $simpan
@@ -1456,6 +1466,9 @@ class NewNursingController extends Controller
             'ttd_petugas' => $request->ttd_petugas,
             'shift' => $request->shift,
             'created_at' => now(),
+            'created_by' => $request->user_name,
+            'nama_keluarga' => $request->nama_keluarga,
+            'nama_petugas' => $request->nama_petugas,
         ];
 
         $simpan = DB::connection('mysql')
@@ -2949,6 +2962,8 @@ class NewNursingController extends Controller
                 'informasi_lain_lain_paraf' => $request->informasi_lain_lain_paraf,
                 'informasi_ttd_dokter' => $request->ttdDokter,
                 'informasi_ttd_penerima_informasi' => $request->ttdPenerima,
+                'nama_dokter' => $request->nama_dokter,
+                'nama_penerima_informasi' => $request->nama_penerima_informasi,
 
             ];
 
@@ -3001,6 +3016,10 @@ class NewNursingController extends Controller
             'persetujuan_ttd_dokter' => $request->ttd_dokter_setuju,
             'persetujuan_ttd_keluarga' => $request->ttd_keluarga_setuju,
             'persetujuan_ttd_perawat' => $request->ttd_perawat_setuju,
+            'nama_persetujuan_penerima' => $request->nama_persetujuan_penerima,
+            'nama_persetujuan_dokter' => $request->nama_persetujuan_dokter,
+            'nama_persetujuan_keluarga' => $request->nama_persetujuan_keluarga,
+            'nama_persetujuan_perawat' => $request->nama_persetujuan_perawat,
 
         );
         $simpan = DB::connection('mysql')
@@ -3034,6 +3053,10 @@ class NewNursingController extends Controller
             'penolakan_ttd_dokter' => $request->ttd_dokter_penolakan,
             'penolakan_ttd_keluarga' => $request->ttd_keluarga_penolakan,
             'penolakan_ttd_perawat' => $request->ttd_perawat_penolakan,
+            'nama_penolakan_penerima' => $request->nama_penolakan_penerima,
+            'nama_penolakan_dokter' => $request->nama_penolakan_dokter,
+            'nama_penolakan_keluarga' => $request->nama_penolakan_keluarga,
+            'nama_penolakan_perawat' => $request->nama_penolakan_perawat,
 
         );
         $simpan = DB::connection('mysql')

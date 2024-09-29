@@ -186,6 +186,7 @@
     // resiko-jatuh-neonatus
     function addresikojatuhNeonatus() {
         var userId = "{{ auth()->user()->id }}";
+        var user_name = "{{ auth()->user()->name }}";
         var userShift = "{{ session('user_shift') }}";
 
         var formData = new FormData($('#entry-resiko-jatuh-neonatus')[0]);
@@ -193,6 +194,7 @@
         formData.append('medrec', medrec);
         formData.append('regno', regno);
         formData.append('user_id', userId);
+        formData.append('user_name', user_name);
         formData.append('shift', userShift);
         formData.append('ttd_keluarga', signaturePadKeluargaNeonatus.toDataURL());
         formData.append('ttd_petugas', signaturePadPetugasNeonatus.toDataURL());

@@ -142,14 +142,15 @@
                     <div style="margin-bottom: 10px; font-weight: bold;">SASARAN</div>
                     <div id="signature-pad-sasaran" style="display: inline-block;">
                         <div
-                            style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                            <canvas id="canvas_sasaran" width="350" height="100">Your browser does not support
+                            style="border: solid 1px teal; width: 450px; height: 210px; position: relative;">
+                            <canvas id="canvas_sasaran" width="450" height="200">Your browser does not support
                                 the HTML canvas tag.</canvas>
                         </div>
                         <div style="margin: 10px; text-align: center;">
                             <input type="hidden" id="signature_sasaran" name="ttd_sasaran" value="{{$edukasi_pasien_perawat->ttd_sasaran}}">
                             <button type="button" id="clear_btn_sasaran" class="btn btn-danger"
                                 data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                            <input type="text" class="form-control mt-2" name="nama_sasaran" value="{{$datamypatient->PatientName ?? $edukasi_pasien_perawat->nama_sasaran}}" placeholder="Nama Sasaran">
                         </div>
                     </div>
                 </div>
@@ -159,14 +160,15 @@
                 <div style="margin-bottom: 10px; font-weight: bold;">EDUKATOR</div>
                 <div id="signature-pad-edukator" style="display: inline-block; margin: 0 auto;">
                     <div
-                        style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                        <canvas id="canvas_edukator" width="350" height="100">Your browser does not support the
+                        style="border: solid 1px teal; width: 450px; height: 210px; position: relative;">
+                        <canvas id="canvas_edukator" width="450" height="200">Your browser does not support the
                             HTML canvas tag.</canvas>
                     </div>
                     <div style="margin: 10px;">
                         <input type="hidden" id="signature_edukator" name="ttd_edukator" value="{{$edukasi_pasien_perawat->ttd_edukator ?? auth()->user()->signature}}">
                         <button type="button" id="clear_btn_edukator" class="btn btn-danger"
                             data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                        <input type="text" class="form-control mt-2" name="nama_edukator" value="{{Auth::user()->name ?? $edukasi_pasien_perawat->nama_edukator}}" placeholder="Nama Edukator">
                     </div>
                 </div>
             </td>
