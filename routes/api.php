@@ -9,6 +9,7 @@ use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
+use App\Http\Controllers\Perawat\CaseManagerController;
 use App\Http\Controllers\Perawat\ObgynController;
 use App\Http\Controllers\Perawat\RekonsiliasiObatController;
 use App\Http\Controllers\Perawat\TransferInternalController;
@@ -275,6 +276,7 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('delete-rekon-obat-item', [RekonsiliasiObatController::class, 'delete_rekon_obat_item'])->name('rekon-obat-item.delete');
 	Route::get('get-rekon-ttd', [RekonsiliasiObatController::class, 'get_ttd_verif_obat'])->name('get-rekon-ttd.get');
 	Route::post('store-rekonsiliasi-obat', [RekonsiliasiObatController::class, 'store_rekonsiliasi_obat'])->name('rekonsiliasi-obat.store');
+	Route::post('store-case-manager', [CaseManagerController::class, 'store_case_manager'])->name('case-manager.store');
 });
 
 Route::prefix('bed')->name('bed.')->group(function () {

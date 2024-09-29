@@ -17,6 +17,7 @@ use App\Models\Obgyn\ObgynSkriningFungsional;
 use App\Models\Obgyn\ObgynSkriningGizi;
 use App\Models\Obgyn\ObgynSkriningNyeri;
 use App\Models\Pasien;
+use App\Models\RegistrasiPJawab;
 use App\Models\RegistrationInap;
 use App\Traits\Master\MasterBedTraits;
 use Illuminate\Http\Request;
@@ -55,7 +56,9 @@ class NyaaViewInjectorController extends AaaBaseController
         if (!$datacek) {
             $datacek = optional((object)[]);
         }
-        return view('new_perawat.checklist.checklist_index', ['datapasien' => $datamypatient, 'hitung' => $hitung, 'data' => $datacek]);
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+
+        return view('new_perawat.checklist.checklist_index', ['datapasien' => $datamypatient, 'hitung' => $hitung, 'data' => $datacek, 'registrasi_pj' => $registrasi_pj]);
         // if($hitung==0){
         //     return view('new_perawat.checklist.checklist',['datapasien'=>$datamypatient,'hitung'=>$hitung]);
         // }else{
@@ -147,6 +150,12 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_edukasi_pasien_rehab')
             ->where('reg_no', $request->reg_no)
             ->first();
+        
+        $datamypatient = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->where(['m_registrasi.reg_no' => $request->reg_no])
+        ->first();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -157,6 +166,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'edukasi_pasien_gizi' => optional($edukasi_pasien_gizi),
             'edukasi_pasien_farmasi' => optional($edukasi_pasien_farmasi),
             'edukasi_pasien_rehab' => optional($edukasi_pasien_rehab),
+            'datamypatient' => optional($datamypatient),
         );
 
         if (isset($request->type)) {
@@ -190,10 +200,13 @@ class NyaaViewInjectorController extends AaaBaseController
     }
 
     function assesment_resiko_jatuh_neonatus(Request $request)
-    {
+    {   
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
+            'registrasi_pj' => $registrasi_pj,
         );
         return view('new_perawat.resiko_jatuh.neonatus.resiko_jatuh_neonatus')
             ->with($context);
@@ -1532,8 +1545,12 @@ class NyaaViewInjectorController extends AaaBaseController
         $dataPasien = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->first();
+        
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+        
 
         $informasi = DB::connection('mysql')
             ->table('rs_tindakan_medis_informasi')
@@ -1559,6 +1576,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'persetujuan' => $persetujuan,
             'penolakan' => $penolakan,
             'dataPasien' => $dataPasien,
+            'registrasi_pj' => $registrasi_pj,
 
         );
         return view('new_perawat.persetujuan_penolakan.index')
@@ -1663,4 +1681,30 @@ class NyaaViewInjectorController extends AaaBaseController
 
         return view('new_perawat.qrcode.show', compact('data'));
     }
+
+    function form_Case_manager(Request $request)
+    {
+        $case_manager = DB::connection('mysql')->table('case_manager')
+            ->where('reg_no', $request->reg_no)
+            ->where('med_rec', $request->medrec)
+            ->first();
+
+        $datamypatient = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->where(['m_registrasi.reg_no' => $request->reg_no])
+        ->first();
+
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'case_manager' => optional($case_manager),
+            'datamypatient' => optional($datamypatient),
+        );
+        
+        return view('new_perawat.case_manager.index')
+            ->with($context);
+    }
+
+
 }

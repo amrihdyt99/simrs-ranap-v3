@@ -494,6 +494,8 @@
                         success: function(data) {
                             inject_view_data(data);
                             ttd_edukasi_perawat();
+                            loadAllSignatures('gizi');
+                            loadAllSignatures('farmasi');
                         },
                         error: function(data) {
                             clear_show_error();
@@ -789,7 +791,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            loadAllFunction();
+                            loadAllFunctionObgyn();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1171,7 +1173,26 @@
                     } catch (error) {
                         clear_show_error()
                     }
-                }
+                },
+
+                'case_manager': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.case_manager')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionCaseManager();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
 
             }
         }();
@@ -2154,6 +2175,45 @@
             simpanPersetujuanTindakanMedis();
         });
     }
+
+    function loadAllSignatures(type) {
+    UniversalSignaturePad(`signature-${type}-sasaran`, `ttd_sasaran_${type}`);
+    UniversalSignaturePad(`signature-${type}-edukator`, `ttd_edukator_${type}`);
+    }
+
+    const UniversalSignaturePads = {};
+
+    function UniversalSignaturePad(canvasId, hiddenInputId) {
+        const canvas = document.getElementById(canvasId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        if (!canvas || !hiddenInput) {
+            
+            return;
+        }
+
+        const button = document.querySelector(`button[data-pad="${canvasId.split('-')[2]}"]`);
+        const signaturePad = new SignaturePad(canvas);
+        UniversalSignaturePads[canvasId] = signaturePad;
+
+        signaturePad.onEnd = function() {
+            hiddenInput.value = signaturePad.toDataURL();
+        };
+
+        if (button) {
+            button.addEventListener('click', function() {
+                signaturePad.clear();
+                hiddenInput.value = '';
+            });
+        }
+
+        if (hiddenInput.value) {
+            const image = new Image();
+            image.onload = function() {
+                canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+            image.src = hiddenInput.value;
+        }
+    }
 </script>
 
 @include('new_perawat.assesment.assesment_dewasa.js.assesment_dewasa_js')
@@ -2167,3 +2227,4 @@
 @include('new_perawat.monitoring_news.js.entry_news_js')
 @include('new_perawat.assesment.obgyn.js.obgyn_js')
 @include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
+@include('new_perawat.case_manager.js.case_manager_js')
