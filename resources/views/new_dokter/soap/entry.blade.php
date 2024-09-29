@@ -1,4 +1,9 @@
-<button class="btn btn-success float-right mb-3" id="btn-add-soap"><i class="fas fa-plus"></i> Tambah CPPT</button>
+@if ($dataPasien->reg_discharge == 1)
+    <button class="btn btn-info float-right mb-3" onclick="$('#modalOpenDischarge').modal('show')"><i class="fas fa-paper-plane"></i> Ajukan Open Discharge</button>
+    <p class="text-danger">Pasien sudah discharge, CPPT dan tindakan tidak bisa ditambahkan, silahkan ajukan <b>Open Discharge</b> untuk mendapatkan akses.</p>
+@else
+    <button class="btn btn-success float-right mb-3" id="btn-add-soap"><i class="fas fa-plus"></i> Tambah CPPT</button>
+@endif
 <table class="table1" rules="all" style="width:100%">
     <thead>
         <tr class="text-uppercase bg-warning">
