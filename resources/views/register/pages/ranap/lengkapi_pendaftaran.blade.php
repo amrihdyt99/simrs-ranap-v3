@@ -71,8 +71,11 @@
                             <div class="col-lg-6 left-side">
                                 <div id="readonly">
                                     <div class="form-group row" style="margin-bottom: 4px;">
-                                        <div class="col-lg-2">
+                                        <div class="col-12">
                                             <label for="col-form-label" class="label-admisi">No. Medrec </label>
+                                            <h2>
+                                                {{ $pasien->MedicalNo ?? $registration->reg_medrec }}
+                                            </h2>
                                         </div>
                                         {{-- <select id="reg_medrec" name="reg_medrec"
                                       class="form-control {{ $errors->has('reg_medrec') ? " is-invalid" : "" }}"
@@ -81,7 +84,7 @@
 
                                         <option>{{ old('reg_medrec') }}</option>
                                         </select> --}}
-                                        <input type="text" name="reg_medrec" value="{{ $pasien->MedicalNo ?? $registration->reg_medrec }}" class="form-control" readonly>
+                                        <input type="hidden" name="reg_medrec" value="{{ $pasien->MedicalNo ?? $registration->reg_medrec }}" class="form-control" readonly>
                                         <div class="col-lg-2">
                                             <label for="col-form-label" class="label-admisi">Nama </label>
                                         </div>
