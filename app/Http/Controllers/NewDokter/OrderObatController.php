@@ -566,7 +566,7 @@ class OrderObatController extends Controller
 
     public function getDataObat(Request $request, $limit = 20) {
         try {
-            $url = urlPharmacy('get-stokdepo', '&location=rajal&limit='.$limit.'&keyword='.urlencode($request->params));
+            $url = urlPharmacy('get-stokdepo', '&location=ranap&limit='.$limit.'&keyword='.urlencode($request->params));
 
             $data = getService($url, true);
 
