@@ -4,8 +4,10 @@ $edukasi_pasien_dokter = (object) null;
 }
 @endphp
 
-<button type="button" class="btn btn-primary my-3 float-right" onclick="resetEdukasi('#formEdukasiDokter', 'dokter')"><i class="fas fa-redo"></i> Reset Form</button>
-<button type="button" class="btn btn-info my-3 mx-1 float-right" onclick="getEdukasi('#formEdukasiDokter', 'dokter')"><i class="fas fa-redo"></i> Refresh Form</button>
+@if(Auth::user()->level_user == "dokter")
+    <button type="button" class="btn btn-primary my-3 float-right" onclick="resetEdukasi('#formEdukasiDokter', 'dokter')"><i class="fas fa-redo"></i> Reset Form</button>
+    <button type="button" class="btn btn-info my-3 mx-1 float-right" onclick="getEdukasi('#formEdukasiDokter', 'dokter')"><i class="fas fa-redo"></i> Refresh Form</button>
+@endif
 
 <form id="formEdukasiDokter">
     @csrf
@@ -206,7 +208,8 @@ $edukasi_pasien_dokter = (object) null;
             </td>
         </tr>
     </table>
-
-    <button type="button" class="btn btn-primary mt-3 float-right" onclick="addedukasipasienperawat('#formEdukasiDokter', 'dokter')">Simpan</button>
-
+    
+    @if(Auth::user()->level_user == "dokter")
+        <button type="button" class="btn btn-primary mt-3 float-right" onclick="addedukasipasienperawat('#formEdukasiDokter', 'dokter')">Simpan</button>
+    @endif
 </form>
