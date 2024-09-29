@@ -98,7 +98,7 @@ $rekon_data = optional((object)[]);
               </td>
               <td>
                 <div class="container text-center">
-                  <p>PPDS yang melakukan pengkajian</p>
+                  <p>Farmasi / Apoteker yang melakukan pengkajian</p>
                 </div>
               </td>
               <td>

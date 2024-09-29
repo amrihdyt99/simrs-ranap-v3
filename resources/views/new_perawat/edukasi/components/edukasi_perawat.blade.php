@@ -1,7 +1,7 @@
 <form id="entry-edukasi-pasien-perawat">
     @csrf
     {{-- <input type="text" name="reg_no" value="{{ $reg }}" hidden> --}}
-    <table class="table1">
+    <table class="table1 w-100">
         <thead>
             <tr>
                 <th>Edukator / Topik</th>

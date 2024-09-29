@@ -7,6 +7,7 @@ use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
+use App\Http\Controllers\Perawat\AssesmentDewasaController;
 use App\Http\Controllers\Perawat\ObgynController;
 use App\Http\Controllers\Perawat\RekonsiliasiObatController;
 use App\Http\Controllers\Perawat\TransferInternalController;
@@ -248,6 +249,7 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('icd9', [ApiMasterController::class, 'icd_9'])->name('sphaira.i9');
 	Route::get('icd10', [ApiMasterController::class, 'icd_10'])->name('sphaira.i10');
 	Route::get('tdd/{id}', [ApiMasterController::class, 'get_ttd'])->name('sphaira.ttd');
+	Route::get('daftarmasalah', [ApiMasterController::class, 'daftarmasalah'])->name('sphaira.daftarmasalah');
 });
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
@@ -259,8 +261,11 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('add-assesment-neonatus', [NeonatusController::class, 'store'])->name('neonatus.store');
 	Route::post('add-assesment-awal-anak', [AssesmentAnakController::class, 'store_assesment_awal_anak'])->name('assesment-anak-awal.store');
 	Route::post('add-skrining-gizi-anak', [AssesmentAnakController::class, 'store_skrining_gizi_anak'])->name('skrining-gizi-anak.store');
-	Route::post('add-assesment-obgyn', [ObgynController::class, 'store'])->name('obgyn.store');
 	Route::post('add-skrining-nyeri-anak', [AssesmentAnakController::class, 'store_skrining_nyeri_anak'])->name('skrining-nyeri-anak.store');
+	Route::post('add-assesment-obgyn', [ObgynController::class, 'store'])->name('obgyn.store');
+	Route::post('add-assesment-awal-dewasa', [AssesmentDewasaController::class, 'store_assesment_awal_dewasa'])->name('assesment-dewasa-awal.store');
+	Route::post('add-skrining-nyeri-dewasa', [AssesmentDewasaController::class, 'store_skrining_nyeri_dewasa'])->name('skrining-nyeri-dewasa.store');
+	Route::post('add-skrining-gizi-dewasa', [AssesmentDewasaController::class, 'store_skrining_gizi_dewasa'])->name('skrining-gizi-dewasa.store');
 	Route::get('get-rekonsiliasi-obat-item', [RekonsiliasiObatController::class, 'get_rekon_obat_data'])->name('rekon-obat-item.get');
 	Route::post('store-rekon-obat-item', [RekonsiliasiObatController::class, 'store_rekon_obat_item'])->name('rekon-obat-item.store');
 	Route::post('delete-rekon-obat-item', [RekonsiliasiObatController::class, 'delete_rekon_obat_item'])->name('rekon-obat-item.delete');

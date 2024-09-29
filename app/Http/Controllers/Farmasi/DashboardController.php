@@ -18,7 +18,7 @@ class DashboardController extends Controller
         if ($request->ajax()) {
             return $this->ajax_index($request);
         }
-        return view('perawat.pages.dashboard');
+        return view('farmasi.dashboard');
     }
 
     public function ajax_index($request)

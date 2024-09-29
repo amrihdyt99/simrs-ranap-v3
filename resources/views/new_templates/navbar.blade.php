@@ -12,8 +12,8 @@
                     </div>
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
-                    @if (auth()->user()->level_user == 'dokter' && Request::is('dokter'))
-                    <button class="btn btn-secondary" onclick="mod_pilih_ruang()" id="title_ruang">RUANG RAWAT</button>
+                    @if (auth()->user()->level_user == 'dokter' || auth()->user()->level_user == 'perawat')
+                    <button class="btn btn-secondary mr-2" onclick="mod_pilih_ruang()" id="title_ruang">RUANG RAWAT</button>
                     @endif
                     @if (auth()->user()->level_user == 'perawat' || auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
                         <button class="btn btn-secondary" id="trigger_shift_modal">SHIFT PERAWAT</button>
