@@ -147,6 +147,16 @@ class NewDischargeController extends Controller
     
     public function openDischargeApprove(Request $request){
         try {
+            $checkPayment = checkPaymentStatus($request->prescribe_reg);
+
+            if (isset($checkPayment) && $checkPayment->pvalidation_status == 1) {
+                return [
+                    'code' => 500,
+                    'success' => false,
+                    'message' => 'Approval gagal disimpan, pembayaran sudah diselesaikan oleh bagian kasir'
+                ];
+            }
+
             $check_ = DB::table('rs_pasien_discharge_open')
                 ->where('id', $request->id)
                 ->where('is_open', 1)
