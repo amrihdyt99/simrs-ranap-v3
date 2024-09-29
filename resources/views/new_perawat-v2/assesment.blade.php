@@ -283,7 +283,11 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
 
-
+                <div class="row">
+                    <div class="left-tab" id="tab-case_manager" onclick="clickTab('case_manager')">
+                        Case Manager
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
@@ -294,6 +298,12 @@ $registrasi_data = DB::connection('mysql2')
                 <div class="row">
                     <div class="left-tab" id="tab-nursing" onclick="clickTab('nursing')">
                         Nursing
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-transfusi" onclick="clickTab('transfusi')">
+                        Transfusi Darah
                     </div>
                 </div>
 
@@ -384,14 +394,6 @@ $registrasi_data = DB::connection('mysql2')
                 <div class="row">
                     <div class="left-tab" id="tab-bayi" onclick="clickTab('bayi')">
                         Bayi Baru Lahir
-                    </div>
-                </div>
-
-
-
-                <div class="row">
-                    <div class="left-tab" id="tab-transfusi" onclick="clickTab('transfusi')">
-                        Transfusi Darah
                     </div>
                 </div>
 
