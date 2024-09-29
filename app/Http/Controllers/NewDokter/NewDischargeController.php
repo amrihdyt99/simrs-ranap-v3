@@ -147,6 +147,14 @@ class NewDischargeController extends Controller
     
     public function openDischargeApprove(Request $request){
         try {
+            if (!$request->id) {
+                return [
+                    'code' => 500,
+                    'success' => false,
+                    'message' => 'Approval gagal disimpan, tidak ada id yang dikirimkan'
+                ];
+            }
+
             $checkPayment = checkPaymentStatus($request->prescribe_reg);
 
             if (isset($checkPayment) && $checkPayment->pvalidation_status == 1) {
