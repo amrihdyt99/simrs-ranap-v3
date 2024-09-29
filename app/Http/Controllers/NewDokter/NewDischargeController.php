@@ -191,6 +191,13 @@ class NewDischargeController extends Controller
                 ->update($data);
 
             if (isset($store)) {
+                $updateDischarge = DB::connection('mysql2')
+                    ->table('m_registrasi')
+                    ->where('reg_no', $request->reg_no)
+                    ->update([
+                        'reg_discharge' => 0
+                    ]);
+
                 return [
                     'success' => true,
                     'msg' => 'Data berhasil disimpan'
