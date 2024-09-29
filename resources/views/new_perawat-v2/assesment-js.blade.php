@@ -789,7 +789,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            loadAllFunction();
+                            loadAllFunctionObgyn();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1171,7 +1171,26 @@
                     } catch (error) {
                         clear_show_error()
                     }
-                }
+                },
+
+                'case_manager': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.case_manager')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionCaseManager();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
 
             }
         }();
@@ -2167,3 +2186,4 @@
 @include('new_perawat.monitoring_news.js.entry_news_js')
 @include('new_perawat.assesment.obgyn.js.obgyn_js')
 @include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
+@include('new_perawat.case_manager.js.case_manager_js')

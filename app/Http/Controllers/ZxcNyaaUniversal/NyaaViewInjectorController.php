@@ -1663,4 +1663,30 @@ class NyaaViewInjectorController extends AaaBaseController
 
         return view('new_perawat.qrcode.show', compact('data'));
     }
+
+    function form_Case_manager(Request $request)
+    {
+        $case_manager = DB::connection('mysql')->table('case_manager')
+            ->where('reg_no', $request->reg_no)
+            ->where('med_rec', $request->medrec)
+            ->first();
+
+        $datamypatient = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->where(['m_registrasi.reg_no' => $request->reg_no])
+        ->first();
+
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'case_manager' => optional($case_manager),
+            'datamypatient' => optional($datamypatient),
+        );
+        
+        return view('new_perawat.case_manager.index')
+            ->with($context);
+    }
+
+
 }
