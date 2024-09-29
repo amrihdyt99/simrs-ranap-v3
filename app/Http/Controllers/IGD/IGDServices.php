@@ -126,14 +126,22 @@ class IGDServices
             ->addColumn('reg_tgl', function ($data) {
                 return Carbon::parse($this->getDateFromRegistrationNumber($data['ranap_reg']))->format('d-M-Y');
             })
-            ->editColumn('ranap_class', function ($data) {
-                $roomClass = $this->roomClass->findOne($data['ranap_class']);
+            ->editColumn('original_class', function ($data) {
+                $roomClass = $this->roomClass->findOne($data['original_class']);
                 return $roomClass->ClassName ?? '-';
             })
-            ->editColumn('ranap_charge_class', function ($data) {
-                $roomClass = $this->roomClass->findOne($data['ranap_charge_class']);
+            ->editColumn('original_charge_class', function ($data) {
+                $roomClass = $this->roomClass->findOne($data['original_charge_class']);
                 return $roomClass->ClassName ?? '-';
             })
+            // ->editColumn('ranap_class', function ($data) {
+            //     $roomClass = $this->roomClass->findOne($data['ranap_class']);
+            //     return $roomClass->ClassName ?? '-';
+            // })
+            // ->editColumn('ranap_charge_class', function ($data) {
+            //     $roomClass = $this->roomClass->findOne($data['ranap_charge_class']);
+            //     return $roomClass->ClassName ?? '-';
+            // })
             ->editColumn('ranap_room', function ($data) {
                 $room = $this->masterRuangan->findOneByRoomID($data['ranap_room']);
                 return $room->RoomName ?? '-';

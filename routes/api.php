@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
+use App\Http\Controllers\Master\BedController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
@@ -274,4 +275,8 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('delete-rekon-obat-item', [RekonsiliasiObatController::class, 'delete_rekon_obat_item'])->name('rekon-obat-item.delete');
 	Route::get('get-rekon-ttd', [RekonsiliasiObatController::class, 'get_ttd_verif_obat'])->name('get-rekon-ttd.get');
 	Route::post('store-rekonsiliasi-obat', [RekonsiliasiObatController::class, 'store_rekonsiliasi_obat'])->name('rekonsiliasi-obat.store');
+});
+
+Route::prefix('bed')->name('bed.')->group(function () {
+	Route::get('/class/{class_code}', [BedController::class, 'getBedByClassCode'])->name('class');
 });
