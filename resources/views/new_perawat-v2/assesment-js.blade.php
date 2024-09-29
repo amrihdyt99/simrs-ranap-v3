@@ -615,11 +615,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_dewasa')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            getAssementDewasa();
-                            assementDewasa_init();
-                            $('#save_asesmen_dewasa').click(function() {
-                                asesmenDewasaSubmit();
-                            });
+                            loadAllFunctionDewasa();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -2160,6 +2156,7 @@
     }
 </script>
 
+@include('new_perawat.assesment.assesment_dewasa.js.assesment_dewasa_js')
 @include('new_perawat.assesment.assesment_anak.js.assesment_anak_js')
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
 @include('new_perawat.resiko_jatuh.humpty_dumpty.js.resiko_jatuh_humpty_dumpty_js')

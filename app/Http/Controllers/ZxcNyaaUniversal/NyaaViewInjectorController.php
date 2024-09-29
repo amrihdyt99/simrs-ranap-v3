@@ -221,20 +221,43 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function assesment_awal_dewasa(Request $request)
     {
-        $reg = RegistrationInap::find($request->reg_no);
-        $pasien = Pasien::find($reg->reg_medrec);
-        $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
+        $awal = DB::connection('mysql')
+            ->table('pengkajian_dewasa_awal')
+            ->where('reg_no', $request->reg_no)
+            ->first();
 
-        // if ($dateDiff->y > 18) {
+        $sad_person = DB::connection('mysql')
+            ->table('pengkajian_dewasa_skor_sad_person')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $adl = DB::connection('mysql')
+            ->table('pengkajian_dewasa_adl')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        $nyeri = DB::connection('mysql')
+            ->table('pengkajian_dewasa_skrining_nyeri')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        $gizi = DB::connection('mysql')
+            ->table('pengkajian_dewasa_skrining_gizi')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
+            'awal' => optional($awal),
+            'sad_person' => optional($sad_person),
+            'adl' => optional($adl),
+            'nyeri' => optional($nyeri),
+            'gizi' => optional($gizi),
         );
-        return view('new_perawat.assesment.index_dewasa')
+
+        return view('new_perawat.assesment.assesment_dewasa.index_dewasa')
             ->with($context);
-        // } else {
-        //     return view('new_perawat.assesment.error.assesment_dewasa');
-        // }
     }
 
     function assesment_awal_anak_old(Request $request)
