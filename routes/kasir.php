@@ -25,10 +25,11 @@ Route::prefix('kasir')->middleware(['auth', 'role:kasir'])->group(function () {
     Route::get('/billing/detail_order', [\App\Http\Controllers\Kasir\BillingController::class, 'detailOrders'])->where('reg_no', '(.*)')->name('kasir.detail.order');
     Route::get('/billing/status', [\App\Http\Controllers\Kasir\BillingController::class, 'checkStatus']);
     Route::post('/billing/store_payment', [\App\Http\Controllers\Kasir\BillingController::class, 'storePayment'])->where('reg_no', '(.*)');
-    Route::post('/billing/storeCancelation',[\App\Http\Controllers\Kasir\BillingController::class,'storeCancelation']);
-    Route::post('/billing/deleteItem',[\App\Http\Controllers\Kasir\BillingController::class,'deleteItem']);
+    Route::post('/billing/storeCancelation', [\App\Http\Controllers\Kasir\BillingController::class, 'storeCancelation']);
+    Route::post('/billing/deleteItem', [\App\Http\Controllers\Kasir\BillingController::class, 'deleteItem']);
 
     Route::post('/kasir/billing/addtindakan', [\App\Http\Controllers\Kasir\BillingController::class, 'addTindakan'])->name('kasir.addtindakan');
     Route::get('/kasir/invoice/{regno}', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakinvoice'])->where('regno', '(.*)')->name('kasir.cetak.invoice');
     Route::get('/cetak-kwitansi', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakKwitansi'])->name('kasir.cetak.kwitansi');
+    Route::get('/cetak-invoice', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakInvoiceNew'])->name('kasir.cetak.invoice');
 });

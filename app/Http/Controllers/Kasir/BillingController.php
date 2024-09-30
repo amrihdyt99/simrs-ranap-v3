@@ -69,8 +69,8 @@ class BillingController extends AaaBaseController
                 'a.*',
                 'a.id as id_dt',
                 'b.*',
-                DB::raw("(select ParamedicName from ".getDatabase('master').".m_paramedis where ParamedicCode = kode_dokter) as ParamedicName"),
-                DB::raw("(select name from ".getDatabase('master').".users where id = created_by_id) as UserName"),
+                DB::raw("(select ParamedicName from " . getDatabase('master') . ".m_paramedis where ParamedicCode = kode_dokter) as ParamedicName"),
+                DB::raw("(select name from " . getDatabase('master') . ".users where id = created_by_id) as UserName"),
             ])
             ->get();
 
@@ -103,7 +103,7 @@ class BillingController extends AaaBaseController
         $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromLab($request->reg_rj));
         $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
         $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
-        
+
         $recap_penunjang = [
             ['source' => 'Rawat Inap', 'data' => $order_penunjang],
             ['source' => str_contains($request->reg_rj, '/RJ/') ? 'Rawat Jalan' : 'IGD', 'data' => $order_penunjang_prev],
@@ -193,7 +193,8 @@ class BillingController extends AaaBaseController
         return $order_penunjang;
     }
 
-    public function getOrderFromPharmacy($reg_no){
+    public function getOrderFromPharmacy($reg_no)
+    {
 
 
         $call_obat = new OrderObatController;
@@ -591,6 +592,74 @@ class BillingController extends AaaBaseController
         ]);
     }
 
+    public function cetakInvoiceNew(Request $request)
+    {
+        $billing_detail = DB::connection('mysql')->table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg_no)->first();
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->get()->first();
+        $diagnosisPasien = DB::connection('mysql')->table('icd10_bpjs')->where('ID_ICD10', $datamypatient->reg_diagnosis)->first();
+        $all_item = json_decode($billing_detail->pvalidation_selected, true);
+        $billing_ri_item = array_filter($all_item, function ($item) {
+            return $item['ItemSource'] == 'Rawat Inap'; // Filter where age is 28
+        });
+        $billing_rj_item = array_filter($all_item, function ($item) {
+            return $item['ItemSource'] == 'Rawat Jalan'; // Filter where age is 28
+        });
+
+        $ri_item_by_type = [];
+        $ri_sub_tot = 0;
+        $rj_item_by_type = [];
+        $rj_sub_tot = 0;
+
+        foreach ($billing_ri_item as $item) {
+            if ($item['ItemTindakan'] == 'Radiologi') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'lainnya') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Obat') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            }
+            $ri_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+        }
+        $ri_item_by_type['subtotal'] = $ri_sub_tot;
+
+        foreach ($billing_rj_item as $item) {
+            if ($item['ItemTindakan'] == 'Radiologi') {
+                $type = $item['ItemTindakan'];
+                $rj_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                $type = $item['ItemTindakan'];
+                $rj_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'lainnya') {
+                $type = $item['ItemTindakan'];
+                $rj_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Obat') {
+                $type = $item['ItemTindakan'];
+                $rj_item_by_type[$type][] = $item;
+            }
+            $rj_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+        }
+        $rj_item_by_type['subtotal'] = $rj_sub_tot;
+
+        // dd($ri_item_by_type);
+
+        return view('kasir.billing.invoice_new', [
+            'patient'           => $datamypatient,
+            'ri_item'           => $ri_item_by_type,
+            'rj_item'          => $rj_item_by_type,
+        ]);
+    }
+
     public function penyebut($nilai)
     {
         $nilai = abs($nilai);
@@ -629,8 +698,9 @@ class BillingController extends AaaBaseController
         }
         return $hasil;
     }
-    
-    public function storeCancelation(Request $request){
+
+    public function storeCancelation(Request $request)
+    {
         try {
             $data = [
                 'pvalidation_cancel_at' => date('Y-m-d H:i:s'),
@@ -662,7 +732,8 @@ class BillingController extends AaaBaseController
         }
     }
 
-    public function deleteItem(Request $request){
+    public function deleteItem(Request $request)
+    {
         try {
             $delete = DB::table('job_orders_dt')
                 ->where('id', $request->item_kode)
