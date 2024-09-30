@@ -41,11 +41,11 @@
         <div class="modal-dialog modal-md">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Modal LANTAI PASIEN</h5>
+              <h5 class="modal-title">Modal Lantai Pasien</h5>
             </div>
             <div class="modal-body">
               <div class="form-group">
-                <label for="">Pilih LANTAI PASIEN</label>
+                <label for="">Pilih Lantai Pasien</label>
                 <select name="pilru" id="pilru" class="form-control select2-mod" style="width: 100%;" onclick="list_ruang()" onchange="filter_ruang()"></select>
               </div>
               <button type="button" onclick="$('#modal_pil').modal('hide')" class="btn btn-secondary float-right" aria-label="Close">Close</button>
