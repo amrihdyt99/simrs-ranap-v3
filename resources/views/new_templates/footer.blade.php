@@ -93,30 +93,87 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
         $(elm).append(newOption).trigger('change');
     }
 
-    function getAlert(_reg) {
+    function getAlertAlergi(_reg) {
         $.ajax({
-            url: '{{url("")}}/api/getAlert',
+            url: '{{url("")}}/api/getAlertAlergi',
             data: {
-                reg_no: _reg
+                reg_no: _reg,
+                kategori_pasien: kategori_pasien,
             },
             success: function(resp) {
                 $('#alert_indikator').html('')
 
-                if (resp.alergi == 'Ya' && resp.asper_hasil) {
+                if (resp.alergi == 'ya') {
                     $('[id="alert_blink"]').show()
-                }
-
-                if (resp.alergi == 'Ya') {
                     $('#alert_indikator').append(`
-                            <p class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: ` + resp.nama_alergi + `">Allergy</p>
-                        `)
+                        <div class="d-inline-block mr-2">
+                            <div class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: ` + resp.alergi_obat + `, ` + resp.alergi_makanan + `, ` + resp.alergi_lainnya + `">Allergy</div>
+                        </div>
+                    `)
                 }
-
-                if (resp.asper_hasil) {
-                    $('#alert_indikator').append(`<p class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Resiko jatuh : ` + resp.asper_hasil + `">Fall risk</p>`)
+                if (resp.alergi == 1) {
+                    $('[id="alert_blink"]').show()
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block mr-2">
+                            <div class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: ` + resp.alergi_obat + `, ` + resp.alergi_makanan + `, ` + resp.alergi_lainnya + `">Allergy</div>
+                        </div>
+                    `)
                 }
             }
         })
+    }
+
+    function getAlertJatuh(_reg) {
+        $.ajax({
+            url: '{{url("")}}/api/getAlertJatuh',
+            data: {
+                reg_no: _reg,
+                kategori_pasien: kategori_pasien,
+                tgl_lahir_pasien: tgl_lahir_pasien,
+            },
+            success: function(resp) {
+                // console.log(resp);
+                
+                if (resp.geriatri && resp.geriatri.kategori_geriatri) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk Geriatri: ${resp.geriatri.kategori_geriatri}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+                
+                if (resp.morse && resp.morse.resiko_jatuh_morse_kategori) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk Skala Morse: ${resp.morse.resiko_jatuh_morse_kategori}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+                
+                if (resp.dumpty && resp.dumpty.kategori_humpty_dumpty) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk Humpty Dumpty: ${resp.dumpty && resp.dumpty.kategori_humpty_dumpty}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+                
+                if (resp.bayi === true) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk: ${resp.keterangan}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching fall risk alert:", error);
+            }
+        });
     }
 
     $('#partial-panel').hide();

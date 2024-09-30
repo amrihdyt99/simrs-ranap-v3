@@ -1546,6 +1546,7 @@ class NewNursingController extends Controller
                 'resiko_jatuh_morse_berjalan' => $request->resiko_jatuh_morse_berjalan,
                 'resiko_jatuh_morse_mental' => $request->resiko_jatuh_morse_mental,
                 'resiko_jatuh_morse_total_skor' => $resiko_jatuh_morse_total_skor,
+                'resiko_jatuh_morse_kategori' => $request->resiko_jatuh_morse_kategori,
                 'intervensi_resiko_jatuh_skala_morse_rendah' => json_encode($request->intervensi_resiko_jatuh_skala_morse_rendah),
                 'intervensi_resiko_jatuh_skala_morse_sedang' => json_encode($request->intervensi_resiko_jatuh_skala_morse_sedang),
                 'intervensi_resiko_jatuh_skala_morse_tinggi' => json_encode($request->intervensi_resiko_jatuh_skala_morse_tinggi),
