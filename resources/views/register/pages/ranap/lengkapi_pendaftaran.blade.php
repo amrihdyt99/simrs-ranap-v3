@@ -367,7 +367,7 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-admisi">Cover Class</label>
-                                            <select id="reg_class" name="reg_class" class="form-control select2bs4">
+                                            <select id="reg_class" name="reg_class" class="form-control select2bs4" onchange="handleChangeCoverClass()">
                                                 <option value="">-</option>
                                                 @foreach ($room_class as $row)
                                                 <option value={{ $row->ClassCode }}>
@@ -636,6 +636,30 @@
 
 @push('nyaa_scripts')
 <script>
+    const handleChangeCoverClass = async()=>{
+        const reg_class = $('#reg_class').val()
+        await getDataBedByClass(reg_class)
+    }
+    const getDataBedByClass = async(classCode)=>{
+        try {
+            let url = "{{ route('bed.class', ':class_code') }}"
+            url = url.replace(':class_code', classCode)
+            const response = await fetch(url)
+            const {data:result} = await response.json()
+            renderBed(result ?? [])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const renderBed = (data)=>{
+        let html = ''
+        data.forEach((item)=>{
+            html += `<option value="${item.bed_id}">${item.bed_code ?? ''} ${item.ruang ?? ''} ${item.kelompok ?? ''} ${item.kelas ?? ''}</option>`
+        })
+        document.getElementById('bed_id').innerHTML = html
+    }
+</script>
+<script>
     function objectifyForm(formArray) {
         //serialize data function
         var returnArray = {};
@@ -872,29 +896,29 @@
 
         const bed_id = "{{ $registration->bed ?? '' }}";
 
-        $.ajax({
-            type: "get",
-            url: "{{url('api/cekketersediaanruangan')}}",
-            dataType: "json",
-            success: function(r) {
-                var opt = '<option value="" disabled>Pilih Bed</option>';
-                $.each(r.data, function(index, row) {
-                    opt += '<option value="' + row.bed_id + '">' + row.bed_code + ' - ' + row.ruang + ' - ' + row.kelompok + ' - ' + row.kelas + '</option>';
-                });
-                $('#bed_id').html(opt);
+        // $.ajax({
+        //     type: "get",
+        //     url: "{{url('api/cekketersediaanruangan')}}",
+        //     dataType: "json",
+        //     success: function(r) {
+        //         var opt = '<option value="" disabled>Pilih Bed</option>';
+        //         $.each(r.data, function(index, row) {
+        //             opt += '<option value="' + row.bed_id + '">' + row.bed_code + ' - ' + row.ruang + ' - ' + row.kelompok + ' - ' + row.kelas + '</option>';
+        //         });
+        //         $('#bed_id').html(opt);
 
-                // Initialize Select2 after populating options
-                $('#bed_id').select2({
-                    theme: 'bootstrap4',
-                    placeholder: "Pilih Bed"
-                });
+        //         // Initialize Select2 after populating options
+        //         $('#bed_id').select2({
+        //             theme: 'bootstrap4',
+        //             placeholder: "Pilih Bed"
+        //         });
 
-                // Set the default value if `bed_id` is not empty
-                if (bed_id) {
-                    $('#bed_id').val(bed_id).trigger('change');
-                }
-            }
-        });
+        //         // Set the default value if `bed_id` is not empty
+        //         if (bed_id) {
+        //             $('#bed_id').val(bed_id).trigger('change');
+        //         }
+        //     }
+        // });
 
         $('#labelkitas').hide()
         $('#kitas').hide()
