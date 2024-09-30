@@ -269,19 +269,24 @@ trait RanapRegistrationTrait
 
     public function getDataSlipAdmisi($regno)
     {
-
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
-            ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
             ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
+            ->leftJoin('m_room_class', 'm_registrasi.reg_class', '=', 'm_room_class.ClassCode')
+            ->leftJoin('m_registrasi_pj', 'm_registrasi.reg_no', '=', 'm_registrasi_pj.reg_no')
             ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
-            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_paramedis.FeeAmount', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*', 'businesspartner.BusinessPartnerName as reg_cara_bayar_name')
-            // ->get()->first();
-
-            // $data['datapasien'] = $datamypatient;
+            ->select(
+                'm_registrasi.*',
+                'm_pasien.*',
+                'm_paramedis.ParamedicName',
+                'm_paramedis.FeeAmount',
+                'm_ruangan_baru.*',
+                'businesspartner.BusinessPartnerName as reg_cara_bayar_name',
+                'm_room_class.ClassName as reg_class_name'
+            )
             ->first();
 
         if ($datamypatient) {
@@ -301,10 +306,29 @@ trait RanapRegistrationTrait
             } else {
                 $datamypatient->poli_asal = null;
             }
+
+            $penanggungJawab = DB::connection('mysql2')
+                ->table('m_registrasi_pj')
+                ->where('reg_no', $this->parseRegNoByUnderScore($regno))
+                ->pluck('reg_pjawab_nama')
+                ->toArray();
+
+            if (empty($penanggungJawab)) {
+                $penanggungJawab[] = $datamypatient->PatientName;
+            } else {
+                if (!in_array($datamypatient->PatientName, $penanggungJawab)) {
+                    $penanggungJawab[] = $datamypatient->PatientName;
+                }
+            }
+
+            $datamypatient->penanggung_jawab_list = $penanggungJawab;
         }
 
+        $user = auth()->user();
         $data['datamypatient'] = $datamypatient;
         $data['datapasien'] = $datamypatient;
+        $data['user_name'] = $user->name;
+        $data['user_signature'] = $user->signature;
         $url_qr = route('agreement.admisi', $regno);
         $data['qrcode'] = QrCode::size(150)->generate($url_qr);
         return $data;
@@ -322,12 +346,32 @@ trait RanapRegistrationTrait
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'm_ruangan_baru.*', 'm_kelas_ruangan_baru.*')
             ->get()->first();
 
+        $penanggungJawab = DB::connection('mysql2')
+            ->table('m_registrasi_pj')
+            ->where('reg_no', $this->parseRegNoByUnderScore($regno))
+            ->pluck('reg_pjawab_nama')
+            ->toArray();
+
+        if (empty($penanggungJawab)) {
+            $penanggungJawab[] = $datamypatient->PatientName;
+        } else {
+            if (!in_array($datamypatient->PatientName, $penanggungJawab)) {
+                $penanggungJawab[] = $datamypatient->PatientName;
+            }
+        }
+
+        $datamypatient->penanggung_jawab_list = $penanggungJawab;
+
         $pj_pasien = RegistrasiPJawab::where('reg_no', $this->parseRegNoByUnderScore($regno))->get();
 
         $data['datapasien'] = $datamypatient;
         $data['pj_pasien'] = $pj_pasien;
         $url_qr = route('agreement.general-consent', $regno);
         $data['qrcode'] = QrCode::size(150)->generate($url_qr);
+
+        $user = auth()->user();
+        $data['user_name'] = $user->name;
+        $data['user_signature'] = $user->signature;
 
         return $data;
     }
