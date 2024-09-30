@@ -99,16 +99,16 @@
                         </tr>
                         <tr>
                             <td>Kategori Golongan Resiko Jatuh: </td>
-                            <td> <input type="radio" id="kategori_rendah_morse" name="resiko_jatuh_morse_ketegori"
+                            <td> <input type="radio" id="kategori_rendah_morse" name="resiko_jatuh_morse_kategori"
                                     value="Resiko Rendah / RR (0-1)">
                                 <label for="kategori_rendah_morse">Resiko Rendah / RR (0-1)</label>
                             </td>
-                            <td><input type="radio" id="kategori_sedang_morse" name="resiko_jatuh_morse_ketegori"
+                            <td><input type="radio" id="kategori_sedang_morse" name="resiko_jatuh_morse_kategori"
                                     value="Resiko Sedang / RS (2-3)">
                                 <label for="kategori_sedang_morse">Resiko Sedang / RS (2-3)</label>
                             </td>
                             <td>
-                                <input type="radio" id="kategori_tinggi_morse" name="resiko_jatuh_morse_ketegori"
+                                <input type="radio" id="kategori_tinggi_morse" name="resiko_jatuh_morse_kategori"
                                     value="Resiko Tinggi / RR (>4)">
                                 <label for="kategori_tinggi_morse">Resiko Tinggi / RR (>4)</label>
                             </td>
