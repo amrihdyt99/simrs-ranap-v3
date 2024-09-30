@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ranap;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\IGD\IGDServices;
 use App\Models\Bed;
 use App\Models\ICD10;
 use App\Models\KelasKategori;
@@ -31,9 +32,13 @@ class RegisterController extends Controller
 {
     use RanapRegistrationTrait, MasterPasienTrait, HttpRequestTraits, MasterBedTraits;
 
+    protected $igdService;
+    public function __construct(IGDServices $igdService)
+    {
+        $this->igdService = $igdService;
+    }
     public function index(Request $request)
     {
-
         if ($request->ajax()) return $this->ajax_index($request);
         return view('register.pages.ranap.index');
     }
@@ -41,7 +46,16 @@ class RegisterController extends Controller
     public function lengkapiPendaftaran($reg_no)
     {
         $data = $this->getDataFormRegistration();
+        // dd($data['room_class']);
         $registration = $this->getDataRegistrationRanap($this->parseRegNoByUnderScore($reg_no));
+
+        if (!$registration) return redirect()->route('register.ranap.index')->with('error', 'Data registrasi tidak ditemukan');
+
+        $data_igd = [];
+        if ($registration->reg_lama_igd) {
+            $data_igd = $this->igdService->getDataIGDByMedrec($registration->reg_medrec);
+        }
+
         $data_bed = $this->getDataBedById($registration->bed ?? '');
         $pasien = $this->getPatientByMedicalRecord($registration->reg_medrec);
         $asal_pasien = $this->getRegistrationOrigin($registration->reg_lama);
@@ -61,7 +75,8 @@ class RegisterController extends Controller
             'cover_class' => $data['cover_class'],
             'purpose' => $purpose,
             'pjawab_pasien' => $pjawab_pasien,
-            'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-'
+            'bed_name' => $data_bed ? $data_bed->bed_code . ' ' . $data_bed->ruang . ' ' . $data_bed->kelompok . ' ' . $data_bed->kelas : '-',
+            'data_igd' => $data_igd
         ];
         // dd($context['registration']);
         return  view('register.pages.ranap.lengkapi_pendaftaran', $context);
@@ -113,18 +128,19 @@ class RegisterController extends Controller
                 //$gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
                 $url_rawat_intensif = route('register.ranap.rawat-intensif', ['reg_no' => $reg_no]);
 
-                $button_dropdown = '<div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
-                                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
-                                            <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
-                                            <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
-                                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button>'
-                    . '</div>
-                                    </div>';
+                $button_dropdown =
+                    '<div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
+                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
+                            <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
+                            <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
+                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
+                        </div>' .
+                    '</div>';
                 return $button_dropdown;
             })
             ->editColumn('status', function ($query) use ($request) {
@@ -173,7 +189,7 @@ class RegisterController extends Controller
 
     public function rawatIntensif($reg_no)
     {
-
+        $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
         return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
     }
 
@@ -535,7 +551,7 @@ class RegisterController extends Controller
 
     function cetakSlipAdmisi($regno)
     {
-
+        $data = $this->getDataSlipAdmisi($regno);
         return view('rekam_medis.slip_admisi', $data);
     }
 

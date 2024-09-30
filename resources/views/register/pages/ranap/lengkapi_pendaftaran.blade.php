@@ -71,8 +71,11 @@
                             <div class="col-lg-6 left-side">
                                 <div id="readonly">
                                     <div class="form-group row" style="margin-bottom: 4px;">
-                                        <div class="col-lg-2">
+                                        <div class="col-12">
                                             <label for="col-form-label" class="label-admisi">No. Medrec </label>
+                                            <h2>
+                                                {{ $pasien->MedicalNo ?? $registration->reg_medrec }}
+                                            </h2>
                                         </div>
                                         {{-- <select id="reg_medrec" name="reg_medrec"
                                       class="form-control {{ $errors->has('reg_medrec') ? " is-invalid" : "" }}"
@@ -81,7 +84,7 @@
 
                                         <option>{{ old('reg_medrec') }}</option>
                                         </select> --}}
-                                        <input type="text" name="reg_medrec" value="{{ $pasien->MedicalNo ?? $registration->reg_medrec }}" class="form-control" readonly>
+                                        <input type="hidden" name="reg_medrec" value="{{ $pasien->MedicalNo ?? $registration->reg_medrec }}" class="form-control" readonly>
                                         <div class="col-lg-2">
                                             <label for="col-form-label" class="label-admisi">Nama </label>
                                         </div>
@@ -364,11 +367,11 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-admisi">Cover Class</label>
-                                            <select id="reg_class" name="reg_class" class="form-control select2bs4">
+                                            <select id="reg_class" name="reg_class" class="form-control select2bs4" onchange="handleChangeCoverClass()">
                                                 <option value="">-</option>
-                                                @foreach ($cover_class as $row)
-                                                <option value={{ $row->ClassCategoryCode }}>
-                                                    {{ $row->ClassCategoryName }}
+                                                @foreach ($room_class as $row)
+                                                <option value={{ $row->ClassCode }}>
+                                                    {{ $row->ClassName ?? '-' }}
                                                 </option>
                                                 @endforeach
                                             </select>
@@ -379,9 +382,9 @@
                                             <label class="label-admisi">Charge Class</label>
                                             <select id="charge_class_code" name="charge_class_code" class="form-control select2bs4">
                                                 <option value="">-</option>
-                                                @foreach ($cover_class as $row)
-                                                <option value={{ $row->ClassCategoryCode }}>
-                                                    {{ $row->ClassCategoryName }}
+                                                @foreach ($room_class as $row)
+                                                <option value={{ $row->ClassCode }}>
+                                                    {{ $row->ClassName ?? '-' }}
                                                 </option>
                                                 @endforeach
                                             </select>
@@ -633,6 +636,30 @@
 
 @push('nyaa_scripts')
 <script>
+    const handleChangeCoverClass = async()=>{
+        const reg_class = $('#reg_class').val()
+        await getDataBedByClass(reg_class)
+    }
+    const getDataBedByClass = async(classCode)=>{
+        try {
+            let url = "{{ route('bed.class', ':class_code') }}"
+            url = url.replace(':class_code', classCode)
+            const response = await fetch(url)
+            const {data:result} = await response.json()
+            renderBed(result ?? [])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const renderBed = (data)=>{
+        let html = ''
+        data.forEach((item)=>{
+            html += `<option value="${item.bed_id}">${item.bed_code ?? ''} ${item.ruang ?? ''} ${item.kelompok ?? ''} ${item.kelas ?? ''}</option>`
+        })
+        document.getElementById('bed_id').innerHTML = html
+    }
+</script>
+<script>
     function objectifyForm(formArray) {
         //serialize data function
         var returnArray = {};
@@ -869,29 +896,29 @@
 
         const bed_id = "{{ $registration->bed ?? '' }}";
 
-        $.ajax({
-            type: "get",
-            url: "{{url('api/cekketersediaanruangan')}}",
-            dataType: "json",
-            success: function(r) {
-                var opt = '<option value="" disabled>Pilih Bed</option>';
-                $.each(r.data, function(index, row) {
-                    opt += '<option value="' + row.bed_id + '">' + row.bed_code + ' - ' + row.ruang + ' - ' + row.kelompok + ' - ' + row.kelas + '</option>';
-                });
-                $('#bed_id').html(opt);
+        // $.ajax({
+        //     type: "get",
+        //     url: "{{url('api/cekketersediaanruangan')}}",
+        //     dataType: "json",
+        //     success: function(r) {
+        //         var opt = '<option value="" disabled>Pilih Bed</option>';
+        //         $.each(r.data, function(index, row) {
+        //             opt += '<option value="' + row.bed_id + '">' + row.bed_code + ' - ' + row.ruang + ' - ' + row.kelompok + ' - ' + row.kelas + '</option>';
+        //         });
+        //         $('#bed_id').html(opt);
 
-                // Initialize Select2 after populating options
-                $('#bed_id').select2({
-                    theme: 'bootstrap4',
-                    placeholder: "Pilih Bed"
-                });
+        //         // Initialize Select2 after populating options
+        //         $('#bed_id').select2({
+        //             theme: 'bootstrap4',
+        //             placeholder: "Pilih Bed"
+        //         });
 
-                // Set the default value if `bed_id` is not empty
-                if (bed_id) {
-                    $('#bed_id').val(bed_id).trigger('change');
-                }
-            }
-        });
+        //         // Set the default value if `bed_id` is not empty
+        //         if (bed_id) {
+        //             $('#bed_id').val(bed_id).trigger('change');
+        //         }
+        //     }
+        // });
 
         $('#labelkitas').hide()
         $('#kitas').hide()

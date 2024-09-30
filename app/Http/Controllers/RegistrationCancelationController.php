@@ -39,7 +39,12 @@ class RegistrationCancelationController extends Controller
     {
         try {
             DB::beginTransaction();
-            $parse_reg_no = str_replace('_', '/', $reg_no);
+
+            // check if reg_no contains underscore
+            $is_contains_underscore = strpos($reg_no, '_');
+
+
+            $parse_reg_no = $is_contains_underscore ? str_replace('_', '/', $reg_no) : $reg_no;
             $reg_cancel = new RegistrationCancelation();
             $reg_cancel->id = $this->generateID();
             $reg_cancel->reg_no = $parse_reg_no;

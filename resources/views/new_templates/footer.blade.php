@@ -49,7 +49,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
     $poli_ = "{{session()->get('poli_kode')}}";
     var regno = "{{$reg}}"
     var medrec = "{{$dataPasien->MedicalNo}}"
-    var classcode = "{{$dataPasien->reg_class}}"
+    var classcode = "{{$dataPasien->charge_class_code}}"
 
 
 
@@ -276,6 +276,8 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
 
         $('#panel-' + id).show();
         $('#tab-' + id).addClass('active');
+
+        $('[id="table-item-cpoe"]').html('')
 
         if (title) {
             $('#title_cppt').text(title);

@@ -58,10 +58,17 @@ class SummaryController extends Controller
         $data = [];
         $reg = $patient->reg_no;
         $dataPasien = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->where(['m_registrasi.reg_no' => $reg])
+            ->table('m_registrasi as a')
+            ->leftJoin('m_pasien as b', 'a.reg_medrec', '=', 'b.MedicalNo')
+            ->where(['a.reg_no' => $reg])
+            ->select([
+                'a.*',
+                'b.*',
+            ])
             ->first();
+
+        $dataPasien->discharge = DB::table('rs_pasien_discharge_open')->where('reg_no', $reg)->latest()->first();
+
         $id_cppt = $this->get_id_cppt($dataPasien->reg_no, auth()->user()->dokter_id, $dataPasien->reg_medrec, auth()->user()->name, $dataPasien->bed, $dataPasien->reg_dokter);
 
         $icd9cm = DB::table('icd9cm_bpjs')->select('*')->limit(10)->get();

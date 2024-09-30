@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Perawat\RekonsiliasiObatController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\ZxcNyaaUniversal\NyaaSelectTwoHandlerController;
 use App\Http\Controllers\Profil\ProfilController;
+use App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController;
 
 Route::middleware(['auth'])->get('/dd-user_now', [\App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController::class, 'dd_user_now'])->name('dd_user_now');
 Route::middleware(['auth'])->get('/viewtest-user_now', [\App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController::class, 'viewtest_user_now'])->name('viewtest_user_now');
@@ -88,6 +90,8 @@ Route::prefix('nyx-sistem')
                 Route::post('persetujuan_penolakan', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan'])->name('persetujuan_penolakan');
                 Route::post('surat_rujukan', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'surat_rujukan'])->name('surat_rujukan');
                 Route::post('show_qrcode', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'show_qrcode'])->name('show_qrcode');
+                Route::post('rekonsiliasi-obat', [RekonsiliasiObatController::class, 'index'])->name('rekonsiliasi_obat');
+                Route::post('case_manager', [NyaaViewInjectorController::class, 'form_Case_manager'])->name('case_manager');
             });
         });
 

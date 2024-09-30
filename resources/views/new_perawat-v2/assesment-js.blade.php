@@ -44,23 +44,33 @@
     var medrec = "{{$dataPasien->MedicalNo}}";
     var tgl_lahir_pasien = "{{$dataPasien->DateOfBirth}}";
     var classcode = "{{$dataPasien->reg_class}}";
+    var ddxutama = '#ddx-utama'
+    var ddxutamalen = $(ddxutama).length
 
     // =================================================================================================================================
     // init
 
     function clear_show_load() {
-        $('#ddx-utama').html('').append(df_loading);
+        if (ddxutamalen > 0) {
+            $('#ddx-utama').html('').append(df_loading);
+        }
     }
 
     function clear_show_error() {
-        $('#ddx-utama').html('').append(df_error);
+        if (ddxutamalen > 0) {
+            $('#ddx-utama').html('').append(df_error);
+        }
     }
 
     function inject_view_data(html) {
-        $('#ddx-utama').html('').append(html);
+        if (ddxutamalen > 0) {
+            $('#ddx-utama').html('').append(html);
+        }
     }
     async function inject_view_data_v2(html) {
-        $('#ddx-utama').html('').append(html);
+        if (ddxutamalen > 0) {
+            $('#ddx-utama').html('').append(html);
+        }
     }
 
     // function original dari footer
@@ -71,9 +81,11 @@
     }
 
     function nextTab(target, contains) {
-        document.querySelector("#ddx-utama").scrollIntoView({
-            behavior: "smooth"
-        });
+        if (ddxutamalen > 0) {
+            document.querySelector("#ddx-utama").scrollIntoView({
+                behavior: "smooth"
+            });
+        }
         $('[href="' + target + '"]').tab('show');
         // unused: contains
     }
@@ -347,726 +359,845 @@
     }
 
     // =================================================================================================================================
+    // do not remove this !
+    var clickTabCount = 0;
 
-    nyaa_call_view = function() {
-        return {
+    if (typeof clickTab === "function") {
+        clickTabCount++;
+    }
 
-            'checklist': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.checklist_pasien')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        ttd_checklist();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
+    if (clickTabCount < 1) {
+        nyaa_call_view = function(_type = '') {
+            return {
 
-            'assesment': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_perawat')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        $('div[id*="assesment_"]').hide();
-                        $('#assesment_1').show();
-
-                        getAlert(regno)
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'nyeri': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_skrinning_nyeri')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            // 'edukasi': function() {
-            //     $.ajax({
-            //         type: "POST",
-            //         data: {
-            //             "reg_no": regno,
-            //             "medrec": medrec,
-            //         },
-            //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
-            //         success: function(data) {
-            //             inject_view_data(data);
-            //         },
-            //         error: function(data) {
-            //             clear_show_error();
-            //         },
-            //     });
-            // },
-
-            'edukasi': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        ttd_edukasi_perawat();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'resiko-jatuh-geriatri': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                        "user_id": $user_,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_geriatri')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        modal_resiko_jatuh_geriatri();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'resiko-jatuh-humpty-dumpty': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                        "user_id": $user_,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_humpty_dumpty')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        modal_resiko_jatuh_humpty_dumpty();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'resiko-jatuh-neonatus': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                        "user_id": $user_,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_neonatus')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        ttd_resiko_jatuh_neonatus();
-                        modal_resiko_jatuh_neonatus();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'resiko-jatuh-skala-morse': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                        "user_id": $user_,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_skala_morse')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        modal_resiko_jatuh_skala_morse();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'soap': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_cppt_soap_perawat')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        getSoapPerawat();
-                        $('#btn-save-soap').click(function() {
-                            addbtnSaveSoap();
-                        });
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'assesment-dewasa': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_dewasa')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        getAssementDewasa();
-                        assementDewasa_init();
-                        $('#save_asesmen_dewasa').click(function() {
-                            asesmenDewasaSubmit();
-                        });
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'assesment-anak': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_anak')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'assesment-neonatus': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_neonatus')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        loadDatatableRekonObat();
-                        loadSignature();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'gizi-dewasa': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_gizi_dewasa')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        asuhanGiziDewasa_init();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'nursing-note': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_nurrse_note')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        getNursingNote();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'transfer-internal': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_transfer_internal')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        loadAllTfInteralFunc();
-                        viewSerahTerima();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'admin-nurse': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_admin_nurse')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        neko_select2_init_data("{{ route('nyaa_universal.select2.data_tindakan_baru') }}", 'order_tindakan', {
-                            "type": "X0001^01",
-                            "class": classcode,
-                        });
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'transfusi': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_transfusi_darah')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'obgyn': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'nyaa_dokumen_kelengkapan_pasien': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nyaa_dokumen_kelengkapan_pasien')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        nyaa_dokumennurse_load_all();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'nyaa_dokumen_tindakan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nyaa_dokumen_tindakan')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        nyaa_dokumennurse_load_all();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'nursing': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nursing_full')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'intra-tindakan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_intra_tindakan_kateterisasi')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'intra-hemodinamik': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_pemantauan_hemodinamik_intra')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'physician-team': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_physician_team')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
-                        getPhysicianTeam();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'bedah': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn_bedah')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        getPhysicianTeam();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'pra-tindakan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.nurse_pra_tindakan')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        init_PraTindakan();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'riwayat': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.riwayat')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'cathlab': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.cathlab')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        init_cathlab();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'paska-tindakan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.paska_tindakan')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'observasi-paska': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.observasi_paska_tindakan')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'bayi': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.assesment_bayi')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'cathlab-V2': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.cathlab_v2')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'pemulangan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.pemulangan_pasien')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'monitoring_news': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.monitoring_news')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        loadDatatableNews();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'checklist_kepulangan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.checklist_kepulangan')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'persetujuan_penolakan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.persetujuan_penolakan')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        ttd_pemberian_informasi_tindakan_medis();
-                        ttd_penolakan_tindakan_medis();
-                        ttd_persetujuan_tindakan_medis();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'surat_rujukan': function() {
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        "reg_no": regno,
-                        "medrec": medrec,
-                    },
-                    url: "{{route('nyaa_universal.view_injector.perawat.surat_rujukan')}}",
-                    success: function(data) {
-                        inject_view_data(data);
-                        init_SuratRujukan();
-                    },
-                    error: function(data) {
-                        clear_show_error();
-                    },
-                });
-            },
-
-            'intruksi-harian-icupanel': async () => {
-                try {
-                    const res = await fetch("{{route('nyaa_universal.view_injector.perawat.intruksi_harian')}}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        },
-                        body: JSON.stringify({
+                'checklist': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
                             "reg_no": regno,
                             "medrec": medrec,
-                        }),
-                    })
-                    const data = await res.text()
-                    await inject_view_data(data)
-                    initTvStorage()
-                    initGkpStorage()
-                } catch (error) {
-                    clear_show_error()
-                }
-            }
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.checklist_pasien')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            ttd_checklist();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
 
-        }
-    }();
+                'assesment': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_perawat')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            $('div[id*="assesment_"]').hide();
+                            $('#assesment_1').show();
+
+                            getAlert(regno)
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+                // 'edukasi': function() {
+                //     $.ajax({
+                //         type: "POST",
+                //         data: {
+                //             "reg_no": regno,
+                //             "medrec": medrec,
+                //         },
+                //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                //         success: function(data) {
+                //             inject_view_data(data);
+                //         },
+                //         error: function(data) {
+                //             clear_show_error();
+                //         },
+                //     });
+                // },
+
+                'edukasi': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            ttd_edukasi_perawat();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'nyeri': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_skrinning_nyeri')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                // 'edukasi': function() {
+                //     $.ajax({
+                //         type: "POST",
+                //         data: {
+                //             "reg_no": regno,
+                //             "medrec": medrec,
+                //         },
+                //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                //         success: function(data) {
+                //             inject_view_data(data);
+                //         },
+                //         error: function(data) {
+                //             clear_show_error();
+                //         },
+                //     });
+                // },
+
+                'edukasi': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                            "type": _type,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            ttd_edukasi_perawat();
+                            loadAllSignatures('gizi');
+                            loadAllSignatures('farmasi');
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'resiko-jatuh-geriatri': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                            "user_id": $user_,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_geriatri')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            modal_resiko_jatuh_geriatri();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'resiko-jatuh-humpty-dumpty': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                            "user_id": $user_,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_humpty_dumpty')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            modal_resiko_jatuh_humpty_dumpty();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'resiko-jatuh-neonatus': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                            "user_id": $user_,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_neonatus')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            ttd_resiko_jatuh_neonatus();
+                            modal_resiko_jatuh_neonatus();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'resiko-jatuh-skala-morse': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                            "user_id": $user_,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_resiko_jatuh_skala_morse')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            modal_resiko_jatuh_skala_morse();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'soap': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_cppt_soap_perawat')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            getSoapPerawat();
+                            $('#btn-save-soap').click(function() {
+                                addbtnSaveSoap();
+                            });
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'assesment-dewasa': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_dewasa')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionDewasa();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'assesment-anak': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_anak')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'assesment-neonatus': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_neonatus')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadDatatableRekonObat();
+                            loadSignature();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'rekonsiliasi-obat': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.rekonsiliasi_obat')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionRekonsiliasiObat();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'gizi-dewasa': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_gizi_dewasa')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            asuhanGiziDewasa_init();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'nursing-note': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_nurrse_note')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            getNursingNote();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'transfer-internal': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_transfer_internal')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllTfInteralFunc();
+                            viewSerahTerima();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'admin-nurse': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_admin_nurse')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            neko_select2_init_data("{{ route('nyaa_universal.select2.data_tindakan_baru') }}", 'order_tindakan', {
+                                "type": "X0001^01",
+                                "class": classcode,
+                            });
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'transfusi': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_transfusi_darah')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'obgyn': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionObgyn();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'nyaa_dokumen_kelengkapan_pasien': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nyaa_dokumen_kelengkapan_pasien')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            nyaa_dokumennurse_load_all();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'nyaa_dokumen_tindakan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nyaa_dokumen_tindakan')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            nyaa_dokumennurse_load_all();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'nursing': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nursing_full')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'intra-tindakan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_intra_tindakan_kateterisasi')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'intra-hemodinamik': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_pemantauan_hemodinamik_intra')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'physician-team': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_physician_team')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
+                            getPhysicianTeam();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'bedah': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn_bedah')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            getPhysicianTeam();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'pra-tindakan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.nurse_pra_tindakan')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            init_PraTindakan();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'riwayat': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.riwayat')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'cathlab': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.cathlab')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            init_cathlab();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'paska-tindakan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.paska_tindakan')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'observasi-paska': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.observasi_paska_tindakan')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'bayi': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_bayi')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'cathlab-V2': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.cathlab_v2')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'pemulangan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.pemulangan_pasien')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'monitoring_news': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.monitoring_news')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadDatatableNews();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'checklist_kepulangan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.checklist_kepulangan')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'persetujuan_penolakan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.persetujuan_penolakan')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            ttd_pemberian_informasi_tindakan_medis();
+                            ttd_penolakan_tindakan_medis();
+                            ttd_persetujuan_tindakan_medis();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'surat_rujukan': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.surat_rujukan')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            init_SuratRujukan();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'intruksi-harian-icupanel': async () => {
+                    try {
+                        const res = await fetch("{{route('nyaa_universal.view_injector.perawat.intruksi_harian')}}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            },
+                            body: JSON.stringify({
+                                "reg_no": regno,
+                                "medrec": medrec,
+                            }),
+                        })
+                        const data = await res.text()
+                        await inject_view_data(data)
+                        initTvStorage()
+                        initGkpStorage()
+                    } catch (error) {
+                        clear_show_error()
+                    }
+                },
+
+                'case_manager': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.case_manager')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionCaseManager();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+            }
+        }();
+    }
+
 
     function icuPanel(id) {
         nyaa_call_view[id]()
@@ -1074,33 +1205,38 @@
 
     // =================================================================================================================================
 
-    function clickTab(idx, title = '') {
-        clear_show_load();
-        id = neko_e_html_i(idx);
 
-        $('div[id*="panel-"]').hide();
-        $('div[id*="tab-"]').removeClass('active');
+    if (clickTabCount < 1) {
+        function clickTab(idx, title = '') {
+            clear_show_load();
+            id = neko_e_html_i(idx);
 
-        $('#panel-' + id).show();
-        $('#tab-' + id).addClass('active');
+            $('div[id*="panel-"]').hide();
+            $('div[id*="tab-"]').removeClass('active');
 
-        if (title) {
-            $('#title_cppt').text(title);
-            $('#title-cpoe').text(title);
-            $('.btn-cpoe').attr('id', '');
-            $('.btn-cpoe').attr('onclick', '');
-            $('.btn-cpoe').attr('id', 'tab-' + id);
-            $('.btn-cpoe').attr('onclick', 'clickTab("' + id + '")');
-            $('#btn-save-cpoe').attr('value', id);
+            $('#panel-' + id).show();
+            $('#tab-' + id).addClass('active');
+
+            if (title) {
+                $('#title_cppt').text(title);
+                $('#title-cpoe').text(title);
+                $('.btn-cpoe').attr('id', '');
+                $('.btn-cpoe').attr('onclick', '');
+                $('.btn-cpoe').attr('id', 'tab-' + id);
+                $('.btn-cpoe').attr('onclick', 'clickTab("' + id + '")');
+                $('#btn-save-cpoe').attr('value', id);
+            }
+            if (ddxutamalen > 0) {
+                document.querySelector("#ddx-utama").scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
+            if (id.includes('icupanel')) {
+                icuPanel(id)
+                return
+            }
+            setTimeout(nyaa_call_view[id](), 280);
         }
-        document.querySelector("#ddx-utama").scrollIntoView({
-            behavior: "smooth"
-        });
-        if (id.includes('icupanel')) {
-            icuPanel(id)
-            return
-        }
-        setTimeout(nyaa_call_view[id](), 280);
     }
 
     // =================================================================================================================================
@@ -1151,40 +1287,80 @@
                     var trA = document.createElement('tr');
                     var trP = document.createElement('tr');
 
-                    trS.appendChild(document.createTextNode('SUBJECT'));
+                    var boldSubject = document.createElement('b');
+                    boldSubject.appendChild(document.createTextNode('SUBJECT'));
+                    trS.appendChild(boldSubject);
                     trS.appendChild(document.createElement('br'));
                     trS.appendChild(document.createTextNode(datasoap[i].soapdok_subject ?? '-'));
 
-                    trO.appendChild(document.createElement('br'));
-                    trO.appendChild(document.createTextNode('OBJECT'));
+                    var boldObject = document.createElement('b');
+                    boldObject.appendChild(document.createTextNode('OBJECT'));
+                    trO.appendChild(boldObject);
                     trO.appendChild(document.createElement('br'));
                     trO.appendChild(document.createTextNode(datasoap[i].soapdok_object ?? '-'));
 
-                    trA.appendChild(document.createElement('br'));
-                    trA.appendChild(document.createTextNode('ASSESMENT'));
+                    var boldAssesment = document.createElement('b');
+                    boldAssesment.appendChild(document.createTextNode('ASSESMENT'));
+                    trA.appendChild(boldAssesment);
                     trA.appendChild(document.createElement('br'));
                     trA.appendChild(document.createTextNode(datasoap[i].soapdok_assesment ?? '-'));
 
-                    trP.appendChild(document.createElement('br'));
-                    trP.appendChild(document.createTextNode('PLANNING'));
+                    var boldPlanning = document.createElement('b');
+                    boldPlanning.appendChild(document.createTextNode('PLANNING'));
+                    trP.appendChild(boldPlanning);
                     trP.appendChild(document.createElement('br'));
                     trP.appendChild(document.createTextNode(datasoap[i].soapdok_planning ?? '-'));
 
-                    row.append($('<td>').append(trS, trO, trA, trP));
-                    row.append($('<td>').text(""));
+                    var trTindakan = document.createElement('tr');
+                    var boldTindakan = document.createElement('b');
+                    boldTindakan.appendChild(document.createTextNode('TINDAKAN PENUNJANG & OBAT :'));
+                    trTindakan.appendChild(boldTindakan);
+                    trTindakan.appendChild(document.createElement('br'));
+
+                    if (datasoap[i].order_lab && datasoap[i].order_lab.length > 0) {
+                        $.each(datasoap[i].order_lab, function(i_lab, item_lab) {
+                            trTindakan.appendChild(document.createTextNode((i_lab == 0 ? 'Laboratorium: ' : '') + item_lab.item_name + (i_lab < datasoap[i].order_lab.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_radiologi && datasoap[i].order_radiologi.length > 0) {
+                        $.each(datasoap[i].order_radiologi, function(i_rad, item_rad) {
+                            trTindakan.appendChild(document.createTextNode((i_rad == 0 ? 'Radiologi: ' : '') + item_rad.item_name + (i_rad < datasoap[i].order_radiologi.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_obat && datasoap[i].order_obat.length > 0) {
+                        $.each(datasoap[i].order_obat, function(i_obat, item_obat) {
+                            trTindakan.appendChild(document.createTextNode((i_obat == 0 ? 'Obat: ' : '') + item_obat.item_name + (i_obat < datasoap[i].order_obat.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    if (datasoap[i].order_lainnya && datasoap[i].order_lainnya.length > 0) {
+                        $.each(datasoap[i].order_lainnya, function(i_lainnya, item_lainnya) {
+                            trTindakan.appendChild(document.createTextNode((i_lainnya == 0 ? 'Tindakan Lainnya: ' : '') + item_lainnya.item_name + (i_lainnya < datasoap[i].order_lainnya.length - 1 ? ', ' : '')));
+                        });
+                    }
+
+                    var trInstruksi = document.createElement('tr');
+                    trInstruksi.appendChild(document.createTextNode(datasoap[i].soapdok_instruksi ?? '-'));
+
+                    row.append($('<td>').append(trS, trO, trA, trP, trTindakan));
+                    row.append($('<td>').append(trInstruksi));
                     if (statusVerifikasi == 1) {
                         var btnShowQR = document.createElement('button')
                         btnShowQR.type = 'button'
                         btnShowQR.className = 'btn btn-success'
-                        btnShowQR.innerText = 'Lihat QRCode'
+                        btnShowQR.innerText = 'Lihat QRCode '
                         btnShowQR.id = 'btnShowQR' + datasoap[i].soapdok_reg
                         btnShowQR.value = datasoap[i].id
                         let soap_id = datasoap[i].soapdok_id;
                         btnShowQR.onclick = function() {
                             clear_show_load();
-                            document.querySelector("#ddx-utama").scrollIntoView({
-                                behavior: "smooth"
-                            });
+                            if (ddxutamalen > 0) {
+                                document.querySelector("#ddx-utama").scrollIntoView({
+                                    behavior: "smooth"
+                                });
+                            }
                             setTimeout(getQrCode(soap_id), 280);
                         }
                         var trNamaVerifikasi = document.createElement('tr')
@@ -1209,7 +1385,6 @@
     function getSoapPerawat_modal() {
         $('#modalSOAP').modal('show');
     }
-
     // Pengkajian Awal Dewasa
     function assementDewasa_init() {
         $('.kajian_kulit_dewasa').on('click', function() {
@@ -1352,20 +1527,20 @@
                     col3.innerHTML = dataJSON[i]['catatan']
                     col4.innerHTML = dataJSON[i]['id_nurse']
                     if (dataJSON[i]['signature']) {
-                    console.log("Signature Base64:", dataJSON[i]['signature']);
-                    col4.innerHTML = `
+                        console.log("Signature Base64:", dataJSON[i]['signature']);
+                        col4.innerHTML = `
                         <div style="text-align: center;">
                             <img src="${dataJSON[i]['signature']}" alt="Signature" style="width: 400px; height: 200px;"/>
                             <p>${dataJSON[i]['id_nurse']}</p>
                         </div>
-                    `; 
-                } else {
-                    col4.innerHTML = `
+                    `;
+                    } else {
+                        col4.innerHTML = `
                         <div style="text-align: center;">
                             <p>${dataJSON[i]['id_nurse']}</p>
                         </div>
                     `;
-                }
+                    }
                     tr.appendChild(col1)
                     tr.appendChild(col2)
                     tr.appendChild(col3)
@@ -1681,42 +1856,79 @@
         }
     }
 
+    // EDUKASI
+    function getEdukasi(_elm = '', _type = '') {
+        $.ajax({
+            type: "POST",
+            data: {
+                "_token": $('[name="_token"]').val(),
+                "reg_no": regno,
+                "medrec": medrec,
+                "type": _type,
+            },
+            url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+            success: function(data) {
+                $('[id="panel-edukasi"] div').html(data)
+                resetEdukasi(_elm, _type)
+
+            },
+            error: function(data) {
+                clear_show_error();
+            },
+        });
+    }
+
+    function resetEdukasi(_elm = '', _type = '') {
+        $('[id="panel-edukasi"] ' + _elm + ' [class*="table1"]')
+            .find('[class*="form-control"], input[type="radio"]')
+            .removeAttr('disabled')
+
+        ttd_edukasi_perawat()
+    }
+
+    var signaturePadSasaran = null
+    var signaturePadEdukator = null
+
     function ttd_edukasi_perawat() {
         // SASARAN
-        let $wrapperSasaran = $("#signature-pad-sasaran");
+        let $wrapperSasaran = $('[id*="signature-pad-sasaran"]');
         let $clearButtonSasaran = $wrapperSasaran.find("#clear_btn_sasaran");
         let $canvasSasaran = $wrapperSasaran.find("canvas")[0];
 
-        signaturePadSasaran = new SignaturePad($canvasSasaran);
+        if ($canvasSasaran != undefined) {
+            signaturePadSasaran = new SignaturePad($canvasSasaran);
 
-        // Load signature if available
-        let signatureSasaranDataURL = $("#signature_sasaran").val();
-        if (signatureSasaranDataURL) {
-            signaturePadSasaran.fromDataURL(signatureSasaranDataURL);
+            // Load signature if available
+            let signatureSasaranDataURL = $("#signature_sasaran").val();
+            if (signatureSasaranDataURL) {
+                signaturePadSasaran.fromDataURL(signatureSasaranDataURL);
+            }
+
+            $clearButtonSasaran.on("click", function(event) {
+                signaturePadSasaran.clear();
+            });
         }
 
-        $clearButtonSasaran.on("click", function(event) {
-            signaturePadSasaran.clear();
-        });
-
         // EDUKATOR
-        let $wrapperEdukator = $("#signature-pad-edukator");
+        let $wrapperEdukator = $('[id*="signature-pad-edukator"]');
         let $clearButtonEdukator = $wrapperEdukator.find("#clear_btn_edukator");
         let $canvasEdukator = $wrapperEdukator.find("canvas")[0];
 
-        signaturePadEdukator = new SignaturePad($canvasEdukator);
+        if ($canvasEdukator != undefined) {
+            signaturePadEdukator = new SignaturePad($canvasEdukator);
 
-        // Load signature if available
-        let signatureEdukatorDataURL = $("#signature_edukator").val();
-        if (signatureEdukatorDataURL) {
-            signaturePadEdukator.fromDataURL(signatureEdukatorDataURL);
+            // Load signature if available
+            let signatureEdukatorDataURL = $("#signature_edukator").val();
+            if (signatureEdukatorDataURL) {
+                signaturePadEdukator.fromDataURL(signatureEdukatorDataURL);
+            }
+
+            $clearButtonEdukator.on("click", function(event) {
+                signaturePadEdukator.clear();
+                let userSignature = "{{ auth()->user()->signature }}";
+                signaturePadEdukator.fromDataURL(userSignature);
+            });
         }
-
-        $clearButtonEdukator.on("click", function(event) {
-            signaturePadEdukator.clear();
-            let userSignature = "{{ auth()->user()->signature }}";
-            signaturePadEdukator.fromDataURL(userSignature);
-        });
 
         $('#simpan-edukasi-pasien-perawat').on('click', function() {
             addedukasipasienperawat();
@@ -1963,8 +2175,49 @@
             simpanPersetujuanTindakanMedis();
         });
     }
+
+    function loadAllSignatures(type) {
+    UniversalSignaturePad(`signature-${type}-sasaran`, `ttd_sasaran_${type}`);
+    UniversalSignaturePad(`signature-${type}-edukator`, `ttd_edukator_${type}`);
+    }
+
+    const UniversalSignaturePads = {};
+
+    function UniversalSignaturePad(canvasId, hiddenInputId) {
+        const canvas = document.getElementById(canvasId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        if (!canvas || !hiddenInput) {
+            
+            return;
+        }
+
+        const button = document.querySelector(`button[data-pad="${canvasId.split('-')[2]}"]`);
+        const signaturePad = new SignaturePad(canvas);
+        UniversalSignaturePads[canvasId] = signaturePad;
+
+        signaturePad.onEnd = function() {
+            hiddenInput.value = signaturePad.toDataURL();
+        };
+
+        if (button) {
+            button.addEventListener('click', function() {
+                signaturePad.clear();
+                hiddenInput.value = '';
+            });
+        }
+
+        if (hiddenInput.value) {
+            const image = new Image();
+            image.onload = function() {
+                canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+            image.src = hiddenInput.value;
+        }
+    }
 </script>
 
+@include('new_perawat.assesment.assesment_dewasa.js.assesment_dewasa_js')
+@include('new_perawat.assesment.assesment_anak.js.assesment_anak_js')
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
 @include('new_perawat.resiko_jatuh.humpty_dumpty.js.resiko_jatuh_humpty_dumpty_js')
 @include('new_perawat.resiko_jatuh.geriatri.js.resiko_jatuh_geriatri_js')
@@ -1972,3 +2225,6 @@
 @include('new_perawat.resiko_jatuh.skala_morse.js.resiko_jatuh_skala_morse_js')
 @include('new_perawat.transfer_internal.js.index_js')
 @include('new_perawat.monitoring_news.js.entry_news_js')
+@include('new_perawat.assesment.obgyn.js.obgyn_js')
+@include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
+@include('new_perawat.case_manager.js.case_manager_js')

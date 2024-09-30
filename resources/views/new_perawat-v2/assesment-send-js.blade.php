@@ -96,35 +96,45 @@
     }
 
     // edukasi pasien perawat
-    function addedukasipasienperawat() {
-        var ttdSasaran = signaturePadSasaran.toDataURL();
-        var ttdEdukator = signaturePadEdukator.toDataURL();
+    function addedukasipasienperawat(_elm = '#entry-edukasi-pasien-perawat', _type = '') {
+        var ttdSasaran = signaturePadSasaran ? signaturePadSasaran.toDataURL() : $('[name="ttd_sasaran"]').val();
+        var ttdEdukator = signaturePadEdukator ? signaturePadEdukator.toDataURL() : $('[name="ttd_edukator"]').val();
 
         neko_proses();
 
-        var formData = new FormData($('#entry-edukasi-pasien-perawat')[0]);
+        var formData = new FormData($(_elm)[0]);
         formData.append('reg_no', regno);
         formData.append('medrec', medrec);
         formData.append('ttd_sasaran', ttdSasaran);
         formData.append('ttd_edukator', ttdEdukator);
         formData.append('user_id', "{{auth()->user()->id}}");
 
+        let url = "{{route('add.edukasi_pasien_perawat')}}"
+
+        if (_type == 'dokter') {
+            url = '{{url("")}}/api/edukasi_dokter'
+        }
+
         $.ajax({
-            url: "{{route('add.edukasi_pasien_perawat')}}",
+            url: url,
             type: "POST",
             data: formData,
             contentType: false,
             processData: false,
             success: function(data) {
                 neko_simpan_success();
-                $('.left-tab.active').click();
+            
+                if (_type == 'dokter') {
+                    getEdukasi('', _type)
+                } else {
+                    $('.left-tab.active').click();
+                }
             },
             error: function(data) {
                 neko_simpan_error_noreq();
             },
         });
     }
-
 
     // resiko-jatuh-geriatri
     function addresikojatuhGeriatri() {
@@ -176,6 +186,7 @@
     // resiko-jatuh-neonatus
     function addresikojatuhNeonatus() {
         var userId = "{{ auth()->user()->id }}";
+        var user_name = "{{ auth()->user()->name }}";
         var userShift = "{{ session('user_shift') }}";
 
         var formData = new FormData($('#entry-resiko-jatuh-neonatus')[0]);
@@ -183,6 +194,7 @@
         formData.append('medrec', medrec);
         formData.append('regno', regno);
         formData.append('user_id', userId);
+        formData.append('user_name', user_name);
         formData.append('shift', userShift);
         formData.append('ttd_keluarga', signaturePadKeluargaNeonatus.toDataURL());
         formData.append('ttd_petugas', signaturePadPetugasNeonatus.toDataURL());

@@ -6,6 +6,7 @@
 <script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
 <h3>Persiapan Pasien</h3>
 <input type="hidden" name="kode_transfer_internal" value="{{ $transfer_internal->kode_transfer_internal }}">
+<input type="hidden" name="type" value="{{ $type }}">
 <div class="card">
     <div class="form-group row">
         <div class="col-lg-6">
@@ -42,8 +43,8 @@
                 <input type="hidden" class="form-control" id="temp_class_bed" value="{{ $transfer_internal->class ?? '' }}">
                 <select name="transfer_class" id="select-class-bed" class="form-control">
                     @foreach ($class_bed as $row)
-                    <option value="{{ $row->ClassCategoryCode }}">
-                        {{ $row->ClassCategoryName }}
+                    <option value="{{ $row->ClassCode }}">
+                        {{ $row->ClassName }}
                     </option>
                     @endforeach
                 </select>
@@ -52,12 +53,13 @@
 
         <div class="col-lg-6">
 
-            <div class="form-group"><label>Charge Class</label>
+            <div class="form-group">
+                <label>Charge Class</label>
                 <input type="hidden" class="form-control" id="temp_charge_class_bed" value="{{ $transfer_internal->charge_class ?? '' }}">
                 <select name="transfer_charge_class" id="select-charge-class-bed" class="form-control">
                     @foreach ($class_bed as $row)
-                    <option value="{{ $row->ClassCategoryCode }}">
-                        {{ $row->ClassCategoryName }}
+                    <option value="{{ $row->ClassCode }}">
+                        {{ $row->ClassName }}
                     </option>
                     @endforeach
                 </select>
@@ -66,12 +68,16 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Nama petugas unit tujuan yang dihubungi</label>
+                @if ($transfer_internal->transfer_rawat_intensif == 1)
+                <input type="text" class="form-control" name="perawat_tujuan" value="{{ $transfer_internal->diterima_oleh_nama ?? '' }}">
+                @else
                 <select name="perawat_tujuan" id="select-petugas-tujuan" class="form-control">
                     @if (isset($transfer_internal))
                     <option value="{{ $transfer_internal->diterima_oleh_user_id }}"
                         selected>{{ $transfer_internal->diterima_oleh_nama }}</option>
                     @endif
                 </select>
+                @endif
             </div>
         </div>
         <div class="col-lg-6">

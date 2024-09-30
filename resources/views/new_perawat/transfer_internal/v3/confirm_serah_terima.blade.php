@@ -83,7 +83,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
     </div>
     <div class="card-body">
       <div class="row">
-        @if ($type == 'edit' || $type == 'terima')
+        @if ($type == 'edit' || $type == 'terima' || 'intensif')
         <div class="col-sm-12 pb-3" style>
           <button type="button" class="protecc btn btn-sm btn-info" onclick="nyaa_act(this,'ModalBase_orig_transferinternal_diagnostik','ModalBase')" nyaa-mode="add">Tambah Data Diagnostik Baru</button>
         </div>
@@ -151,7 +151,7 @@ $url_form = route('nyaa_universal.view_injector_support.perawat.nyaa_transfer_in
     </div>
   </div>
 </div>
-@if ($type == 'terima')
+@if ($type == 'terima' || $type == 'intensif')
 <div class="container mt-3">
   <div class="card">
     <div class="card-header container-fluid">

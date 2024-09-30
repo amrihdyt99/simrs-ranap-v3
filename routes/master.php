@@ -19,7 +19,7 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\PractitionerController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter'])->group(function () {
+Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter,perawat'])->group(function () {
     /*
     Route::get('/', function () {
         return redirect()->route('master.bed.index');

@@ -49,9 +49,9 @@ $data_persiapan_pasien = [
 ['item' => 'Lain-lain**'],
 ];
 
-$registrasi_data =  DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+$registrasi_data = DB::connection('mysql2')
+->table('m_registrasi')
+->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
 @endphp
 
 <style>
@@ -131,7 +131,35 @@ $registrasi_data =  DB::connection('mysql2')
         <div class="row">
 
             <div class="col" style="max-width: 15%;">
-
+                @if (Auth::user()->level_user == 'farmasi')
+                <div class="row">
+                    <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
+                        Edukasi
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="left-tab" id="tab-soap" onclick="clickTab('soap')">
+                        CPPT
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
+                        Rekonsiliasi
+                    </div>
+                </div>
+                @else
+                @if (Auth::user()->level_user == 'dietitian')
+                <div class="row">
+                    <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
+                        Edukasi
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="left-tab" id="tab-soap" onclick="clickTab('soap')">
+                        CPPT
+                    </div>
+                </div>
+                @else
                 @if(Auth::user()->level_user=="radiologi")
                 <div class="row">
                     <div class="left-tab active" id="tab-radiologi" onclick="clickTab('radiologi')">
@@ -148,6 +176,7 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
                 @endif
                 @endif
+
                 <div class="row">
                     <div class="left-tab active" id="tab-assesment" onclick="clickTab('assesment')">
                         Pengkajian Awal
@@ -178,9 +207,23 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
                 @endif
 
+                @if ($dataPasien->kategori_pasien == 'kebidanan')
+                <div class="row">
+                    <div class="left-tab" id="tab-obgyn" onclick="clickTab('obgyn')">
+                        Pengkajian Awal (Obstetri Ginekologi)
+                    </div>
+                </div>
+                @endif
+
                 <div class="row">
                     <div class="left-tab" id="tab-nyeri" onclick="clickTab('nyeri')">
                         Skrinning Nyeri
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
+                        Rekonsiliasi Obat
                     </div>
                 </div>
 
@@ -220,7 +263,7 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
                 @endif
 
-                @if ($dataPasien->kategori_pasien == 'dewasa')
+                @if ($dataPasien->kategori_pasien == 'dewasa' || $dataPasien->kategori_pasien == 'kebidanan')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-skala-morse" onclick="clickTab('resiko-jatuh-skala-morse')">
                         Resiko Jatuh Skala Morse
@@ -240,7 +283,11 @@ $registrasi_data =  DB::connection('mysql2')
                     </div>
                 </div>
 
-                
+                <div class="row">
+                    <div class="left-tab" id="tab-case_manager" onclick="clickTab('case_manager')">
+                        Case Manager
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
@@ -251,6 +298,12 @@ $registrasi_data =  DB::connection('mysql2')
                 <div class="row">
                     <div class="left-tab" id="tab-nursing" onclick="clickTab('nursing')">
                         Nursing
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-transfusi" onclick="clickTab('transfusi')">
+                        Transfusi Darah
                     </div>
                 </div>
 
@@ -289,7 +342,6 @@ $registrasi_data =  DB::connection('mysql2')
                         Pemantauan Hemodinamik - Intra Tindakan
                     </div>
                 </div>
-
 
 
                 {{-- <div class="row">
@@ -332,12 +384,6 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
 
                 <div class="row">
-                    <div class="left-tab" id="tab-obgyn" onclick="clickTab('obgyn')">
-                        Obgyn
-                    </div>
-                </div>
-
-                <div class="row">
                     <div class="left-tab" id="tab-bedah" onclick="clickTab('bedah')">
                         Bedah
                     </div>
@@ -348,14 +394,6 @@ $registrasi_data =  DB::connection('mysql2')
                 <div class="row">
                     <div class="left-tab" id="tab-bayi" onclick="clickTab('bayi')">
                         Bayi Baru Lahir
-                    </div>
-                </div>
-
-
-
-                <div class="row">
-                    <div class="left-tab" id="tab-transfusi" onclick="clickTab('transfusi')">
-                        Transfusi Darah
                     </div>
                 </div>
 
@@ -389,7 +427,8 @@ $registrasi_data =  DB::connection('mysql2')
                 </div>
 
                 @endif
-
+                @endif
+                @endif
 
                 <div class="row">
                     <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
@@ -444,6 +483,7 @@ $registrasi_data =  DB::connection('mysql2')
 @endsection
 
 @section('nyaa_scripts')
+
 @include('new_perawat-v2.assesment-send-js')
 @include('new_perawat-v2.assesment-js')
 @include('new_perawat-v2.intruksi-harian.js')

@@ -148,6 +148,27 @@ class ApiMasterController extends Controller
 		return response()->json($json, $json['code']);
 	}
 
+    function daftarmasalah()
+    {
+		if (!isset($r->searchParams)) {
+			$data =  DB::connection('mysql2')->table('m_daftar_diagnosa_keperawatan')->take(50)->get();
+		} else {
+			$data =  DB::connection('mysql2')->table('m_daftar_diagnosa_keperawatan')->where('diagnosa_keperawatan', 'like', '%' . $r->searchParams . '%')
+				->orWhere('kode', 'like', '%' . $r->searchParams . '%')
+				->get();
+		}
+		$dat = $data;
+		if ($dat) {
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = $dat;
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
+	}
 
 	public function unit_item()
 	{

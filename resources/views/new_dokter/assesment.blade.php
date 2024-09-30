@@ -1,4 +1,5 @@
 @extends('new_templates.main')
+@inject('nyaa_unv_function', 'App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController')
 
 @section('styles')
     <link rel="stylesheet" href="{{asset('new_assets/css/jquery.dataTables.min.css')}}">
@@ -131,9 +132,9 @@
                                         </div>
                                     </div>
                                     <div id="panel-edukasi">
-                                        
                                         <div class="text-black" style="font-size: 14px">
-                                            @include('new_dokter.edukasi')
+                                            @include('new_perawat.edukasi.components.edukasi_dokter')
+                                            {{-- @include('new_dokter.edukasi') --}}
                                         </div>
                                     </div>
                                     <div id="panel-pemulangan">
@@ -225,14 +226,18 @@
     @include('new_dokter.modal.resume')
     @include('new_dokter.modal.soap')
     @include('new_dokter.modal.multiorgan')
+    @include('new_dokter.modal.openDischarge')
     @include('new_perawat.modal.assesment')
 @endsection
 
 @section('scripts')
     <script src="{{asset('new_assets/js/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('new_assets/js/barcode/JsBarcode.all.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="{{asset('new_assets/sign/js/jquery.signature.js')}}"></script>
+    <script src="{{asset('new_assets/sign/signature_pad.min.js')}}"></script>
+    @include('new_perawat-v2.assesment-js')
+    @include('new_perawat-v2.assesment-send-js')
     <script>
 
         $reg = "{{$reg}}";
@@ -243,11 +248,15 @@
         var selectedRoom = localStorage.getItem('pilihruang').split(',')
         var $id_dpjp = "{{$patient->reg_dokter}}"
 
+
         if (selectedRoom.length > 0) {
             getDetailRegistration(selectedRoom[0])
         }
 
         getAlert($reg)
+        
+        getEdukasi('#formEdukasiDokter', 'dokter')
+
 
         $('div[id*="panel-"]').hide();
         $('#panel-assesment').show();
@@ -525,53 +534,52 @@
         }
     </script> -->
     <script>
-    $(document).ready(function(){
-        getPemeriksaanDokter();
-    });
-
-    function getPemeriksaanDokter(){
-        $.ajax({
-            url: "{{ route('get.pemeriksaan.dokter') }}",
-            type: "POST",
-            data: {
-                reg_no: regno, // Gantilah `regno` dengan variabel yang sesuai
-            },
-            success: function(data){
-                if(data.success == true){
-                    var tablePemeriksaanDokter = $('#table-pemeriksaan-dokter');
-                    tablePemeriksaanDokter.empty();
-                    data.data.forEach(function(item) {
-                        var tr = $('<tr></tr>');
-                        tr.append('<td class="text-center">' + item.created_at + '</td>');
-                        tr.append('<td class="text-center">' + item.item_code + '</td>');
-                        tr.append('<td>' + item.item_name + '</td>');
-                        tr.append('<td class="text-center">' + item.jenis_order + '</td>');
-                        var button = $('<button class="btn btn-primary">Hasil</button>');
-                        
-                        // Menyimpan URL di data button
-                        var url = item.jenis_order == "lab" ? "{{ route('get.hasil.lab') }}" : "{{ route('get.hasil.radiologi') }}";
-                        button.data('url', url);
-
-                        button.on('click', function() {
-                            var iframeUrl = $(this).data('url');
-                            // Mengubah src iframe dengan URL yang sesuai
-                            $('#resultModal iframe').attr('src', iframeUrl);
-                            // Menampilkan modal
-                            $('#resultModal').modal('show');
-                        });
-
-                        tr.append($('<td></td>').append(button));
-                        tablePemeriksaanDokter.append(tr);
-                    });
-                } else {
-                    $('#table-pemeriksaan-dokter').html('<tr><td colspan="5" class="text-center">' + data.message.toUpperCase() + '</td></tr>');
-                }
-            }
+        $(document).ready(function(){
+            getPemeriksaanDokter();
         });
-    }
-</script>
 
+        function getPemeriksaanDokter(){
+            $.ajax({
+                url: "{{ route('get.pemeriksaan.dokter') }}",
+                type: "POST",
+                data: {
+                    reg_no: regno, // Gantilah `regno` dengan variabel yang sesuai
+                },
+                success: function(data){
+                    if(data.success == true){
+                        var tablePemeriksaanDokter = $('#table-pemeriksaan-dokter');
+                        tablePemeriksaanDokter.empty();
+                        data.data.forEach(function(item) {
+                            var tr = $('<tr></tr>');
+                            tr.append('<td class="text-center">' + item.created_at + '</td>');
+                            tr.append('<td class="text-center">' + item.item_code + '</td>');
+                            tr.append('<td>' + item.item_name + '</td>');
+                            tr.append('<td class="text-center">' + item.jenis_order + '</td>');
+                            var button = $('<button class="btn btn-primary">Hasil</button>');
+                            
+                            // Menyimpan URL di data button
+                            var url = item.jenis_order == "lab" ? "{{ route('get.hasil.lab') }}" : "{{ route('get.hasil.radiologi') }}";
+                            button.data('url', url);
 
+                            button.on('click', function() {
+                                var iframeUrl = $(this).data('url');
+                                // Mengubah src iframe dengan URL yang sesuai
+                                $('#resultModal iframe').attr('src', iframeUrl);
+                                // Menampilkan modal
+                                $('#resultModal').modal('show');
+                            });
+
+                            tr.append($('<td></td>').append(button));
+                            tablePemeriksaanDokter.append(tr);
+                        });
+                    } else {
+                        $('#table-pemeriksaan-dokter').html('<tr><td colspan="5" class="text-center">' + data.message.toUpperCase() + '</td></tr>');
+                    }
+                }
+            });
+        }
+    </script>
+    <script src="{{ asset('neko/custom/nyaa.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
     <script src="{{asset('new_assets/js/cpoe.js')}}"></script>
     <script src="{{asset('new_assets/js/prescribe.js')}}"></script>
     <script src="{{asset('new_assets/js/resume_new.js')}}"></script>

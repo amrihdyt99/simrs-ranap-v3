@@ -7,7 +7,17 @@ use App\Models\Neonatus\NeonatusFisik;
 use App\Models\Neonatus\NeonatusNyeri;
 use App\Models\Neonatus\NeonatusRekonObat;
 use App\Models\Neonatus\NeonatusTtd;
+use App\Models\Obgyn\ObgynAlergiKeadaanUmum;
+use App\Models\Obgyn\ObgynDataPsikologis;
+use App\Models\Obgyn\ObgynPengkajianKebutuhan;
+use App\Models\Obgyn\ObgynPengkajianKulit;
+use App\Models\Obgyn\ObgynRiwayatKehamilan;
+use App\Models\Obgyn\ObgynRiwayatMenstruasiDanPerkawinan;
+use App\Models\Obgyn\ObgynSkriningFungsional;
+use App\Models\Obgyn\ObgynSkriningGizi;
+use App\Models\Obgyn\ObgynSkriningNyeri;
 use App\Models\Pasien;
+use App\Models\RegistrasiPJawab;
 use App\Models\RegistrationInap;
 use App\Traits\Master\MasterBedTraits;
 use Illuminate\Http\Request;
@@ -46,7 +56,9 @@ class NyaaViewInjectorController extends AaaBaseController
         if (!$datacek) {
             $datacek = optional((object)[]);
         }
-        return view('new_perawat.checklist.checklist_index', ['datapasien' => $datamypatient, 'hitung' => $hitung, 'data' => $datacek]);
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+
+        return view('new_perawat.checklist.checklist_index', ['datapasien' => $datamypatient, 'hitung' => $hitung, 'data' => $datacek, 'registrasi_pj' => $registrasi_pj]);
         // if($hitung==0){
         //     return view('new_perawat.checklist.checklist',['datapasien'=>$datamypatient,'hitung'=>$hitung]);
         // }else{
@@ -138,17 +150,30 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_edukasi_pasien_rehab')
             ->where('reg_no', $request->reg_no)
             ->first();
+        
+        $datamypatient = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->where(['m_registrasi.reg_no' => $request->reg_no])
+        ->first();
 
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'edukasi_pasien' => optional($edukasi_pasien),
-            'edukasi_pasien_dokter' => optional($edukasi_pasien_dokter),
+            'edukasi_pasien_dokter' => $edukasi_pasien_dokter ?? (object) null,
             'edukasi_pasien_perawat' => optional($edukasi_pasien_perawat),
             'edukasi_pasien_gizi' => optional($edukasi_pasien_gizi),
             'edukasi_pasien_farmasi' => optional($edukasi_pasien_farmasi),
             'edukasi_pasien_rehab' => optional($edukasi_pasien_rehab),
+            'datamypatient' => optional($datamypatient),
         );
+
+        if (isset($request->type)) {
+            return view('new_perawat.edukasi.components.edukasi_' . $request->type)
+                ->with($context);
+        }
+
         return view('new_perawat.edukasi.entry_edukasi_pasien')
             ->with($context);
     }
@@ -175,10 +200,13 @@ class NyaaViewInjectorController extends AaaBaseController
     }
 
     function assesment_resiko_jatuh_neonatus(Request $request)
-    {
+    {   
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
+            'registrasi_pj' => $registrasi_pj,
         );
         return view('new_perawat.resiko_jatuh.neonatus.resiko_jatuh_neonatus')
             ->with($context);
@@ -206,23 +234,46 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function assesment_awal_dewasa(Request $request)
     {
-        $reg = RegistrationInap::find($request->reg_no);
-        $pasien = Pasien::find($reg->reg_medrec);
-        $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
+        $awal = DB::connection('mysql')
+            ->table('pengkajian_dewasa_awal')
+            ->where('reg_no', $request->reg_no)
+            ->first();
 
-        // if ($dateDiff->y > 18) {
+        $sad_person = DB::connection('mysql')
+            ->table('pengkajian_dewasa_skor_sad_person')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $adl = DB::connection('mysql')
+            ->table('pengkajian_dewasa_adl')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        $nyeri = DB::connection('mysql')
+            ->table('pengkajian_dewasa_skrining_nyeri')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        $gizi = DB::connection('mysql')
+            ->table('pengkajian_dewasa_skrining_gizi')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
+            'awal' => optional($awal),
+            'sad_person' => optional($sad_person),
+            'adl' => optional($adl),
+            'nyeri' => optional($nyeri),
+            'gizi' => optional($gizi),
         );
-        return view('new_perawat.assesment.index_dewasa')
+
+        return view('new_perawat.assesment.assesment_dewasa.index_dewasa')
             ->with($context);
-        // } else {
-        //     return view('new_perawat.assesment.error.assesment_dewasa');
-        // }
     }
 
-    function assesment_awal_anak(Request $request)
+    function assesment_awal_anak_old(Request $request)
     {
 
         $reg = RegistrationInap::find($request->reg_no);
@@ -247,13 +298,61 @@ class NyaaViewInjectorController extends AaaBaseController
         // }
     }
 
+    function assesment_awal_anak(Request $request)
+    {
+
+        $reg = RegistrationInap::find($request->reg_no);
+        $pasien = Pasien::find($reg->reg_medrec);
+        $dateDiff = Carbon::now()->diff($pasien->DateOfBirth);
+        // dd($dateDiff->y . ' Year ' . $dateDiff->m . ' Month ' . $dateDiff->d . ' Day');
+        // if (($dateDiff->y > 0 && $dateDiff->y <= 18) ||  $dateDiff->m > 0 || $dateDiff->d >= 28) {
+        $assesment_awal_anak = DB::connection('mysql')
+            ->table('pengkajian_awal_anak_perawat')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $skor_sad = DB::connection('mysql')
+            ->table('skor_sad_person_anak')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $adl_anak = DB::connection('mysql')
+            ->table('activity_daily_living_anak')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $gizi = DB::connection('mysql')
+            ->table('skrining_gizi_anak')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $nyeri = DB::connection('mysql')
+            ->table('skrining_nyeri_anak')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'assesment' => optional($assesment_awal_anak),
+            'skor_sad' => optional($skor_sad),
+            'adl_anak' => optional($adl_anak),
+            'gizi'  => optional($gizi),
+            'nyeri'  => optional($nyeri),
+        );
+        return view('new_perawat.assesment.assesment_anak.index')
+            ->with($context);
+        // } else {
+        //     return view('new_perawat.assesment.error.assesment_anak');
+        // }
+    }
+
     function assesment_awal_neonatus(Request $request)
     {
         $reg = RegistrationInap::find($request->reg_no);
         $fisik = NeonatusFisik::where('reg_no', $request->reg_no)->first();
         $nyeri = NeonatusNyeri::where('reg_no', $request->reg_no)->first();
         $ttd = NeonatusTtd::where('reg_no', $request->reg_no)->first();
-        $rekon_obat = NeonatusRekonObat::where('reg_no', $request->reg_no)->get();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -261,7 +360,6 @@ class NyaaViewInjectorController extends AaaBaseController
             'fisik' => optional($fisik),
             'skrinning' => optional($nyeri),
             'ttd'   => optional($ttd),
-            'rekon_obat' => $rekon_obat,
         );
         return view("new_perawat.assesment.neonatus")->with($context);
     }
@@ -339,9 +437,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ])
             ->first();
 
-        $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
-
-
+        $class_bed = DB::connection('mysql2')->table('m_room_class')->where('isActive', 1)->get();
 
         $cek_transfer_ongoing = DB::connection('mysql')
             ->table('transfer_internal')
@@ -438,6 +534,10 @@ class NyaaViewInjectorController extends AaaBaseController
             'class_bed' => $class_bed,
             'type'  => $request->type,
         );
+
+        if ($transfer_internal->transfer_rawat_intensif == 1) {
+            $context['type'] = 'intensif';
+        }
 
         return view('new_perawat.transfer_internal.v3.index')
             ->with($context);
@@ -558,11 +658,15 @@ class NyaaViewInjectorController extends AaaBaseController
             $data['ditransfer_oleh_user_id'] = auth()->user()->username;
             $data['ditransfer_oleh_nama'] = auth()->user()->name;
 
+            if ($request->type == 'intensif') {
+                $data['transfer_rawat_intensif'] = 1;
+            }
+
 
             DB::connection('mysql')->table('transfer_internal')
                 ->insert($data);
 
-            $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
+            $class_bed = DB::connection('mysql2')->table('m_room_class')->where('isActive', 1)->get();
 
             $transfer_internal = DB::connection('mysql')
                 ->table('transfer_internal')
@@ -597,6 +701,10 @@ class NyaaViewInjectorController extends AaaBaseController
                 'class_bed' => $class_bed,
                 'type'  => 'edit',
             );
+
+            if ($request->type == 'intensif') {
+                $context['type'] = 'intensif';
+            }
 
             DB::commit();
 
@@ -661,7 +769,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 ->where('kode_transfer_internal', $request->kode_transfer)
                 ->first();
 
-            $class_bed = DB::connection('mysql')->table('rs_m_kelas_kategori')->get();
+            $class_bed = DB::connection('mysql2')->table('m_room_class')->where('isActive', 1)->get();
 
 
             $ruangan_asal = DB::connection('mysql2')
@@ -911,101 +1019,31 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function nurse_obgyn(Request $request)
     {
-        $pengkajian_awal_bidan = DB::connection('mysql')
-            ->table('pengkajian_awal_bidan')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skor_sad_person = DB::connection('mysql')
-            ->table('skor_sad_person')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $riwayat_menstruasi = DB::connection('mysql')
-            ->table('riwayat_menstruasi')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $riwayat_perkawinan = DB::connection('mysql')
-            ->table('riwayat_perkawinan')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $riwayat_kehamilan = DB::connection('mysql')
-            ->table('riwayat_kehamilan')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skrining_gizi_obgyn = DB::connection('mysql')
-            ->table('skrining_gizi_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skala_wong_baker = DB::connection('mysql')
-            ->table('skala_wong_baker')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $behavior_pain_scale_obgyn = DB::connection('mysql')
-            ->table('behavior_pain_scale_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $adl_obgyn = DB::connection('mysql')
-            ->table('adl_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $skrining_resiko_jatuh_obgyn = DB::connection('mysql')
-            ->table('skrining_resiko_jatuh_obgyn')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kulit = DB::connection('mysql')
-            ->table('pengkajian_kulit')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kebutuhan_aktifitas = DB::connection('mysql')
-            ->table('pengkajian_kebutuhan_aktifitas')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kebutuhan_nutrisi = DB::connection('mysql')
-            ->table('pengkajian_kebutuhan_nutrisi')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $pengkajian_kebutuhan_eliminasi = DB::connection('mysql')
-            ->table('pengkajian_kebutuhan_eliminasi')
-            ->where('no_reg', $request->reg_no)
-            ->first();
-
-        $laporan_persalinan = DB::connection('mysql')
-            ->table('laporan_persalinan')
-            ->where('reg_no', $request->reg_no)
-            ->first();
+        $alergi_keadaan_umum = ObgynAlergiKeadaanUmum::where('reg_no', $request->reg_no)->first();
+        $data_psikologis = ObgynDataPsikologis::where('reg_no', $request->reg_no)->first();
+        $menstruasi_dan_perkawinan = ObgynRiwayatMenstruasiDanPerkawinan::where('reg_no', $request->reg_no)->first();
+        $riwayat_kehamilan = ObgynRiwayatKehamilan::where('reg_no', $request->reg_no)->get();
+        $skrining_gizi = ObgynSkriningGizi::where('reg_no', $request->reg_no)->first();
+        $skrining_nyeri = ObgynSkriningNyeri::where('reg_no', $request->reg_no)->first();
+        $skrining_fungsional = ObgynSkriningFungsional::where('reg_no', $request->reg_no)->first();
+        $pengkajian_kulit = ObgynPengkajianKulit::where('reg_no', $request->reg_no)->first();
+        $pengkajian_kebutuhan = ObgynPengkajianKebutuhan::where('reg_no', $request->reg_no)->first();
 
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
-            'pengkajian_awal_bidan' => optional($pengkajian_awal_bidan),
-            'skor_sad_person' => optional($skor_sad_person),
-            'riwayat_menstruasi' => optional($riwayat_menstruasi),
-            'riwayat_kehamilan' => optional($riwayat_perkawinan),
-            'riwayat_perkawinan' => optional($riwayat_kehamilan),
-            'skrining_gizi_obgyn' => optional($skrining_gizi_obgyn),
-            'skala_wong_baker' => optional($skala_wong_baker),
-            'behavior_pain_scale_obgyn' => optional($behavior_pain_scale_obgyn),
-            'adl_obgyn' => optional($adl_obgyn),
-            'skrining_resiko_jatuh_obgyn' => optional($skrining_resiko_jatuh_obgyn),
+            'alergi_keadaan_umum' => optional($alergi_keadaan_umum),
+            'data_psikologis' => optional($data_psikologis),
+            'menstruasi_dan_perkawinan' => optional($menstruasi_dan_perkawinan),
+            'riwayat_kehamilan' => $riwayat_kehamilan,
+            'skrining_gizi' => optional($skrining_gizi),
+            'skrining_nyeri' => optional($skrining_nyeri),
+            'skrining_fungsional' => optional($skrining_fungsional),
             'pengkajian_kulit' => optional($pengkajian_kulit),
-            'pengkajian_kebutuhan_aktifitas' => optional($pengkajian_kebutuhan_aktifitas),
-            'pengkajian_kebutuhan_nutrisi' => optional($pengkajian_kebutuhan_nutrisi),
-            'pengkajian_kebutuhan_eliminasi' => optional($pengkajian_kebutuhan_eliminasi),
-            'laporan_persalinan' => optional($laporan_persalinan),
+            'pengkajian_kebutuhan' => optional($pengkajian_kebutuhan),
         );
-        return view('new_perawat.obgyn.index_master')
+
+        return view('new_perawat.assesment.obgyn.index_obgyn')
             ->with($context);
     }
 
@@ -1507,8 +1545,12 @@ class NyaaViewInjectorController extends AaaBaseController
         $dataPasien = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->first();
+        
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+        
 
         $informasi = DB::connection('mysql')
             ->table('rs_tindakan_medis_informasi')
@@ -1534,6 +1576,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'persetujuan' => $persetujuan,
             'penolakan' => $penolakan,
             'dataPasien' => $dataPasien,
+            'registrasi_pj' => $registrasi_pj,
 
         );
         return view('new_perawat.persetujuan_penolakan.index')
@@ -1638,4 +1681,30 @@ class NyaaViewInjectorController extends AaaBaseController
 
         return view('new_perawat.qrcode.show', compact('data'));
     }
+
+    function form_Case_manager(Request $request)
+    {
+        $case_manager = DB::connection('mysql')->table('case_manager')
+            ->where('reg_no', $request->reg_no)
+            ->where('med_rec', $request->medrec)
+            ->first();
+
+        $datamypatient = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->where(['m_registrasi.reg_no' => $request->reg_no])
+        ->first();
+
+        $context = array(
+            'reg' => $request->reg_no,
+            'medrec' => $request->medrec,
+            'case_manager' => optional($case_manager),
+            'datamypatient' => optional($datamypatient),
+        );
+        
+        return view('new_perawat.case_manager.index')
+            ->with($context);
+    }
+
+
 }

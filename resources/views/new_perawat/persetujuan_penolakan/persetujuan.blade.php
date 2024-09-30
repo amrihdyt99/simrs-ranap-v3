@@ -148,8 +148,8 @@
                             <div style="margin-bottom: 10px; font-size:17px">Yang menyatakan</div>
                             <div id="signature-pad-persetujuan-penerima" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_persetujuan_penerima" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_persetujuan_penerima" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
@@ -158,6 +158,7 @@
                                     <button type="button" id="clear_btn_persetujuan_penerima" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    <input type="text" name="nama_persetujuan_penerima" class="form-control mt-2" placeholder="Nama Yang Menyatakan">
                                 </div>
                             </div>
                         </div>
@@ -167,16 +168,17 @@
                             <div style="margin-bottom: 10px; font-size:17px">Dokter</div>
                             <div id="signature-pad-persetujuan-dokter" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_persetujuan_dokter" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_persetujuan_dokter" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
                                 <div style="margin: 10px; text-align: center;">
-                                    <input type="hidden" id="signature_persetujuan_dokter" name="persetujuan_ttd_dokter" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_dokter ??auth()->user()->signature}}">
+                                    <input type="hidden" id="signature_persetujuan_dokter" name="persetujuan_ttd_dokter" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_dokter}}">
                                     <button type="button" id="clear_btn_persetujuan_dokter" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    <input type="text" name="nama_persetujuan_dokter" class="form-control mt-2" placeholder="Nama Dokter" value="{{$get_tindakan_medis_data_persetujuan->nama_dokter ?? $dataPasien->ParamedicName}}">
                                 </div>
                             </div>
                         </div>
@@ -191,8 +193,8 @@
                             <div style="margin-bottom: 10px; font-size:17px">1. Keluarga</div>
                             <div id="signature-pad-persetujuan-keluarga" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_persetujuan_keluarga" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_persetujuan_keluarga" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
@@ -201,6 +203,16 @@
                                     <button type="button" id="clear_btn_persetujuan_keluarga" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    @if($registrasi_pj->isNotEmpty())
+                                        <select name="nama_persetujuan_keluarga" class="form-control mt-2">
+                                            <option value="">Pilih Nama Keluarga</option>
+                                            @foreach($registrasi_pj as $pj)
+                                                <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <input type="text" name="nama_persetujuan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="{{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga ?? '' }}">
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -210,8 +222,8 @@
                             <div style="margin-bottom: 10px; font-size:17px">2. Perawat</div>
                             <div id="signature-pad-persetujuan-perawat" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_persetujuan_perawat" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_persetujuan_perawat" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
@@ -220,6 +232,7 @@
                                     <button type="button" id="clear_btn_persetujuan_perawat" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    <input type="text" name="nama_persetujuan_perawat" class="form-control mt-2" placeholder="Nama Perawat" value="{{$get_tindakan_medis_data_persetujuan->nama_persetujuan_perawat ?? auth()->user()->name}}">
                                 </div>
                             </div>
                         </div>

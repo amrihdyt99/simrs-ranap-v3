@@ -132,6 +132,8 @@
                 });
 
                 $('#tgl_ttd_keluarga_neonatus_detail').val(response.data.tgl_ttd_keluarga);
+                $('#nama_keluarga_detail').val(response.data.nama_keluarga);
+                $('#nama_petugas_detail').val(response.data.nama_petugas);
                 let signaturePadKeluargaDetail = new SignaturePad(document.getElementById(
                     'resiko_jatuh_neonatus_ttd_canvas_keluarga_detail'));
                 signaturePadKeluargaDetail.fromDataURL(response.data.ttd_keluarga);

@@ -17,6 +17,16 @@ class OrderObatController extends Controller
             $data_to_store = [];
             $store_details = false;
 
+            $checkPayment = checkPaymentStatus($request->prescribe_reg);
+
+            if (isset($checkPayment) && $checkPayment->pvalidation_status == 1) {
+                return [
+                    'code' => 500,
+                    'success' => false,
+                    'message' => 'Data gagal disimpan, pembayaran sudah diselesaikan oleh bagian kasir'
+                ];
+            }
+
             if ($request->prescribe_item) {
                 $flag_racikan = null;
 
@@ -127,8 +137,9 @@ class OrderObatController extends Controller
             $paramedic = getDataKeyValue(DB::connection('mysql2')->table('m_paramedis'), 'ParamedicCode', $request->dokter);
             $get_room_master = getDataKeyValue(
                 DB::connection('mysql2')
-                    ->table('m_unit as a'), 
-                'a.ServiceUnitCode', 
+                    ->table('m_unit as a')
+                    ->join('m_unit_departemen as b', 'a.ServiceUnitCode', 'b.ServiceUnitCode'), 
+                'b.ServiceUnitID', 
                 $request->service_unit,
                 ['a.*', DB::raw("(select ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode limit 1) as ServiceUnitID")]
             );
@@ -555,7 +566,7 @@ class OrderObatController extends Controller
 
     public function getDataObat(Request $request, $limit = 20) {
         try {
-            $url = urlPharmacy('get-stokdepo', '&location=rajal&limit='.$limit.'&keyword='.urlencode($request->params));
+            $url = urlPharmacy('get-stokdepo', '&location=ranap&limit='.$limit.'&keyword='.urlencode($request->params));
 
             $data = getService($url, true);
 
@@ -649,6 +660,16 @@ class OrderObatController extends Controller
         //         'message' => 'Tindakan Radiologi Maksimal 1x Dalam 1 CPPT'
         //     ]);
         // }
+
+        $checkPayment = checkPaymentStatus($request->cpoe_reg);
+
+        if (isset($checkPayment) && $checkPayment->pvalidation_status == 1) {
+            return [
+                'code' => 500,
+                'success' => false,
+                'message' => 'Data gagal disimpan, pembayaran sudah diselesaikan oleh bagian kasir'
+            ];
+        }
 
         $data_pasien = DB::connection('mysql2')->table('m_bed')->where('registration_no', $request->cpoe_reg)->first();
 
