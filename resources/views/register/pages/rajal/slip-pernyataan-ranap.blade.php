@@ -117,11 +117,13 @@
                     <div class="flex-col" style="width: 100%">
                         <span>Palembang, {{ \Carbon\Carbon::now()->format('d F Y') }}</span>
                         <span>Petugas Admisi,</span>
-                        <span style="margin-top: 60px;">(............................................)</span>
+                        <span style="margin-top: 10px;"></span>
+                        <img src="{{ $userSignature }}" alt="User's Signature" style="width: 200px; height: 100px;">
+                        <span">({{$userName}})</span>
                     </div>
                     <div class="flex-col" style="width: 100%">
-                        @if ($signature)
-                            <img src="{{ $signature }}" alt="Doctor's Signature" style="width: 200px; height: 100px;">
+                        @if ($signatureDokter)
+                            <img src="{{ $signatureDokter }}" alt="Doctor's Signature" style="width: 200px; height: 100px;">
                         @else
                             <canvas id="doctor-signature" style="border:1px solid #000; width: 200px; height: 100px;"></canvas>
                             <button type="button" id="save-doctor-signature" class="btn btn-sm btn-primary mt-2 no-print" style="width: 200px; margin-right: 10px;">Simpan Tanda Tangan</button>
@@ -146,7 +148,7 @@ $(document).ready(function() {
         let drawing = false;
         canvas.width = 200;
         canvas.height = 100;
-        const existingSignature = "{{ $signature }}";
+        const existingSignature = "{{ $signatureDokter }}";
         if (existingSignature) {
             const img = new Image();
             img.onload = () => {
