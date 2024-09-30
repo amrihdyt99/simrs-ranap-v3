@@ -100,9 +100,13 @@ class BillingController extends AaaBaseController
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri));
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromPharmacy($request->reg_ri));
 
-        $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromLab($request->reg_rj));
-        $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
-        $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
+        if (str_contains($request->reg_rj, '/ER/')) {
+            $order_penunjang_prev = $this->getOrderFromSphaira($request->reg_rj, $request->class);
+        } else {
+            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromLab($request->reg_rj));
+            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
+            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
+        }
 
         $recap_penunjang = [
             ['source' => 'Rawat Inap', 'data' => $order_penunjang],
@@ -195,8 +199,6 @@ class BillingController extends AaaBaseController
 
     public function getOrderFromPharmacy($reg_no)
     {
-
-
         $call_obat = new OrderObatController;
         $request = new Request;
         $order_penunjang = [];
@@ -228,6 +230,57 @@ class BillingController extends AaaBaseController
 
                 array_push($order_penunjang, $item);
             }
+        }
+
+        return $order_penunjang;
+    }
+
+    public function getOrderFromSphaira($reg_no, $class)
+    {
+        $itemOrder = json_decode(getService(urlSimrs() . 'api/igd/itemOrder?reg_no=' . $reg_no . '&class=' . $class));
+
+        $order_penunjang = [];
+
+        if (count($itemOrder) > 0) {
+            foreach ($itemOrder as $key => $value) {
+                foreach ($value->detailOrder as $sub_key => $sub_value) {
+
+                    $dokter_order = '';
+
+                    if (isset($sub_value->Prescriber)) {
+                        $dokter_order = $sub_value->Prescriber;
+                    } else {
+                        $get_dokter_order = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicID', $value->ParamedicID)->first();
+
+                        $dokter_order = $get_dokter_order ? $get_dokter_order->ParamedicName : '';
+                    }
+
+                    $item['ItemUId'] = Str::random(5);
+                    $item['ItemReg'] = $value->RegistrationNo;
+                    $item['ItemCode'] = $sub_value->ItemCode;
+                    $item['ItemOrderCode'] = $value->JobOrderNo;
+                    $item['ItemOrder'] = $value->JobOrderNo;
+                    $item['ItemTanggal'] = $value->JobOrderDateTime;
+                    $item['ItemName1'] = $sub_value->ItemName1;
+                    $item['ItemBundle'] = 0;
+                    $item['ItemTindakan'] = $value->JobOrderType;
+                    $item['ItemTarif'] = (float) $sub_value->StandardPriceItem;
+                    $item['ItemTarifAwal'] = (float) (isset($sub_value->DispenseQty) ? $sub_value->DispenseQty : 1) * $sub_value->StandardPriceItem;
+                    $item['ItemJumlah'] = (float) isset($sub_value->DispenseQty) ? $sub_value->DispenseQty : 1;
+                    $item['ItemDokter'] = $dokter_order;
+                    $item['ItemPoli'] = $value->ServiceUnitID;
+                    // $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
+                    $item['ItemReview'] = 1;
+
+                    if ($value->IsCanceled == 0 && $value->IsReviewed == 1 && $value->IsSelected == 1) {
+                        array_push($order_penunjang, $item);
+                    }
+                }
+            }
+
+            usort($order_penunjang, function ($a, $b) {
+                return strcmp($a['ItemTindakan'], $b['ItemTindakan']);
+            });
         }
 
         return $order_penunjang;

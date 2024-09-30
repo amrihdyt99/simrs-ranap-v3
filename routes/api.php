@@ -87,7 +87,8 @@ Route::get('hapus/discharge/{id}', [\App\Http\Controllers\NewDokter\NewDischarge
 Route::post('addPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'addpemulanganpasien'])->name('add.pemulangan.pasien');
 Route::post('getPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getpemulanganpasien'])->name('get.pemulangan.pasien');
 Route::post('/verifikasicppt', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'verifikasi_soap_dokter'])->name('dokter.verifikasicppt');
-Route::get('/getAlert', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlert'])->name('dokter.getAlert');
+Route::get('/getAlertAlergi', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlertAlergi'])->name('dokter.getAlertAlergi');
+Route::get('/getAlertJatuh', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlertJatuh'])->name('dokter.getAlertJatuh');
 Route::get('/checkPemeriksaan', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'checkPemeriksaan'])->name('dokter.checkPemeriksaan');
 Route::get('/dataOpenDischargeRequest', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'dataOpenDischargeRequest']);
 Route::post('/openDischargeRequest', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'openDischargeRequest']);

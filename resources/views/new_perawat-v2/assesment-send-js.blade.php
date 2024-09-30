@@ -9,7 +9,8 @@
             success: function(data) {
                 neko_simpan_success();
 
-                getAlert(regno)
+                getAlertAlergi(regno)
+                getAlertJatuh(regno)
             },
             error: function(data) {
                 neko_simpan_error_noreq();

@@ -129,7 +129,7 @@
                                 <li>Pasien yang akan pulang diwajibkan menyelsaikan administrasi terlebih dahulu.</li>
                             </ol>
                             <p>Demikianlah pernyataan ini saya buat dengan penuh kesadarandan tanpa paksaan.</p>
-                            <p>_________________, tanggal_______________________Pukul_________________________</p>
+                            <p>Palembang, Tanggal {{ \Carbon\Carbon::now()->format('d F Y') }}, Pukul {{ \Carbon\Carbon::now()->format('H:i') }}</p>
                             
             <table class="table table-bordered">
                 <tbody>
@@ -141,7 +141,9 @@
                     <tr>
                         <td style="padding: 30px 50px;">
                             <p>Yang menyatakan</p>
-                            <div style="border-bottom: 1px solid #000; height: 120px; margin-top: 30px; width: 100%;"></div>
+                            <canvas id="declarant-signature" width="220" height="120" style="border:1px solid #000; margin-top: 20px;"></canvas>
+                            <button type="button" id="clear-declarant-signature" class="btn btn-sm btn-secondary mt-4 no-print">Hapus Tanda Tangan</button>
+                            <input type="hidden" id="declarant-signature-input" name="signature_declarant" value="">
                         </td>
                         <td style="padding: 30px 50px;">
                             <p>Dokter</p>
@@ -152,7 +154,9 @@
                         <td class="border-0" style="width: 40px;"></td>
                         <td style="padding: 30px 50px;">
                             <p>Keluarga</p>
-                            <div style="border-bottom: 1px solid #000; height: 120px; margin-top: 30px; width: 100%;"></div>
+                            <canvas id="family-signature" width="220" height="120" style="border:1px solid #000; margin-top: 20px;"></canvas>
+                            <button type="button" id="clear-family-signature" class="btn btn-sm btn-secondary mt-4 no-print">Hapus Tanda Tangan</button>
+                            <input type="hidden" id="family-signature-input" name="signature_family" value="">
                         </td>
                         <td style="padding: 30px 50px;">
                             <p>Perawat</p>

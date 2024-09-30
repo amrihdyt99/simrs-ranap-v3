@@ -263,6 +263,8 @@
                   'max-height': '90%',
                   'height': '90%'
                 });
+                // Hide dropdown button before printing
+                $(iframe.contentDocument).find('.dropdown-button').hide();
               });
             },
             error: function() {
