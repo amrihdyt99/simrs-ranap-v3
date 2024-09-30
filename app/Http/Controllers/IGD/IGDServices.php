@@ -72,18 +72,10 @@ class IGDServices
             $data = Http::get('https://rsud.sumselprov.go.id/simrs-rajal/api/igd/pendaftaran?medrec=' . $medrec);
             $data = json_decode($data->body(), true);
             return collect($data)->map(function ($item) {
-                list(
-                    $business_partner,
-                    $room,
-                    $reg_class,
-                    $charge_class
-                ) = [
-                    $this->masterBusinessPartner->findOneById($item['ranap_business_partner']),
-                    $this->masterRuangan->findOneByRoomID($item['ranap_room']),
-                    $this->roomClass->findOne($item['ranap_class']),
-                    $this->roomClass->findOne($item['ranap_charge_class']),
-                ];
-
+                $business_partner = $this->masterBusinessPartner->findOneById($item['ranap_business_partner']);
+                $room =  $this->masterRuangan->findOneByRoomID($item['ranap_room']);
+                $reg_class = $this->roomClass->findOne($item['ranap_class']);
+                $charge_class =  $this->roomClass->findOne($item['ranap_charge_class']);
                 return (object)[
                     'reg_medrec' => $item['reg_medrec'],
                     'reg_lama' => $item['original_reg'],
