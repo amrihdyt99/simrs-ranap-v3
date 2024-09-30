@@ -72,18 +72,10 @@ class IGDServices
             $data = Http::get('https://rsud.sumselprov.go.id/simrs-rajal/api/igd/pendaftaran?medrec=' . $medrec);
             $data = json_decode($data->body(), true);
             return collect($data)->map(function ($item) {
-                list(
-                    $business_partner,
-                    $room,
-                    $reg_class,
-                    $charge_class
-                ) = [
-                    $this->masterBusinessPartner->findOneById($item['ranap_business_partner']),
-                    $this->masterRuangan->findOneByRoomID($item['ranap_room']),
-                    $this->roomClass->findOne($item['ranap_class']),
-                    $this->roomClass->findOne($item['ranap_charge_class']),
-                ];
-
+                $business_partner = $this->masterBusinessPartner->findOneById($item['ranap_business_partner']);
+                $room =  $this->masterRuangan->findOneByRoomID($item['ranap_room']);
+                $reg_class = $this->roomClass->findOne($item['ranap_class']);
+                $charge_class =  $this->roomClass->findOne($item['ranap_charge_class']);
                 return (object)[
                     'reg_medrec' => $item['reg_medrec'],
                     'reg_lama' => $item['original_reg'],
@@ -126,14 +118,22 @@ class IGDServices
             ->addColumn('reg_tgl', function ($data) {
                 return Carbon::parse($this->getDateFromRegistrationNumber($data['ranap_reg']))->format('d-M-Y');
             })
-            ->editColumn('ranap_class', function ($data) {
-                $roomClass = $this->roomClass->findOne($data['ranap_class']);
+            ->editColumn('original_class', function ($data) {
+                $roomClass = $this->roomClass->findOne($data['original_class']);
                 return $roomClass->ClassName ?? '-';
             })
-            ->editColumn('ranap_charge_class', function ($data) {
-                $roomClass = $this->roomClass->findOne($data['ranap_charge_class']);
+            ->editColumn('original_charge_class', function ($data) {
+                $roomClass = $this->roomClass->findOne($data['original_charge_class']);
                 return $roomClass->ClassName ?? '-';
             })
+            // ->editColumn('ranap_class', function ($data) {
+            //     $roomClass = $this->roomClass->findOne($data['ranap_class']);
+            //     return $roomClass->ClassName ?? '-';
+            // })
+            // ->editColumn('ranap_charge_class', function ($data) {
+            //     $roomClass = $this->roomClass->findOne($data['ranap_charge_class']);
+            //     return $roomClass->ClassName ?? '-';
+            // })
             ->editColumn('ranap_room', function ($data) {
                 $room = $this->masterRuangan->findOneByRoomID($data['ranap_room']);
                 return $room->RoomName ?? '-';

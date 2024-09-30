@@ -42,6 +42,7 @@
     var $poli_ = "{{session()->get('poli_kode')}}";
     var regno = "{{$reg}}";
     var medrec = "{{$dataPasien->MedicalNo}}";
+    var kategori_pasien = "{{$dataPasien->kategori_pasien}}";
     var tgl_lahir_pasien = "{{$dataPasien->DateOfBirth}}";
     var classcode = "{{$dataPasien->reg_class}}";
     var ddxutama = '#ddx-utama'
@@ -332,31 +333,89 @@
         });
     }
 
-    function getAlert(_reg) {
+    function getAlertAlergi(_reg) {
         $.ajax({
-            url: '{{url("")}}/api/getAlert',
+            url: '{{url("")}}/api/getAlertAlergi',
             data: {
-                reg_no: _reg
+                reg_no: _reg,
+                kategori_pasien: kategori_pasien,
             },
             success: function(resp) {
                 $('#alert_indikator').html('')
 
-                if (resp.alergi == 'Ya' && resp.asper_hasil) {
+                if (resp.alergi == 'ya') {
                     $('[id="alert_blink"]').show()
-                }
-
-                if (resp.alergi == 'Ya') {
                     $('#alert_indikator').append(`
-                        <p class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: ` + resp.nama_alergi + `">Allergy</p>
+                        <div class="d-inline-block mr-2">
+                            <div class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: ` + resp.alergi_obat + `, ` + resp.alergi_makanan + `, ` + resp.alergi_lainnya + `">Allergy</div>
+                        </div>
                     `)
                 }
-
-                if (resp.asper_hasil) {
-                    $('#alert_indikator').append(`<p class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Resiko jatuh : ` + resp.asper_hasil + `">Fall risk</p>`)
+                if (resp.alergi == 1) {
+                    $('[id="alert_blink"]').show()
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block mr-2">
+                            <div class="bubble-alergi" onclick="alert($(this).attr('title'))" title="Alergi: ` + resp.alergi_obat + `, ` + resp.alergi_makanan + `, ` + resp.alergi_lainnya + `">Allergy</div>
+                        </div>
+                    `)
                 }
             }
         })
     }
+
+    function getAlertJatuh(_reg) {
+        $.ajax({
+            url: '{{url("")}}/api/getAlertJatuh',
+            data: {
+                reg_no: _reg,
+                kategori_pasien: kategori_pasien,
+                tgl_lahir_pasien: tgl_lahir_pasien,
+            },
+            success: function(resp) {
+                // console.log(resp);
+                
+                if (resp.geriatri && resp.geriatri.kategori_geriatri) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk Geriatri: ${resp.geriatri.kategori_geriatri}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+                
+                if (resp.morse && resp.morse.resiko_jatuh_morse_kategori) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk Skala Morse: ${resp.morse.resiko_jatuh_morse_kategori}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+                
+                if (resp.dumpty && resp.dumpty.kategori_humpty_dumpty) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk Humpty Dumpty: ${resp.dumpty && resp.dumpty.kategori_humpty_dumpty}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+                
+                if (resp.bayi === true) {
+                    $('[id="alert_blink"]').show();
+                    $('#alert_indikator').append(`
+                        <div class="d-inline-block">
+                            <div class="bubble-resiko" onclick="alert($(this).attr('title'))" title="Fall Risk: ${resp.keterangan}">Fall Risk</div>
+                        </div>
+                    `);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching fall risk alert:", error);
+            }
+        });
+    }
+
 
     // =================================================================================================================================
     // do not remove this !
@@ -403,7 +462,8 @@
                             $('div[id*="assesment_"]').hide();
                             $('#assesment_1').show();
 
-                            getAlert(regno)
+                            getAlertAlergi(regno)
+                            getAlertJatuh(regno)
                         },
                         error: function(data) {
                             clear_show_error();
@@ -494,6 +554,8 @@
                         success: function(data) {
                             inject_view_data(data);
                             ttd_edukasi_perawat();
+                            loadAllSignatures('gizi');
+                            loadAllSignatures('farmasi');
                         },
                         error: function(data) {
                             clear_show_error();
@@ -615,11 +677,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_dewasa')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            getAssementDewasa();
-                            assementDewasa_init();
-                            $('#save_asesmen_dewasa').click(function() {
-                                asesmenDewasaSubmit();
-                            });
+                            loadAllFunctionDewasa();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -793,7 +851,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            loadAllFunction();
+                            loadAllFunctionObgyn();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1175,7 +1233,26 @@
                     } catch (error) {
                         clear_show_error()
                     }
-                }
+                },
+
+                'case_manager': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.case_manager')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            loadAllFunctionCaseManager();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
 
             }
         }();
@@ -2158,8 +2235,48 @@
             simpanPersetujuanTindakanMedis();
         });
     }
+
+    function loadAllSignatures(type) {
+    UniversalSignaturePad(`signature-${type}-sasaran`, `ttd_sasaran_${type}`);
+    UniversalSignaturePad(`signature-${type}-edukator`, `ttd_edukator_${type}`);
+    }
+
+    const UniversalSignaturePads = {};
+
+    function UniversalSignaturePad(canvasId, hiddenInputId) {
+        const canvas = document.getElementById(canvasId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        if (!canvas || !hiddenInput) {
+            
+            return;
+        }
+
+        const button = document.querySelector(`button[data-pad="${canvasId.split('-')[2]}"]`);
+        const signaturePad = new SignaturePad(canvas);
+        UniversalSignaturePads[canvasId] = signaturePad;
+
+        signaturePad.onEnd = function() {
+            hiddenInput.value = signaturePad.toDataURL();
+        };
+
+        if (button) {
+            button.addEventListener('click', function() {
+                signaturePad.clear();
+                hiddenInput.value = '';
+            });
+        }
+
+        if (hiddenInput.value) {
+            const image = new Image();
+            image.onload = function() {
+                canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+            image.src = hiddenInput.value;
+        }
+    }
 </script>
 
+@include('new_perawat.assesment.assesment_dewasa.js.assesment_dewasa_js')
 @include('new_perawat.assesment.assesment_anak.js.assesment_anak_js')
 @include('new_perawat.assesment.neonatus_tab.js.rekonsiliasi_obat_js')
 @include('new_perawat.resiko_jatuh.humpty_dumpty.js.resiko_jatuh_humpty_dumpty_js')
@@ -2170,3 +2287,4 @@
 @include('new_perawat.monitoring_news.js.entry_news_js')
 @include('new_perawat.assesment.obgyn.js.obgyn_js')
 @include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
+@include('new_perawat.case_manager.js.case_manager_js')

@@ -143,6 +143,7 @@
                                             name="ttd_keluarga" value="">
                                     </div>
                                 </div>
+                                <input type="text"  id="nama_keluarga_detail" class="form-control mt-2" disabled placeholder="Nama Keluarga" style="width: 180px;">
                             </div>
                         </td>
 
@@ -162,6 +163,7 @@
                                             value="{{ auth()->user()->signature }}">
                                     </div>
                                 </div>
+                                <input type="text"  id="nama_petugas_detail" class="form-control mt-2" disabled placeholder="Nama Petugas" style="width: 180px;">
                             </div>
                         </td>
                     </tr>

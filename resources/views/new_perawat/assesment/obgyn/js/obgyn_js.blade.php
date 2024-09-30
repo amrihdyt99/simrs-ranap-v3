@@ -1,7 +1,10 @@
 <script>
-    function loadAllFunction() {
+    function loadAllFunctionObgyn() {
         drawImageLuka();
         loadDatatableRiwayatKehamilan();
+
+        const nyeriSkala = document.getElementById('nyeri_skala');
+        setSkala(nyeriSkala);
     }
 
     function setSkala(element) {
@@ -10,7 +13,11 @@
         const imgSkala = document.querySelectorAll('.img_skala');
 
         imgSkala.forEach(img => {
-            img.style.display = img.getAttribute('data-value') == value ? 'block' : 'none';
+            if (img.getAttribute('data-value') == value) {
+                img.style.display = 'block'; 
+            } else {
+                img.style.display = 'none'; 
+            }
         });
 
         let skalaDescription = '';
@@ -30,6 +37,7 @@
 
         skalaText.innerText = skalaDescription;
     }
+
 
 
     // Fungsi untuk serialize form menjadi object
@@ -135,37 +143,37 @@
         });
     }
 
-    
+
     function submitFormRiwayatKehamilan() {
         let data_riwayat_kehamilan = JSON.parse($('#riwayat_kehamilan_data').val() || "[]");
-        
+
         var newRiwayat = $("#formRiwayatKehamilan").serializeArray();
         data_riwayat_kehamilan.push(objectifyForm(newRiwayat));
-        
+
         $('#riwayat_kehamilan_data').val(JSON.stringify(data_riwayat_kehamilan));
-        
+
         $('#riwayat-kehamilan-table').DataTable().clear(); // Hapus data lama
         $('#riwayat-kehamilan-table').DataTable().rows.add(data_riwayat_kehamilan); // Tambah data baru
         $('#riwayat-kehamilan-table').DataTable().draw(); // Gambar ulang DataTable
-        
+
         $('#formRiwayatKehamilan')[0].reset(); // Reset input modal
-        
+
         $('#riwayat-kehamilan-modal').modal('hide');
     }
 
-    let signaturePadLuka; 
+    let signaturePadLuka;
 
     function drawImageLuka() {
-        let $canvasLuka = $('#lokasi_luka')[0]; 
-        $canvasLuka.width = 400; 
-        $canvasLuka.height = 400; 
+        let $canvasLuka = $('#lokasi_luka')[0];
+        $canvasLuka.width = 400;
+        $canvasLuka.height = 400;
 
         signaturePadLuka = new SignaturePad($canvasLuka, {
-            backgroundColor: 'rgba(0, 0, 0, 0)', 
-            penColor: 'black' 
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+            penColor: 'black'
         });
 
-        const existingDrawing = $('#lokasi_luka_image').val(); 
+        const existingDrawing = $('#lokasi_luka_image').val();
         if (existingDrawing) {
             const img = new Image();
             img.src = existingDrawing;

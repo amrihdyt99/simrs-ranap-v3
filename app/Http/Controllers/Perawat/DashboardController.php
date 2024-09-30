@@ -84,6 +84,39 @@ class DashboardController extends Controller
     //     return view('perawat.pages.dashboard',['myPatient' => $datamypatient, 'myArea' => $datamypatient]);
     // }
 
+    public function data_table(Request $request, $ruang)
+    {
+        $datamypatient = DB::connection('mysql2')
+            ->table("m_registrasi")
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('m_bed', 'm_registrasi.reg_no', '=', 'm_bed.registration_no')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            ->leftJoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
+            ->where('m_registrasi.reg_discharge', '!=', '3')
+            ->whereNull('m_registrasi.reg_deleted')
+            ->whereRaw("(m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)", [$ruang, $ruang])
+            ->select([
+                'm_pasien.PatientName',
+                'm_registrasi.reg_medrec',
+                'm_registrasi.reg_no',
+                'm_paramedis.ParamedicName',
+                DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '".$ruang."') as RoomName"),
+                'businesspartner.BusinessPartnerName as reg_cara_bayar',
+                'm_registrasi.reg_tgl',
+            ])
+            ->orderByDesc('m_registrasi.reg_tgl')
+            ->get();
+
+        $noData = $datamypatient->isEmpty();
+
+        return view('perawat.pages.table', compact('datamypatient', 'noData'));
+    }
+
     public function saveShift(Request $request)
     {
         $request->validate([

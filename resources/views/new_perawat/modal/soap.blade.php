@@ -28,17 +28,17 @@
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label class="font-weight-bold" for="soaper_assesment">ASSESMENT</label>
-                                <div class="row">
-                                    <div class="col">
-                                        <select id="soaper_assesment_select" class="form-control select2" style="width: 100%">
-                                            <option value="">-- Pilih Assesment --</option>
-                                        </select>
-                                        <hr>
-                                        <h6>Assesment dipilih :</h6>
-                                        <ul id="soaper_assesment_list"></ul>
-                                    </div>
-                                </div>
+                                <label class="font-weight-bold" for="assesment">ASSESMENT</label>
+                                @if(auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
+                                    <textarea class="form-control" id="assesment" rows="10" name="soaper_assesment[]"></textarea>
+                                @else
+                                    <select id="soaper_assesment_select" class="form-control select2" style="width: 100%">
+                                        <option value="">-- Pilih Assesment --</option>
+                                    </select>
+                                    <hr>
+                                    <h6>Assesment dipilih :</h6>
+                                    <ul id="soaper_assesment_list"></ul>
+                                @endif
                             </div>
                         </div>
                         <div class="col-lg-3">

@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
+use App\Http\Controllers\Master\BedController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
+use App\Http\Controllers\Perawat\AssesmentDewasaController;
+use App\Http\Controllers\Perawat\CaseManagerController;
 use App\Http\Controllers\Perawat\ObgynController;
 use App\Http\Controllers\Perawat\RekonsiliasiObatController;
 use App\Http\Controllers\Perawat\TransferInternalController;
@@ -84,8 +87,12 @@ Route::get('hapus/discharge/{id}', [\App\Http\Controllers\NewDokter\NewDischarge
 Route::post('addPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'addpemulanganpasien'])->name('add.pemulangan.pasien');
 Route::post('getPemulanganPasien', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getpemulanganpasien'])->name('get.pemulangan.pasien');
 Route::post('/verifikasicppt', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'verifikasi_soap_dokter'])->name('dokter.verifikasicppt');
-Route::get('/getAlert', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlert'])->name('dokter.getAlert');
+Route::get('/getAlertAlergi', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlertAlergi'])->name('dokter.getAlertAlergi');
+Route::get('/getAlertJatuh', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getAlertJatuh'])->name('dokter.getAlertJatuh');
 Route::get('/checkPemeriksaan', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'checkPemeriksaan'])->name('dokter.checkPemeriksaan');
+Route::get('/dataOpenDischargeRequest', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'dataOpenDischargeRequest']);
+Route::post('/openDischargeRequest', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'openDischargeRequest']);
+Route::post('/openDischargeApprove', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'openDischargeApprove']);
 //api perawat
 Route::post('addSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'addsoap'])->name('add.soap.new.perawat');
 Route::post('getSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'getsoapbyreg'])->name('get.soap.new.perawat');
@@ -260,11 +267,19 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('add-assesment-neonatus', [NeonatusController::class, 'store'])->name('neonatus.store');
 	Route::post('add-assesment-awal-anak', [AssesmentAnakController::class, 'store_assesment_awal_anak'])->name('assesment-anak-awal.store');
 	Route::post('add-skrining-gizi-anak', [AssesmentAnakController::class, 'store_skrining_gizi_anak'])->name('skrining-gizi-anak.store');
-	Route::post('add-assesment-obgyn', [ObgynController::class, 'store'])->name('obgyn.store');
 	Route::post('add-skrining-nyeri-anak', [AssesmentAnakController::class, 'store_skrining_nyeri_anak'])->name('skrining-nyeri-anak.store');
+	Route::post('add-assesment-obgyn', [ObgynController::class, 'store'])->name('obgyn.store');
+	Route::post('add-assesment-awal-dewasa', [AssesmentDewasaController::class, 'store_assesment_awal_dewasa'])->name('assesment-dewasa-awal.store');
+	Route::post('add-skrining-nyeri-dewasa', [AssesmentDewasaController::class, 'store_skrining_nyeri_dewasa'])->name('skrining-nyeri-dewasa.store');
+	Route::post('add-skrining-gizi-dewasa', [AssesmentDewasaController::class, 'store_skrining_gizi_dewasa'])->name('skrining-gizi-dewasa.store');
 	Route::get('get-rekonsiliasi-obat-item', [RekonsiliasiObatController::class, 'get_rekon_obat_data'])->name('rekon-obat-item.get');
 	Route::post('store-rekon-obat-item', [RekonsiliasiObatController::class, 'store_rekon_obat_item'])->name('rekon-obat-item.store');
 	Route::post('delete-rekon-obat-item', [RekonsiliasiObatController::class, 'delete_rekon_obat_item'])->name('rekon-obat-item.delete');
 	Route::get('get-rekon-ttd', [RekonsiliasiObatController::class, 'get_ttd_verif_obat'])->name('get-rekon-ttd.get');
 	Route::post('store-rekonsiliasi-obat', [RekonsiliasiObatController::class, 'store_rekonsiliasi_obat'])->name('rekonsiliasi-obat.store');
+	Route::post('store-case-manager', [CaseManagerController::class, 'store_case_manager'])->name('case-manager.store');
+});
+
+Route::prefix('bed')->name('bed.')->group(function () {
+	Route::get('/class/{class_code}', [BedController::class, 'getBedByClassCode'])->name('class');
 });
