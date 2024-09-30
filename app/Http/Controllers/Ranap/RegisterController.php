@@ -607,7 +607,7 @@ class RegisterController extends Controller
         //$data['ttd_admisi']='admisi_'.str_replace('/','_',$regno).'.png';
         $data['ttd_gc_hal_dua'] = $request->signature;
         DB::connection('mysql2')->table('m_registrasi')->where(['reg_no' => $regno])->update($data);
-        return redirect()->route('register.ranap.gc2', ['reg_no' => $regno])
+        return redirect()->route('register.ranap.gc1', ['reg_no' => $regno])
             ->with('signatures_saved', true);
     }
 
