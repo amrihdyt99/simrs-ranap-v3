@@ -114,10 +114,14 @@ class RegisterDataController extends Controller
     }
     public function getData()
     {
-        $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
+
+       $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
             ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec')
             ->whereNull('m_registrasi.reg_no');
         return DataTables::of($pasien)
+        // $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
+        //     ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec');
+        // return DataTables::of($pasien)
             ->addColumn('action', function ($row) {
                 return '
                     <div class="dropdown">
