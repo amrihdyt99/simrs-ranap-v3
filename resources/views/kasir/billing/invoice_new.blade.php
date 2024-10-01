@@ -101,7 +101,63 @@ header("Content-type: text/css; charset: UTF-8");
       <img src="{{asset('new_assets/images/kop.png')}}" width="100%" alt="logo-siti-fatimah">
     </div>
     <div class="text-center" style="border-bottom: 2px black solid; border-top: 2px black solid">
-      <h6 class="">INVOICE / PAYMENT RECEIPT</h6>
+      <h5 class=""><b>INVOICE / PAYMENT RECEIPT</b></h5>
+    </div>
+
+    <div class="row m-3">
+      <div class="col-sm-6">
+        <table class="table w-100">
+          <tbody>
+            <tr>
+              <td>Nama Pasien</td>
+              <td>:</td>
+              <td>{{ $patient->PatientName }}</td>
+            </tr>
+            <tr>
+              <td>Tanggal Lahir</td>
+              <td>:</td>
+              <td>{{ $patient->DateOfBirth }}</td>
+            </tr>
+            <tr>
+              <td>Tanggal Registrasi</td>
+              <td>:</td>
+              <td>{{ $patient->reg_tgl }}</td>
+            </tr>
+            <tr>
+              <td>Dokter</td>
+              <td>:</td>
+              <td>{{ $patient->ParamedicName }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6">
+
+        <table class="table w-100">
+          <tbody>
+            <tr>
+              <td>MRN</td>
+              <td>:</td>
+              <td>{{ $patient->reg_medrec }}</td>
+            </tr>
+            <tr>
+              <td>Servce Unit / Room</td>
+              <td>:</td>
+              <td>{{ $ruangan->kelompok . ' / ' . $ruangan->kelas }}</td>
+            </tr>
+            <tr>
+              <td>Corporate</td>
+              <td>:</td>
+              <td>{{ $patient->BusinessPartnerName }}</td>
+            </tr>
+            <tr>
+              <td>Document Contract</td>
+              <td>:</td>
+              <td>{{ $billing->pvalidation_code }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
 
@@ -182,7 +238,7 @@ header("Content-type: text/css; charset: UTF-8");
           @endisset
           <tr>
             <td class="text-right" colspan="4"><b>SUBTOTAL</b></td>
-            <td class="text-right">{{ number_format($ri_item['subtotal'], 2)}}</td>
+            <td class="text-right"><b>{{ number_format($ri_item['subtotal'], 2)}}</b></td>
           </tr>
         </tbody>
         <thead>
@@ -260,12 +316,12 @@ header("Content-type: text/css; charset: UTF-8");
           @endisset
           <tr>
             <td class="text-right" colspan="4"><b>SUBTOTAL</b></td>
-            <td class="text-right">{{ number_format($rj_item['subtotal'], 2)}}</td>
+            <td class="text-right"><b>{{ number_format($rj_item['subtotal'], 2)}}</b></td>
           </tr>
 
           <tr>
             <td class="text-right" colspan="4"><b>TOTAL</b></td>
-            <td class="text-right">{{ number_format($rj_item['subtotal'] + $ri_item['subtotal'], 2)}}</td>
+            <td class="text-right"><b>{{ number_format($rj_item['subtotal'] + $ri_item['subtotal'], 2)}}</b></td>
           </tr>
         </tbody>
       </table>

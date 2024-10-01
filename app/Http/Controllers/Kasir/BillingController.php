@@ -652,6 +652,7 @@ class BillingController extends AaaBaseController
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->get()->first();
         $diagnosisPasien = DB::connection('mysql')->table('icd10_bpjs')->where('ID_ICD10', $datamypatient->reg_diagnosis)->first();
@@ -704,12 +705,31 @@ class BillingController extends AaaBaseController
         }
         $rj_item_by_type['subtotal'] = $rj_sub_tot;
 
-        // dd($ri_item_by_type);
+        $ruangan = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+            ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            ->leftJoin('m_unit_departemen', function ($join) {
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
+            })
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+            ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+            ->first();
+
+        // dd($datamypatient);
 
         return view('kasir.billing.invoice_new', [
             'patient'           => $datamypatient,
             'ri_item'           => $ri_item_by_type,
-            'rj_item'          => $rj_item_by_type,
+            'rj_item'           => $rj_item_by_type,
+            'ruangan'           => $ruangan,
+            'billing'           => $billing_detail,
         ]);
     }
 
