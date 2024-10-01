@@ -165,11 +165,11 @@
                 <tr>
                     <td>
                         <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="margin-bottom: 10px; font-size:17px"> Yang menyatakan</div>
+                            <div style="margin-bottom: 10px; font-size:17px">Yang menyatakan</div>
                             <div id="signature-pad-penolakan-penerima" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_penolakan_penerima" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_penolakan_penerima" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
@@ -178,25 +178,27 @@
                                     <button type="button" id="clear_btn_penolakan_penerima" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    <input type="text" name="nama_penolakan_penerima" class="form-control mt-2" placeholder="Nama Yang Menyatakan">
                                 </div>
                             </div>
                         </div>
                     </td>
                     <td>
                         <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="margin-bottom: 10px; font-size:17px"> Dokter</div>
+                            <div style="margin-bottom: 10px; font-size:17px">Dokter</div>
                             <div id="signature-pad-penolakan-dokter" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_penolakan_dokter" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_penolakan_dokter" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
                                 <div style="margin: 10px; text-align: center;">
-                                    <input type="hidden" id="signature_penolakan_dokter" name="penolakan_ttd_dokter" value="{{$get_tindakan_medis_data_penolakan->penolakan_ttd_dokter ?? auth()->user()->signature}}">
+                                    <input type="hidden" id="signature_penolakan_dokter" name="penolakan_ttd_dokter" value="{{$get_tindakan_medis_data_penolakan->penolakan_ttd_dokter}}">
                                     <button type="button" id="clear_btn_penolakan_dokter" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    <input type="text" name="nama_penolakan_dokter" class="form-control mt-2" placeholder="Nama Dokter" value="{{$get_tindakan_medis_data_penolakan->nama_dokter ?? $dataPasien->ParamedicName}}">
                                 </div>
                             </div>
                         </div>
@@ -208,11 +210,11 @@
                 <tr>
                     <td>
                         <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="margin-bottom: 10px; font-size:17px"> 1. Keluarga</div>
+                            <div style="margin-bottom: 10px; font-size:17px">1. Keluarga</div>
                             <div id="signature-pad-penolakan-keluarga" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_penolakan_keluarga" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_penolakan_keluarga" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
@@ -221,25 +223,36 @@
                                     <button type="button" id="clear_btn_penolakan_keluarga" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    @if($registrasi_pj->isNotEmpty())
+                                        <select name="nama_penolakan_keluarga" class="form-control mt-2">
+                                            <option value="">Pilih Nama Keluarga</option>
+                                            @foreach($registrasi_pj as $pj)
+                                                <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_penolakan->nama_penolakan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <input type="text" name="nama_penolakan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="{{ $get_tindakan_medis_data_penolakan->nama_penolakan_keluarga ?? '' }}">
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </td>
                     <td>
                         <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="margin-bottom: 10px; font-size:17px"> 2. Perawat</div>
+                            <div style="margin-bottom: 10px; font-size:17px">2. Perawat</div>
                             <div id="signature-pad-penolakan-perawat" style="display: inline-block;">
                                 <div
-                                    style="border: solid 1px teal; width: 360px; height: 110px; padding: 3px; position: relative;">
-                                    <canvas id="canvas_penolakan_perawat" width="350" height="100">Your browser does not
+                                    style="border: solid 1px teal; width: 260px; height: 160px; position: relative;">
+                                    <canvas id="canvas_penolakan_perawat" width="260" height="160">Your browser does not
                                         support
                                         the HTML canvas tag.</canvas>
                                 </div>
                                 <div style="margin: 10px; text-align: center;">
-                                    <input type="hidden" id="signature_penolakan_perawat" name="penolakan_ttd_perawat" value="{{$penolakan_ttd_perawat->penolakan_ttd_perawat ??auth()->user()->signature}}">
+                                    <input type="hidden" id="signature_penolakan_perawat" name="penolakan_ttd_perawat" value="{{$get_tindakan_medis_data_penolakan->penolakan_ttd_perawat ?? auth()->user()->signature}}">
                                     <button type="button" id="clear_btn_penolakan_perawat" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
+                                    <input type="text" name="nama_penolakan_perawat" class="form-control mt-2" placeholder="Nama Perawat" value="{{$get_tindakan_medis_data_penolakan->nama_penolakan_perawat ?? auth()->user()->name}}">
                                 </div>
                             </div>
                         </div>

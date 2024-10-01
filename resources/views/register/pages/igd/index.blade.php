@@ -128,8 +128,8 @@
                     searchable: true
                 },
                 {
-                    data: 'ranap_reg',
-                    name: 'ranap_reg',
+                    data: 'original_reg',
+                    name: 'original_reg',
                     orderable: true,
                     searchable: true
                 },
@@ -146,26 +146,26 @@
                     searchable: true
                 },
                 {
-                    data: 'ranap_dpjp',
-                    name: 'ranap_dpjp',
+                    data: 'original_dokter_poli',
+                    name: 'original_dokter_poli',
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: 'ranap_class',
-                    name: 'ranap_class',
+                    data: 'original_class',
+                    name: 'original_class',
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: 'ranap_charge_class',
-                    name: 'ranap_charge_class',
+                    data: 'original_charge_class',
+                    name: 'original_charge_class',
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: 'ranap_room',
-                    name: 'ranap_room',
+                    data: 'original_poli',
+                    name: 'original_poli',
                     orderable: true,
                     searchable: true
                 },

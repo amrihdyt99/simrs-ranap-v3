@@ -253,7 +253,8 @@
             getDetailRegistration(selectedRoom[0])
         }
 
-        getAlert($reg)
+        getAlertAlergi($reg)
+        getAlertJatuh($reg)
         
         getEdukasi('#formEdukasiDokter', 'dokter')
 

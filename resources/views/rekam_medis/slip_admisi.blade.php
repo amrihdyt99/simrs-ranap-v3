@@ -153,7 +153,7 @@
                         <td>&nbsp;</td>
                         <td>Hak Perawatan di kelas</td>
                         <td>:</td>
-                        <td colspan="4">&nbsp;{{$datapasien->nama_kelas ?? '-'}}</td>
+                        <td colspan="4">&nbsp;{{$datamypatient->reg_class_name ?? '-'}}</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -182,7 +182,7 @@
                       
                         <td>Kelas Perawatan</td>
                         <td>:</td>
-                        <td colspan="4">{{$datapasien->nama_kelas ?? '-'}}</td>
+                        <td colspan="4">{{$datamypatient->reg_class_name ?? '-'}}</td>
                     </tr>
 
                     <tr>
@@ -503,7 +503,7 @@ IRD--}}
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td align="left"><strong>Palembang,</strong> .............................</td>
+                        <td align="left"><strong>Palembang,</strong> {{ \Carbon\Carbon::now()->format('d F Y') }}</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -526,32 +526,7 @@ IRD--}}
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td align="left">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="left">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="left">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="left">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="left">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="left">&nbsp;</td>
+                        
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -569,23 +544,41 @@ IRD--}}
                                     <div style="border:solid 1px teal; width:150px;height:110px;padding:3px;position:relative;">
                                         <canvas id="the_canvas" width="140px" height="100px">Your browser does not support the HTML canvas tag.</canvas>
                                         <div id="note" onmouseover="my_function();">The signature should be inside box</div>
-
                                     </div>
                                     <div style="margin:10px;">
                                         <input type="hidden" id="signature" name="signature">
                                         <button type="button" id="clear_btn" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Clear</button>
                                         <button type="submit" id="save_btn" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
                                     </div>
-
                                 </div>
                             </form>
                             @endif
+                            <div class="form-group">
+                                        <label for="penanggung_jawab"></label>
+                                        <select name="penanggung_jawab" id="penanggung_jawab" class="form-control d-print-none" onchange="document.getElementById('selected_penanggung_jawab').innerText = this.options[this.selectedIndex].text; this.style.display='none';">
+                                            <option value="">Pilih Penanggung Jawab</option>
+                                            @foreach($datapasien->penanggung_jawab_list as $penanggung_jawab)
+                                                <option value="{{ $penanggung_jawab }}">( {{ $penanggung_jawab }} )</option>
+                                            @endforeach
+                                        </select>
+                                        <span id="selected_penanggung_jawab" class="d-none d-print-block">
+                                            @if(isset($datapasien->penanggung_jawab))
+                                                {{ $datapasien->penanggung_jawab }}
+                                            @endif
+                                        </span>
+                                        <span id="selected_penanggung_jawab" class="d-none d-print-block"></span>
+                                    </div>
                         </td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
                         <td>&nbsp;</td>
-                        <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+                        <td align="left">
+                            @if($user_signature != null)
+                                <img src="{{$user_signature}}" width="150" height="100" /><br>
+                            @endif
+                            ({{$user_name}})
+                        </td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -606,10 +599,7 @@ IRD--}}
                         <td>&nbsp;</td>
                         <td align="center">&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="center">&nbsp;</td>
+                       
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -691,6 +681,32 @@ IRD--}}
             document.getElementById("note").innerHTML = "";
         }
     </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var penanggungJawabSelect = document.getElementById("penanggung_jawab");
+        var selectedPenanggungJawab = document.getElementById("selected_penanggung_jawab");
+        var regNo = "{{ $datapasien->reg_no }}"; // Assuming reg_no is available in $datapasien
+
+        // Check if a patient has already been selected
+        if (localStorage.getItem("penanggung_jawab_selected_" + regNo)) {
+            var selectedValue = localStorage.getItem("penanggung_jawab_selected_" + regNo);
+            selectedPenanggungJawab.innerText = selectedValue;
+            penanggungJawabSelect.style.display = 'none';
+            selectedPenanggungJawab.classList.remove('d-none');
+        }
+
+        penanggungJawabSelect.addEventListener("change", function() {
+            var selectedText = this.options[this.selectedIndex].text;
+            var confirmation = confirm("Apakah sudah benar?");
+            if (confirmation) {
+                localStorage.setItem("penanggung_jawab_selected_" + regNo, selectedText);
+                selectedPenanggungJawab.innerText = selectedText;
+                penanggungJawabSelect.style.display = 'none';
+                selectedPenanggungJawab.classList.remove('d-none');
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

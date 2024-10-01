@@ -150,6 +150,16 @@
                                         </button>
                                     </div>
                                 </div>
+                                @if ($registrasi_pj)
+                                    <select name="nama_keluarga" class="form-control mt-2" style="width: 180px;">
+                                        <option value="">Pilih Keluarga</option>
+                                        @foreach($registrasi_pj as $pj)
+                                            <option value="{{ $pj->reg_pjawab_nama }}">{{ $pj->reg_pjawab_nama }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <input type="text" name="nama_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" style="width: 180px;">
+                                @endif
                             </div>
                         </td>
 
@@ -167,7 +177,7 @@
                                     </div>
                                     <div style="margin: 10px;">
                                         <input type="hidden" id="resiko_jatuh_neonatus_ttd_signature_petugas"
-                                            name="resiko_jatuh_neonatus_ttd_ttd_petugas"
+                                            name="ttd_petugas"
                                             value="{{ auth()->user()->signature }}">
                                         <button type="button" id="resiko_jatuh_neonatus_ttd_clear_btn_petugas"
                                             class="btn btn-danger" data-action="clear">
@@ -175,6 +185,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                <input type="text" name="nama_petugas" class="form-control mt-2" placeholder="Nama Petugas" style="width: 180px;">
                             </div>
                         </td>
                     </tr>

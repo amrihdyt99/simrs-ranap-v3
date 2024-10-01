@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\masterBedServices;
 use App\Models\Bed;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\DB;
 
 class BedController extends Controller
 {
+    protected $bedServices;
+    public function __construct(MasterBedServices $bedServices)
+    {
+        $this->bedServices = $bedServices;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -33,17 +39,17 @@ class BedController extends Controller
 
         if ($request->has('is_temporary') && $request->is_temporary !== '') {
             if ($request->is_temporary == '1') {
-                $bedQuery->where('is_temporary',1);
+                $bedQuery->where('is_temporary', 1);
             } else if ($request->is_temporary == '0') {
-                $bedQuery->where('is_temporary',0);
+                $bedQuery->where('is_temporary', 0);
             }
         }
 
         if ($request->has('is_deleted') && $request->is_deleted !== '') {
             if ($request->is_deleted == '1') {
-                $bedQuery->where('is_deleted',1);
+                $bedQuery->where('is_deleted', 1);
             } else if ($request->is_deleted == '0') {
-                $bedQuery->where('is_deleted',0);
+                $bedQuery->where('is_deleted', 0);
             }
         }
 
@@ -225,5 +231,11 @@ class BedController extends Controller
         $statusText = $newStatus == 1 ? 'Aktif' : 'Nonaktif';
 
         return response()->json(['success' => "Status telah diubah menjadi $statusText"]);
+    }
+
+    public function getBedByClassCode($class_code)
+    {
+
+        return $this->bedServices->getBedByClassCode($class_code);
     }
 }

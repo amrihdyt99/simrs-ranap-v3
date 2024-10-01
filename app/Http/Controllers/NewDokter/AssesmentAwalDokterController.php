@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\NewDokter;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -956,22 +957,126 @@ class AssesmentAwalDokterController extends Controller
             ], 500);
         }
     }
-    
-    public function getAlert(Request $request){
+
+    public function getAlertAlergi(Request $request){
         try {
-            $pengkajian_awal = DB::connection('mysql')
-                ->table('pengkajian_awal_pasien_perawat')
-                ->select([
-                    'alergi',
-                    'nama_alergi',
-                    'reaksi_alergi',
-                    'asper_brjln_seimbang',
-                    'asper_hasil',
-                ])
-                ->where('reg_no', $request->reg_no)
-                ->first();
+            $pengkajian_awal = null;
+
+            if($request->kategori_pasien === "dewasa"){
+                $pengkajian_awal = DB::connection('mysql')
+                    ->table('pengkajian_dewasa_awal')
+                    ->select([
+                        'alergi',
+                        'alergi_obat',
+                        'alergi_makanan',
+                        'alergi_lainnya',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->first();
+            } else if($request->kategori_pasien === "kebidanan"){
+                $pengkajian_awal = DB::connection('mysql')
+                    ->table('pengkajian_obgyn_alergi_dan_keadaan_umum')
+                    ->select([
+                        'alergi',
+                        'alergi_obat',
+                        'alergi_makanan',
+                        'alergi_lainnya',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->first();
+            } else if($request->kategori_pasien === "anak"){
+                $pengkajian_awal = DB::connection('mysql')
+                    ->table('pengkajian_awal_anak_perawat')
+                    ->select([
+                        'alergi',
+                        'alergi_obat',
+                        'alergi_makanan',
+                        'alergi_lainnya',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->first();
+            }
 
             return $pengkajian_awal;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getAlertJatuh(Request $request){
+        try {
+            $resiko_jatuh = null;
+
+            if ($request->kategori_pasien === "dewasa") {
+                $resiko_jatuh_geriatri = DB::connection('mysql')
+                    ->table('resiko_jatuh_geriatri')
+                    ->select([
+                        'skor_total_geriatri',
+                        'kategori_geriatri',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->latest()
+                    ->first();
+                
+                $resiko_jatuh_morse = DB::connection('mysql')
+                    ->table('resiko_jatuh_skala_morse')
+                    ->select([
+                        'resiko_jatuh_morse_total_skor',
+                        'resiko_jatuh_morse_kategori',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->latest()
+                    ->first();
+                
+                $resiko_jatuh = [
+                    'geriatri' => $resiko_jatuh_geriatri,
+                    'morse' => $resiko_jatuh_morse
+                ];
+            } else if ($request->kategori_pasien === "kebidanan") {
+                $resiko_jatuh_geriatri = DB::connection('mysql')
+                    ->table('resiko_jatuh_geriatri')
+                    ->select([
+                        'skor_total_geriatri',
+                        'kategori_geriatri',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->latest()
+                    ->first();
+                
+                $resiko_jatuh_morse = DB::connection('mysql')
+                    ->table('resiko_jatuh_skala_morse')
+                    ->select([
+                        'resiko_jatuh_morse_total_skor',
+                        'resiko_jatuh_morse_kategori',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->latest()
+                    ->first();
+                
+                $resiko_jatuh = [
+                    'geriatri' => $resiko_jatuh_geriatri,
+                    'morse' => $resiko_jatuh_morse
+                ];
+            } elseif ($request->kategori_pasien === "anak") {
+                $resiko_jatuh_dumpty = DB::connection('mysql')
+                    ->table('resiko_jatuh_humpty_dumpty')
+                    ->select([
+                        'total_skor_humpty_dumpty',
+                        'kategori_humpty_dumpty',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->latest()
+                    ->first();
+                $resiko_jatuh = [
+                    'dumpty' => $resiko_jatuh_dumpty
+                ];
+            } elseif ($request->kategori_pasien === "bayi") {
+                $resiko_jatuh = [
+                    'bayi' => true,
+                    'keterangan' => 'Semua bayi berisiko jatuh tinggi'
+                ];
+            }
+            return $resiko_jatuh;
         } catch (\Throwable $th) {
             throw $th;
         }

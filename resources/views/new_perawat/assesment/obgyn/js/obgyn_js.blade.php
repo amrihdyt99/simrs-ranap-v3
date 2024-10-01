@@ -1,5 +1,5 @@
 <script>
-    function loadAllFunction() {
+    function loadAllFunctionObgyn() {
         drawImageLuka();
         loadDatatableRiwayatKehamilan();
 

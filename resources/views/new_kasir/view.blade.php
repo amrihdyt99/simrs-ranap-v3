@@ -196,7 +196,7 @@
                         <div class="col">
                             <div class="text-header-panel">
                                 List Tagihan Pasien |
-                                No Registrasi : <strong>QREG/RJ/202406240012</strong> |
+                                No Registrasi : <strong>{{$reg_rj}}</strong> |
                                 Status: <span class="font-weight-bold badge p-2 blink" id="status-tagihan">-</span> |
                                 Kunjungan: <u><span class="font-weight-bold" id="bill_jenis_kunj">-</span></u>
                             </div>
@@ -267,6 +267,7 @@
 <script>
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
+    var classcode = "{{$pasien->charge_class_code}}"
     var $reg_no = $reg.replace(/\//g, '_')
     var modal = '#modalEntryOrder'
 
@@ -306,7 +307,7 @@
             url: "{{ route('tarif.tindakanbaru') }}",
             data: {
                 "type": "X0001^01",
-                "class": "{{ $pasien->reg_class }}",
+                "class": classcode,
                 "reg": $reg
             },
             beforeSend: function() {
@@ -465,10 +466,9 @@
             data: {
                 reg_ri: '{{$reg_no}}',
                 reg_rj: '{{$reg_rj}}',
+                class: classcode,
             },
             beforeSend: function() {
-                getStatusTagihan()
-
                 $('[id="panel-order"] tbody').html(`
                     <tr>
                         <td colspan="7" class="text-center"><div class="lds-dual-ring"></div></td>    
@@ -547,6 +547,8 @@
                             $('[id="panel-order"] tbody').append($row_detail)
                         })
                     })
+
+                    getStatusTagihan()
 
                     if (resp.validation) {
                         $('[id*="selecting_items"]').hide()
@@ -937,6 +939,8 @@
                     }
                     $('#btn_open_invoice').show()
                     $('[name="open_id"]').val(resp.id)
+
+                    $('span[onclick*="deleteItem("]').hide()
                 } else {
                     $('#status-tagihan').text('BELUM DIBAYAR');
                     $('#status-tagihan').addClass('btn btn-danger');
@@ -958,6 +962,8 @@
                         $('#btn-validasi-billing').show()
                         $('#not_review_transactions').html('')
                     }
+
+                    $('span[onclick*="deleteItem("]').show()
                 }
             }
         });
@@ -1299,6 +1305,8 @@
 
             $('#panel-selisih').html($input_selisih);
         }
+
+        updateMultiPayer()
     })
 
     // MULTI PAYMENT
@@ -1336,7 +1344,22 @@
 
             $('#row_detail_payment').append($row)
         }
+
+        updateMultiPayer()
     })
+
+    function updateMultiPayer(){
+        $('[name="pvalidation_method[]"]:checked').each(function(i, item){
+            let value = $(item).val()
+
+            removeFromArray(value)
+
+            $('[id="pay-method"] [id="'+value.replace(' ', '')+'"]').remove()
+            $(`#row_detail_payment [id="row_payment_changes_` + $method + `"]`).remove()
+
+            $('[name*="pvalidation_method[]"]').prop('checked', false).removeAttr('checked')
+        })
+    }
 
     $('body').on('keyup keydown', '.amount, .disc', function() {
         $count = $(this).data('count')
@@ -1431,6 +1454,8 @@
 
         } else {
             $('#row_payment_changes_' + $method).remove()
+
+            $(`#row_detail_payment [id="row_payment_changes_` + $method + `"]`).remove()
 
             removeFromArray($method)
         }

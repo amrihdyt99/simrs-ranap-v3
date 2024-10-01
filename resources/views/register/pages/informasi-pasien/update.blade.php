@@ -435,7 +435,6 @@
             }
         });
 
-        // Setup autofill for dynamically added family forms
         $('#add-family-form').on('click', function() {
             setTimeout(function() {
                 $("input[name='FamilyMedicalNo[]']:last").autocomplete({
