@@ -54,7 +54,7 @@
                                             <th>Kelas Ruang</th>
                                             <th>Kelas Bayar</th>
                                             <th>Req Ruangan</th>
-                                            <th>Pembayaran</th>
+                                            {{-- <th>Pembayaran</th> --}}
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -169,12 +169,12 @@
                     orderable: true,
                     searchable: true
                 },
-                {
-                    data: 'ranap_business_partner',
-                    name: 'ranap_business_partner',
-                    orderable: true,
-                    searchable: true
-                },
+                // {
+                //     data: 'ranap_business_partner',
+                //     name: 'ranap_business_partner',
+                //     orderable: true,
+                //     searchable: true
+                // },
                 {
                     data: 'action',
                     name: 'action',
