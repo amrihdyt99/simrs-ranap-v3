@@ -31,69 +31,9 @@ class PatientController extends Controller
     public function data_table(Request $request, $type, $ruang)
     {
         $dokter_code = auth()->user()->dokter_id;
-    
-        if ($type == 'area') {
-            $datamypatient = DB::connection('mysql2')
-            ->table("m_registrasi")
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('m_bed', 'm_registrasi.reg_no', '=', 'm_bed.registration_no')
-            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->leftJoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
-            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
-            ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
-            ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
-            ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode')
-            ->where('m_registrasi.reg_discharge', '!=', '3')
-            ->whereRaw("
-                (reg_dokter_care is null or reg_dokter_care not like ?) 
-                and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
-            ", ['%' . $dokter_code . '%', $ruang, $ruang])
-            ->where(function ($query) {
-                $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id) // Dokter utama
-                      ->orWhereExists(function ($subQuery) {
-                          $subQuery->select(DB::raw(1))
-                                   ->from('m_physician_team')
-                                   ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
-                                   ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
-                      });
-            })
-            ->select([
-                'm_pasien.PatientName',
-                'm_registrasi.reg_medrec',
-                'm_registrasi.reg_no',
-                'm_paramedis.ParamedicName',
-                // 'ServiceUnitName as nama_ruangan',
-                DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '".$ruang."') as nama_ruangan"),
-                'businesspartner.BusinessPartnerName as reg_cara_bayar',
-                'm_registrasi.reg_tgl',
-                'm_registrasi.reg_jam',
-                DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
-                DB::raw("
-                    (
-                        select CONCAT('[', GROUP_CONCAT(CONCAT('\"', kategori, '\"') ORDER BY kategori ASC SEPARATOR ', '), ']')
-                        from ".getUni()->db_connection_mysql2()->getDatabaseName().".m_physician_team 
-                        where kode_dokter = '".$dokter_code."'
-                        and reg_no = m_registrasi.reg_no
-                    ) as physician_team_role
-                ")
-            ])
-            ->groupBy([
-                'm_pasien.PatientName',
-                'm_registrasi.reg_medrec',
-                'm_registrasi.reg_no',
-                'm_paramedis.ParamedicName',
-                'ServiceUnitName',
-                'businesspartner.BusinessPartnerName',
-                'm_registrasi.reg_tgl',
-                'm_registrasi.reg_jam'
-            ])
-            ->orderByDesc('m_registrasi.reg_tgl');
-        
-        
-        } else {
-            $datamypatient = DB::connection('mysql2')
+
+
+        $datamypatient = DB::connection('mysql2')
             ->table("m_registrasi")
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
@@ -105,7 +45,23 @@ class PatientController extends Controller
             ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
             ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode');
-
+    
+        if ($type == 'area') {
+            $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
+                ->whereRaw("
+                    (reg_dokter_care is null or reg_dokter_care not like ?) 
+                    and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
+                ", ['%' . $dokter_code . '%', $ruang, $ruang])
+                ->where(function ($query) {
+                    $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id) // Dokter utama
+                        ->orWhereExists(function ($subQuery) {
+                            $subQuery->select(DB::raw(1))
+                                    ->from('m_physician_team')
+                                    ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
+                                    ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
+                        });
+                });
+        } else {
             if (isset($request->params)) {
                 foreach ($request->params as $key => $value) {
                     $datamypatient = $datamypatient->where($value['key'], $value['value']);
@@ -113,28 +69,33 @@ class PatientController extends Controller
             }
             
             $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
-            ->whereRaw("
-                (reg_dokter_care = '' or reg_dokter_care like ?) 
-                and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
-            ", ['%' . $dokter_code . '%', $ruang, $ruang])
-            ->where(function ($query) {
-                $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
-                      ->orWhereExists(function ($subQuery) {
-                          $subQuery->select(DB::raw(1))
-                                   ->from('m_physician_team')
-                                   ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
-                                   ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
-                      });
-            })
+                ->whereRaw("
+                    (reg_dokter_care = '' or reg_dokter_care like ?) 
+                    and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
+                ", ['%' . $dokter_code . '%', $ruang, $ruang])
+                ->where(function ($query) {
+                    $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
+                        ->orWhereExists(function ($subQuery) {
+                            $subQuery->select(DB::raw(1))
+                                    ->from('m_physician_team')
+                                    ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
+                                    ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
+                        });
+                });
+        }
+
+        $data = $datamypatient
             ->select([
                 'm_pasien.PatientName',
                 'm_registrasi.reg_medrec',
                 'm_registrasi.reg_no',
                 'm_paramedis.ParamedicName',
-                'ServiceUnitName as nama_ruangan',
                 'businesspartner.BusinessPartnerName as reg_cara_bayar',
                 'm_registrasi.reg_tgl',
                 'm_registrasi.reg_jam',
+                'm_registrasi.service_unit',
+                'm_unit_departemen.ServiceUnitCode',
+                'm_bed.room_id',
                 DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
                 DB::raw("
                     (
@@ -150,15 +111,22 @@ class PatientController extends Controller
                 'm_registrasi.reg_medrec',
                 'm_registrasi.reg_no',
                 'm_paramedis.ParamedicName',
-                'ServiceUnitName',
                 'businesspartner.BusinessPartnerName',
                 'm_registrasi.reg_tgl',
-                'm_registrasi.reg_jam'
+                'm_registrasi.reg_jam',
+                'm_bed.room_id',
+                'm_unit_departemen.ServiceUnitCode',
             ])
-            ->orderByDesc('m_registrasi.reg_tgl');
-        }
+            ->orderByDesc('m_registrasi.reg_tgl')
+            ->get();
 
-        $data = $datamypatient->get();
+        foreach ($data as $key => $value) {
+            $serviceUnit = DB::select("(select ServiceUnitName from ".getDatabase('master').".m_unit where ServiceUnitCode = '".$value->service_unit."')");
+            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".$value->room_id.")");
+
+            $data[$key]->ServiceUnitName = count($serviceUnit) > 0 ? $serviceUnit[0]->ServiceUnitName : '';
+            $data[$key]->RoomName = count($room) > 0 ? $room[0]->RoomName : '';
+        }
 
         if (isset($request->no_ajax)) {
             return $data;
@@ -299,7 +267,9 @@ class PatientController extends Controller
 
                 array_push($data, [
                     'kode' => $request->dokter_code,
-                    'taken_at' => date('Y-m-d H:i:s')
+                    'taken_at' => date('Y-m-d H:i:s'),
+                    'room_id' => $request->room_id,
+                    'service_unit' => $request->service_unit
                 ]);
 
                 if ($request->type == 'cancel') {
