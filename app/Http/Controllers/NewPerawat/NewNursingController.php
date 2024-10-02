@@ -651,25 +651,25 @@ class NewNursingController extends Controller
         //     ]);
 
         // $simpan_farmasi = DB::connection('mysql')
-            // ->table('rs_edukasi_pasien_farmasi')
-            // ->updateOrInsert($paramsawalsearch5, [
-            //     "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
-            //     "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
-            //     "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
-            //     "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
-            //     "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
-            //     "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
-            //     "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
-            //     "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
-            //     "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
-            //     "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
-            //     "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
-            //     "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
-            //     "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
-            //     "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
-            //     "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
-            //     "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
-            //     "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
+        // ->table('rs_edukasi_pasien_farmasi')
+        // ->updateOrInsert($paramsawalsearch5, [
+        //     "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
+        //     "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
+        //     "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
+        //     "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
+        //     "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
+        //     "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
+        //     "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
+        //     "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
+        //     "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
+        //     "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
+        //     "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
+        //     "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
+        //     "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
+        //     "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
+        //     "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
+        //     "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
+        //     "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
         //     ]);
 
         // $simpan_rehab = DB::connection('mysql')
@@ -704,30 +704,30 @@ class NewNursingController extends Controller
         ];
 
         DB::connection('mysql')
-        ->table('rs_edukasi_pasien_farmasi')
-        ->updateOrInsert($paramsawalsearch5, [
-            "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
-            "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
-            "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
-            "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
-            "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
-            "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
-            "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
-            "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
-            "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
-            "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
-            "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
-            "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
-            "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
-            "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
-            "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
-            "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
-            "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
-            "ttd_sasaran" => $request->ttd_sasaran,
-            "ttd_edukator" => $request->ttd_edukator,
-            "nama_sasaran" => $request->nama_sasaran,
-            "nama_edukator" => $request->nama_edukator,
-        ]);
+            ->table('rs_edukasi_pasien_farmasi')
+            ->updateOrInsert($paramsawalsearch5, [
+                "edukasi_obat_diberikan_farmasi" => $request->edukasi_obat_diberikan_farmasi,
+                "edukasi_efek_samping_farmasi" => $request->edukasi_efek_samping_farmasi,
+                "edukasi_interaksi_farmasi" => $request->edukasi_interaksi_farmasi,
+                "edukasi_lain_lain_farmasi" => $request->edukasi_lain_lain_farmasi,
+                "tgl_obat_diberikan_farmasi" => $request->tgl_obat_diberikan_farmasi,
+                "tgl_efek_samping_farmasi" => $request->tgl_efek_samping_farmasi,
+                "tgl_interaksi_farmasi" => $request->tgl_interaksi_farmasi,
+                "tgl_lain_lain_farmasi" => $request->tgl_lain_lain_farmasi,
+                "tingkat_paham_obat_diberikan_farmasi" => $request->tingkat_paham_obat_diberikan_farmasi,
+                "tingkat_paham_efek_samping_farmasi" => $request->tingkat_paham_efek_samping_farmasi,
+                "tingkat_paham_interaksi_farmasi" => $request->tingkat_paham_interaksi_farmasi,
+                "tingkat_paham_lain_lain_farmasi" => $request->tingkat_paham_lain_lain_farmasi,
+                "tingkat_paham_lain_lain_text_farmasi" => $request->tingkat_paham_lain_lain_text_farmasi,
+                "metode_edukasi_obat_diberikan_farmasi" => $request->metode_edukasi_obat_diberikan_farmasi,
+                "metode_edukasi_efek_samping_farmasi" => $request->metode_edukasi_efek_samping_farmasi,
+                "metode_edukasi_interaksi_farmasi" => $request->metode_edukasi_interaksi_farmasi,
+                "metode_edukasi_lain_lain_farmasi" => $request->metode_edukasi_lain_lain_farmasi,
+                "ttd_sasaran" => $request->ttd_sasaran,
+                "ttd_edukator" => $request->ttd_edukator,
+                "nama_sasaran" => $request->nama_sasaran,
+                "nama_edukator" => $request->nama_edukator,
+            ]);
 
         return response()->json([
             'success' => true
@@ -738,13 +738,13 @@ class NewNursingController extends Controller
     {
         $regno = $request->reg_no;
         $medrec = $request->med_rec;
-    
+
         $data = DB::connection('mysql')
             ->table('rs_edukasi_pasien_farmasi')
             ->where('med_rec', $medrec)
             ->where('reg_no', $regno)
             ->first();
-    
+
         return response()->json([
             'success' => true,
             'data' => $data
@@ -795,49 +795,50 @@ class NewNursingController extends Controller
     {
         $regno = $request->reg_no;
         $medrec = $request->med_rec;
-    
+
         $data = DB::connection('mysql')
             ->table('rs_edukasi_pasien_gizi')
             ->where('med_rec', $medrec)
             ->where('reg_no', $regno)
             ->first();
-    
+
         return response()->json([
             'success' => true,
             'data' => $data
         ]);
     }
-    function addEdukasiPasienPerawat(Request $request){
+    function addEdukasiPasienPerawat(Request $request)
+    {
         $paramsawalsearch3 = array(
             'reg_no' => $request->reg_no,
             'med_rec' => $request->medrec,
         );
 
         DB::connection('mysql')
-        ->table('rs_edukasi_pasien_perawat')
-        ->updateOrInsert($paramsawalsearch3, [
-            "edukasi_penggunaan_peralatan_perawat" => $request->edukasi_penggunaan_peralatan_perawat,
-            "edukasi_pencegahan_perawat" => $request->edukasi_pencegahan_perawat,
-            "edukasi_manajemen_nyeri_ringan_perawat" => $request->edukasi_manajemen_nyeri_ringan_perawat,
-            "edukasi_lain_lain_perawat" => $request->edukasi_lain_lain_perawat,
-            "tgl_penggunaan_peralatan_perawat" => $request->tgl_penggunaan_peralatan_perawat,
-            "tgl_pencegahan_perawat" => $request->tgl_pencegahan_perawat,
-            "tgl_manajemen_nyeri_ringan_perawat" => $request->tgl_manajemen_nyeri_ringan_perawat,
-            "tgl_lain_lain_perawat" => $request->tgl_lain_lain_perawat,
-            "tingkat_paham_penggunaan_peralatan_perawat" => $request->tingkat_paham_penggunaan_peralatan_perawat,
-            "tingkat_paham_pencegahan_perawat" => $request->tingkat_paham_pencegahan_perawat,
-            "tingkat_paham_manajemen_nyeri_ringan_perawat" => $request->tingkat_paham_manajemen_nyeri_ringan_perawat,
-            "tingkat_paham_lain_lain_perawat" => $request->tingkat_paham_lain_lain_perawat,
-            "tingkat_paham_lain_lain_text_perawat" => $request->tingkat_paham_lain_lain_text_perawat,
-            "metode_edukasi_penggunaan_peralatan_perawat" => $request->metode_edukasi_penggunaan_peralatan_perawat,
-            "metode_edukasi_pencegahan_perawat" => $request->metode_edukasi_pencegahan_perawat,
-            "metode_edukasi_manajemen_nyeri_ringan_perawat" => $request->metode_edukasi_manajemen_nyeri_ringan_perawat,
-            "metode_edukasi_lain_lain_perawat" => $request->metode_edukasi_lain_lain_perawat,
-            "ttd_sasaran" => $request->ttd_sasaran,
-            "ttd_edukator" => $request->ttd_edukator,
-            "nama_sasaran" => $request->nama_sasaran,
-            "nama_edukator" => $request->nama_edukator,
-        ]);
+            ->table('rs_edukasi_pasien_perawat')
+            ->updateOrInsert($paramsawalsearch3, [
+                "edukasi_penggunaan_peralatan_perawat" => $request->edukasi_penggunaan_peralatan_perawat,
+                "edukasi_pencegahan_perawat" => $request->edukasi_pencegahan_perawat,
+                "edukasi_manajemen_nyeri_ringan_perawat" => $request->edukasi_manajemen_nyeri_ringan_perawat,
+                "edukasi_lain_lain_perawat" => $request->edukasi_lain_lain_perawat,
+                "tgl_penggunaan_peralatan_perawat" => $request->tgl_penggunaan_peralatan_perawat,
+                "tgl_pencegahan_perawat" => $request->tgl_pencegahan_perawat,
+                "tgl_manajemen_nyeri_ringan_perawat" => $request->tgl_manajemen_nyeri_ringan_perawat,
+                "tgl_lain_lain_perawat" => $request->tgl_lain_lain_perawat,
+                "tingkat_paham_penggunaan_peralatan_perawat" => $request->tingkat_paham_penggunaan_peralatan_perawat,
+                "tingkat_paham_pencegahan_perawat" => $request->tingkat_paham_pencegahan_perawat,
+                "tingkat_paham_manajemen_nyeri_ringan_perawat" => $request->tingkat_paham_manajemen_nyeri_ringan_perawat,
+                "tingkat_paham_lain_lain_perawat" => $request->tingkat_paham_lain_lain_perawat,
+                "tingkat_paham_lain_lain_text_perawat" => $request->tingkat_paham_lain_lain_text_perawat,
+                "metode_edukasi_penggunaan_peralatan_perawat" => $request->metode_edukasi_penggunaan_peralatan_perawat,
+                "metode_edukasi_pencegahan_perawat" => $request->metode_edukasi_pencegahan_perawat,
+                "metode_edukasi_manajemen_nyeri_ringan_perawat" => $request->metode_edukasi_manajemen_nyeri_ringan_perawat,
+                "metode_edukasi_lain_lain_perawat" => $request->metode_edukasi_lain_lain_perawat,
+                "ttd_sasaran" => $request->ttd_sasaran,
+                "ttd_edukator" => $request->ttd_edukator,
+                "nama_sasaran" => $request->nama_sasaran,
+                "nama_edukator" => $request->nama_edukator,
+            ]);
 
         return response()->json([
             'success' => true
@@ -943,7 +944,7 @@ class NewNursingController extends Controller
                 'ttd_pasien' => $ttdPasien,
                 'nama_keluarga_pasien' => $r->nama_keluarga_pasien,
                 'nama_perawat' => $r->nama_perawat,
-                
+
             ]);
             return response()->json([
                 'success' => $simpan
@@ -988,19 +989,18 @@ class NewNursingController extends Controller
             ->where('med_rec', $medrec)
             ->get();
 
-            foreach ($data as $note) {
-                $nurse = DB::connection('mysql2')
-                    ->table('users')
-                    ->where('name', $note->id_nurse)
-                    ->first();
-    
-                if ($nurse) {
-                    $note->signature = $nurse->signature;
-                } else {
-                    $note->signature = null;
-                }
+        foreach ($data as $note) {
+            $nurse = DB::connection('mysql2')
+                ->table('users')
+                ->where('name', $note->id_nurse)
+                ->first();
 
+            if ($nurse) {
+                $note->signature = $nurse->signature;
+            } else {
+                $note->signature = null;
             }
+        }
 
         return response()->json([
             'success' => true,
@@ -1270,7 +1270,8 @@ class NewNursingController extends Controller
         ]);
     }
 
-    public function addResikoJatuhGeriatri(Request $request){
+    public function addResikoJatuhGeriatri(Request $request)
+    {
         $skor_total_geriatri =
             $request->resiko_jatuh_geriatri_gangguan_gaya_berjalan +
             $request->resiko_jatuh_geriatri_pusing +
@@ -1347,12 +1348,13 @@ class NewNursingController extends Controller
         ]);
     }
 
-    public function deleteResikoJatuhGeriatri(Request $request){
+    public function deleteResikoJatuhGeriatri(Request $request)
+    {
         try {
             DB::table('resiko_jatuh_geriatri')
-            ->where('reg_no', $request->reg_no)
-            ->where('resiko_jatuh_geriatri_id', $request->id)
-            ->delete();
+                ->where('reg_no', $request->reg_no)
+                ->where('resiko_jatuh_geriatri_id', $request->id)
+                ->delete();
 
             return response()->json([
                 'status' => 'success',
@@ -1366,7 +1368,8 @@ class NewNursingController extends Controller
         }
     }
 
-    public function addReskoJatuhHumptyDumpty(Request $request){
+    public function addReskoJatuhHumptyDumpty(Request $request)
+    {
         $skor_total_humpty_dumpty =
             $request->humpty_dumpty_umur +
             $request->humpty_dumpty_jenis_kelamin +
@@ -1396,10 +1399,10 @@ class NewNursingController extends Controller
         ];
 
         $simpan = DB::connection('mysql')
-        ->table('resiko_jatuh_humpty_dumpty')
-        ->where('reg_no', $request->regno)
-        ->where('med_rec', $request->medrec)
-        ->insert($params);
+            ->table('resiko_jatuh_humpty_dumpty')
+            ->where('reg_no', $request->regno)
+            ->where('med_rec', $request->medrec)
+            ->insert($params);
 
         return response()->json([
             'success' => $simpan
@@ -1433,12 +1436,13 @@ class NewNursingController extends Controller
         ]);
     }
 
-    public function deleteResikoJatuhHumptyDumpty(Request $request){
+    public function deleteResikoJatuhHumptyDumpty(Request $request)
+    {
         try {
             DB::table('resiko_jatuh_humpty_dumpty')
-            ->where('reg_no', $request->reg_no)
-            ->where('id', $request->id)
-            ->delete();
+                ->where('reg_no', $request->reg_no)
+                ->where('id', $request->id)
+                ->delete();
 
             return response()->json([
                 'status' => 'success',
@@ -1452,7 +1456,8 @@ class NewNursingController extends Controller
         }
     }
 
-    public function addResikoJatuhNeonatus(Request $request){
+    public function addResikoJatuhNeonatus(Request $request)
+    {
         $params = [
             'reg_no' => $request->regno,
             'med_rec' => $request->medrec,
@@ -1472,17 +1477,18 @@ class NewNursingController extends Controller
         ];
 
         $simpan = DB::connection('mysql')
-        ->table('resiko_jatuh_neonatus')
-        ->where('reg_no', $request->regno)
-        ->where('med_rec', $request->medrec)
-        ->insert($params);
+            ->table('resiko_jatuh_neonatus')
+            ->where('reg_no', $request->regno)
+            ->where('med_rec', $request->medrec)
+            ->insert($params);
 
         return response()->json([
             'success' => $simpan
         ]);
     }
 
-    public function getListResikoJatuhNeonatus(Request $request){
+    public function getListResikoJatuhNeonatus(Request $request)
+    {
         $data = DB::connection('mysql')
             ->table('resiko_jatuh_neonatus')
             ->where('reg_no', $request->reg_no)
@@ -1494,7 +1500,8 @@ class NewNursingController extends Controller
         ]);
     }
 
-    public function getDetailResikoJatuhNeonatus(Request $request){
+    public function getDetailResikoJatuhNeonatus(Request $request)
+    {
         $data = DB::connection('mysql')
             ->table('resiko_jatuh_neonatus')
             ->where('reg_no', $request->reg_no)
@@ -1507,12 +1514,13 @@ class NewNursingController extends Controller
         ]);
     }
 
-    public function deleteResikoJatuhNeonatus(Request $request){
+    public function deleteResikoJatuhNeonatus(Request $request)
+    {
         try {
             DB::table('resiko_jatuh_neonatus')
-            ->where('reg_no', $request->reg_no)
-            ->where('id', $request->id)
-            ->delete();
+                ->where('reg_no', $request->reg_no)
+                ->where('id', $request->id)
+                ->delete();
 
             return response()->json([
                 'status' => 'success',
@@ -1526,7 +1534,8 @@ class NewNursingController extends Controller
         }
     }
 
-    public function addResikoJatuhSkalaMorse(Request $request){
+    public function addResikoJatuhSkalaMorse(Request $request)
+    {
         $resiko_jatuh_morse_total_skor =
             $request->resiko_jatuh_morse_bulan_terakhir +
             $request->resiko_jatuh_morse_medis_sekunder +
@@ -1535,67 +1544,70 @@ class NewNursingController extends Controller
             $request->resiko_jatuh_morse_berjalan +
             $request->resiko_jatuh_morse_mental;
 
-            $params = [
-                'reg_no' => $request->regno,
-                'med_rec' => $request->medrec,
-                'user_id' => $request->user_id,
-                'resiko_jatuh_morse_bulan_terakhir' => $request->resiko_jatuh_morse_bulan_terakhir,
-                'resiko_jatuh_morse_medis_sekunder' => $request->resiko_jatuh_morse_medis_sekunder,
-                'resiko_jatuh_morse_alat_bantu_jalan' => $request->resiko_jatuh_morse_alat_bantu_jalan,
-                'resiko_jatuh_morse_infus' => $request->resiko_jatuh_morse_infus,
-                'resiko_jatuh_morse_berjalan' => $request->resiko_jatuh_morse_berjalan,
-                'resiko_jatuh_morse_mental' => $request->resiko_jatuh_morse_mental,
-                'resiko_jatuh_morse_total_skor' => $resiko_jatuh_morse_total_skor,
-                'resiko_jatuh_morse_kategori' => $request->resiko_jatuh_morse_kategori,
-                'intervensi_resiko_jatuh_skala_morse_rendah' => json_encode($request->intervensi_resiko_jatuh_skala_morse_rendah),
-                'intervensi_resiko_jatuh_skala_morse_sedang' => json_encode($request->intervensi_resiko_jatuh_skala_morse_sedang),
-                'intervensi_resiko_jatuh_skala_morse_tinggi' => json_encode($request->intervensi_resiko_jatuh_skala_morse_tinggi),
-                'shift' => $request->shift,
-                'created_at' => now(),
-            ];
+        $params = [
+            'reg_no' => $request->regno,
+            'med_rec' => $request->medrec,
+            'user_id' => $request->user_id,
+            'resiko_jatuh_morse_bulan_terakhir' => $request->resiko_jatuh_morse_bulan_terakhir,
+            'resiko_jatuh_morse_medis_sekunder' => $request->resiko_jatuh_morse_medis_sekunder,
+            'resiko_jatuh_morse_alat_bantu_jalan' => $request->resiko_jatuh_morse_alat_bantu_jalan,
+            'resiko_jatuh_morse_infus' => $request->resiko_jatuh_morse_infus,
+            'resiko_jatuh_morse_berjalan' => $request->resiko_jatuh_morse_berjalan,
+            'resiko_jatuh_morse_mental' => $request->resiko_jatuh_morse_mental,
+            'resiko_jatuh_morse_total_skor' => $resiko_jatuh_morse_total_skor,
+            'resiko_jatuh_morse_kategori' => $request->resiko_jatuh_morse_kategori,
+            'intervensi_resiko_jatuh_skala_morse_rendah' => json_encode($request->intervensi_resiko_jatuh_skala_morse_rendah),
+            'intervensi_resiko_jatuh_skala_morse_sedang' => json_encode($request->intervensi_resiko_jatuh_skala_morse_sedang),
+            'intervensi_resiko_jatuh_skala_morse_tinggi' => json_encode($request->intervensi_resiko_jatuh_skala_morse_tinggi),
+            'shift' => $request->shift,
+            'created_at' => now(),
+        ];
 
         $simpan = DB::connection('mysql')
-        ->table('resiko_jatuh_skala_morse')
-        ->where('reg_no', $request->regno)
-        ->where('med_rec', $request->medrec)
-        ->insert($params);
+            ->table('resiko_jatuh_skala_morse')
+            ->where('reg_no', $request->regno)
+            ->where('med_rec', $request->medrec)
+            ->insert($params);
 
         return response()->json([
             'success' => $simpan
         ]);
     }
 
-    public function getListResikoJatuhSkalaMorse(Request $request){
+    public function getListResikoJatuhSkalaMorse(Request $request)
+    {
         $data = DB::connection('mysql')
-        ->table('resiko_jatuh_skala_morse')
-        ->where('reg_no', $request->reg_no)
-        ->where('med_rec', $request->med_rec)
-        ->get();
+            ->table('resiko_jatuh_skala_morse')
+            ->where('reg_no', $request->reg_no)
+            ->where('med_rec', $request->med_rec)
+            ->get();
 
         return response()->json([
             'data' => $data
         ]);
     }
 
-    public function getDetailResikoJatuhSkalaMorse(Request $request){
+    public function getDetailResikoJatuhSkalaMorse(Request $request)
+    {
         $data = DB::connection('mysql')
-        ->table('resiko_jatuh_skala_morse')
-        ->where('reg_no', $request->reg_no)
-        ->where('med_rec', $request->med_rec)
-        ->where('id', $request->id)
-        ->first();
+            ->table('resiko_jatuh_skala_morse')
+            ->where('reg_no', $request->reg_no)
+            ->where('med_rec', $request->med_rec)
+            ->where('id', $request->id)
+            ->first();
 
         return response()->json([
             'data' => $data
         ]);
     }
 
-    public function deleteResikoJatuhSkalaMorse(Request $request){
+    public function deleteResikoJatuhSkalaMorse(Request $request)
+    {
         try {
             DB::table('resiko_jatuh_skala_morse')
-            ->where('reg_no', $request->reg_no)
-            ->where('id', $request->id)
-            ->delete();
+                ->where('reg_no', $request->reg_no)
+                ->where('id', $request->id)
+                ->delete();
 
             return response()->json([
                 'status' => 'success',
@@ -2818,17 +2830,22 @@ class NewNursingController extends Controller
     function addmonitoring_news(Request $request)
     {
         $total = $request->pernafasaan + $request->saturasi_oksigen +
-        $request->o2_tambahan + $request->suhu + $request->tekanan_darah +
-        $request->nadi + $request->tingkat_kesadaran + $request->news_total;
+            $request->o2_tambahan + $request->suhu + $request->tekanan_darah +
+            $request->nadi + $request->tingkat_kesadaran + $request->news_total;
 
         $params = array(
             'reg_no' => $request->reg_no,
             'med_rec' => $request->medrec,
             'pernafasaan' => $request->pernafasaan,
+            'aktual_pernafasaan' => $request->aktual_pernafasaan,
             'saturasi_oksigen' => $request->saturasi_oksigen,
+            'aktual_saturasi_oksigen' => $request->aktual_saturasi_oksigen,
             'o2_tambahan' => $request->o2_tambahan,
+            'aktual_suhu' => $request->aktual_suhu,
             'suhu' => $request->suhu,
+            'aktual_tekanan_darah' => $request->aktual_tekanan_darah,
             'tekanan_darah' => $request->tekanan_darah,
+            'aktual_nadi' => $request->aktual_nadi,
             'nadi' => $request->nadi,
             'tingkat_kesadaran' => $request->tingkat_kesadaran,
             'news_total' => $total,
@@ -2849,15 +2866,16 @@ class NewNursingController extends Controller
     {
         if ($request->ajax()) {
             $monitoring_news = DB::connection('mysql')
-                                ->table('monitoring_news')
-                                ->where('reg_no', $request->reg_no)
-                                ->get();
+                ->table('monitoring_news')
+                ->where('reg_no', $request->reg_no)
+                ->orderBy('tanggal_dan_waktu', 'DESC')
+                ->get();
 
             return DataTables()
                 ->of($monitoring_news)
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<div class="btn-group" role="group">';
-                    $actionBtn .= '<button type="button" class="btn btn-sm btn-info" onclick="showDetailModal(' . $row->id . ')">Details</button>';
+                    $actionBtn .= '<button type="button" class="btn btn-sm btn-info" onclick="showDetailMonitoringHistoryModal(' . $row->id . ')">Details</button>';
                     $actionBtn .= '</div>';
 
                     return $actionBtn;
@@ -2870,9 +2888,9 @@ class NewNursingController extends Controller
     public function getMonitoringNewsDetail($id)
     {
         $newsDetail = DB::connection('mysql')
-                        ->table('monitoring_news')
-                        ->where('id', $id)
-                        ->first();
+            ->table('monitoring_news')
+            ->where('id', $id)
+            ->first();
 
         return response()->json([
             'status' => 'success',
@@ -3157,6 +3175,10 @@ class NewNursingController extends Controller
             ->updateOrInsert($paramsawalsearch, $params);
     }
 
+    public function getEWSScore(Request $request)
+    {
+        $ews = DB::connection('mysql')->table('monitoring_news')->where('reg_no', $request->reg_no)->orderBy('tanggal_dan_waktu', 'DESC')->first();
 
-
+        return $ews;
+    }
 }

@@ -5,6 +5,9 @@
             serverSide: true,
             lengthMenu: [10, 25, 50, 100, 200, 500],
             scrollX: true,
+            order: [
+                [0, 'desc'],
+            ],
             ajax: {
                 url: "{{ route('get.monitoringnews') }}",
                 data: function(d) {
@@ -13,7 +16,9 @@
             },
             columns: [{
                     data: 'tanggal_dan_waktu',
-                    name: 'tanggal_dan_waktu'
+                    name: 'tanggal_dan_waktu',
+                    orderable: true,
+                    searchable: true
                 },
                 {
                     data: 'action',
@@ -25,15 +30,24 @@
         });
     }
 
-    function showDetailModal(id) {
+    function showDetailMonitoringHistoryModal(id) {
 
         $.ajax({
-            url: '{{ route('get.detail.monitoringnews', ':id') }}'.replace(':id', id),
+            url: `{{ route('get.detail.monitoringnews', ':id') }}`.replace(':id', id),
             method: 'GET',
             success: function(response) {
                 if (response.status === 'success') {
                     let detail = response.data;
                     let detailTable = $('#table_detail_news');
+
+
+                    $('#aktual_pernafasaan').val(detail.aktual_pernafasaan);
+                    $('#aktual_saturasi_oksigen').val(detail.aktual_saturasi_oksigen);
+                    $('#aktual_suhu').val(detail.aktual_suhu);
+                    $('#aktual_tekanan_darah').val(detail.aktual_tekanan_darah);
+                    $('#aktual_nadi').val(detail.aktual_nadi);
+                    detailTable.find('input[name="news_total"]').val(detail.news_total);
+                    detailTable.find('input[name="news_total"]').val(detail.news_total);
 
                     updateRadioButton(detailTable, 'pernafasaan', detail.pernafasaan);
                     updateRadioButton(detailTable, 'saturasi_oksigen', detail.saturasi_oksigen);

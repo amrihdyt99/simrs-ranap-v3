@@ -1,6 +1,11 @@
 <span class="badge badge-warning blink" id="alert_blink">alert</span>
 <div class="form-group-left text-center" id="alert_indikator">
-    
+
+</div>
+<div class="form-group-left">
+    <h6>Early Warning System (EWS)</h6>
+    <div class="text-center mb-2" id="ews_info">
+    </div>
 </div>
 <div class="form-group-left">
     <h6>No Registrasi</h6>
@@ -31,12 +36,12 @@
     <h6>Tanggal Masuk</h6>
     <h3 id="p_tgl_kunjungan">{{app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->carbon_format_day_date_id($dataPasien->reg_tgl)}}</h3>
 </div>
-    @php
-        $dokter = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode',$dataPasien->reg_dokter)->first();
-        if(!$dokter){
-            $dokter = optional((object)[]);
-        }
-    @endphp
+@php
+$dokter = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode',$dataPasien->reg_dokter)->first();
+if(!$dokter){
+$dokter = optional((object)[]);
+}
+@endphp
 <div class="form-group-left">
     <h6>DPJP Utama</h6>
     <h3 id="p_dokter">{{ $dokter->ParamedicName}}</h3>
@@ -44,16 +49,16 @@
 <div class="form-group-left">
     <h6>Ruang Rawat</h6>
     @php
-        $ruang = DB::connection('mysql2')->table('m_bed')
-            ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
-            ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
-            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-            ->where('bed_id',$dataPasien->bed)->first();
-        if(!$ruang){
-            $ruang = optional((object)[]);
-        }
+    $ruang = DB::connection('mysql2')->table('m_bed')
+    ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+    ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+    ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+    ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+    ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+    ->where('bed_id',$dataPasien->bed)->first();
+    if(!$ruang){
+    $ruang = optional((object)[]);
+    }
     @endphp
     <h3 id="p_poli">
         {{$ruang->kelompok}} [{{$ruang->bed_code}}]

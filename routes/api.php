@@ -7,6 +7,7 @@ use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
+use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
 use App\Http\Controllers\Perawat\CaseManagerController;
@@ -219,6 +220,7 @@ Route::get('getBussinessPartner', [RegisterController::class, 'getBussinessPartn
 Route::post('getDokumen', [RegisterController::class, 'getNoDocument'])->name('get.document');
 Route::get('transfer-internal/getRoom', [TransferInternalController::class, 'getUnitRoom'])->name('transfer-internal.getRoom');
 Route::get('transfer-internal/getPerawat', [TransferInternalController::class, 'getPerawat'])->name('transfer-internal.getPerawat');
+Route::get('get-ews-info', [NewNursingController::class, 'getEWSScore'])->name('get.ews-info');
 
 Route::get('getProvinsi', [RegisterController::class, 'getProvinsi'])->name('get.provinsi');
 Route::post('getRegency', [RegisterController::class, 'getRegency'])->name('get.regency');
