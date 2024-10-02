@@ -470,8 +470,6 @@
                 class: classcode,
             },
             beforeSend: function() {
-                getStatusTagihan()
-
                 $('[id="panel-order"] tbody').html(`
                     <tr>
                         <td colspan="7" class="text-center"><div class="lds-dual-ring"></div></td>    
@@ -550,6 +548,8 @@
                             $('[id="panel-order"] tbody').append($row_detail)
                         })
                     })
+
+                    getStatusTagihan()
 
                     if (resp.validation) {
                         $('[id*="selecting_items"]').hide()
@@ -939,6 +939,8 @@
                     if (resp.pvalidation_status == 1 && payer == 'BPJS' || $level_ == 'admin') {}
                     $('#btn_open_invoice').show()
                     $('[name="open_id"]').val(resp.id)
+
+                    $('span[onclick*="deleteItem("]').hide()
                 } else {
                     $('#status-tagihan').text('BELUM DIBAYAR');
                     $('#status-tagihan').addClass('btn btn-danger');
@@ -960,6 +962,8 @@
                         $('#btn-validasi-billing').show()
                         $('#not_review_transactions').html('')
                     }
+
+                    $('span[onclick*="deleteItem("]').show()
                 }
             }
         });

@@ -19,7 +19,7 @@
                     No. Reg : <b>{{$row->reg_no}}</b> <br><br>
                     Tgl. Daftar : {{$row->reg_tgl}} {{$row->reg_jam}} <br><br>
                     Cara Bayar : {{$row->reg_cara_bayar}} <br><br>
-                    Lokasi : <b>{{$row->nama_ruangan}}</b> <br><br>
+                    Lokasi : <b>{{$row->RoomName}} / {{$row->ServiceUnitName}}</b> <br><br>
                     Role PPA :  
                     @if (isset($row->physician_team_role))
                         @foreach (json_decode($row->physician_team_role) as $item)
@@ -38,7 +38,7 @@
                 </td>
                 <td>
                     @if ($type == 'area')
-                        <button type="button" onclick="takeOver('{{$row->reg_no}}')" class="btn btn-sm btn-outline-primary">
+                        <button type="button" onclick="takeOver('{{$row->reg_no}}', '', {{$row->room_id}}, '{{$row->service_unit}}')" class="btn btn-sm btn-outline-primary">
                             <i class="mr-2 fa fa-share-square"></i>Ambil Alih
                         </button>
                     @else
