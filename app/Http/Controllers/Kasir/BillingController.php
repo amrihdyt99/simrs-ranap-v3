@@ -636,6 +636,9 @@ class BillingController extends AaaBaseController
 
         $terbilang = $this->terbilang($billing->pvalidation_total);
 
+        $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
+
+
         return view('kasir.billing.kwitansi', [
             'billing'           => $billing,
             'patient'           => $datamypatient,
@@ -657,17 +660,25 @@ class BillingController extends AaaBaseController
             ->get()->first();
         $diagnosisPasien = DB::connection('mysql')->table('icd10_bpjs')->where('ID_ICD10', $datamypatient->reg_diagnosis)->first();
         $all_item = json_decode($billing_detail->pvalidation_selected, true);
+        $payer_detail = json_decode($billing_detail->pvalidation_detail, true);
+
         $billing_ri_item = array_filter($all_item, function ($item) {
-            return $item['ItemSource'] == 'Rawat Inap'; // Filter where age is 28
+            return $item['ItemSource'] == 'Rawat Inap';
         });
         $billing_rj_item = array_filter($all_item, function ($item) {
-            return $item['ItemSource'] == 'Rawat Jalan'; // Filter where age is 28
+            return $item['ItemSource'] == 'Rawat Jalan';
+        });
+        $billing_igd_item = array_filter($all_item, function ($item) {
+            return $item['ItemSource'] == 'IGD';
         });
 
         $ri_item_by_type = [];
         $ri_sub_tot = 0;
         $rj_item_by_type = [];
         $rj_sub_tot = 0;
+        $igd_item_by_type = [];
+        $igd_sub_tot = 0;
+        $payer_by_method = [];
 
         foreach ($billing_ri_item as $item) {
             if ($item['ItemTindakan'] == 'Radiologi') {
@@ -679,7 +690,7 @@ class BillingController extends AaaBaseController
             } else if ($item['ItemTindakan'] == 'lainnya') {
                 $type = $item['ItemTindakan'];
                 $ri_item_by_type[$type][] = $item;
-            } else if ($item['ItemTindakan'] == 'Obat') {
+            } else if ($item['ItemTindakan'] == 'Medication') {
                 $type = $item['ItemTindakan'];
                 $ri_item_by_type[$type][] = $item;
             }
@@ -697,13 +708,39 @@ class BillingController extends AaaBaseController
             } else if ($item['ItemTindakan'] == 'lainnya') {
                 $type = $item['ItemTindakan'];
                 $rj_item_by_type[$type][] = $item;
-            } else if ($item['ItemTindakan'] == 'Obat') {
+            } else if ($item['ItemTindakan'] == 'Medication') {
                 $type = $item['ItemTindakan'];
                 $rj_item_by_type[$type][] = $item;
             }
             $rj_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
         }
         $rj_item_by_type['subtotal'] = $rj_sub_tot;
+
+        foreach ($billing_igd_item as $item) {
+            if ($item['ItemTindakan'] == 'Radiologi') {
+                $type = $item['ItemTindakan'];
+                $igd_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Laboratory') {
+                $type = $item['ItemTindakan'];
+                $igd_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'lainnya') {
+                $type = $item['ItemTindakan'];
+                $igd_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Medication') {
+                $type = $item['ItemTindakan'];
+                $igd_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Imaging') {
+                $type = $item['ItemTindakan'];
+                $igd_item_by_type[$type][] = $item;
+            }
+            $igd_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+        }
+        $igd_item_by_type['subtotal'] = $igd_sub_tot;
+
+        foreach ($payer_detail as $item) {
+            $type = $item['method'];
+            $payer_by_method[$type] = $item;
+        }
 
         $ruangan = DB::connection('mysql2')
             ->table('m_registrasi')
@@ -722,14 +759,17 @@ class BillingController extends AaaBaseController
             ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
 
-        // dd($datamypatient);
+        $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
 
         return view('kasir.billing.invoice_new', [
             'patient'           => $datamypatient,
             'ri_item'           => $ri_item_by_type,
             'rj_item'           => $rj_item_by_type,
+            'igd_item'          => $igd_item_by_type,
             'ruangan'           => $ruangan,
             'billing'           => $billing_detail,
+            'payer'             => $payer_by_method,
+            'user'              => $user,
         ]);
     }
 
