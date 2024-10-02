@@ -243,6 +243,7 @@
                         <div id="action_button">
                             <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
                             <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button>
+                            <button id="btn-cetak-summary" class="btn btn-secondary float-right mb-3 mx-1">CETAK SUMMARY</button>
                             <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button>
                             <button id="btn-validasi-billing" class="btn btn-info float-right mb-3">KONFIRMASI PEMBAYARAN</button>
                         </div>
@@ -934,6 +935,7 @@
 
                     $('#btn-validasi-billing').hide();
                     $('#btn-cetak-invoice').show();
+                    $('#btn-cetak-summary').show();
                     $('#btn-kwitansi').show();
 
                     if (resp.pvalidation_status == 1 && payer == 'BPJS' || $level_ == 'admin') {}
@@ -948,6 +950,7 @@
 
                     $('#btn-validasi-billing').show();
                     $('#btn-cetak-invoice').hide();
+                    $('#btn-cetak-summary').hide();
                     $('#btn_open_invoice').hide();
                     $('#btn-kwitansi').hide();
 
@@ -1202,7 +1205,34 @@
             },
             success: function(data) {
                 // Create a new window for printing
-                var printWindow = window.open();
+                var printWindow = window.open('', '', 'height=800,width=1000');
+
+                // Add content to the new window
+                printWindow.document.write(data);
+
+                // Close the document to render the content
+                printWindow.document.close();
+
+                // Trigger the print dialog
+                printWindow.print();
+
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+
+    $('#btn-cetak-summary').click(function() {
+        $.ajax({
+            url: '{{ route("kasir.cetak.summary") }}',
+            type: 'GET',
+            data: {
+                reg_no: '{{ $reg_no }}',
+            },
+            success: function(data) {
+                // Create a new window for printing
+                var printWindow = window.open('', '', 'height=800,width=1000');
 
                 // Add content to the new window
                 printWindow.document.write(data);
@@ -1376,13 +1406,13 @@
         updateMultiPayer()
     })
 
-    function updateMultiPayer(){
-        $('[name="pvalidation_method[]"]:checked').each(function(i, item){
+    function updateMultiPayer() {
+        $('[name="pvalidation_method[]"]:checked').each(function(i, item) {
             let value = $(item).val()
 
             removeFromArray(value)
 
-            $('[id="pay-method"] [id="'+value.replace(' ', '')+'"]').remove()
+            $('[id="pay-method"] [id="' + value.replace(' ', '') + '"]').remove()
             $(`#row_detail_payment [id="row_payment_changes_` + $method + `"]`).remove()
 
             $('[name*="pvalidation_method[]"]').prop('checked', false).removeAttr('checked')

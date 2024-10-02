@@ -32,4 +32,5 @@ Route::prefix('kasir')->middleware(['auth', 'role:kasir'])->group(function () {
     Route::get('/kasir/invoice/{regno}', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakinvoice'])->where('regno', '(.*)')->name('kasir.cetak.invoice');
     Route::get('/cetak-kwitansi', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakKwitansi'])->name('kasir.cetak.kwitansi');
     Route::get('/cetak-invoice', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakInvoiceNew'])->name('kasir.cetak.invoice');
+    Route::get('/cetak-summary', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakInvoiceSummary'])->name('kasir.cetak.summary');
 });
