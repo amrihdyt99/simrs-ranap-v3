@@ -16,13 +16,21 @@
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for="subject" class="font-weight-bold">SUBJECT</label>
+                                <label for="subject" class="font-weight-bold">SUBJECT
+                                    @if(auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
+                                        <small type="button" class="badge badge-info" id="btn-fetch-subject">ambil dari pemeriksaan perawat</small>
+                                    @endif
+                                </label>
                                 <textarea class="form-control" id="subject" rows="10" name="soaper_subject"></textarea>
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for="object" class="font-weight-bold">OBJECT</label>
+                                <label for="object" class="font-weight-bold">OBJECT
+                                @if(auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
+                                        <small type="button" class="badge badge-info" id="btn-fetch-object">ambil dari pemeriksaan perawat</small>
+                                @endif
+                                </label>
                                 <textarea class="form-control" id="object" rows="10" name="soaper_object"></textarea>
                             </div>
                         </div>
@@ -120,6 +128,33 @@
     }
     $(document).ready(function() {
         daftarmasalah();
+        
+        $('#btn-fetch-subject').click(function() {
+            fetchLastCpptData('subject');
+        });
+
+        $('#btn-fetch-object').click(function() {
+            fetchLastCpptData('object');
+        });
+
+        function fetchLastCpptData(field) {
+            $.ajax({
+                url: "{{ url('') }}/api/getLastCpptData",
+                type: 'GET',
+                data: { regno: "{{ $reg }}" },
+                success: function(response) {
+                    if (response.success) {
+                        $('#' + field).val(response.data['soaper_' + field]);
+                        neko_notify('success', 'Berhasil mengambil pemeriksaan perawat');
+                    } else {
+                        neko_notify('info', 'Belum ada pemeriksaan dari perawat');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
     });
 </script>
 

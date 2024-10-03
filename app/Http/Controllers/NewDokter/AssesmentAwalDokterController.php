@@ -807,6 +807,51 @@ class AssesmentAwalDokterController extends Controller
         ]);
     }
 
+    function get_data_history_soap(Request $request)
+    {
+        $reg_no = $request->reg_no;
+        $reg_lama = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $reg_no)->first()->reg_lama ?? $reg_no;
+    
+        $historySoap = getService(urlSimrs().'api/emr/cppt/latest/'.str_replace('/', '_', $reg_lama), true);
+        $historySoap = count($historySoap[0]) > 0 ? $historySoap[0] : [];
+    
+        // Mengambil data tindakan
+        $dataTindakanFromRajal = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$reg_lama, true);
+    
+        if (count($dataTindakanFromRajal) > 0) {
+            foreach ($dataTindakanFromRajal as $key_tindakan => $value_tindakan) {
+                $dataTindakanFromRajal[$key_tindakan]['id'] = $value_tindakan['cpoe_kode'];
+                $dataTindakanFromRajal[$key_tindakan]['waktu_order'] = $value_tindakan['cpoe_created'];
+                $dataTindakanFromRajal[$key_tindakan]['jenis_order'] = $value_tindakan['cpoe_jenis'];
+                $dataTindakanFromRajal[$key_tindakan]['order_no'] = $value_tindakan['cpoe_kode'];
+                $dataTindakanFromRajal[$key_tindakan]['item_name'] = $value_tindakan['cpoe_name'];
+                $dataTindakanFromRajal[$key_tindakan]['harga_jual'] = $value_tindakan['cpoe_tarif'];
+                $dataTindakanFromRajal[$key_tindakan]['ParamedicName'] = $value_tindakan['cpoe_dokter'];
+            }
+        }
+    
+        if (count($historySoap) > 0) {
+            foreach ($historySoap as $key_soap => $value_soap) {
+                $filteredData = array_filter($dataTindakanFromRajal, function($item_tindakan) use ($value_soap) {
+                    return $item_tindakan['cpoe_dokter_kode'] == $value_soap['reg_dokter_kode'];
+                });
+                
+                $historySoap[$key_soap]['soapdok_posisi'] = ucfirst($value_soap['level_user']);
+                $historySoap[$key_soap]['order_lainnya'] = array_values($filteredData);
+            }
+        }
+    
+        // usort($historySoap, function ($a, $b) {
+        //     return strtotime($b['updated_at']) - strtotime($a['updated_at']);
+        // });
+    
+        return response()->json([
+            'success' => true,
+            'data_soap' => $historySoap,
+        ]);
+    }
+
+
     //verifikasi data soap
     function get_ttd($id_dokter)
     {
