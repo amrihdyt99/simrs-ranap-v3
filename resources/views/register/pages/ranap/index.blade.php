@@ -32,11 +32,11 @@
                   <a href="{{route('register.vclaim')}}">
                     <button onclick="{{ route('register.vclaim') }}" class="btn btn-warning radius ml-3"><i class="fas fa-user-check"></i> Vclaim Manual</button>
                   </a>
-                  
+
                   {{-- <button onclick="tarik_regis()" class="btn btn-primary radius ml-3"><i class="fas fa-download"></i> Tarik Pendaftaran dari Sphaira</button> --}}
                 </div>
               </div>
-             
+
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -96,29 +96,29 @@
             </div>
           </div>
           <div class="modal-body">
-            <iframe id="iframe-generalConsent" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe> 
+            <iframe id="iframe-generalConsent" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
           </div>
         </div>
       </div>
     </div>
 
     <div class="modal fade" id="modalRawatIntensif" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg custom-width" role="document">
-      <div class="modal-content">
-        <div class="modal-header d-flex justify-content-between">
-          <h5 class="modal-title" id="resultModalLabel">Surat Rawat Intensif</h5>
-          <div class="d-flex align-items-center">
-            <button id="printButtonIntensif" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+      <div class="modal-dialog modal-lg custom-width" role="document">
+        <div class="modal-content">
+          <div class="modal-header d-flex justify-content-between">
+            <h5 class="modal-title" id="resultModalLabel">Surat Rawat Intensif</h5>
+            <div class="d-flex align-items-center">
+              <button id="printButtonIntensif" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
           </div>
+          <iframe id="iframe-rawatIntensif" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
+
+
         </div>
-        <iframe id="iframe-rawatIntensif" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
-          
-        
       </div>
-    </div>
   </section>
 </div>
 @endsection
@@ -239,9 +239,10 @@
           orderable: false,
           searchable: false,
         },
-      ],rowCallback: function(row, data) {
+      ],
+      rowCallback: function(row, data) {
         let api = this.api();
-       $(row).find('.print-admisi').click(function() {
+        $(row).find('.print-admisi').click(function() {
           var reg = $(this).data('reg_no');
           let url = "{{ route('register.ranap.slipadmisi',':reg_no') }}"
           url = url.replace(':reg_no', reg)
@@ -254,7 +255,7 @@
               iframe.contentDocument.open();
               iframe.contentDocument.write(data);
               iframe.contentDocument.close();
-              $('#modalAdmisi').modal('show').on('shown.bs.modal', function () {
+              $('#modalAdmisi').modal('show').on('shown.bs.modal', function() {
                 var modalDialog = $(this).find('.modal-dialog');
                 modalDialog.css({
                   'max-width': '80%',
@@ -284,7 +285,7 @@
               iframe.contentDocument.open();
               iframe.contentDocument.write(data);
               iframe.contentDocument.close();
-              $('#modalGeneralConsent').modal('show').on('shown.bs.modal', function () {
+              $('#modalGeneralConsent').modal('show').on('shown.bs.modal', function() {
                 var modalDialog = $(this).find('.modal-dialog');
                 modalDialog.css({
                   'max-width': '80%',
@@ -314,7 +315,7 @@
               iframe.contentDocument.open();
               iframe.contentDocument.write(data);
               iframe.contentDocument.close();
-              $('#modalRawatIntensif').modal('show').on('shown.bs.modal', function () {
+              $('#modalRawatIntensif').modal('show').on('shown.bs.modal', function() {
                 var modalDialog = $(this).find('.modal-dialog');
                 modalDialog.css({
                   'max-width': '80%',
@@ -334,20 +335,20 @@
   }
 </script>
 <script>
-document.getElementById('printButtonAdmisi').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-admisi');
-  iframe.contentWindow.focus();
-  iframe.contentWindow.print();
-});
-document.getElementById('printButtonGC').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-generalConsent');
-  iframe.contentWindow.focus();
-  iframe.contentWindow.print();
-});
-document.getElementById('printButtonIntensif').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-rawatIntensif');
-  iframe.contentWindow.focus();
-  iframe.contentWindow.print();
-});
+  document.getElementById('printButtonAdmisi').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-admisi');
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  });
+  document.getElementById('printButtonGC').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-generalConsent');
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  });
+  document.getElementById('printButtonIntensif').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-rawatIntensif');
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  });
 </script>
 @endpush

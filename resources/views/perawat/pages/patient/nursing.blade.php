@@ -36,7 +36,7 @@
                                     </li>
                                     <li class="nav-item text-sm"><a class="nav-link" href="#drugs" data-toggle="tab">Drugs</a>
                                     </li>
-                                   {{-- <li class="nav-item text-sm"><a class="nav-link" href="#special-indicator" data-toggle="tab">Special Indicator</a>
+                                    {{-- <li class="nav-item text-sm"><a class="nav-link" href="#special-indicator" data-toggle="tab">Special Indicator</a>
                                     </li>
                                     <li class="nav-item text-sm"><a class="nav-link" href="#calculated" data-toggle="tab">Calculated</a>
                                     </li>--}}
@@ -184,110 +184,109 @@
 @push('addon-script')
 <script src="{{asset('assets/plugins/chart.js/Chart.min.js')}}"></script>
 <script>
-    $(function () {
-            var areaChartData = {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [
-                    {
-                        label: 'Digital Goods',
-                        backgroundColor: 'rgba(60,141,188,0.9)',
-                        borderColor: 'rgba(60,141,188,0.8)',
-                        pointRadius: false,
-                        pointColor: '#3b8bba',
-                        pointStrokeColor: 'rgba(60,141,188,1)',
-                        pointHighlightFill: '#fff',
-                        pointHighlightStroke: 'rgba(60,141,188,1)',
-                        data: [28, 48, 40, 19, 86, 27, 90]
-                    },
-                    {
-                        label: 'Electronics',
-                        backgroundColor: 'rgba(210, 214, 222, 1)',
-                        borderColor: 'rgba(210, 214, 222, 1)',
-                        pointRadius: false,
-                        pointColor: 'rgba(210, 214, 222, 1)',
-                        pointStrokeColor: '#c1c7d1',
-                        pointHighlightFill: '#fff',
-                        pointHighlightStroke: 'rgba(220,220,220,1)',
-                        data: [65, 59, 80, 81, 56, 55, 40]
-                    },
-                ]
-            }
-
-            var areaChartOptions = {
-                maintainAspectRatio: false,
-                responsive: true,
-                legend: {
-                    display: false
+    $(function() {
+        var areaChartData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [{
+                    label: 'Digital Goods',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: [28, 48, 40, 19, 86, 27, 90]
                 },
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: false,
-                        }
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            display: false,
-                        }
-                    }]
-                }
+                {
+                    label: 'Electronics',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: [65, 59, 80, 81, 56, 55, 40]
+                },
+            ]
+        }
+
+        var areaChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false,
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                    }
+                }]
             }
+        }
 
-            var bloodChartCanvas = $('#blood').get(0).getContext('2d')
-            var bloodChartOptions = $.extend(true, {}, areaChartOptions)
-            var bloodChartData = $.extend(true, {}, areaChartData)
-            bloodChartData.datasets[0].fill = false;
-            bloodChartData.datasets[1].fill = false;
-            bloodChartOptions.datasetFill = false
+        var bloodChartCanvas = $('#blood').get(0).getContext('2d')
+        var bloodChartOptions = $.extend(true, {}, areaChartOptions)
+        var bloodChartData = $.extend(true, {}, areaChartData)
+        bloodChartData.datasets[0].fill = false;
+        bloodChartData.datasets[1].fill = false;
+        bloodChartOptions.datasetFill = false
 
-            var bloodChart = new Chart(bloodChartCanvas, {
-                type: 'line',
-                data: bloodChartData,
-                options: bloodChartOptions
-            })
-
-            var temperatureChartCanvas = $('#temperature').get(0).getContext('2d')
-            var temperatureChartOptions = $.extend(true, {}, areaChartOptions)
-            var temperatureChartData = $.extend(true, {}, areaChartData)
-            temperatureChartData.datasets[0].fill = false;
-            temperatureChartData.datasets[1].fill = false;
-            temperatureChartOptions.datasetFill = false
-
-            var temperatureChart = new Chart(temperatureChartCanvas, {
-                type: 'line',
-                data: temperatureChartData,
-                options: temperatureChartOptions
-            })
-
-            var pulseChartCanvas = $('#pulse').get(0).getContext('2d')
-            var pulseChartOptions = $.extend(true, {}, areaChartOptions)
-            var pulseChartData = $.extend(true, {}, areaChartData)
-            pulseChartData.datasets[0].fill = false;
-            pulseChartData.datasets[1].fill = false;
-            pulseChartOptions.datasetFill = false
-
-            var pulseChart = new Chart(pulseChartCanvas, {
-                type: 'line',
-                data: pulseChartData,
-                options: pulseChartOptions
-            })
-
-            var spo2ChartCanvas = $('#spo2').get(0).getContext('2d')
-            var spo2ChartOptions = $.extend(true, {}, areaChartOptions)
-            var spo2ChartData = $.extend(true, {}, areaChartData)
-            spo2ChartData.datasets[0].fill = false;
-            spo2ChartData.datasets[1].fill = false;
-            spo2ChartOptions.datasetFill = false
-
-            var spo2Chart = new Chart(spo2ChartCanvas, {
-                type: 'line',
-                data: spo2ChartData,
-                options: spo2ChartOptions
-            })
+        var bloodChart = new Chart(bloodChartCanvas, {
+            type: 'line',
+            data: bloodChartData,
+            options: bloodChartOptions
         })
+
+        var temperatureChartCanvas = $('#temperature').get(0).getContext('2d')
+        var temperatureChartOptions = $.extend(true, {}, areaChartOptions)
+        var temperatureChartData = $.extend(true, {}, areaChartData)
+        temperatureChartData.datasets[0].fill = false;
+        temperatureChartData.datasets[1].fill = false;
+        temperatureChartOptions.datasetFill = false
+
+        var temperatureChart = new Chart(temperatureChartCanvas, {
+            type: 'line',
+            data: temperatureChartData,
+            options: temperatureChartOptions
+        })
+
+        var pulseChartCanvas = $('#pulse').get(0).getContext('2d')
+        var pulseChartOptions = $.extend(true, {}, areaChartOptions)
+        var pulseChartData = $.extend(true, {}, areaChartData)
+        pulseChartData.datasets[0].fill = false;
+        pulseChartData.datasets[1].fill = false;
+        pulseChartOptions.datasetFill = false
+
+        var pulseChart = new Chart(pulseChartCanvas, {
+            type: 'line',
+            data: pulseChartData,
+            options: pulseChartOptions
+        })
+
+        var spo2ChartCanvas = $('#spo2').get(0).getContext('2d')
+        var spo2ChartOptions = $.extend(true, {}, areaChartOptions)
+        var spo2ChartData = $.extend(true, {}, areaChartData)
+        spo2ChartData.datasets[0].fill = false;
+        spo2ChartData.datasets[1].fill = false;
+        spo2ChartOptions.datasetFill = false
+
+        var spo2Chart = new Chart(spo2ChartCanvas, {
+            type: 'line',
+            data: spo2ChartData,
+            options: spo2ChartOptions
+        })
+    })
 </script>
 <script>
-    $(function () {
+    $(function() {
         $('.nursing').DataTable({
             "paging": false,
             "lengthChange": false,

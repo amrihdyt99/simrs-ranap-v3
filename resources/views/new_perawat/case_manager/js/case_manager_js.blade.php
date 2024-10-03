@@ -3,6 +3,9 @@
         initializeSignaturePad('signature-pad-perawat', 'ttd_perawat');
         initializeSignaturePad('signature-pad-pasien', 'ttd_pasien');
         initializeSignaturePad('signature-pad-saksi', 'ttd_saksi');
+        initializeSignaturePad('signature-pad-perawat2', 'ttd_perawat2');
+        initializeSignaturePad('signature-pad-pasien2', 'ttd_pasien2');
+        initializeSignaturePad('signature-pad-saksi2', 'ttd_saksi2');
     }
     
     const signaturePads = {};
@@ -49,6 +52,33 @@
                     url: "{{ route('perawat.case-manager.store') }}",
                     type: "POST",
                     data: $('#case_manager_form').serialize(),
+                    success: function(data) {
+                        neko_simpan_success();
+                        $('.left-tab.active').click();
+                    },
+                    error: function(data) {
+                        neko_simpan_error_noreq();
+                    },
+                })
+            }
+        });
+    }
+
+    function storeCaseManagerAkumulasi() {
+        neko_proses();
+        Swal.fire({
+            title: "Simpan Case Manager?",
+            icon: 'warning',
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan !",
+            cancelButtonText: "Tidak, Batalkan",
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: "{{ route('perawat.case-manager-akumulasi.store') }}",
+                    type: "POST",
+                    data: $('#case_manager_2').serialize(),
                     success: function(data) {
                         neko_simpan_success();
                         $('.left-tab.active').click();
