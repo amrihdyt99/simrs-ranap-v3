@@ -235,7 +235,7 @@ $registrasi_data = DB::connection('mysql2')
 
                 <div class="row">
                     <div class="left-tab" id="tab-checklist" onclick="clickTab('checklist')">
-                        Checklist
+                        Checklist Orientasi Pelayanan
                     </div>
                 </div>
 
@@ -247,7 +247,7 @@ $registrasi_data = DB::connection('mysql2')
                 </div>
                 @endif
 
-                @if ($age == 'humpty dumpty')
+                @if ($age == 'humpty dumpty' || $dataPasien->kategori_pasien == 'anak')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-humpty-dumpty" onclick="clickTab('resiko-jatuh-humpty-dumpty')">
                         Resiko Jatuh Humpty Dumpty
@@ -263,7 +263,7 @@ $registrasi_data = DB::connection('mysql2')
                 </div>
                 @endif
 
-                @if ($dataPasien->kategori_pasien == 'dewasa' || $dataPasien->kategori_pasien == 'kebidanan')
+                @if ($dataPasien->kategori_pasien == 'dewasa' || $dataPasien->kategori_pasien == 'kebidanan' || $dataPasien->kategori_pasien == 'anak')
                 <div class="row">
                     <div class="left-tab" id="tab-resiko-jatuh-skala-morse" onclick="clickTab('resiko-jatuh-skala-morse')">
                         Resiko Jatuh Skala Morse
@@ -383,11 +383,11 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-bedah" onclick="clickTab('bedah')">
                         Bedah
                     </div>
-                </div>
+                </div> --}}
 
 
 
@@ -415,11 +415,11 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-pemulangan" onclick="clickTab('pemulangan')">
                         Discharge Planning
                     </div>
-                </div>
+                </div> --}}
                 <div class="row">
                     <div class="left-tab" id="tab-surat_rujukan" onclick="clickTab('surat_rujukan')">
                         Surat Rujukan
