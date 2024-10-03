@@ -75,6 +75,7 @@ Route::post('sendOtherInstructions', [\App\Http\Controllers\NewDokter\OrderObatC
 
 Route::post('/getCpoe', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getCPOEDokter'])->name('get.cpoe.dokter');
 Route::post('addSoapDokter', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_soap_dokter'])->name('add.soap.dokter');
+Route::post('getDataHistorySoap', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'get_data_history_soap'])->name('get.data.history.soap');
 Route::post('addDiagnosa', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_diagnosa'])->name('add.diagnosa');
 Route::post('addProsedur', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_prosedur'])->name('add.prosedur');
 Route::get('getDiagnosa/{noreg}', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'get_diagnosa'])->name('get.diagnosa');
@@ -95,6 +96,8 @@ Route::get('/dataOpenDischargeRequest', [\App\Http\Controllers\NewDokter\NewDisc
 Route::post('/openDischargeRequest', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'openDischargeRequest']);
 Route::post('/openDischargeApprove', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'openDischargeApprove']);
 //api perawat
+
+Route::get('getLastCpptData', [\App\Http\Controllers\NewPerawat\NewSoapController::class, 'getLastCpptData']);
 Route::post('addSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'addsoap'])->name('add.soap.new.perawat');
 Route::post('getSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'getsoapbyreg'])->name('get.soap.new.perawat');
 Route::post('addFluidBalanceBaru', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addFluidBalanceBaru'])->name('add.fluidbalance.new.perawat');
