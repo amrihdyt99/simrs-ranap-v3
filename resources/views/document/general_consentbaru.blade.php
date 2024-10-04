@@ -179,49 +179,49 @@
                     <td colspan="6">(wali jika pasien &lt; 18 tahun)</td>
                 </tr>
                 <tr>
-                    <form method="post" action="{{route('register.ranap.uploadGcdua')}}" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="reg_no" id="reg_no" value="{{$datapasien->reg_no ?? '-'}}" />
-                        <td colspan="6">
+                    <td colspan="6">
                         @if($user_signature != null)
                             <img src="{{$user_signature}}" width="150" height="100" /><br>
                         @endif
-                                    ({{$user_name}})
-                        </td>
-                        <td colspan="6">
+                        ({{$user_name}})
+                    </td>
+                    <td colspan="6">
+                        <form method="post" action="{{route('register.ranap.uploadGcdua')}}" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="reg_no" id="reg_no" value="{{$datapasien->reg_no ?? '-'}}" />
                             <img id="anatomi" src="{{asset('new_assets/images/multi_organ/anatomi_tubuh.png')}}" width="100px" height="100px" hidden />
                             @if($datapasien->ttd_gc_hal_dua!=null)
-                                        <img src="{{$datapasien->ttd_gc_hal_dua}}" width="170px" height="100px"/>
-                                    @else
-                                        <div id="signature-pad">
-                                            <div style="border:solid 1px teal; width:170px;height:100px;padding:3px;position:relative;">
-                                                <canvas id="the_canvas" width="170px" height="100px">Your browser does not support the HTML canvas tag.</canvas>
-                                                <div id="note" onmouseover="my_function();"> </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="penanggung_jawab"></label>
-                                                <select name="penanggung_jawab" id="penanggung_jawab" class="form-control d-print-none" onchange="document.getElementById('selected_penanggung_jawab').innerText = this.options[this.selectedIndex].text; this.style.display='none';">
-                                                    <option value="">Pilih Penanggung Jawab</option>
-                                                    @foreach($datapasien->penanggung_jawab_list as $penanggung_jawab)
-                                                        <option value="{{ $penanggung_jawab }}">( {{ $penanggung_jawab }} )</option>
-                                                    @endforeach
-                                                </select>
-                                                <span id="selected_penanggung_jawab" class="d-none d-print-block">
-                                                    @if(isset($datapasien->penanggung_jawab))
-                                                        {{ $datapasien->penanggung_jawab }}
-                                                    @endif
-                                                </span>
-                                                <span id="selected_penanggung_jawab" class="d-none d-print-block"></span>
-                                            </div>
-                                            <div style="margin:10px;">
-                                                <input type="hidden" id="signature" name="signature">
-                                                <button type="button" id="clear_btn" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Clear</button>
-                                                <button type="submit" id="save_btn" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
-                                            </div>
-                                        </div>
-                                    @endif
-                        </td>
-                    </form>
+                                <img src="{{$datapasien->ttd_gc_hal_dua}}" width="170px" height="100px"/>
+                            @else
+                                <div id="signature-pad">
+                                    <div style="border:solid 1px teal; width:170px;height:100px;padding:3px;position:relative;">
+                                        <canvas id="the_canvas" width="170px" height="100px">Your browser does not support the HTML canvas tag.</canvas>
+                                        <div id="note" onmouseover="my_function();"> </div>
+                                    </div>
+                                    <div style="margin:10px;">
+                                        <input type="hidden" id="signature" name="signature">
+                                        <button type="button" id="clear_btn" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Clear</button>
+                                        <button type="submit" id="save_btn" class="btn btn-primary" data-action="save-png"><span class="glyphicon glyphicon-ok"></span> Save as PNG</button>
+                                    </div>
+                                </div>
+                            @endif
+                        </form>
+                        <div class="form-group">
+                                        <label for="penanggung_jawab"></label>
+                                        <select name="penanggung_jawab" id="penanggung_jawab" class="form-control d-print-none" onchange="document.getElementById('selected_penanggung_jawab').innerText = this.options[this.selectedIndex].text; this.style.display='none';">
+                                            <option value="">Pilih Penanggung Jawab</option>
+                                            @foreach($datapasien->penanggung_jawab_list as $penanggung_jawab)
+                                                <option value="{{ $penanggung_jawab }}">( {{ $penanggung_jawab }} )</option>
+                                            @endforeach
+                                        </select>
+                                        <span id="selected_penanggung_jawab" class="d-none d-print-block">
+                                            @if(isset($datapasien->penanggung_jawab))
+                                                {{ $datapasien->penanggung_jawab }}
+                                            @endif
+                                        </span>
+                                        <span id="selected_penanggung_jawab" class="d-none d-print-block"></span>
+                                    </div>
+                    </td>
                 </tr>
                 <tr>
                     <td width="27">Tgl</td>
@@ -283,6 +283,32 @@
             document.getElementById("note").innerHTML = "";
         }
     </script>
+        <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var penanggungJawabSelect = document.getElementById("penanggung_jawab");
+        var selectedPenanggungJawab = document.getElementById("selected_penanggung_jawab");
+        var regNo = "{{ $datapasien->reg_no }}"; // Assuming reg_no is available in $datapasien
+
+        // Check if a patient has already been selected
+        if (localStorage.getItem("penanggung_jawab_selected_" + regNo)) {
+            var selectedValue = localStorage.getItem("penanggung_jawab_selected_" + regNo);
+            selectedPenanggungJawab.innerText = selectedValue;
+            penanggungJawabSelect.style.display = 'none';
+            selectedPenanggungJawab.classList.remove('d-none');
+        }
+
+        penanggungJawabSelect.addEventListener("change", function() {
+            var selectedText = this.options[this.selectedIndex].text;
+            var confirmation = confirm("Apakah sudah benar?");
+            if (confirmation) {
+                localStorage.setItem("penanggung_jawab_selected_" + regNo, selectedText);
+                selectedPenanggungJawab.innerText = selectedText;
+                penanggungJawabSelect.style.display = 'none';
+                selectedPenanggungJawab.classList.remove('d-none');
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

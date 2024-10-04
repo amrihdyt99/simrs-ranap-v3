@@ -218,3 +218,13 @@ function checkPaymentStatus($reg){
 
     return $data;
 }
+
+function getLimit(){
+    $limit = 'limit 1';
+
+    if (str_contains(env('DB_HOST'), '192.168.80.114')) {
+        $limit = 'top 1';
+    }
+
+    return $limit;
+}
