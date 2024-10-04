@@ -260,6 +260,9 @@ Route::group(['prefix' => 'sphaira'], function () {
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
+	Route::get('visit-history/{medicalRecord}/ranap', [PasienController::class, 'visitHistoryRanap'])->name('visit.history.ranap');
+	Route::get('visit-history/{medicalRecord}/rajal', [PasienController::class, 'visitHistoryRajal'])->name('visit.history.rajal');
+	Route::get('visit-history/{medicalRecord}/igd', [PasienController::class, 'visitHistoryIGD'])->name('visit.history.igd');
 	Route::get('web-visit-history/{medicalRecord}', [PasienController::class, 'webVisitHistory'])->name('web.visit.history');
 });
 
