@@ -23,7 +23,6 @@
     <table id="ranapTable" class="table table-bordered">
         <thead>
             <tr>
-                <th>No</th>
                 <th>No. Reg</th>
                 <th>Tanggal</th>
                 <th>Asal</th>
@@ -33,4 +32,5 @@
                 <th>Pembayaran</th>
             </tr>
         </thead>
+    </table>
 </div>

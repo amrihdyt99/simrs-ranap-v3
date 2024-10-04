@@ -14,6 +14,11 @@ class PatientService
         $this->patientRepo = $patientRepository;
     }
 
+    public function visitHistoryPatient($medrec)
+    {
+        $data_pasien = $this->patientRepo->findOneByMedrec($medrec);
+        return view('register.pages.informasi-pasien.visit-history', compact('data_pasien'));
+    }
     public function visitHistoryRanap($medrec)
     {
         try {
@@ -49,9 +54,8 @@ class PatientService
         try {
             $data = $this->patientRepo->visitHistoryRanap($medrec);
             return datatables()->of($data)
-                ->addIndexColumn()
                 ->editColumn('reg_tgl', function ($data) {
-                    return date('d F Y', strtotime($data['reg_tgl']));
+                    return date('d F Y', strtotime($data->reg_tgl));
                 })
                 ->make(true);
         } catch (\Throwable $th) {
@@ -64,9 +68,11 @@ class PatientService
         try {
             $data = $this->patientRepo->visitHistoryRajal($medrec);
             return datatables()->of($data)
-                ->addIndexColumn()
                 ->editColumn('reg_date', function ($data) {
                     return date('d F Y', strtotime($data['reg_date']));
+                })
+                ->addColumn('reg_time', function ($data) {
+                    return date('H:i', strtotime($data['reg_date']));
                 })
                 ->make(true);
         } catch (\Throwable $th) {
@@ -78,7 +84,6 @@ class PatientService
         try {
             $data = $this->patientRepo->visitHistoryIGD($medrec);
             return datatables()->of($data)
-                ->addIndexColumn()
                 ->make(true);
         } catch (\Throwable $th) {
             return $this->internalServerError($th->getMessage());
