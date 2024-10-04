@@ -23,7 +23,7 @@ class RegisterDataController extends Controller
     {
         try {
             $newMRN = $request->mrn ?? $this->generateMRN();
-    
+
             $pasienData = [
                 'MedicalNo' => $newMRN,
                 'SSN' => $request->ssn,
@@ -42,13 +42,13 @@ class RegisterDataController extends Controller
                 'IsActive' => true,
             ];
             Pasien::create($pasienData);
-    
+
             Log::info('Data keluarga:', $request->all());
-    
+
             $keluargaData = array_map(function ($key) use ($request, $newMRN) {
                 return [
                     'MedicalNo' => $newMRN,
-                    'FamilyMedicalNo' => $request->FamilyMedicalNo[$key] ?? null, 
+                    'FamilyMedicalNo' => $request->FamilyMedicalNo[$key] ?? null,
                     'GCRelationShip' => $request->GCRelationShip[$key],
                     'PhoneNo' => $request->PhoneNo[$key] ?? null,
                     'SSN' => $request->SSN[$key] ?? null,
@@ -62,11 +62,11 @@ class RegisterDataController extends Controller
                     'Sex' => $request->Sex[$key] ?? null,
                 ];
             }, array_keys($request->GCRelationShip));
-    
+
             Log::info('Keluarga Data:', $keluargaData);
-    
+
             DB::connection('mysql2')->table('m_keluarga_pasien')->insert($keluargaData);
-    
+
             return redirect()->route('register.informasi-pasien.index');
         } catch (\Throwable $th) {
             Log::error('Error:', ['message' => $th->getMessage()]);
@@ -92,7 +92,7 @@ class RegisterDataController extends Controller
     public function checkMRN(Request $request)
     {
         $mrn = $request->query('mrn');
-        Log::info('Checking MRN:', ['mrn' => $mrn]); 
+        Log::info('Checking MRN:', ['mrn' => $mrn]);
 
         $pasienData = DB::connection('mysql2')->table('m_pasien')
             ->where('MedicalNo', 'like', "%{$mrn}%")
@@ -115,16 +115,17 @@ class RegisterDataController extends Controller
     public function getData()
     {
 
-       $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
+        $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
             ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec')
             ->whereNull('m_registrasi.reg_no');
         return DataTables::of($pasien)
-        // $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
-        //     ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec');
-        // return DataTables::of($pasien)
+            // $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
+            //     ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec');
+            // return DataTables::of($pasien)
             ->addColumn('action', function ($row) {
-                return '
-                    <div class="dropdown">
+                $btn_visit_history = '<a href="' . route('register.informasi-pasien.riwayat-kunjungan', $row->MedicalNo) . '" class="btn btn-primary btn-sm">Visit History</a>';
+                $action = $btn_visit_history . '
+                    <div class="dropdown ml-2">
                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Aksi
                         </button>
@@ -135,6 +136,7 @@ class RegisterDataController extends Controller
                         </div>
                     </div>
                 ';
+                return '<div class="btn-group" role="group" aria-label="Basic example">' . $action . '</div>';
             })
             ->make(true);
     }
@@ -145,7 +147,7 @@ class RegisterDataController extends Controller
         $keluarga = PasienInformasi::where('MedicalNo', $id)->get();
         return view('register.pages.informasi-pasien.update', compact('pasien', 'keluarga'));
     }
-    
+
     public function update(Request $request, $medicalNo)
     {
         try {
@@ -170,7 +172,7 @@ class RegisterDataController extends Controller
             PasienInformasi::where('MedicalNo', $medicalNo)->delete();
             $keluargaData = array_map(function ($key) use ($request, $medicalNo) {
                 $job = $request->Job[$key] ?? null;
-                if (strlen($job) > 50) {    
+                if (strlen($job) > 50) {
                     throw new \Exception('Panjang data Job melebihi batas yang diizinkan.');
                 }
                 return [
