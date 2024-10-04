@@ -1,4 +1,5 @@
 <button class="btn btn-success float-right mb-3" id="btn-add-soap" onclick="getSoapPerawat_modal()"><i class="fas fa-plus"></i> Tambah CPPT</button>
+<button class="btn btn-primary float-right mb-3 mr-1" id="btn-add-soap" onclick="$('#modal_soap_perawat').modal('show')"><i class="fas fa-history"></i> View History SOAP</button>
 <button class="btn btn-info float-right mb-3 mr-1 btn-reload-perawat" onclick="getSoapPerawat()"><i class="fas fa-redo"></i> Reload</button>
 <table rules="all" class="table1" style="width:100%">
     <thead>
@@ -14,7 +15,7 @@
     </tbody>
 </table>
 
-
+@include('new_perawat.soap.modal.history_soap_perawat')
 @push('myscripts')
 
 <script>
