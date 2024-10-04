@@ -15,6 +15,12 @@ class PasienController extends Controller
     {
         $this->patienService = $patientService;
     }
+
+    public function visitHistoryPatient($medrec)
+    {
+        return view('register.pages.informasi-pasien.visit-history', compact('medrec'));
+    }
+
     public function visitHistory($medicalNo)
     {
         return $this->getDataVisitHistoryPatient($medicalNo);
