@@ -122,16 +122,16 @@ class ApiMasterController extends Controller
 		$query = DB::connection('mysql')->table('icd10_bpjs');
 
 		if (isset($r->category)) {
-			$query->where(function($q) use ($r) {
+			$query->where(function ($q) use ($r) {
 				$q->where('ID_ICD10', 'like', 'X%')
-				  ->orWhere('ID_ICD10', 'like', 'V%');
+					->orWhere('ID_ICD10', 'like', 'V%');
 			});
 		}
-	
+
 		if (isset($r->searchParams)) {
-			$query->where(function($q) use ($r) {
+			$query->where(function ($q) use ($r) {
 				$q->where('NM_ICD10', 'like', '%' . $r->searchParams . '%')
-				  ->orWhere('ID_ICD10', 'like', '%' . $r->searchParams . '%');
+					->orWhere('ID_ICD10', 'like', '%' . $r->searchParams . '%');
 			});
 		}
 		$data = $query->take(50)->get();
@@ -148,14 +148,14 @@ class ApiMasterController extends Controller
 		return response()->json($json, $json['code']);
 	}
 
-    function daftarmasalah(Request $r)
-    {
+	function daftarmasalah(Request $r)
+	{
 		$query = DB::connection('mysql2')->table('m_daftar_diagnosa_keperawatan');
 
 		if (isset($r->searchParams)) {
-			$query->where(function($q) use ($r) {
+			$query->where(function ($q) use ($r) {
 				$q->where('diagnosa_keperawatan', 'like', '%' . $r->searchParams . '%')
-				  ->orWhere('kode', 'like', '%' . $r->searchParams . '%');
+					->orWhere('kode', 'like', '%' . $r->searchParams . '%');
 			});
 		}
 
@@ -224,7 +224,7 @@ class ApiMasterController extends Controller
 		return response()->json($json, $json['code']);
 	}
 
-	public function departemen_unit()
+	public function site_department()
 	{
 		$dat = DB::connection('sqlsrv_sphaira')->table('DepartmentServiceUnit')->get();
 		if ($dat) {
@@ -434,15 +434,40 @@ class ApiMasterController extends Controller
 
 		if (isset($request->params)) {
 			$dat = $dat
-				->whereRaw("
+				->whereRaw(
+					"
 					GCParamedicType = ? 
-					and (lower(FirstName) like ? or lower(LastName) like ? or ParamedicCode like ?)", 
-					[$request->paramedic_type, '%'.$request->params.'%', '%'.$request->params.'%', '%'.$request->params.'%']
+					and (lower(FirstName) like ? or lower(LastName) like ? or ParamedicCode like ?)",
+					[$request->paramedic_type, '%' . $request->params . '%', '%' . $request->params . '%', '%' . $request->params . '%']
 				);
 		}
 
 		$dat = $dat->get();
 
 		return $dat;
+	}
+
+	public function getTableList(Request $request)
+	{
+		$tables = DB::connection('sqlsrv_sphaira')->select("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'");
+		foreach ($tables as $table) {
+			echo $table->TABLE_NAME . '<br>';
+		}
+	}
+
+	public function department()
+	{
+		$dat = DB::connection('sqlsrv_sphaira')->table('Department')->get();
+		dd($dat);
+		if ($dat) {
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = $dat;
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
 	}
 }
