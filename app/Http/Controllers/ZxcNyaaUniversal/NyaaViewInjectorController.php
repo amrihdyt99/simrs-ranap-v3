@@ -150,12 +150,12 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_edukasi_pasien_rehab')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         $datamypatient = DB::connection('mysql2')
-        ->table('m_registrasi')
-        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-        ->where(['m_registrasi.reg_no' => $request->reg_no])
-        ->first();
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->first();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -200,7 +200,7 @@ class NyaaViewInjectorController extends AaaBaseController
     }
 
     function assesment_resiko_jatuh_neonatus(Request $request)
-    {   
+    {
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
 
         $context = array(
@@ -248,12 +248,12 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('pengkajian_dewasa_adl')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         $nyeri = DB::connection('mysql')
             ->table('pengkajian_dewasa_skrining_nyeri')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         $gizi = DB::connection('mysql')
             ->table('pengkajian_dewasa_skrining_gizi')
             ->where('reg_no', $request->reg_no)
@@ -1104,7 +1104,11 @@ class NyaaViewInjectorController extends AaaBaseController
         $vitaldata = \App\Models\VitalSign::where('reg_no', $reg_no)->get();
         $gejaladata = \App\Models\Gejala::all();
         $dokter = \App\Models\Paramedic::all();
-        $obat = \App\Models\PasienPemberianObat::where('reg_no', $reg_no)->get();
+        $obat = DB::connection('mysql')->table('nursing_drugs')
+            ->where([
+                ['reg_no', $request->reg_no],
+                ['is_deleted', 0]
+            ])->get();
 
         $dataTransfusi = DB::connection('mysql')
             ->table('fluid_balance')
@@ -1155,6 +1159,7 @@ class NyaaViewInjectorController extends AaaBaseController
                 "dataFluidBalanceBaru",
                 "obatdaridokter",
                 "datamypatient",
+                "reg_no",
                 // "nurse_transfusi_darah",
             )
         );
@@ -1548,9 +1553,9 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->first();
-        
+
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
-        
+
 
         $informasi = DB::connection('mysql')
             ->table('rs_tindakan_medis_informasi')
@@ -1690,10 +1695,10 @@ class NyaaViewInjectorController extends AaaBaseController
             ->first();
 
         $datamypatient = DB::connection('mysql2')
-        ->table('m_registrasi')
-        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-        ->where(['m_registrasi.reg_no' => $request->reg_no])
-        ->first();
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->first();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -1701,10 +1706,8 @@ class NyaaViewInjectorController extends AaaBaseController
             'case_manager' => optional($case_manager),
             'datamypatient' => optional($datamypatient),
         );
-        
+
         return view('new_perawat.case_manager.index')
             ->with($context);
     }
-
-
 }

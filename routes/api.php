@@ -280,6 +280,7 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('get-rekon-ttd', [RekonsiliasiObatController::class, 'get_ttd_verif_obat'])->name('get-rekon-ttd.get');
 	Route::post('store-rekonsiliasi-obat', [RekonsiliasiObatController::class, 'store_rekonsiliasi_obat'])->name('rekonsiliasi-obat.store');
 	Route::post('store-case-manager', [CaseManagerController::class, 'store_case_manager'])->name('case-manager.store');
+	Route::get('get-nursing-durgs', [NewNursingController::class, 'getDrugsDatatable'])->name('nursing-drugs.get');
 });
 
 Route::prefix('bed')->name('bed.')->group(function () {

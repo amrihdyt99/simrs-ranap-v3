@@ -133,7 +133,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
             },
             success: function(resp) {
                 // console.log(resp);
-                
+
                 if (resp.geriatri && resp.geriatri.kategori_geriatri) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`
@@ -142,7 +142,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
                         </div>
                     `);
                 }
-                
+
                 if (resp.morse && resp.morse.resiko_jatuh_morse_kategori) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`
@@ -151,7 +151,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
                         </div>
                     `);
                 }
-                
+
                 if (resp.dumpty && resp.dumpty.kategori_humpty_dumpty) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`
@@ -160,7 +160,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
                         </div>
                     `);
                 }
-                
+
                 if (resp.bayi === true) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`

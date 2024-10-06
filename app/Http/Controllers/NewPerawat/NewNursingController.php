@@ -70,76 +70,225 @@ class NewNursingController extends Controller
         return view('new_perawat.nursing.new_nursing_page', compact("registrationInap", "transfusi", "makan", "parental", "output", "fluid_balance", "gejaladata", "vitaldata", "dokter", "obat", "dataTransfusi", "dataFluidBalanceBaru", "obatdaridokter", "datamypatient"));
     }
 
+    public function getDrugsDatatable(Request $request)
+    {
+        if ($request->ajax()) {
+            $obat = DB::connection('mysql')->table('nursing_drugs')
+                ->where([
+                    ['reg_no', $request->reg_no],
+                    ['is_deleted', 0]
+                ])->get();
+            return DataTables()
+                ->of($obat)
+                ->addColumn('action', function ($row) {
+                    $actionBtn = '<div class="btn-group" role="group" >';
+                    $actionBtn .= "<button type='button' class='btn btn-warning btn-edit-drug' onclick='editModalNursingDrug($row->id)' data-transfer_code='$row->id'><i class='fas fa-edit'></i></i></button>";
+                    $actionBtn .= "<button type='button' class='btn btn-danger btn-delete-drug' onclick='deleteNursingDrug($row->id)'><i class='fas fa-trash'></i></button>";
+                    $actionBtn .= '</div>';
+                    return $actionBtn;
+                })
+                ->escapeColumns([])
+                ->toJson();
+        }
+    }
+
     public function nursing_drugs_store(Request $request)
     {
-        $patient = $request->reg_no;
-        $valData = $request->validate([
-            'dosis' => ['required'],
-            'frekuensi' => ['required'],
-            'reg_no' => '',
-            'kode_obat' => '',
-            'cara_pemberian' => '',
-            'antibiotik' => '',
-            'kode_dokter' => '',
-            'verifikasi_nurse' => '',
+        // dd($request->all());
+        try {
+            $obat = explode(', ', $request->kode_obat);
+
+            $valData = $request->validate([
+                'dosis' => ['required'],
+                'frekuensi' => ['required'],
+                'kode_obat' => '',
+                'cara_pemberian' => '',
+                'kode_dokter' => '',
+            ]);
+            $valData['reg_no'] = $request->reg_no;
+            $valData['antibiotik'] = $request->antibiotik;
+            $valData['nama_dokter'] = $request->nama_dokter;
+            $valData['kode_obat'] = $obat[0];
+            $valData['nama_obat'] = $obat[1];
+            $valData['shift'] = $request->user_shift;
+            $valData['tgl_pemberian'] = $request->tgl_pemberian;
+            $valData['created_by'] = $request->created_by;
+            $valData['created_by_name'] = (DB::connection('mysql2')->table('users')->where('username', $request->created_by)->first())->name;
+            $valData['waktu_pemberian'] = json_encode($request->data_perjam);
+            $valData['created_at'] = Carbon::now();;
+
+            DB::connection('mysql')->table('nursing_drugs')->insert($valData);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ]);
+        } catch (\Throwable $throw) {
+            //throw $th;
+            // dd($throw->getMessage());
+            abort(500, $throw->getMessage());
+        }
+    }
+
+    public function nursing_drugs_update(Request $request)
+    {
+        // dd($request->all());
+        try {
+            $obat = explode(', ', $request->kode_obat);
+
+            $valData = $request->validate([
+                'dosis' => ['required'],
+                'frekuensi' => ['required'],
+                'kode_obat' => '',
+                'cara_pemberian' => '',
+                'kode_dokter' => '',
+            ]);
+            $valData['reg_no'] = $request->reg_no;
+            $valData['antibiotik'] = $request->antibiotik;
+            $valData['nama_dokter'] = $request->nama_dokter;
+            $valData['kode_obat'] = $obat[0];
+            $valData['nama_obat'] = $obat[1];
+            $valData['shift'] = $request->user_shift;
+            $valData['tgl_pemberian'] = $request->tgl_pemberian;
+            $valData['created_by'] = $request->created_by;
+            $valData['created_by_name'] = (DB::connection('mysql2')->table('users')->where('username', $request->created_by)->first())->name;
+            $valData['waktu_pemberian'] = json_encode($request->data_perjam);
+            $valData['updated_at'] = Carbon::now();;
+
+            DB::connection('mysql')->table('nursing_drugs')->where('id', $request->id_nursing_drug)->update($valData);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ]);
+        } catch (\Throwable $throw) {
+            //throw $th;
+            // dd($throw->getMessage());
+            abort(500, $throw->getMessage());
+        }
+    }
+
+    public function get_nursing_drug_data(Request $request)
+    {
+        $drugDetail = DB::connection('mysql')
+            ->table('nursing_drugs')
+            ->where('id', $request->id)
+            ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $drugDetail
         ]);
-        $valData['nama_dokter'] = $request->nama_dokter;
-        $valData['nama_obat'] = $request->kode_obat;
-        $valData['shift'] = $request->user_shift;
+    }
 
-        $data_perjam = $request->data_perjam ?? [];
-        $form_pemberian_obat_display = [
-            0 => '00',
-            1 => '01',
-            2 => '02',
-            3 => '03',
-            4 => '04',
-            5 => '05',
-            6 => '06',
-            7 => '07',
-            8 => '08',
-            9 => '09',
-            10 => '10',
-            11 => '11',
-            12 => '12',
-            13 => '13',
-            14 => '14',
-            15 => '15',
-            16 => '16',
-            17 => '17',
-            18 => '18',
-            19 => '19',
-            20 => '20',
-            21 => '21',
-            22 => '22',
-            23 => '23',
-        ];
-        foreach ($form_pemberian_obat_display as $data_perjam_key => $data_perjam_value) {
-            $valData['tgl_pemberian_' . $data_perjam_key] = $request->tgl_pemberian;
-            $valData['rentang_jam_' . $data_perjam_key] = null;
-            $valData['tipe_jam_' . $data_perjam_key] = null;
+    public function delete_nursing_drug(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user_name = (DB::connection('mysql2')->table('users')->where('username', $request->username)->first())->name;
+            DB::connection('mysql')->table('nursing_drugs')->where('id', $request->id)
+                ->update([
+                    'is_deleted' => 1,
+                    'deleted_by' => $request->username,
+                    'deleted_by_name' => $user_name,
+                    'deleted_at' => Carbon::now(),
+                ]);
 
-            if (array_key_exists($data_perjam_key, $data_perjam)) {
-                if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
-                    if ($data_perjam[$data_perjam_key]['rentang_jam'] !== null) {
-                        if (array_key_exists($data_perjam_key, $data_perjam)) {
-                            if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
-                                $valData['rentang_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['rentang_jam'];
+            DB::commit();
+            $response = response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil dihapus',
+            ]);
+
+            return $response;
+        } catch (\Throwable $throw) {
+            //throw $th;
+            DB::rollBack();
+            //dd($th->getMessage());
+            abort(500, $throw->getMessage());
+        }
+    }
+
+    public function nursing_drugs_store_old(Request $request)
+    {
+        // dd($request->all());
+        try {
+            $patient = $request->reg_no;
+            $valData = $request->validate([
+                'dosis' => ['required'],
+                'frekuensi' => ['required'],
+                'reg_no' => '',
+                'kode_obat' => '',
+                'cara_pemberian' => '',
+                'antibiotik' => '',
+                'kode_dokter' => '',
+                'verifikasi_nurse' => '',
+            ]);
+            $valData['nama_dokter'] = $request->nama_dokter;
+            $valData['nama_obat'] = $request->kode_obat;
+            $valData['shift'] = $request->user_shift;
+
+            $data_perjam = $request->data_perjam ?? [];
+            $form_pemberian_obat_display = [
+                0 => '00',
+                1 => '01',
+                2 => '02',
+                3 => '03',
+                4 => '04',
+                5 => '05',
+                6 => '06',
+                7 => '07',
+                8 => '08',
+                9 => '09',
+                10 => '10',
+                11 => '11',
+                12 => '12',
+                13 => '13',
+                14 => '14',
+                15 => '15',
+                16 => '16',
+                17 => '17',
+                18 => '18',
+                19 => '19',
+                20 => '20',
+                21 => '21',
+                22 => '22',
+                23 => '23',
+            ];
+            foreach ($form_pemberian_obat_display as $data_perjam_key => $data_perjam_value) {
+                $valData['tgl_pemberian_' . $data_perjam_key] = $request->tgl_pemberian;
+                $valData['rentang_jam_' . $data_perjam_key] = null;
+                $valData['tipe_jam_' . $data_perjam_key] = null;
+
+                if (array_key_exists($data_perjam_key, $data_perjam)) {
+                    if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
+                        if ($data_perjam[$data_perjam_key]['rentang_jam'] !== null) {
+                            if (array_key_exists($data_perjam_key, $data_perjam)) {
+                                if (array_key_exists('rentang_jam', $data_perjam[$data_perjam_key])) {
+                                    $valData['rentang_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['rentang_jam'];
+                                }
                             }
-                        }
-                        if (array_key_exists($data_perjam_key, $data_perjam)) {
-                            if (array_key_exists('tipe_jam', $data_perjam[$data_perjam_key])) {
-                                $valData['tipe_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['tipe_jam'];
+                            if (array_key_exists($data_perjam_key, $data_perjam)) {
+                                if (array_key_exists('tipe_jam', $data_perjam[$data_perjam_key])) {
+                                    $valData['tipe_jam_' . $data_perjam_key] = $data_perjam[$data_perjam_key]['tipe_jam'];
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        $valData['is_deleted'] = $request->is_deleted ?? 0;
-        PasienPemberianObat::create($valData);
-        return redirect()->route('perawat.patient.summary', ['reg_no' => $request->reg_no]);
+            dd($valData);
+
+            $valData['is_deleted'] = $request->is_deleted ?? 0;
+            PasienPemberianObat::create($valData);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ]);
+        } catch (\Throwable $throw) {
+            //throw $th;
+            // dd($throw->getMessage());
+            abort(500, $throw->getMessage());
+        }
     }
 
     public function addVitalSign(Request $request)

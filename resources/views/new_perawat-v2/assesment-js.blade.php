@@ -957,6 +957,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadDatatableNews();
+                            loadAllFunctionNursing();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -2336,3 +2337,4 @@
 @include('new_perawat.assesment.obgyn.js.obgyn_js')
 @include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
 @include('new_perawat.case_manager.js.case_manager_js')
+@include('new_perawat.nursing.v2.js.nursing_js')
