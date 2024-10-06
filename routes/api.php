@@ -7,6 +7,7 @@ use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
+use App\Http\Controllers\Master\LogActivityController;
 use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
@@ -265,6 +266,9 @@ Route::group(['prefix' => 'sphaira'], function () {
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
+	Route::get('visit-history/{medicalRecord}/ranap', [PasienController::class, 'visitHistoryRanap'])->name('visit.history.ranap');
+	Route::get('visit-history/{medicalRecord}/rajal', [PasienController::class, 'visitHistoryRajal'])->name('visit.history.rajal');
+	Route::get('visit-history/{medicalRecord}/igd', [PasienController::class, 'visitHistoryIGD'])->name('visit.history.igd');
 	Route::get('web-visit-history/{medicalRecord}', [PasienController::class, 'webVisitHistory'])->name('web.visit.history');
 });
 
@@ -289,4 +293,9 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 
 Route::prefix('bed')->name('bed.')->group(function () {
 	Route::get('/class/{class_code}', [BedController::class, 'getBedByClassCode'])->name('class');
+});
+
+Route::prefix('logActivity')->group(function () {
+	Route::get('/', [LogActivityController::class, 'data']);
+	Route::post('/store', [LogActivityController::class, 'store']);
 });
