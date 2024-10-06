@@ -206,17 +206,17 @@
                             <td>
                                 <div class="radio-container">
                                     <input type="radio" id="kategori_rendah_humpty_dumpty"
-                                        name="kategori_humpty_dumpty" value="Resiko Rendah">
+                                        name="kategori_humpty_dumpty" value="Resiko Rendah / RR (0-1)">
                                     <label for="kategori_rendah_humpty_dumpty">Resiko Rendah / RR (0-1)</label>
                                 </div>
                                 <div class="radio-container">
                                     <input type="radio" id="kategori_sedang_humpty_dumpty"
-                                        name="kategori_humpty_dumpty" value="Resiko Sedang">
+                                        name="kategori_humpty_dumpty" value="Resiko Sedang / RS (2-3)">
                                     <label for="kategori_sedang_humpty_dumpty">Resiko Sedang / RS (2-3)</label>
                                 </div>
                                 <div class="radio-container">
                                     <input type="radio" id="kategori_tinggi_humpty_dumpty"
-                                        name="kategori_humpty_dumpty" value="Resiko Tinggi">
+                                        name="kategori_humpty_dumpty" value="Resiko Tinggi / RT (4-5)">
                                     <label for="kategori_tinggi_humpty_dumpty">Resiko Tinggi / RT (4-5)</label>
                                 </div>
                             </td>

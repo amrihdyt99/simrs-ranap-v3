@@ -102,3 +102,5 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
         });
     });
 });
+
+Route::post('/perawat/takeOver', [DashboardController::class, 'takeOver'])->name('perawat.takeOver');

@@ -704,6 +704,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             getSoapPerawat();
+                            loadHistorySoapPerawat();
                             $('#btn-save-soap').click(function() {
                                 addbtnSaveSoap();
                             });
@@ -2338,3 +2339,4 @@
 @include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
 @include('new_perawat.case_manager.js.case_manager_js')
 @include('new_perawat.nursing.v2.js.nursing_js')
+@include('new_perawat.soap.js.soap_perawat_js')

@@ -92,11 +92,12 @@ class DashboardController extends Controller
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_bed', 'm_registrasi.reg_no', '=', 'm_bed.registration_no')
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             ->leftJoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
+            ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
+            ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode')
             ->where('m_registrasi.reg_discharge', '!=', '3')
             ->whereNull('m_registrasi.reg_deleted')
             ->whereRaw("(m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)", [$ruang, $ruang])
@@ -104,10 +105,31 @@ class DashboardController extends Controller
                 'm_pasien.PatientName',
                 'm_registrasi.reg_medrec',
                 'm_registrasi.reg_no',
+                'm_registrasi.reg_dokter',
                 'm_paramedis.ParamedicName',
-                DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '".$ruang."') as RoomName"),
+                DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '".$ruang."') as ServiceUnitName"),
                 'businesspartner.BusinessPartnerName as reg_cara_bayar',
                 'm_registrasi.reg_tgl',
+                'm_registrasi.reg_jam',
+                'm_ruangan.RoomName',
+                'm_registrasi.service_unit',
+                'm_registrasi.reg_perawat_care',
+                'm_bed.room_id',
+                DB::raw('GROUP_CONCAT(DISTINCT CASE WHEN m_physician_team.kode_dokter != m_registrasi.reg_dokter THEN physician.ParamedicName END SEPARATOR "|") as physician_team'),
+            ])
+            ->groupBy([
+                'm_pasien.PatientName',
+                'm_registrasi.reg_medrec',
+                'm_registrasi.reg_no',
+                'm_registrasi.reg_dokter',
+                'm_paramedis.ParamedicName',
+                'businesspartner.BusinessPartnerName',
+                'm_registrasi.reg_tgl',
+                'm_registrasi.reg_jam',
+                'm_ruangan.RoomName',
+                'm_bed.room_id',
+                'm_registrasi.service_unit',
+                'm_registrasi.reg_perawat_care',
             ])
             ->orderByDesc('m_registrasi.reg_tgl')
             ->get();
@@ -130,4 +152,63 @@ class DashboardController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function takeOver(Request $request){
+        try {
+            $check_ = RegistrationInap::where('reg_no', $request->reg_no)
+                ->first();
+
+            $data = [];
+
+            if (isset($check_->reg_perawat_care)) {
+                foreach (json_decode($check_->reg_perawat_care, true) as $key => $value) {
+                    if (!$request->type) {
+                        if ($value['kode'] != $request->dokter_code) {
+                            array_push($data, $value);
+                        }
+                    } else {
+                        array_push($data, $value);
+                    }
+                }
+
+                array_push($data, [
+                    'kode' => $request->dokter_code,
+                    'taken_at' => date('Y-m-d H:i:s'),
+                    'room_id' => $request->room_id,
+                    'service_unit' => $request->service_unit
+                ]);
+
+                
+            } else {
+                $data = [
+                    [
+                        'kode' => $request->dokter_code,
+                        'taken_at' => date('Y-m-d H:i:s')
+                    ]
+                ];
+            }
+            
+            $update = RegistrationInap::where('reg_no', $request->reg_no)
+                ->update([
+                    'reg_perawat_care' => json_encode($data)
+                ]);
+
+            if ($update) {
+                return [
+                    'code' => 200,
+                    'success' => true,
+                    'message' => 'Pasien berhasil diambil alih'
+                ];
+            } else {
+                return [
+                    'code' => 500,
+                    'success' => false,
+                    'message' => 'Pasien gagal diambil alih'
+                ];
+            }
+            
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }
