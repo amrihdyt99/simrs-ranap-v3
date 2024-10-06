@@ -33,10 +33,8 @@ class RegistrationRanapService
     public function ringkasanMasukKeluarPasien($reg_no)
     {
         try {
-            $data_registration = $this->db->connDbMaster()->table('m_registrasi')
-                ->where('reg_no', $reg_no)->first();
-            $data_patient = $this->db->connDbMaster()->table('m_pasien')
-                ->where('MedicalNo', $data_registration->reg_medrec)->first();
+            $data_registration = $this->db->connDbMaster()->table('m_registrasi')->where('reg_no', $reg_no)->first();
+            $data_patient = $this->db->connDbMaster()->table('m_pasien')->where('MedicalNo', $data_registration->reg_medrec)->first();
             $count_visit = $this->patientRepo->countVisitRanap($data_registration->reg_medrec);
             $data_payment = $this->businessPartnerRepo->findOneById($data_registration->reg_cara_bayar);
             $bed = $this->bedRepo->findOne($data_registration->bed);
