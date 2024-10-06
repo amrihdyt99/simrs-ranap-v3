@@ -458,7 +458,6 @@ class ApiMasterController extends Controller
 	public function department()
 	{
 		$dat = DB::connection('sqlsrv_sphaira')->table('Department')->get();
-		dd($dat);
 		if ($dat) {
 			$json['code'] = 200;
 			$json['msg'] = 'Ok';
