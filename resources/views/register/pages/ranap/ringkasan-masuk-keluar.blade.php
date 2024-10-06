@@ -143,23 +143,26 @@
             <div class="heading-content">
                 <h4>2. Identitas Penanggung Jawab</h4>
             </div>
+            @foreach ($patient_pj as $pj)
             <table>
                 <tr>
                     <td>
                         <div class="flex-col">
-                            <span>Nama Penanggung Jawab : - </span>
-                            <span>Hubungan dengan Pasien : - </span>
-                            <span>No. Induk Kependudukan (NIK) : -</span>
+                            <span>Nama Penanggung Jawab {{ $loop->iteration }} : {{ $pj->reg_pjawab_nama ?? '-' }} </span>
+                            <span>Hubungan dengan Pasien : {{ $pj->reg_hub_pasien ?? '-' }} </span>
+                            <span>No. Induk Kependudukan (NIK) : {{ $pj->reg_pjawab_nik ?? '-' }}</span>
                         </div>
                     </td>
                     <td>
                         <div class="flex-col">
-                            <span>Alamat Lengkap : - </span>
-                            <span>No.Telp/HP: - </span>
+                            <span>Alamat Lengkap : {{ $pj->reg_pjawab_alamat ?? '-' }}</span>
+                            <span>No.Telp/HP: {{ $pj->reg_pjawab_nohp ?? '-' }} </span>
                         </div>
                     </td>
                 </tr>
             </table>
+            @endforeach
+            
 
             <div class="gap"></div>
             <div class="heading-content">

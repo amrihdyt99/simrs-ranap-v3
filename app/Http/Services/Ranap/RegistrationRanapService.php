@@ -4,6 +4,7 @@ namespace App\Http\Services\Ranap;
 
 use App\Repository\MasterBedRepository;
 use App\Repository\MasterBusinessPartnerRepository;
+use App\Repository\MasterRegistrationPasienPJ;
 use App\Repository\MasterRuanganRepository;
 use App\Repository\PatientRepository;
 use App\Utils\ConnectionDB;
@@ -11,20 +12,22 @@ use App\Utils\UtilsHelper;
 
 class RegistrationRanapService
 {
-    protected $utils, $db, $patientRepo, $businessPartnerRepo, $bedRepo, $roomRepo;
+    protected $utils, $db, $patientRepo, $businessPartnerRepo, $bedRepo, $roomRepo, $pasienPjRepo;
     public function __construct(
         UtilsHelper $utilsHelper,
         ConnectionDB $connDb,
         PatientRepository $patientRepository,
         MasterBusinessPartnerRepository $masterBusinessPartnerRepository,
         MasterBedRepository $masterBedRepository,
-        MasterRuanganRepository $masterRuanganRepository
+        MasterRuanganRepository $masterRuanganRepository,
+        MasterRegistrationPasienPJ $masterRegistrationPasienPJ
     ) {
         $this->db = $connDb;
         $this->utils = $utilsHelper;
         $this->bedRepo = $masterBedRepository;
         $this->roomRepo = $masterRuanganRepository;
         $this->patientRepo = $patientRepository;
+        $this->pasienPjRepo = $masterRegistrationPasienPJ;
         $this->businessPartnerRepo = $masterBusinessPartnerRepository;
     }
     public function ringkasanMasukKeluarPasien($reg_no)
@@ -49,6 +52,7 @@ class RegistrationRanapService
                 'patient_education' => $this->utils->parsePatientEducation($data_patient->GCEducation),
                 'patient_marital_status' => $this->utils->parseMaritalStatus($data_patient->GCMaritalStatus),
                 'patient_occupation' => $this->utils->parseOccupation($data_patient->GCOccupation),
+                'patient_pj' => $this->pasienPjRepo->getPjPasien($reg_no),
             ];
             // dd($context);
             return view('register.pages.ranap.ringkasan-masuk-keluar', $context);
