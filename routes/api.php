@@ -7,6 +7,7 @@ use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
+use App\Http\Controllers\Master\LogActivityController;
 use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
@@ -291,4 +292,9 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 
 Route::prefix('bed')->name('bed.')->group(function () {
 	Route::get('/class/{class_code}', [BedController::class, 'getBedByClassCode'])->name('class');
+});
+
+Route::prefix('logActivity')->group(function () {
+	Route::get('/', [LogActivityController::class, 'data']);
+	Route::post('/store', [LogActivityController::class, 'store']);
 });
