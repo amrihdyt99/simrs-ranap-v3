@@ -14,6 +14,7 @@ use App\Http\Controllers\Perawat\AssesmentDewasaController;
 use App\Http\Controllers\Perawat\CaseManagerController;
 use App\Http\Controllers\Perawat\ObgynController;
 use App\Http\Controllers\Perawat\RekonsiliasiObatController;
+use App\Http\Controllers\Perawat\RiwayatController;
 use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -298,4 +299,12 @@ Route::prefix('bed')->name('bed.')->group(function () {
 Route::prefix('logActivity')->group(function () {
 	Route::get('/', [LogActivityController::class, 'data']);
 	Route::post('/store', [LogActivityController::class, 'store']);
+});
+
+//api form perawat
+Route::prefix('perawat')->name('perawat.')->group(function () {
+	Route::get('/assesment-dewasa', [RiwayatController::class, 'getAssesmentDewasa'])->name('assesment-dewasa');
+	Route::get('/assesment-neonatus', [RiwayatController::class, 'getAssesmentNeonatus'])->name('assesment-neonatus');
+	Route::get('/assesment-anak', [RiwayatController::class, 'getAssesmentAnak'])->name('assesment-anak');
+	Route::get('/assesment-obgyn', [RiwayatController::class, 'getAssesmentObgyn'])->name('assesment-obgyn');
 });

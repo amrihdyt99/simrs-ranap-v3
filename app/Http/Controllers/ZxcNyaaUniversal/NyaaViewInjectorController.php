@@ -1328,23 +1328,17 @@ class NyaaViewInjectorController extends AaaBaseController
 
     function riwayat(Request $request)
     {
-        $asessment_awal = DB::connection('mysql')
-            ->table('pengkajian_awal_pasien_perawat')
-            ->where('reg_no', $request->reg_no)
-            ->first();
-
-        $skrining_gizi = DB::connection('mysql')
-            ->table('skrining_gizi')
+        $data_pasien = DB::connection('mysql2')
+            ->table('m_registrasi')
             ->where('reg_no', $request->reg_no)
             ->first();
 
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
-            'asessment_awal' => optional($asessment_awal),
-            'skrining_gizi' => optional($skrining_gizi),
-
+            'data_pasien' => optional($data_pasien),
         );
+        
         return view('new_perawat.riwayat-v2.index')
             ->with($context);
     }
