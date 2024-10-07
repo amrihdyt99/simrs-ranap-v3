@@ -10,6 +10,7 @@ use App\Http\Controllers\Master\RoomClassController;
 use App\Http\Controllers\Master\MedicineController;
 use App\Http\Controllers\Master\IndicationController;
 use App\Http\Controllers\Master\InterventionController;
+use App\Http\Controllers\Master\LogActivityController;
 use App\Http\Controllers\Master\OrganizationController;
 use App\Http\Controllers\Master\OutcomeController;
 use App\Http\Controllers\Master\RuanganController;
@@ -63,5 +64,4 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::prefix('base')->group(function () {
         Route::get('/paramedic', [ApiMasterController::class, 'paramedic']);
     });
-
 });

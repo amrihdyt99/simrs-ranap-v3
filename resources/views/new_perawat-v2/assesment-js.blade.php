@@ -958,6 +958,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadDatatableNews();
+                            loadAllFunctionNursing();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1070,6 +1071,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.riwayat')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            loadAllFunctionRiwayat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -2337,4 +2339,6 @@
 @include('new_perawat.assesment.obgyn.js.obgyn_js')
 @include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
 @include('new_perawat.case_manager.js.case_manager_js')
+@include('new_perawat.nursing.v2.js.nursing_js')
 @include('new_perawat.soap.js.soap_perawat_js')
+@include('new_perawat.riwayat-v2.js.riwayat_js')

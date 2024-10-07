@@ -56,6 +56,9 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
         Route::post('/drugs/ubah', [NursingController::class, 'ubah_drugs'])->name('perawat.drugs.ubah');
         Route::get('/newnursing/{reg_no}', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'nursing'])->where('reg_no', '(.*)')->name('newperawat.patient.nursing');
         Route::post('/nursing-drugs/store', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'nursing_drugs_store'])->name('perawat.nursing_drugs_store');
+        Route::post('/nursing-drugs/update', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'nursing_drugs_update'])->name('perawat.nursing_drugs_update');
+        Route::get('/nursing-drugs/get', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'get_nursing_drug_data'])->name('perawat.nursing_drugs_get');
+        Route::post('/nursing-drugs/delete', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'delete_nursing_drug'])->name('perawat.nursing_drugs_delete');
         Route::post('/store_assesment_gizi', [NursingController::class, 'store_assesment_gizi'])->name('perawat.store_assesment_gizi_dewasa');
         Route::post('/data_assesment_gizi', [NursingController::class, 'data_assesment_gizi'])->name('perawat.get_data_assesment_gizi');
 

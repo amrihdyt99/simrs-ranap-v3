@@ -77,6 +77,12 @@
                         </div>--}}
 
                         <div class="row">
+                            <div class="left-tab" id="tab-physician-team-dokter" onclick="clickTab('physician-team-dokter')">
+                                Physician Team
+                            </div>
+                        </div>
+                        
+                        <div class="row">
                             <div class="left-tab" id="tab-resume" onclick="clickTab('resume')">
                                 Resume Pasien
                             </div>
@@ -157,6 +163,12 @@
                                     <div id="panel-resume">
                                         <div class="text-black" style="font-size: 14px">
                                             @include('new_dokter.resume.index')
+                                        </div>
+                                    </div>
+
+                                    <div id="panel-physician-team-dokter">
+                                        <div class="text-black" style="font-size: 14px">
+                                            @include('new_dokter.physician_team.index')
                                         </div>
                                     </div>
                                     <div id="panel-riwayat">
@@ -589,4 +601,5 @@
     <script src="{{asset('new_assets/js/discharge/prosedur.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/billing.js')}}"></script>
     <script src="{{asset('new_assets/js/discharge/discharge.js')}}"></script>
+    <script src="{{asset('new_assets/js/physician_team.js')}}"></script>
 @endsection

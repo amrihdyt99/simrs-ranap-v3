@@ -36,6 +36,7 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
     Route::get('vclaim-manual/edit/{reg_no}', [Ranap\RegisterController::class, 'viewFormEditVClaimManual'])->where('reg_no', '(.*)')->name('register.vclaim.edit');
     Route::post('vclaim-manual/update/{id}', [Ranap\RegisterController::class, 'updateVclaim'])->name('register.vclaim.update');
     Route::post('vclaim-manual/delete/{id}', [Ranap\RegisterController::class, 'deleteVclaim'])->name('register.vclaim.delete');
+    Route::get('ringkasan-masuk-keluar/{reg_no}', [Ranap\RegisterController::class, 'ringkasanMasukKeluarPasien'])->where('reg_no', '(.*)')->name('register.ranap.ringkasan-masuk-keluar');
 });
 
 Route::prefix('igd')->middleware(['auth', 'role:adminregister'])->group(function () {
