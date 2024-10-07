@@ -201,8 +201,8 @@ $fisik = optional((object)[]);
         <label class="custom-control-label" for="asper_kepala_chepal">Chepal Hematoma</label>
       </div>
       <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" class="custom-control-input" id="lainnya_kepala" value="Lainnya" name="fisik[spesifik_kepala]" {{ $fisik->spesifik_kepala=='Lainnya' ? 'checked' : '' }}>
-        <label class="custom-control-label" for="lainnya_kepala">Lainnya</label>
+        <input type="radio" class="custom-control-input" id="asper_kepala_chepal" value="Lainnya" name="fisik[spesifik_kepala]" {{ $fisik->spesifik_kepala=='Lainnya' ? 'checked' : '' }}>
+        <label class="custom-control-label" for="asper_kepala_chepal">Lainnya</label>
       </div>
       <input id="asper_pernafasan" type="text" class="form-control" name="fisik[spesifik_kepala_ket]" value="{{ $fisik->spesifik_kepala_ket }}" placeholder="Lainnya...">
     </div>

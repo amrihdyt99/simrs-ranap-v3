@@ -114,7 +114,10 @@ class UnitController extends Controller
      * @param  \App\Models\ServiceUnit  $serviceUnit
      * @return \Illuminate\Http\Response
      */
-    public function show(ServiceUnit $unit) {}
+    public function show(ServiceUnit $unit)
+    {
+
+    }
 
     /**
      * Show the form for editing the specified resource.

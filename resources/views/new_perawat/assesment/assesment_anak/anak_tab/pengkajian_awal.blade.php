@@ -299,7 +299,7 @@ $adl_anak = optional((object)[]);
           <input type="radio" class="custom-control-input" id="merokok_ya" name="awal[merokok]" value="1" {{ $assesment->merokok == 1 ? 'checked' : '' }}>
           <label class="custom-control-label" for="merokok_ya">Ya</label>
           <div class="input-group ml-2">
-            <input type="number" id="frekuensi_merokok" name="awal[frekuensi_merokok]" class="form-control" style="width: 60px;" value="{{ $assesment->frekuensi_merokok ?? '' }}">
+            <input type="text" id="frekuensi_merokok" name="awal[frekuensi_merokok]" class="form-control" style="width: 60px;" value="{{ $assesment->frekuensi_merokok ?? '' }}">
             <div class="input-group-append">
               <span class="input-group-text bg-primary text-white" style="padding: 5px;">batang/hari</span>
             </div>

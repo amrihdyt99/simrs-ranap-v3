@@ -54,8 +54,8 @@ class NeonatusController extends Controller
                     $fisikData->update($fisik);
                 } else {
                     $fisikData = NeonatusFisik::create($fisik);
-                    // $skrinning['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
-                    // Neonatus::create($skrinning);
+                    $skrinning['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
+                    Neonatus::create($skrinning);
                 }
 
                 $ttd['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
@@ -65,7 +65,7 @@ class NeonatusController extends Controller
                     $skrinningData = NeonatusNyeri::where('reg_no', $reg_no)->first();
                     $skrinningData->update($skrinning);
                 } else {
-                    NeonatusNyeri::create($skrinning);
+                    $skrinningData->create($skrinning);
                 }
 
                 if ($cekTtd > 0) {

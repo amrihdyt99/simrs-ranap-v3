@@ -437,12 +437,6 @@
                                         <hr>
                                         <h5><b>DATA RAWAT INAP</b></h5>
                                     </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label for="asal_rujukan">Asal Rujukan</label>
-                                            <textarea name="asal_rujukan" id="asal_rujukan" cols="10" rows="3" class="form-control">{{ $registration->asal_rujukan??'-' }}</textarea>
-                                        </div>
-                                    </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label class="label-admisi">Bed Ranap</label>
@@ -563,16 +557,6 @@
                                         <div class="form-group">
                                             <label class="label-admisi">Catatan Pasien</label>
                                             <textarea class="form-control w-100" rows="3" name="reg_cttn" id="reg_cttn">{{ $registration->reg_cttn ?? '-' }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label for="kasus_polisi">Kasus Polisi/Hukum</label>
-                                            <select name="kasus_polisi" id="kasus_polisi" class="form-control">
-                                                <option value="">Pilih</option>
-                                                <option value="1" {{ $registration->kasus_polisi == "1" ? 'selected': '' }}>Ya</option>
-                                                <option value="0" {{ $registration->kasus_polisi == "0" ? 'selected': '' }}>Tidak</option>
-                                            </select>
                                         </div>
                                     </div>
                                 </div>

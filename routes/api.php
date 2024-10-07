@@ -7,14 +7,12 @@ use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
-use App\Http\Controllers\Master\LogActivityController;
 use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
 use App\Http\Controllers\Perawat\CaseManagerController;
 use App\Http\Controllers\Perawat\ObgynController;
 use App\Http\Controllers\Perawat\RekonsiliasiObatController;
-use App\Http\Controllers\Perawat\RiwayatController;
 use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -153,8 +151,6 @@ Route::post('addCathlabTimeOut', [\App\Http\Controllers\NewPerawat\NewNursingCon
 Route::post('addCathlabSignOut', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'simpan_cathlab_signout'])->name('add.cathlab_sign_out');
 Route::post('pemeriksaan_bayi', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'simpan_pemeriksaan_bayi'])->name('add.pemeriksaan_bayi');
 Route::get('getdokter', [App\Http\Controllers\NewPerawat\NewNursingController::class, 'getPhysician'])->name('get.dokter');
-Route::post('addphysicianteamDokter', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'addPhysicianTeamDokter'])->name('add.physicianteam.dokter');
-Route::delete('/deletePhysicianTeamDokter/{id}', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'deletePhysicianTeamDokter'])->name('delete.physicianteam.dokter');
 Route::post('addphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPhysicianTeam'])->name('add.physicianteam');
 Route::post('getphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getPhysicianTeam'])->name('get.physicianteam');
 Route::post('addTindakanIntra', [App\Http\Controllers\NewPerawat\NewNursingController::class, 'addTindakanIntra'])->name('add.tindakan.intra');
@@ -258,15 +254,13 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('unit_ruang', [ApiMasterController::class, 'unit_ruang'])->name('sphaira.ur');
 	Route::get('unit_item', [ApiMasterController::class, 'unit_item'])->name('sphaira.ui');
 	Route::get('location', [ApiMasterController::class, 'location'])->name('sphaira.lc');
-	Route::get('site_departement', [ApiMasterController::class, 'site_department'])->name('sphaira.site-department');
+	Route::get('departemen', [ApiMasterController::class, 'departemen_unit'])->name('sphaira.du');
 	Route::get('contract', [ApiMasterController::class, 'contract'])->name('sphaira.cc');
 	Route::get('contract/{bisnis}', [ApiMasterController::class, 'contract'])->name('sphaira.ccb');
 	Route::get('icd9', [ApiMasterController::class, 'icd_9'])->name('sphaira.i9');
 	Route::get('icd10', [ApiMasterController::class, 'icd_10'])->name('sphaira.i10');
 	Route::get('tdd/{id}', [ApiMasterController::class, 'get_ttd'])->name('sphaira.ttd');
 	Route::get('daftarmasalah', [ApiMasterController::class, 'daftarmasalah'])->name('sphaira.daftarmasalah');
-	Route::get('get-tables', [ApiMasterController::class, 'getTableList'])->name('sphaira.get-table-list');
-	Route::get('departement', [ApiMasterController::class, 'department'])->name('sphaira.department');
 });
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
@@ -292,23 +286,9 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('get-rekon-ttd', [RekonsiliasiObatController::class, 'get_ttd_verif_obat'])->name('get-rekon-ttd.get');
 	Route::post('store-rekonsiliasi-obat', [RekonsiliasiObatController::class, 'store_rekonsiliasi_obat'])->name('rekonsiliasi-obat.store');
 	Route::post('store-case-manager', [CaseManagerController::class, 'store_case_manager'])->name('case-manager.store');
-	Route::get('get-nursing-durgs', [NewNursingController::class, 'getDrugsDatatable'])->name('nursing-drugs.get');
 	Route::post('store-case-manager-akumulasi', [CaseManagerController::class, 'store_case_manager_akumulasi'])->name('case-manager-akumulasi.store');
 });
 
 Route::prefix('bed')->name('bed.')->group(function () {
 	Route::get('/class/{class_code}', [BedController::class, 'getBedByClassCode'])->name('class');
-});
-
-Route::prefix('logActivity')->group(function () {
-	Route::get('/', [LogActivityController::class, 'data']);
-	Route::post('/store', [LogActivityController::class, 'store']);
-});
-
-//api form perawat
-Route::prefix('perawat')->name('perawat.')->group(function () {
-	Route::get('/assesment-dewasa', [RiwayatController::class, 'getAssesmentDewasa'])->name('assesment-dewasa');
-	Route::get('/assesment-neonatus', [RiwayatController::class, 'getAssesmentNeonatus'])->name('assesment-neonatus');
-	Route::get('/assesment-anak', [RiwayatController::class, 'getAssesmentAnak'])->name('assesment-anak');
-	Route::get('/assesment-obgyn', [RiwayatController::class, 'getAssesmentObgyn'])->name('assesment-obgyn');
 });

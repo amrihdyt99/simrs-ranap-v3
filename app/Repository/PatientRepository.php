@@ -120,15 +120,4 @@ class PatientRepository
             throw $th;
         }
     }
-
-    public function countVisitRanap($medrec)
-    {
-        try {
-            return $this->db->connDbMaster()->table('m_registrasi')
-                ->where('reg_medrec', $medrec)
-                ->count();
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
 }

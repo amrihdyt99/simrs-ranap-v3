@@ -95,24 +95,6 @@
 
 <script>
     $(document).ready(function() {
-        $('.next').click(function() {
-            var activeTab = $('.nav-tabs .active');
-            var nextTab = activeTab.closest('li').next('li').find('a');
-            if (nextTab.length) {
-                nextTab.trigger('click');
-            }
-        });
-
-        $('.prev').click(function() {
-            var activeTab = $('.nav-tabs .active');
-            var prevTab = activeTab.closest('li').prev('li').find('a');
-            if (prevTab.length) {
-                prevTab.trigger('click');
-            }
-        });
-    });
-
-    $(document).ready(function() {
         function calculateSadPersonScoreObgyn() {
             let totalScore = 0;
 

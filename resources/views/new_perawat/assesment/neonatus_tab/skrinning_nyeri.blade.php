@@ -14,7 +14,7 @@ $skrinning = optional((object)[]);
       </div>
     </div>
     <div class="card-body">
-      <table class="table1 w-100">
+      <table class="w-100" border="1">
         <thead>
           <tr>
             <th scope=" col" colspan="2">Parameter</th>
@@ -147,7 +147,7 @@ $skrinning = optional((object)[]);
           </tr>
       </table>
       <h5 class="m-2">Pada bayi prematur, ditambahkan dua parameter lagi yaitu heart rate dan saturasi oksigen</h5>
-      <table class="table1 w-100" border="1">
+      <table class="w-100" border="1">
         <tbody>
           <tr>
             <td rowspan="3">Heart Rate</td>
@@ -300,7 +300,7 @@ $skrinning = optional((object)[]);
           <input id="warna_urin" type="text" class="form-control" name="skrinning[warna_urin]" value="{{ $skrinning->warna_urin }}">
         </div>
       </div>
-      <h5 class="mb-3">Pengkajian Kebutuhan Informasi Dan Edukasi (diisi oleh perawat / bidan)</h5>
+      <h5 class="mb-3">Pengkajian Kebutuhan Informasi Dan Informasi (diisi oleh perawat / bidan)</h5>
       <div class="form-group row">
         <label class="col-form-label col-sm-4">Bahasa yang digunakan orang tua : </label>
         @php
@@ -345,7 +345,6 @@ $skrinning = optional((object)[]);
       @php
       $hambatan=explode(', ',$skrinning->hambatan_ortu)??[];
       @endphp
-      <div class="form-group">
       <div class="col-sm-12">
         <div class="custom-control custom-checkbox custom-control-inline">
           <input type="checkbox" class="custom-control-input" id="hambatan_tidak_ada" value="Tidak Ada" name="skrinning[hambatan_ortu][]" {{in_array('Tidak Ada',$hambatan) ? 'checked' : ''}}>
@@ -399,12 +398,10 @@ $skrinning = optional((object)[]);
         </div>
         <input id="[hambatan_ket]" type="text" class="form-control" name="skrinning[hambatan_ortu_lain]" value="{{ $skrinning->hambatan_ortu_lain }}" placeholder="Lainnya...">
       </div>
-    </div>
       <h5 class="mt-3 mb-3">Kebutuhan edukasi orang tua pasien : (pilih topik perawat / bidan)</h5>
       @php
       $edukasi=explode(', ',$skrinning->edukasi_ortu)??[];
       @endphp
-      <div class="form-group">
       <table class="w-100">
         <tbody>
           <tr>
@@ -451,7 +448,6 @@ $skrinning = optional((object)[]);
           </tr>
         </tbody>
       </table>
-    </div>
       <input id="edukasi_ket" type="text" class="form-control" name="skrinning[edukasi_ortu_ket]" placeholder="Lainnya..." value="{{ $skrinning->edukasi_ortu_ket }}">
       <hr>
       <div class="container mt-3">

@@ -267,7 +267,7 @@
             <label class="custom-control-label" for="turgor_kulit_elastis">Elastis</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="turgor_kulit_tidak_elastis" name="table9[turgor_kulit]" value="tidak elastis" {{ $pengkajian_kebutuhan->turgor_kulit == 'tidak elastis' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="turgor_kulit_tidak_elastis" name="table9[turgor_kulit]" value="tidak_elastis" {{ $pengkajian_kebutuhan->turgor_kulit == 'tidak_elastis' ? 'checked' : '' }}>
             <label class="custom-control-label" for="turgor_kulit_tidak_elastis">Tidak Elastis</label>
         </div>
     </div>
@@ -296,7 +296,7 @@
     </div>
     <div class="col-sm-2">
         <div class="input-group">
-            <input type="text" id="frekuensi_bab" name="table9[frekuensi_bab]" class="form-control" style="width: 30px;" value="{{ $pengkajian_kebutuhan->frekuensi_bab != 'tidak dapat dikaji' ? $pengkajian_kebutuhan->frekuensi_bab : '' }}">
+            <input type="text" id="frekuensi_bab" name="table9[frekuensi_bab]" class="form-control" style="width: 30px;" value="{{ $pengkajian_kebutuhan->frekuensi_bab != 'tidak_dapat_dikaji' ? $pengkajian_kebutuhan->frekuensi_bab : '' }}">
             <div class="input-group-append">
                 <span class="input-group-text bg-primary text-white" style="padding: 5px;">x/hari</span>
             </div>
@@ -304,7 +304,7 @@
     </div>
     <div class="col-sm-2">
         <div class="custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="frekuensi_bab_tidak_dapat_dikaji" name="table9[frekuensi_bab]" value="tidak dapat dikaji" {{ $pengkajian_kebutuhan->frekuensi_bab == 'tidak dapat dikaji' ? 'checked' : '' }}>
+            <input type="checkbox" class="custom-control-input" id="frekuensi_bab_tidak_dapat_dikaji" name="table9[frekuensi_bab]" value="tidak_dapat_dikaji" {{ $pengkajian_kebutuhan->frekuensi_bab == 'tidak_dapat_dikaji' ? 'checked' : '' }}>
             <label class="custom-control-label" for="frekuensi_bab_tidak_dapat_dikaji">Tidak dapat dikaji</label>
         </div>
     </div>
@@ -315,7 +315,7 @@
     </div>
     <div class="col-sm-10">
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="keluhan_bab_tidak_ada" name="table9[keluhan_bab]" value="tidak ada" {{ $pengkajian_kebutuhan->keluhan_bab == 'tidak ada' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="keluhan_bab_tidak_ada" name="table9[keluhan_bab]" value="tidak_ada" {{ $pengkajian_kebutuhan->keluhan_bab == 'tidak_ada' ? 'checked' : '' }}>
             <label class="custom-control-label" for="keluhan_bab_tidak_ada">Tidak ada</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
@@ -408,7 +408,7 @@
     </div>
     <div class="col-sm-8">
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="keluhan_bak_tidak_ada" name="table9[keluhan_bak]" value="tidak ada" {{ $pengkajian_kebutuhan->keluhan_bak == 'tidak ada' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="keluhan_bak_tidak_ada" name="table9[keluhan_bak]" value="tidak_ada" {{ $pengkajian_kebutuhan->keluhan_bak == 'tidak_ada' ? 'checked' : '' }}>
             <label class="custom-control-label" for="keluhan_bak_tidak_ada">Tidak ada</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
@@ -421,11 +421,6 @@
         </div>
         <input type="text" id="keluhan_bak_lainnya" name="table9[keluhan_bak_lainnya]" class="form-control" placeholder="Lainnya..." value="{{ $pengkajian_kebutuhan->keluhan_bak_lainnya }}">
     </div>
-</div>
-
-<div class="pagination d-flex justify-content-between mt-2">
-    <button type="button" class="btn btn-secondary prev" data-toggle="tab">Previous</button>
-    <button type="button" class="btn btn-secondary next" data-toggle="tab">Next</button>
 </div>
 
 <div class="container mt-3">

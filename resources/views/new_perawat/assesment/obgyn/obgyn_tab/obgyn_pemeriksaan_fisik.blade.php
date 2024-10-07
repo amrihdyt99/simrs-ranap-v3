@@ -747,8 +747,3 @@
         <tbody></tbody>
     </table>
 </div>
-
-<div class="pagination d-flex justify-content-between mt-2">
-    <button type="button" class="btn btn-secondary prev" data-toggle="tab">Previous</button>
-    <button type="button" class="btn btn-secondary next" data-toggle="tab">Next</button>
-</div>

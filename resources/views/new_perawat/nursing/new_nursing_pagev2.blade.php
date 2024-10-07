@@ -25,13 +25,9 @@
         {{-- <a class="nav-link" id="oxygen-tab" data-toggle="tab" href="#oxygen" role="tab" aria-controls="oxygen" aria-selected="false">Oxygenation</a> --}}
     </li>
     <li class="nav-item">
-        <a onclick="neko_refresh_datatable('dt_nursing_drugs')" class="nav-link" id="drugs-tab" data-toggle="tab" href="#drugs" role="tab" aria-controls="drugs"
+        <a class="nav-link" id="drugs-tab" data-toggle="tab" href="#drugs" role="tab" aria-controls="drugs"
             aria-selected="false">Drugs</a>
     </li>
-    <!-- <li class="nav-item">
-        <a class="nav-link" id="drugs-old-tab" data-toggle="tab" href="#drugs-old" role="tab" aria-controls="drugs"
-            aria-selected="false">Drugs</a>
-    </li> -->
     <li class="nav-item">
         <a class="nav-link" id="drugs-tab" data-toggle="tab" href="#drugstable" role="tab" aria-controls="drugs"
             aria-selected="false">Drugs History</a>
@@ -68,22 +64,14 @@
         @include('perawat.pages.patient.nursing.oxygen')
     </div> --}}
     <div class="tab-pane fade" id="drugs" role="tabpanel" aria-labelledby="drugs-tab">
-        @include('new_perawat.nursing.v2.drugs', [
-        'obat' => $obat,
-        'obatdaridokter' => $obatdaridokter,
-        'datamypatient' => $datamypatient,
-        'reg_no' => $reg_no,
-        ])
-    </div>
-    <!-- <div class="tab-pane fade" id="drugs-old" role="tabpanel" aria-labelledby="drugs-old-tab">
         @include('new_perawat.nursing.new_prescribe', [
         'obat' => $obat,
         'obatdaridokter' => $obatdaridokter,
         'datamypatient' => $datamypatient,
         ])
-    </div> -->
+    </div>
     <div class="tab-pane fade" id="drugstable" role="tabpanel" aria-labelledby="drug-tab">
-        @include('new_perawat.nursing.v2.histroy_drugs')
+        @include('new_perawat.nursing.new_prescribe_table')
     </div>
     {{-- <div class="tab-pane fade" id="transfusi_darah_nursing" role="tabpanel" aria-labelledby="drug-tab">
         @include('new_perawat.nursing.transfusi_darah.index_transfusi_darah')
@@ -92,8 +80,6 @@
 </div>
 
 @include('new_perawat.monitoring_news.detail_news')
-@include('new_perawat.nursing.v2.modal.add_drugs')
-@include('new_perawat.nursing.v2.modal.edit_drugs')
 <script>
     $(document).ready(function() {
         function calculateTotalGCS() {

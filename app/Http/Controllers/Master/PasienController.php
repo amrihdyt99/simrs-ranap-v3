@@ -18,7 +18,6 @@ class PasienController extends Controller
 
     public function visitHistoryPatient($medrec)
     {
-        if (!auth()->user()) return redirect()->route('login');
         return $this->patienService->visitHistoryPatient($medrec);
     }
 

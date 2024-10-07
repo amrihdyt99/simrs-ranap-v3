@@ -124,7 +124,7 @@
             processData: false,
             success: function(data) {
                 neko_simpan_success();
-
+            
                 if (_type == 'dokter') {
                     getEdukasi('', _type)
                 } else {
@@ -150,7 +150,7 @@
                 "&regno=" + regno +
                 "&user_id=" + userId +
                 "&shift=" + userShift,
-            success: function(data) {
+                success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
             },
@@ -174,7 +174,7 @@
                 "&regno=" + regno +
                 "&user_id=" + userId +
                 "&shift=" + userShift,
-            success: function(data) {
+                success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
             },
@@ -630,7 +630,7 @@
                 iwl_muntah: $('#iwl_muntah').val(),
                 jumlah: $('#jumlah').val(),
                 tanggal_pemberian: $('#tanggal_waktu_pemberian').val(),
-                user_shift: "{{ session('user_shift') }}",
+                user_shift : "{{ session('user_shift') }}",
             },
             success: function(data) {
                 neko_simpan_success();
@@ -643,7 +643,7 @@
     }
 
     function addVital(kategori, formid) {
-        neko_proses();
+    neko_proses();
         var dataString = "";
 
         if (kategori === 'blood pressure') {
@@ -689,7 +689,7 @@
                 "med_rec": medrec,
                 "kategori": kategori,
                 "data": data,
-                user_shift: "{{ session('user_shift') }}",
+                user_shift : "{{ session('user_shift') }}",
 
             },
             success: function(data) {
@@ -704,22 +704,22 @@
 
     function addNursingDrugs() {
         neko_proses();
-
+        
         var serializedData = $('#form_nursing_drugs').serialize();
-        var medRec = medrec;
+        var medRec = medrec; 
         var userId = "{{auth()->user()->id}}";
         var userShift = "{{ session('user_shift') }}";
-
+       
         $.ajax({
             url: "{{route('perawat.nursing_drugs_store')}}",
             type: "POST",
             data: serializedData + "&medrec=" + medRec + "&user_id=" + userId + "&user_shift=" + userShift,
             success: function(data) {
                 neko_simpan_success();
-                // $('.left-tab.active').click();
+                $('.left-tab.active').click();
             },
             error: function(data) {
-                neko_simpan_error();
+                neko_simpan_error_noreq();
             },
         });
     }
@@ -1047,7 +1047,7 @@
         $.ajax({
             url: "{{route('add.monitoringnews')}}",
             type: "POST",
-            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec + "&user_id=" + "{{auth()->user()->id}}",
+            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec  + "&user_id=" + "{{auth()->user()->id}}",
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();

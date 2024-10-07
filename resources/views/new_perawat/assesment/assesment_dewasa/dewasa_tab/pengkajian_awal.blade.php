@@ -963,11 +963,11 @@
     </div>
     <div class="col-sm-10">
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="deformitas_tidak_ada" name="awal[deformitas]" value="tidak ada" {{ $awal->deformitas == 'tidak ada' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="deformitas_tidak_ada" name="awal[deformitas]" value="tidak_ada" {{ $awal->deformitas == 'tidak_ada' ? 'checked' : '' }}>
             <label class="custom-control-label" for="deformitas_tidak_ada">Tidak ada</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="deformitas_ada_regio" name="awal[deformitas]" value="ada regio" {{ $awal->deformitas == 'ada regio' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="deformitas_ada_regio" name="awal[deformitas]" value="ada_regio" {{ $awal->deformitas == 'ada_regio' ? 'checked' : '' }}>
             <label class="custom-control-label" for="deformitas_ada_regio">Ada regio</label>
         </div>
         <input type="text" class="form-control" name="awal[deformitas_text]" placeholder="jika ada, jelaskan..." value="{{ $awal->deformitas_text }}">
@@ -997,19 +997,19 @@
     </div>
     <div class="col-sm-8">
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="keluhan_tidak_ada" name="awal[keluhan_nutrisi]" value="tidak ada" {{ $awal->keluhan_nutrisi == 'tidak ada' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="keluhan_tidak_ada" name="awal[keluhan_nutrisi]" value="tidak_ada" {{ $awal->keluhan_nutrisi == 'tidak_ada' ? 'checked' : '' }}>
             <label class="custom-control-label" for="keluhan_tidak_ada">Tidak ada</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="keluhan_mual_muntah" name="awal[keluhan_nutrisi]" value="mual muntah" {{ $awal->keluhan_nutrisi == 'mual muntah' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="keluhan_mual_muntah" name="awal[keluhan_nutrisi]" value="mual_muntah" {{ $awal->keluhan_nutrisi == 'mual_muntah' ? 'checked' : '' }}>
             <label class="custom-control-label" for="keluhan_mual_muntah">Mual / muntah</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="keluhan_gangguan_mengunyah" name="awal[keluhan_nutrisi]" value="gangguan mengunyah" {{ $awal->keluhan_nutrisi == 'gangguan mengunyah' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="keluhan_gangguan_mengunyah" name="awal[keluhan_nutrisi]" value="gangguan_mengunyah" {{ $awal->keluhan_nutrisi == 'gangguan_mengunyah' ? 'checked' : '' }}>
             <label class="custom-control-label" for="keluhan_gangguan_mengunyah">Gangguan mengunyah</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="keluhan_gangguan_menelan" name="awal[keluhan_nutrisi]" value="gangguan menelan" {{ $awal->keluhan_nutrisi == 'gangguan menelan' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="keluhan_gangguan_menelan" name="awal[keluhan_nutrisi]" value="gangguan_menelan" {{ $awal->keluhan_nutrisi == 'gangguan_menelan' ? 'checked' : '' }}>
             <label class="custom-control-label" for="keluhan_gangguan_menelan">Gangguan menelan</label>
         </div>
     </div>
@@ -1102,7 +1102,7 @@
     </div>
     <div class="col-sm-10">
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" class="custom-control-input" id="keluhan_bab_tidak_ada" name="awal[keluhan_bab]" value="tidak ada" {{ $awal->keluhan_bab == 'tidak_ada' ? 'checked' : '' }}>
+            <input type="radio" class="custom-control-input" id="keluhan_bab_tidak_ada" name="awal[keluhan_bab]" value="tidak_ada" {{ $awal->keluhan_bab == 'tidak_ada' ? 'checked' : '' }}>
             <label class="custom-control-label" for="keluhan_bab_tidak_ada">Tidak ada</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">

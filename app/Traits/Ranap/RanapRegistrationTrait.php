@@ -178,8 +178,6 @@ trait RanapRegistrationTrait
         $registrasi['reg_cttn'] = request()->reg_cttn;
         $registrasi['charge_class_code'] = request()->charge_class_code ?? '-';
         $registrasi['kategori_pasien'] = request()->kategori_pasien;
-        $registrasi['asal_rujukan'] = request()->asal_rujukan;
-        $registrasi['kasus_polisi'] = request()->kasus_polisi;
         return $registrasi;
     }
 
