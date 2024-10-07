@@ -13,7 +13,7 @@ Route::prefix('tarik')->group(function () {
     Route::get('bed', [TarikDataController::class, 'bed']);
     Route::get('regis', [TarikDataController::class, 'regis']);
     Route::get('paramedic', [TarikDataController::class, 'paramedic']);
-    Route::get('departemen', [TarikDataController::class, 'departemen']);
+    Route::get('departemen', [TarikDataController::class, 'site_departement']);
     Route::get('location', [TarikDataController::class, 'location']);
     Route::get('bisnis', [TarikDataController::class, 'bisnis_partner']);
     Route::get('nomed/{no}', [TarikDataController::class, 'nomed']);

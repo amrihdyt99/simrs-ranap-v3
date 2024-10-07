@@ -39,9 +39,9 @@ class TarikDataController extends Controller
         }
         echo 'Alhamdulillah';
     }
-    public function departemen()
+    public function site_departement()
     {
-        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/departemen');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/site_departemen');
         DB::connection('mysql2')->table('m_unit_departemen')->delete();
         foreach ($data['data']  as $kue) {
             DB::connection('mysql2')

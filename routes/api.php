@@ -258,13 +258,15 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('unit_ruang', [ApiMasterController::class, 'unit_ruang'])->name('sphaira.ur');
 	Route::get('unit_item', [ApiMasterController::class, 'unit_item'])->name('sphaira.ui');
 	Route::get('location', [ApiMasterController::class, 'location'])->name('sphaira.lc');
-	Route::get('departemen', [ApiMasterController::class, 'departemen_unit'])->name('sphaira.du');
+	Route::get('site_departement', [ApiMasterController::class, 'site_department'])->name('sphaira.site-department');
 	Route::get('contract', [ApiMasterController::class, 'contract'])->name('sphaira.cc');
 	Route::get('contract/{bisnis}', [ApiMasterController::class, 'contract'])->name('sphaira.ccb');
 	Route::get('icd9', [ApiMasterController::class, 'icd_9'])->name('sphaira.i9');
 	Route::get('icd10', [ApiMasterController::class, 'icd_10'])->name('sphaira.i10');
 	Route::get('tdd/{id}', [ApiMasterController::class, 'get_ttd'])->name('sphaira.ttd');
 	Route::get('daftarmasalah', [ApiMasterController::class, 'daftarmasalah'])->name('sphaira.daftarmasalah');
+	Route::get('get-tables', [ApiMasterController::class, 'getTableList'])->name('sphaira.get-table-list');
+	Route::get('departement', [ApiMasterController::class, 'department'])->name('sphaira.department');
 });
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
