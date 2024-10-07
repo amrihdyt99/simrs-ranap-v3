@@ -25,30 +25,27 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{route('master.serviceunit.update', $unit->ServiceUnitCode)}}" method="POST">
+                            <form action="{{route('master.departement.update', $department->DepartmentCode)}}" method="POST">
                                 @csrf
                                 @method('PUT')
                                 <div class="form-group">
-                                    <label for="ServiceUnitCode">Service Unit Code</label>
-                                    <input type="text" value="{{$unit->ServiceUnitCode}}" class="form-control @error('ServiceUnitCode') is-invalid @enderror"
-                                        id="ServiceUnitCode" name="ServiceUnitCode" disabled>
+                                    <label for="DeparmentCode">Department Code</label>
+                                    <input type="text" value="{{$department->DepartmentCode}}" class="form-control @error('DeparmentCode') is-invalid @enderror"
+                                        id="DeparmentCode" name="DeparmentCode" disabled>
                                 </div>
-                                @error('RoomCode')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
                                 <div class="form-group">
-                                    <label for="ServiceUnitName">Service Unit Name</label>
-                                    <input type="text" value="{{$unit->ServiceUnitName}}" class="form-control @error('ServiceUnitName') is-invalid @enderror"
-                                        id="ServiceUnitName" name="ServiceUnitName" required>
+                                    <label for="DepartmentName">Department Name</label>
+                                    <input type="text" value="{{$department->DepartmentName}}" class="form-control @error('DepartmentName') is-invalid @enderror"
+                                        id="DepartmentName" name="DepartmentName" required>
                                 </div>
-                                @error('ServiceUnitName')
+                                @error('DepartmentName')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
 
                                 <div class="form-group">
                                     <label for="ShortName">Short Name</label>
-                                    <input type="text" value="{{$unit->ShortName}}" class="form-control @error('ShortName') is-invalid @enderror"
+                                    <input type="text" value="{{$department->ShortName}}" class="form-control @error('ShortName') is-invalid @enderror"
                                         id="ShortName" name="ShortName">
                                 </div>
                                 @error('ShortName')
@@ -57,7 +54,7 @@
 
                                 <div class="form-group">
                                     <label for="Initial">Initial</label>
-                                    <input type="text" value="{{$unit->Initial}}" class="form-control @error('Initial') is-invalid @enderror"
+                                    <input type="text" value="{{$department->Initial}}" class="form-control @error('Initial') is-invalid @enderror"
                                         id="Initial" name="Initial">
                                 </div>
 
@@ -70,8 +67,8 @@
                                     <label for="IsActive">Status</label>
                                     <select id="IsActive" name="IsActive" class="form-control select2bs4">
                                         <option value="">Pilih Status</option>
-                                        <option value="1" {{ $unit->IsActive == '1' ? 'selected' : '' }}>Aktif</option>
-                                        <option value="0" {{ $unit->IsActive == '0' ? 'selected' : '' }}>Tidak Aktif</option>
+                                        <option value="1" {{ $department->IsActive == '1' ? 'selected' : '' }}>Aktif</option>
+                                        <option value="0" {{ $department->IsActive == '0' ? 'selected' : '' }}>Tidak Aktif</option>
                                     </select>
                                 </div>
 

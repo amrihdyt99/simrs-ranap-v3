@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Master\v2;
 
 use App\Http\Controllers\Controller;
-use App\Models\ServiceUnit;
+use App\Models\Department;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class NewServiceUnitController extends Controller
+class DepartmentV2Controller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,15 +18,15 @@ class NewServiceUnitController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $serviceunit = DB::connection('mysql2')->table("m_unit")->where('IsDeleted', 0)->get();
+            $serviceunit = DB::connection('mysql2')->table("m_departemen")->where('IsDeleted', 0)->get();
             return DataTables()
                 ->of($serviceunit)
                 ->addColumn('action', function ($row) {
-                    $editUrl = route('master.serviceunit.edit', [$row->ServiceUnitCode]);
+                    $editUrl = route('master.departement.edit', [$row->DepartmentCode]);
 
                     $actionBtn = '<div class="btn-group" role="group">';
                     $actionBtn .= "<button type='button' class='btn btn-warning'><a href='$editUrl'><i class='fas fa-edit'></i> Edit</a></button>";
-                    $actionBtn .= "<button type='button' class='btn btn-danger' onclick='confirmDelete(this)' data-id='$row->ServiceUnitCode'><i class='fas fa-trash'></i> Hapus</button>";
+                    $actionBtn .= "<button type='button' class='btn btn-danger' onclick='confirmDelete(this)' data-id='$row->DepartmentCode'><i class='fas fa-trash'></i> Hapus</button>";
                     $actionBtn .= '</div>';
 
                     return $actionBtn;
@@ -34,7 +34,7 @@ class NewServiceUnitController extends Controller
                 ->escapeColumns([])
                 ->toJson();
         }
-        return view('master.pages.serviceunit.v2.index');
+        return view('master.pages.departement.v2.index');
     }
 
     /**
@@ -44,7 +44,8 @@ class NewServiceUnitController extends Controller
      */
     public function create()
     {
-        return view('master.pages.serviceunit.v2.create');
+
+        return view('master.pages.departement.v2.create');
     }
 
     /**
@@ -56,19 +57,18 @@ class NewServiceUnitController extends Controller
     public function store(Request $request)
     {
         $validation = $request->validate([
-            'ServiceUnitCode' => ['required', 'string'],
-            'ServiceUnitName' => ['required', 'string'],
+            'DepartmentCode' => ['required', 'string'],
+            'DepartmentName' => ['required', 'string'],
             'ShortName' => ['required', 'string'],
             'Initial' => ['required', 'string'],
             'IsActive'  => ['numeric'],
         ]);
 
-
         $validation['LastUpdatedBy'] = auth()->user()->username;
         $validation['created_at'] = Carbon::now();
 
-        ServiceUnit::create($validation);
-        return redirect()->route('master.serviceunit.index');
+        Department::create($validation);
+        return redirect()->route('master.departement.index');
     }
 
     /**
@@ -90,8 +90,8 @@ class NewServiceUnitController extends Controller
      */
     public function edit($id)
     {
-        $unit = ServiceUnit::find($id);
-        return view('master.pages.serviceunit.v2.update', ['unit' => $unit]);
+        $department = Department::find($id);
+        return view('master.pages.departement.v2.update', ['department' => $department]);
     }
 
     /**
@@ -103,16 +103,20 @@ class NewServiceUnitController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $unit = ServiceUnit::find($id);
+
+        $department = Department::find($id);
         $validation = $request->validate([
-            'ServiceUnitName' => ['required', 'string'],
+            'DepartmentName' => ['required', 'string'],
             'ShortName' => ['required', 'string'],
             'Initial' => ['required', 'string'],
             'IsActive'  => ['numeric'],
         ]);
 
-        $unit->update($validation);
-        return redirect()->route('master.serviceunit.index');
+        $validation['LastUpdatedBy'] = auth()->user()->username;
+        $validation['updated_at'] = Carbon::now();
+        $department->update($validation);
+
+        return redirect()->route('master.departement.index');
     }
 
     /**
@@ -123,22 +127,22 @@ class NewServiceUnitController extends Controller
      */
     public function destroy($id)
     {
-        $unit = DB::connection('mysql2')
-            ->table('m_unit')
-            ->where('ServiceUnitCode', $id)
+        $department = DB::connection('mysql2')
+            ->table('m_departemen')
+            ->where('DepartmentCode', $id)
             ->first();
 
-        if (!$unit) {
+        if (!$department) {
             return response()->json(['error' => 'Data tidak ditemukan'], 404);
         }
 
         DB::connection('mysql2')
-            ->table('m_unit')
-            ->where('ServiceUnitCode', $id)
+            ->table('m_departemen')
+            ->where('DepartmentCode', $id)
             ->update([
                 'IsDeleted' => 1,
                 'LastUpdatedBy' => auth()->user()->username,
-                'LastUpdatedDateTime' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
         return response()->json(['success' => 'Data berhasil dihapus']);
