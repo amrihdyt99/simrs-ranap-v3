@@ -76,7 +76,7 @@
                 <div id="">{!! $json_element !!}</div>
             </div>
             <div>
-                <h6>Blockqute</h6>
+                <h6>Blockquote</h6>
                 <div id="">{!! $blockquote !!}</div>
             </div>
 
