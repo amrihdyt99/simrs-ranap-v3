@@ -10,56 +10,8 @@
 </head>
 <body>
     <div class="container">
-        <div>
-            <h4>Raw Element</h4>
-            <div>
-                <h6>List</h6>
-                <pre>{{ $list }}</pre>
-            </div>
-            <div>
-                <h6>Table</h6>
-                <pre>{{ $table }}</pre>
-            </div>
-            <div>
-                <h6>List</h6>
-                <pre>{{ $list }}</pre>
-            </div>
-            <div>
-                <h6>Collapse</h6>
-                <pre>{{ $collapse }}</pre>
-            </div>
-            <div>
-                <h6>Flex</h6>
-                <pre>{{ $flex }}</pre>
-            </div>
-            <div>
-                <h6>Grid</h6>
-                <pre>{{ $grid }}</pre>
-            </div>
-        </div>
-        <div>
-            {!! $list !!}
-        </div>
-    
-        <div>
-            {!! $table !!}
-        </div>
-    
-        <div>
-            {!! $collapse !!}
-        </div>
-        <div>
-            {!! $flex !!}
-        </div>
-        <div>
-            {!! $grid !!}
-        </div>
-
-        <h4>
-            JavaScript Element
-        </h4>
-        <div>
-            <h4>Raw Element</h4>
+        <h4>Raw Element</h4>
+        <div class="m-4">
             <div>
                 <h6>List</h6>
                 <pre id="raw_list"></pre>
@@ -80,30 +32,38 @@
                 <h6>Grid</h6>
                 <pre id="raw_grid"></pre>
             </div>
+            <div>
+                <h6>JSON</h6>
+                <pre id="raw_json"></pre>
+            </div>
         </div>
-        <div>
-            <h4>Formatted Element</h4>
+        <h4>Tag Html</h4>
+        <div class="m-4">
             <div>
                 <h6>List</h6>
-                <div id="list"></div>
+                <div>{!! $list !!}</div>
             </div>
             <div>
                 <h6>Table</h6>
-                <div id="table"></div>
+                <div id="">{!! $table !!}</div>
             </div>
             <div>
                 <h6>Collapse</h6>
-                <div id="collapse"></div>
+                <div id="">{!! $collapse !!}</div>
             </div>
             <div>
-                {{-- <h6>Flex</h6> --}}
-                <div id="flex"></div>
+                <h6>Flex</h6>
+                <div id="">{!! $flex !!}</div>
             </div>
             <div>
-                {{-- <h6>Grid</h6> --}}
-                <div id="grid"></div>
+                <h6>Grid</h6>
+                <div id="">{!! $grid !!}</div>
             </div>
-        </div>
+            <div>
+                <h6>JSON</h6>
+                <div id="">{!! $json_element !!}</div>
+            </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -125,18 +85,14 @@
         const flex = logActivityHelper.createFlexRow('Flex', columns);
         const table = logActivityHelper.createTable('Table', columns, rows);
         const collapse = "{!! $collapse !!}";
-        console.log('list', list);
+        const data_json = @json($data_json);
+        const json_element = logActivityHelper.createCodeJson('View JSON', data_json);
         document.getElementById('raw_list').innerText = logActivityHelper.createList('List',list);
         document.getElementById('raw_table').innerText = logActivityHelper.createTable('Table', columns, rows);
         document.getElementById('raw_collapse').innerText = logActivityHelper.createBootstrapCollapse('Collapse', columns, rows);
-        document.getElementById('raw_flex').innerText = logActivityHelper.createFlexRow('Flex', columns, rows);
-        document.getElementById('raw_grid').innerText = logActivityHelper.createGridRow('Grid', columns, rows);
-
-        document.getElementById('list').innerHTML = logActivityHelper.createList('List', list);
-        document.getElementById('table').innerHTML = logActivityHelper.createTable('Table', columns, rows);
-        document.getElementById('collapse').innerHTML = logActivityHelper.createBootstrapCollapse('Collapse', columns, rows);
-        document.getElementById('flex').innerHTML = logActivityHelper.createFlexRow('Flex', columns, rows);
-        document.getElementById('grid').innerHTML = logActivityHelper.createGridRow('Grid', 4, [list, table, collapse]);
+        document.getElementById('raw_flex').innerText = logActivityHelper.createFlexRow('Flex', [list, table, collapse]);   
+        document.getElementById('raw_grid').innerText = logActivityHelper.createGridRow('Grid', 4, [list, table, collapse]);
+        document.getElementById('raw_json').innerText = json_element;
 
     </script>
 </body>

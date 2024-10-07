@@ -1,10 +1,9 @@
 class LogActivityHelper {
-
     /**
-     * 
-     * @param {string} caption 
-     * @param {*} data 
-     * @returns 
+     * Create ul list from array
+     * @param {string} caption
+     * @param {string[]} data an array of strings
+     * @return {string} HTML markup with <ul> and <li> elements
      */
     createList(caption, data) {
         let list = `<h6>${caption}</h6><ul>`;
@@ -23,8 +22,8 @@ class LogActivityHelper {
      * @return {string} HTML markup with <table> and <tr> elements
      */
     createTable(caption, columns, rows) {
-        let table = `<div class='w-100 table-responsive'>`
-        table += `<table class='table table-bordered table-responsive table-hover table-sm'><caption>${caption}</caption><thead><tr>`;
+        let table = `<div class='w-100 table-responsive'>`;
+        table += `<table class='table table-bordered table-responsive w-100 table-hover table-sm'><caption>${caption}</caption><thead><tr>`;
         columns.forEach(column => {
             table += `<th>${column}</th>`;
         });
@@ -55,6 +54,11 @@ class LogActivityHelper {
         return collapse + button;
     }
 
+    /**
+     * Create Title
+     * @param {string} title
+     * @return {string} HTML markup with <h6> element
+     */
     createTitle(title) {
         return `<h6>${title}</h6>`;
     }
@@ -67,7 +71,7 @@ class LogActivityHelper {
      */
     createFlexRow(caption, childElement) {
         let flex = this.createTitle(caption);
-        flex += `<div class='w-100 d-flex flex-row flex-wrap' style='gap:10px;'>`;
+        flex += `<div class='w-100 d-flex flex-row flex-wrap' style='gap:24px;'>`;
         childElement.forEach(element => {
             flex += `<div>${element}</div>`;
         });
@@ -78,15 +82,15 @@ class LogActivityHelper {
     /**
      * Create Grid Row
      * @param {string} caption
-     * @param {number} gridCount
+     * @param {number} gridColumn
      * @param {string[]} childElement an array of strings or HTML elements
      * @return {string} HTML markup with <div> elements
      */
-    createGridRow(caption, gridCount, childElement) {
+    createGridRow(caption, gridColumn, childElement) {
         let grid = `<h6>${caption}</h6>`;
         grid += `<div class='row'>`;
         childElement.forEach(element => {
-            grid += `<div class='col-md-${gridCount}'>${element}</div>`;
+            grid += `<div class='col-md-${gridColumn}'>${element}</div>`;
         });
         grid += `</div>`;
         return grid;
@@ -101,6 +105,22 @@ class LogActivityHelper {
         return `<p>${text}</p>`;
     }
 
+    /**
+     * Create Code JSON
+     * @param {string} caption
+     * @param {Object} data
+     * @return {string} HTML markup with <pre> element containing JSON and a Bootstrap collapse component
+     */
+    createCodeJson(caption, data) {
+        const json = JSON.stringify(data, null, 4); // Pretty print JSON with 4 spaces
+        const element = `<pre>${json}</pre>`;
+        return this.createBootstrapCollapse(caption, element);
+    }
+
+    /**
+     * Generate a unique ID
+     * @return {string} A unique ID
+     */
     generateID() {
         return 'id-' + Math.random().toString(36).substr(2, 9);
     }

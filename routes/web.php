@@ -67,10 +67,26 @@ Route::get('test-log-activity-helper', function () {
         $table,
         $collapse
     ]);
-    $grid = $activityHelper->createGridRow('Grid Column', 4, [
+    $grid = $activityHelper->createGridRow('Grid Caption', 4, [
         $list,
         $table,
         $collapse
     ]);
-    return view('test-view-log-activy-helper', compact('list', 'table', 'collapse', 'flex', 'grid'));
+    $data_json = (object)[
+        'name' => 'John Doe',
+        'age' => 30,
+        'sex' => 'Male'
+    ];
+    $json_element = $activityHelper->createCodeJson('View JSON', $data_json);
+    $context = [
+        'list' => $list,
+        'table' => $table,
+        'collapse' => $collapse,
+        'flex' => $flex,
+        'grid' => $grid,
+        'data_json' => json_encode($data_json),
+        'json_element' => $json_element
+    ];
+    // dd($context);
+    return view('test-view-log-activy-helper', compact('list', 'table', 'collapse', 'flex', 'grid', 'json_element', 'data_json'));
 });

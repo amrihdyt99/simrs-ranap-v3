@@ -83,7 +83,7 @@ class LogActivityHelper
     public function createFlexRow($caption, $child_element)
     {
         $flex = $this->createTitle($caption);
-        $flex .= "<div class='w-100 d-flex flex-row flex-wrap' style='gap:10px;'>";
+        $flex .= "<div class='w-100 d-flex flex-row flex-wrap' style='gap:24px;'>";
         foreach ($child_element as $element) {
             $flex .= "<div>$element</div>";
         }
@@ -103,7 +103,7 @@ class LogActivityHelper
         $grid = "<h6>$caption</h6>";
         $grid .= "<div class='row'>";
         foreach ($child_element as $element) {
-            $grid .= "<div class='col-md-$grid_column' >$element</div>";
+            $grid .= "<div class='col-md-$grid_column'>$element</div>";
         }
         $grid .= "</div>";
         return $grid;
@@ -117,5 +117,17 @@ class LogActivityHelper
     public function createParagraph($text)
     {
         return "<p>$text</p>";
+    }
+
+
+    /**
+     * Create Code JSON
+     * @return tag <pre> with json
+     */
+    public function createCodeJson($caption, $data)
+    {
+        $json = json_encode($data, JSON_PRETTY_PRINT);
+        $element = '<pre>' . $json . '</pre>';
+        return $this->createBootstrapCollapse($caption, $element);
     }
 }
