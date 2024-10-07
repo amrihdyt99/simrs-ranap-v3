@@ -309,4 +309,5 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/assesment-neonatus', [RiwayatController::class, 'getAssesmentNeonatus'])->name('assesment-neonatus');
 	Route::get('/assesment-anak', [RiwayatController::class, 'getAssesmentAnak'])->name('assesment-anak');
 	Route::get('/assesment-obgyn', [RiwayatController::class, 'getAssesmentObgyn'])->name('assesment-obgyn');
+	Route::get('/edukasi-pasien', [RiwayatController::class, 'getEdukasiPasien'])->name('edukasi-pasien');
 });

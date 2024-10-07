@@ -183,6 +183,12 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
+                        Riwayat
+                    </div>
+                </div>
+
                 @if ($dataPasien->kategori_pasien == 'dewasa')
                 <div class="row">
                     <div class="left-tab" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
@@ -430,11 +436,7 @@ $registrasi_data = DB::connection('mysql2')
                 @endif
                 @endif
 
-                <div class="row">
-                    <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
-                        Riwayat
-                    </div>
-                </div>
+               
 
 
 

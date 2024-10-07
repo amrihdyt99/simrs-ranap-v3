@@ -131,4 +131,50 @@ class RiwayatController extends Controller
             200
         );
     }
+
+    public function getEdukasiPasien(Request $request)
+    {
+        $edukasi_pasien = DB::table('rs_edukasi_pasien')
+            ->where('rs_edukasi_pasien.reg_no', $request->reg_no)
+            ->first();
+
+        $edukasi_gizi = DB::table('rs_edukasi_pasien_gizi')
+            ->where('rs_edukasi_pasien_gizi.reg_no', $edukasi_pasien->reg_no)
+            ->first();
+
+        $edukasi_dokter = DB::table('rs_edukasi_pasien_dokter')
+            ->where('rs_edukasi_pasien_dokter.reg_no', $edukasi_pasien->reg_no)
+            ->first();
+
+        $edukasi_farmasi = DB::table('rs_edukasi_pasien_farmasi')
+            ->where('rs_edukasi_pasien_farmasi.reg_no', $edukasi_pasien->reg_no)
+            ->first();
+
+        $edukasi_perawat = DB::table('rs_edukasi_pasien_perawat')
+            ->where('rs_edukasi_pasien_perawat.reg_no', $edukasi_pasien->reg_no)
+            ->first();
+
+        $edukasi_rehab = DB::table('rs_edukasi_pasien_rehab')
+            ->where('rs_edukasi_pasien_rehab.reg_no', $edukasi_pasien->reg_no)
+            ->first();
+
+        if (!$edukasi_pasien) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => [
+                    'edukasi_pasien' => $edukasi_pasien,
+                    'edukasi_gizi' => $edukasi_gizi,
+                    'edukasi_dokter' => $edukasi_dokter,
+                    'edukasi_farmasi' => $edukasi_farmasi,
+                    'edukasi_perawat' => $edukasi_perawat,
+                    'edukasi_rehab' => $edukasi_rehab,
+                ]
+            ],
+            200
+        );
+    }
 }
