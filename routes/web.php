@@ -67,38 +67,10 @@ Route::get('test-log-activity-helper', function () {
         $table,
         $collapse
     ]);
-    $grid = $tag->createGridRow('Grid Caption', 4, [
+    $grid = $activityHelper->createGridRow('Grid Column', 4, [
         $list,
         $table,
         $collapse
     ]);
-    $data_json = (object)[
-        'name' => 'John Doe',
-        'age' => 30,
-        'sex' => 'Male'
-    ];
-    $json_element = $tag->createCodeJson('View JSON', $data_json);
-
-    $context = [
-        'list' => $list,
-        'table' => $table,
-        'collapse' => $collapse,
-        'flex' => $flex,
-        'grid' => $grid,
-        'data_json' => json_encode($data_json),
-        'json_element' => $json_element,
-        'badge' => [
-            'primary' => $tag->createBootstrapBadge('primary', 'Primary'),
-            'secondary' => $tag->createBootstrapBadge('secondary', 'Secondary'),
-            'success' => $tag->createBootstrapBadge('success', 'Success'),
-            'danger' => $tag->createBootstrapBadge('danger', 'Danger'),
-            'warning' => $tag->createBootstrapBadge('warning', 'Warning'),
-            'info' => $tag->createBootstrapBadge('info', 'Info'),
-            'light' => $tag->createBootstrapBadge('light', 'Light'),
-            'dark' => $tag->createBootstrapBadge('dark', 'Dark'),
-        ],
-        'blockquote' => $tag->createBoostrapBlockquote('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.', 'Author'),
-    ];
-    // dd($context);
-    return view('test-view-element-helper', $context);
+    return view('test-view-log-activy-helper', compact('list', 'table', 'collapse', 'flex', 'grid'));
 });

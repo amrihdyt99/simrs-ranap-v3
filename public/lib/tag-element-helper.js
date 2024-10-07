@@ -1,13 +1,13 @@
-class TagElementHelper {
+class LogActivityHelper {
     /**
-     * Create ul list from array
+     *
      * @param {string} caption
-     * @param {string[]} data an array of strings
-     * @return {string} HTML markup with <ul> and <li> elements
+     * @param {*} data
+     * @returns
      */
     createList(caption, data) {
         let list = `<h6>${caption}</h6><ul>`;
-        data.forEach(item => {
+        data.forEach((item) => {
             list += `<li>${item}</li>`;
         });
         list += `</ul>`;
@@ -23,14 +23,14 @@ class TagElementHelper {
      */
     createTable(caption, columns, rows) {
         let table = `<div class='w-100 table-responsive'>`;
-        table += `<table class='table table-bordered table-responsive w-100 table-hover table-sm'><caption>${caption}</caption><thead><tr>`;
-        columns.forEach(column => {
+        table += `<table class='table table-bordered table-responsive table-hover table-sm'><caption>${caption}</caption><thead><tr>`;
+        columns.forEach((column) => {
             table += `<th>${column}</th>`;
         });
         table += `</tr></thead><tbody>`;
-        rows.forEach(row => {
+        rows.forEach((row) => {
             table += `<tr>`;
-            row.forEach(cell => {
+            row.forEach((cell) => {
                 table += `<td>${cell}</td>`;
             });
             table += `</tr>`;
@@ -54,11 +54,6 @@ class TagElementHelper {
         return collapse + button;
     }
 
-    /**
-     * Create Title
-     * @param {string} title
-     * @return {string} HTML markup with <h6> element
-     */
     createTitle(title) {
         return `<h6>${title}</h6>`;
     }
@@ -71,8 +66,8 @@ class TagElementHelper {
      */
     createFlexRow(caption, childElement) {
         let flex = this.createTitle(caption);
-        flex += `<div class='w-100 d-flex flex-row flex-wrap' style='gap:24px;'>`;
-        childElement.forEach(element => {
+        flex += `<div class='w-100 d-flex flex-row flex-wrap' style='gap:10px;'>`;
+        childElement.forEach((element) => {
             flex += `<div>${element}</div>`;
         });
         flex += `</div>`;
@@ -82,15 +77,15 @@ class TagElementHelper {
     /**
      * Create Grid Row
      * @param {string} caption
-     * @param {number} gridColumn
+     * @param {number} gridCount
      * @param {string[]} childElement an array of strings or HTML elements
      * @return {string} HTML markup with <div> elements
      */
-    createGridRow(caption, gridColumn, childElement) {
+    createGridRow(caption, gridCount, childElement) {
         let grid = `<h6>${caption}</h6>`;
         grid += `<div class='row'>`;
-        childElement.forEach(element => {
-            grid += `<div class='col-md-${gridColumn}'>${element}</div>`;
+        childElement.forEach((element) => {
+            grid += `<div class='col-md-${gridCount}'>${element}</div>`;
         });
         grid += `</div>`;
         return grid;
@@ -105,80 +100,7 @@ class TagElementHelper {
         return `<p>${text}</p>`;
     }
 
-    /**
-     * Create Code JSON
-     * @param {string} caption
-     * @param {Object} data
-     * @return {string} HTML markup with <pre> element containing JSON and a Bootstrap collapse component
-     */
-    createCodeJson(caption, data) {
-        const json = JSON.stringify(data, null, 4); // Pretty print JSON with 4 spaces
-        const element = `<pre>${json}</pre>`;
-        return this.createBootstrapCollapse(caption, element);
-    }
-
-    /**
-     * Create Bootstrap Badge
-     * @param {string} severity is one of 'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'
-     * @param {string} text is the text of the badge
-     * @return {string} HTML markup with <span> element
-     */
-    createBootstrapBadge(severity, text) {
-        return `<span class='badge badge-${severity}'>${text}</span>`;
-    }
-
-    /**
-     * Create Bootstrap Blockquote
-     * @param {string} text
-     * @param {string} credit
-     * @param {string} align is one of 'left', 'right', 'center'
-     * @return {string} HTML markup with <blockquote> element
-     */
-    createBoostrapBlockquote(text, credit, align = 'left') {
-        return `<blockquote class='blockquote text-${align}'><p class='mb-0'>${text}</p><footer class='blockquote-footer'>${credit}</footer></blockquote>`;
-    }
-
-    /**
-     * Create Deleted Text
-     * @param {string} text
-     * @return {string} HTML markup with <del> element
-     */
-    createDeletedText(text) {
-        return `<del>${text}</del>`;
-    }
-
-    /**
-     * Create underline text
-     * @param {string} text
-     * @return {string} HTML markup with <u> element
-     */
-    createUnderlineText(text) {
-        return `<u>${text}</u>`;
-    }
-
-    /**
-     * Create strong text
-     * @param {string} text
-     * @return {string} HTML markup with <strong> element
-     */
-    createBoldText(text) {
-        return `<strong>${text}</strong>`;
-    }
-
-    /**
-     * Create italic text
-     * @param {string} text
-     * @return {string} HTML markup with <em> element
-     */
-    createItalicText(text) {
-        return `<em>${text}</em>`;
-    }
-
-    /**
-     * Generate a unique ID
-     * @return {string} A unique ID
-     */
     generateID() {
-        return 'id-' + Math.random().toString(36).substr(2, 9);
+        return "id-" + Math.random().toString(36).substr(2, 9);
     }
 }
