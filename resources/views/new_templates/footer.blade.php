@@ -1670,32 +1670,6 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
                                 }
                             }
 
-                            table = table + "<tr>"
-                            table = table + "<td>" + (dataSoap[i].updated_at ? moment(dataSoap[i].updated_at).format('YYYY-MM-DD HH:mm:ss') : dataSoap[i].soap_tanggal + '<br>' + dataSoap[i].soap_waktu) + "</td>"
-                            table = table + "<td class='text-center'>" + (dataSoap[i].nama_ppa ? dataSoap[i].nama_ppa : dataSoap[i].name) + " " + (contentRoleSoap ? '<br><br>(' + contentRoleSoap + ')' : dataSoap[i].soapdok_posisi ? '<br><br><b>( ' + dataSoap[i].soapdok_posisi + ' )</b>' : '') + "</td>"
-                            table = table + `<td>
-                                <b>(S)</b> ` + (dataSoap[i].soapdok_subject ?? '') + `<br/><br/>
-                                <b>(O)</b> ` + (dataSoap[i].soapdok_object ?? '') + `<br/><br/>
-                                <b>(A)</b> ` + (dataSoap[i].soapdok_assesment ? dataSoap[i].soapdok_assesment : '') + `<br/><br/>
-                                <b>(P)</b> ` +
-                                (dataSoap[i].soapdok_planning ?? '') + `<br/><br><br>
-                                    <b>Tindakan Penunjang & Obat :</b>
-                                    <span class="pl-3">` + $row_lab + '<br>' + $row_radiologi + '<br>' + $row_obat + '<br>' + $row_lainnya + `</span>
-                                </td>`
-                            table = table + "<td>" + (dataSoap[i].soapdok_instruksi ?? '') + "</td>"
-                            // if(is_dokter=="1"){
-                            //     table = table + "<td class='text-center'></td>"
-                            // }else{
-                            if (statusVerifikasi == 0) {
-                                if (reg_dokter != utama) {
-                                    table = table + "<td class='text-center'>" +
-                                        "<button class='btn btn-secondary''>Menunggu Verif DPJP Utama</button>" +
-                                        "</td>"
-                                } else {
-                                    table = table + "<td class='text-center'>" +
-                                        "<button class='btn btn-danger' onclick='updateverifikasi(" + dataSoap[i].soapdok_id + ")'>Verifikasi</button>" +
-                                        "</td>"
-                                }
                             } else {
                                 table = table + "<td class='text-center'>" +
                                     "<button class='btn btn-primary' >Sudah Diverifikasi</button>" +

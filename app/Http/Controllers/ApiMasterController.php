@@ -125,6 +125,10 @@ class ApiMasterController extends Controller
 			$query->where(function($q) use ($r) {
 				$q->where('ID_ICD10', 'like', 'X%')
 				  ->orWhere('ID_ICD10', 'like', 'V%');
+				
+				if ($r->category === 'C') {
+					$q->orWhere('ID_ICD10', 'like', 'C%');
+				}
 			});
 		}
 	
