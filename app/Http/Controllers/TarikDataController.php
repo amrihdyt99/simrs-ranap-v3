@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
+use App\Models\ServiceUnit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +40,20 @@ class TarikDataController extends Controller
                 ->table('m_paramedis')->insert([$kue]);
         }
         echo 'Alhamdulillah';
+    }
+    public function departement()
+    {
+        $response = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/department');
+        DB::connection('mysql2')->table('m_departemen')->delete();
+        foreach ($response['data'] as $kue) {
+            unset($kue['LastUpdatedDateTime']);
+            $cek = Department::find($kue['DepartmentCode']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_departemen')->insert([$kue]);
+            }
+        }
+        return response()->json(['status' => 'success', 'message' => 'Data Departemen berhasil ditarik']);
     }
     public function site_departement()
     {
@@ -107,8 +123,11 @@ class TarikDataController extends Controller
         $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/unit');
         DB::connection('mysql2')->table('m_unit')->delete();
         foreach ($data['data'] as $kue) {
-            DB::connection('mysql2')
-                ->table('m_unit')->insert([$kue]);
+            $cek = ServiceUnit::find($kue['ServiceUnitCode']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_unit')->insert([$kue]);
+            }
         }
         echo 'Alhamdulillah';
     }

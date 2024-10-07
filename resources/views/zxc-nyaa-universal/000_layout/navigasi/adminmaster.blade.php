@@ -24,12 +24,13 @@
             <div class="col-6">
               {{-- <label class="font-weight-bold text-center d-block">Business Unit</label> --}}
               <a class="dropdown-item" href="{{ route('master.site.index') }}">Site</a>
-              <a class="dropdown-item" href="{{ route('master.departement.index') }}">Site Departement</a>
+              <a class="dropdown-item" href="{{ route('master.departement.index') }}">Departement</a>
+              <a class="dropdown-item" href="{{ route('master.site-departement.index') }}">Site Departement</a>
               <a class="dropdown-item" href="{{ route('master.unit.index') }}">Service Unit Room</a>
               <a class="dropdown-item" href="{{ route('master.serviceunit.index') }}">Service Unit</a>
               <a class="dropdown-item" href="{{ route('master.location.index') }}">Location</a>
               <a class="dropdown-item" href="{{ route('master.class.index') }}">Class Category</a>
-              <a class="dropdown-item" href="{{ route('master.class.index') }}">Room Class</a>
+              <a class="dropdown-item" href="{{ route('master.class.index') }}">Class</a>
               <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">Room</a>
               <a class="dropdown-item" href="{{ route('master.bed.index') }}">Bed</a>
             </div>

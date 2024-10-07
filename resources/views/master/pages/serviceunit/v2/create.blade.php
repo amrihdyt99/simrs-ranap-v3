@@ -68,7 +68,7 @@
                                     <select id="IsActive" name="IsActive" class="form-control select2bs4">
                                         <option value="">Pilih Status</option>
                                         <option value="1">Aktif</option>
-                                        <option value="0">Tidak Aktifs</option>
+                                        <option value="0">Tidak Aktif</option>
                                     </select>
                                 </div>
 

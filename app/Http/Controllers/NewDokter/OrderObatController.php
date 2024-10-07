@@ -146,8 +146,6 @@ class OrderObatController extends Controller
                 ['a.*', DB::raw("(select ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode limit 1) as ServiceUnitID")]
             );
 
-            dd($get_room_master);
-
             $service_room = [
                 'RoomID' => $get_room_master->ServiceUnitID,
                 'RoomCode' => $get_room_master->ServiceUnitCode,

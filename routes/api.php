@@ -267,6 +267,7 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('daftarmasalah', [ApiMasterController::class, 'daftarmasalah'])->name('sphaira.daftarmasalah');
 	Route::get('get-tables', [ApiMasterController::class, 'getTableList'])->name('sphaira.get-table-list');
 	Route::get('departement', [ApiMasterController::class, 'department'])->name('sphaira.department');
+	Route::get('class-category', [ApiMasterController::class, 'classCategory'])->name('sphaira.classCategory');
 });
 
 Route::prefix('pasien')->name('pasien.')->group(function () {

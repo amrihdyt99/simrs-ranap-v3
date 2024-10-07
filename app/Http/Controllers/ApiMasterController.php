@@ -469,4 +469,19 @@ class ApiMasterController extends Controller
 		}
 		return response()->json($json, $json['code']);
 	}
+
+	public function classCategory()
+	{
+		$dat = DB::connection('sqlsrv_sphaira')->table('ClassCategory')->get();
+		if ($dat) {
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = $dat;
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
+	}
 }

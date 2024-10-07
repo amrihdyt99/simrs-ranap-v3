@@ -176,6 +176,53 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
         });
     }
 
+    function getAlertEWS(_reg) {
+        $.ajax({
+            url: '{{url("")}}/api/get-ews-info',
+            data: {
+                reg_no: _reg,
+            },
+            success: function(resp) {
+                console.log(resp);
+                $('#ews_info').empty();
+
+                if (resp.news_total >= 7) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-danger blink text-white">Zona Merah</span>
+                    `)
+                }
+
+                if (resp.news_total == 5 || resp.news_total == 6) {
+                    $('#ews_info').append(`
+                        <span class="badge blink text-white" style="background-color: #f5710c;">Zona Orange</span>
+
+                    `)
+                }
+
+                if (resp.news_total >= 1 && resp.news_total <= 4) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-warning  blink text-white" >Zona Kuning</span>
+
+                    `)
+                }
+
+                if (resp.news_total == 0) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-success blink text-white" >Zona Hijau</span>
+
+                    `)
+                }
+
+                if (!resp) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-secondary blink text-black" >EWS masih kosong</span>
+
+                    `)
+                }
+            }
+        })
+    }
+
     $('#partial-panel').hide();
 
     function outputUpdateWithDesc(vol) {

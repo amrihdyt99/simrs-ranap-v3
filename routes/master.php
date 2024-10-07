@@ -18,6 +18,7 @@ use App\Http\Controllers\Master\ServiceUnitController;
 use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\PractitionerController;
+use App\Http\Controllers\Master\v2\DepartmentV2Controller;
 use App\Http\Controllers\Master\v2\NewServiceUnitController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,7 +48,8 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::resource('ketersediaanruangan', \App\Http\Controllers\Master\KetersediaanRuanganController::class);
     // Route::resource('serviceunit', \App\Http\Controllers\Master\ServiceUnitController::class);
     Route::resource('serviceunit', NewServiceUnitController::class);
-    Route::resource('departement', \App\Http\Controllers\Master\DepartementController::class);
+    Route::resource('site-departement', \App\Http\Controllers\Master\DepartementController::class);
+    Route::resource('departement', DepartmentV2Controller::class);
     Route::resource('location', \App\Http\Controllers\Master\LocationController::class);
     Route::resource('site', \App\Http\Controllers\Master\SiteController::class);
     Route::post('user/processor', [\App\Http\Controllers\master\UserController::class, 'processor'])->name('user.processor');

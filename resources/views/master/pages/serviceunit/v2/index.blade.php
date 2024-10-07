@@ -154,13 +154,12 @@
       $button.prop('disabled', true);
 
       Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Data ini akan dihapus!",
+        title: 'Tarik Data Service Unit ?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, hapus!',
+        confirmButtonText: 'Ya!',
         cancelButtonText: 'Batal'
       }).then((result) => {
         if (result.isConfirmed) {
@@ -169,8 +168,7 @@
             method: 'GET',
             success: function(response) {
               alert('Data berhasil ditarik!');
-              console.log(response);
-              $('#unit_table').DataTable().ajax.reload();
+              $('#service_unit_dt').DataTable().ajax.reload();
             },
             error: function(xhr, status, error) {
               alert('Terjadi kesalahan saat menarik data.');
