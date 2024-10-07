@@ -34,6 +34,7 @@
               <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">Room</a>
               <a class="dropdown-item" href="{{ route('master.bed.index') }}">Bed</a>
             </div>
+
             <div class="col-6">
               <a class="dropdown-item" href="{{ route('master.ketersediaanruangan.index') }}">Ketersediaan Ruangan</a>
               <a class="dropdown-item" href="{{ route('master.practitioner.index') }}">Practitioner</a>
