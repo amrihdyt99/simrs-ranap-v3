@@ -1,5 +1,6 @@
 <?php
 
+use App\Utils\LogActivityHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -51,3 +52,41 @@ require __DIR__ . '/tarik_haykal.php';
 // Route::get('test-barcode', function () {
 //     return DNS1DFacade::getBarcodeSVG('QREG/RI/2024090100001', 'C128', 1, 48);
 // });
+
+Route::get('test-log-activity-helper', function () {
+    $activityHelper = new LogActivityHelper();
+    $list = $activityHelper->createList('List of Items', ['Item 1', 'Item 2', 'Item 3']);
+    $table = $activityHelper->createTable('Table of Items', ['Column 1', 'Column 2', 'Column 3'], [
+        ['Row 1 Cell 1', 'Row 1 Cell 2', 'Row 1 Cell 3'],
+        ['Row 2 Cell 1', 'Row 2 Cell 2', 'Row 2 Cell 3'],
+        ['Row 3 Cell 1', 'Row 3 Cell 2', 'Row 3 Cell 3'],
+    ]);
+    $collapse = $activityHelper->createBootstrapCollapse('Collapse Caption', 'Element inside collapse');
+    $flex = $activityHelper->createFlexRow('Flex Caption', [
+        $list,
+        $table,
+        $collapse
+    ]);
+    $grid = $activityHelper->createGridRow('Grid Caption', 4, [
+        $list,
+        $table,
+        $collapse
+    ]);
+    $data_json = (object)[
+        'name' => 'John Doe',
+        'age' => 30,
+        'sex' => 'Male'
+    ];
+    $json_element = $activityHelper->createCodeJson('View JSON', $data_json);
+    $context = [
+        'list' => $list,
+        'table' => $table,
+        'collapse' => $collapse,
+        'flex' => $flex,
+        'grid' => $grid,
+        'data_json' => json_encode($data_json),
+        'json_element' => $json_element
+    ];
+    // dd($context);
+    return view('test-view-log-activy-helper', compact('list', 'table', 'collapse', 'flex', 'grid', 'json_element', 'data_json'));
+});
