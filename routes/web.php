@@ -78,6 +78,7 @@ Route::get('test-log-activity-helper', function () {
         'sex' => 'Male'
     ];
     $json_element = $activityHelper->createCodeJson('View JSON', $data_json);
+
     $context = [
         'list' => $list,
         'table' => $table,
@@ -85,8 +86,19 @@ Route::get('test-log-activity-helper', function () {
         'flex' => $flex,
         'grid' => $grid,
         'data_json' => json_encode($data_json),
-        'json_element' => $json_element
+        'json_element' => $json_element,
+        'badge' => [
+            'primary' => $activityHelper->createBootstrapBadge('primary', 'Primary'),
+            'secondary' => $activityHelper->createBootstrapBadge('secondary', 'Secondary'),
+            'success' => $activityHelper->createBootstrapBadge('success', 'Success'),
+            'danger' => $activityHelper->createBootstrapBadge('danger', 'Danger'),
+            'warning' => $activityHelper->createBootstrapBadge('warning', 'Warning'),
+            'info' => $activityHelper->createBootstrapBadge('info', 'Info'),
+            'light' => $activityHelper->createBootstrapBadge('light', 'Light'),
+            'dark' => $activityHelper->createBootstrapBadge('dark', 'Dark'),
+        ],
+        'blockquote' => $activityHelper->createBoostrapBlockquote('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.', 'Author'),
     ];
     // dd($context);
-    return view('test-view-log-activy-helper', compact('list', 'table', 'collapse', 'flex', 'grid', 'json_element', 'data_json'));
+    return view('test-view-log-activy-helper', $context);
 });

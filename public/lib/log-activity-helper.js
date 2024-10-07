@@ -118,6 +118,63 @@ class LogActivityHelper {
     }
 
     /**
+     * Create Bootstrap Badge
+     * @param {string} severity is one of 'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'
+     * @param {string} text is the text of the badge
+     * @return {string} HTML markup with <span> element
+     */
+    createBootstrapBadge(severity, text) {
+        return `<span class='badge badge-${severity}'>${text}</span>`;
+    }
+
+    /**
+     * Create Bootstrap Blockquote
+     * @param {string} text
+     * @param {string} credit
+     * @param {string} align is one of 'left', 'right', 'center'
+     * @return {string} HTML markup with <blockquote> element
+     */
+    createBoostrapBlockquote(text, credit, align = 'left') {
+        return `<blockquote class='blockquote text-${align}'><p class='mb-0'>${text}</p><footer class='blockquote-footer'>${credit}</footer></blockquote>`;
+    }
+
+    /**
+     * Create Deleted Text
+     * @param {string} text
+     * @return {string} HTML markup with <del> element
+     */
+    createDeletedText(text) {
+        return `<del>${text}</del>`;
+    }
+
+    /**
+     * Create underline text
+     * @param {string} text
+     * @return {string} HTML markup with <u> element
+     */
+    createUnderlineText(text) {
+        return `<u>${text}</u>`;
+    }
+
+    /**
+     * Create strong text
+     * @param {string} text
+     * @return {string} HTML markup with <strong> element
+     */
+    createBoldText(text) {
+        return `<strong>${text}</strong>`;
+    }
+
+    /**
+     * Create italic text
+     * @param {string} text
+     * @return {string} HTML markup with <em> element
+     */
+    createItalicText(text) {
+        return `<em>${text}</em>`;
+    }
+
+    /**
      * Generate a unique ID
      * @return {string} A unique ID
      */

@@ -13,6 +13,10 @@
         <h4>Raw Element</h4>
         <div class="m-4">
             <div>
+                <h6>Badge</h6>
+                <pre id="raw_badge"></pre>
+            </div>
+            <div>
                 <h6>List</h6>
                 <pre id="raw_list"></pre>
             </div>
@@ -38,7 +42,15 @@
             </div>
         </div>
         <h4>Tag Html</h4>
-        <div class="m-4">
+        <div class="m-4" style="display: flex; flex-direction: column; gap:20px;">
+            <div>
+                <h6>Badge</h6>
+                <div id="">
+                    @foreach ($badge as $item)
+                        {!! $item !!}
+                    @endforeach
+                </div>
+            </div>
             <div>
                 <h6>List</h6>
                 <div>{!! $list !!}</div>
@@ -62,6 +74,10 @@
             <div>
                 <h6>JSON</h6>
                 <div id="">{!! $json_element !!}</div>
+            </div>
+            <div>
+                <h6>Blockqute</h6>
+                <div id="">{!! $blockquote !!}</div>
             </div>
 
     </div>
@@ -87,13 +103,14 @@
         const collapse = "{!! $collapse !!}";
         const data_json = @json($data_json);
         const json_element = logActivityHelper.createCodeJson('View JSON', data_json);
+        const badge = logActivityHelper.createBootstrapBadge('primary', 'Badge Primary');
         document.getElementById('raw_list').innerText = logActivityHelper.createList('List',list);
         document.getElementById('raw_table').innerText = logActivityHelper.createTable('Table', columns, rows);
         document.getElementById('raw_collapse').innerText = logActivityHelper.createBootstrapCollapse('Collapse', columns, rows);
         document.getElementById('raw_flex').innerText = logActivityHelper.createFlexRow('Flex', [list, table, collapse]);   
         document.getElementById('raw_grid').innerText = logActivityHelper.createGridRow('Grid', 4, [list, table, collapse]);
         document.getElementById('raw_json').innerText = json_element;
-
+        document.getElementById('raw_badge').innerText = badge;
     </script>
 </body>
 </html>
