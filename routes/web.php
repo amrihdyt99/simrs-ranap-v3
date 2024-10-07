@@ -1,6 +1,6 @@
 <?php
 
-use App\Utils\LogActivityHelper;
+use App\Utils\TagElementHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -54,20 +54,20 @@ require __DIR__ . '/tarik_haykal.php';
 // });
 
 Route::get('test-log-activity-helper', function () {
-    $activityHelper = new LogActivityHelper();
-    $list = $activityHelper->createList('List of Items', ['Item 1', 'Item 2', 'Item 3']);
-    $table = $activityHelper->createTable('Table of Items', ['Column 1', 'Column 2', 'Column 3'], [
+    $tag = new TagElementHelper();
+    $list = $tag->createList('List of Items', ['Item 1', 'Item 2', 'Item 3']);
+    $table = $tag->createTable('Table of Items', ['Column 1', 'Column 2', 'Column 3'], [
         ['Row 1 Cell 1', 'Row 1 Cell 2', 'Row 1 Cell 3'],
         ['Row 2 Cell 1', 'Row 2 Cell 2', 'Row 2 Cell 3'],
         ['Row 3 Cell 1', 'Row 3 Cell 2', 'Row 3 Cell 3'],
     ]);
-    $collapse = $activityHelper->createBootstrapCollapse('Collapse Caption', 'Element inside collapse');
-    $flex = $activityHelper->createFlexRow('Flex Caption', [
+    $collapse = $tag->createBootstrapCollapse('Collapse Caption', 'Element inside collapse');
+    $flex = $tag->createFlexRow('Flex Caption', [
         $list,
         $table,
         $collapse
     ]);
-    $grid = $activityHelper->createGridRow('Grid Caption', 4, [
+    $grid = $tag->createGridRow('Grid Caption', 4, [
         $list,
         $table,
         $collapse
@@ -77,7 +77,7 @@ Route::get('test-log-activity-helper', function () {
         'age' => 30,
         'sex' => 'Male'
     ];
-    $json_element = $activityHelper->createCodeJson('View JSON', $data_json);
+    $json_element = $tag->createCodeJson('View JSON', $data_json);
 
     $context = [
         'list' => $list,
@@ -88,17 +88,17 @@ Route::get('test-log-activity-helper', function () {
         'data_json' => json_encode($data_json),
         'json_element' => $json_element,
         'badge' => [
-            'primary' => $activityHelper->createBootstrapBadge('primary', 'Primary'),
-            'secondary' => $activityHelper->createBootstrapBadge('secondary', 'Secondary'),
-            'success' => $activityHelper->createBootstrapBadge('success', 'Success'),
-            'danger' => $activityHelper->createBootstrapBadge('danger', 'Danger'),
-            'warning' => $activityHelper->createBootstrapBadge('warning', 'Warning'),
-            'info' => $activityHelper->createBootstrapBadge('info', 'Info'),
-            'light' => $activityHelper->createBootstrapBadge('light', 'Light'),
-            'dark' => $activityHelper->createBootstrapBadge('dark', 'Dark'),
+            'primary' => $tag->createBootstrapBadge('primary', 'Primary'),
+            'secondary' => $tag->createBootstrapBadge('secondary', 'Secondary'),
+            'success' => $tag->createBootstrapBadge('success', 'Success'),
+            'danger' => $tag->createBootstrapBadge('danger', 'Danger'),
+            'warning' => $tag->createBootstrapBadge('warning', 'Warning'),
+            'info' => $tag->createBootstrapBadge('info', 'Info'),
+            'light' => $tag->createBootstrapBadge('light', 'Light'),
+            'dark' => $tag->createBootstrapBadge('dark', 'Dark'),
         ],
-        'blockquote' => $activityHelper->createBoostrapBlockquote('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.', 'Author'),
+        'blockquote' => $tag->createBoostrapBlockquote('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.', 'Author'),
     ];
     // dd($context);
-    return view('test-view-log-activy-helper', $context);
+    return view('test-view-element-helper', $context);
 });

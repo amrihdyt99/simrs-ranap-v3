@@ -4,7 +4,7 @@ namespace App\Utils;
 
 use App\Traits\NanoIDTraits;
 
-class LogActivityHelper
+class TagElementHelper
 {
     use NanoIDTraits;
 

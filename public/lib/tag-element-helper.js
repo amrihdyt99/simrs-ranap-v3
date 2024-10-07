@@ -1,4 +1,4 @@
-class LogActivityHelper {
+class TagElementHelper {
     /**
      * Create ul list from array
      * @param {string} caption
