@@ -237,6 +237,40 @@
     </tbody>
 
     <table>
+        
+    <tbody>
+        <tr>
+            <th rowspan="2" class="align-middle text-center">No</th>
+            <th rowspan="2" class="align-middle">DIAGNOSIS ICD-O</th>
+            <th colspan="2" class="text-center">PENEGAK DIAGNOSA</th>
+            <th rowspan="2" class="align-middle">Kode ICD-O</th>
+        </tr>
+        <tr>
+            <td>DPJP UTAMA (dicontang jika ya)</td>
+            <td>NAMA DPJP TAMBAHAN / YANG DIKONSUL</td>
+        </tr>
+        @php 
+            $icdOIndex = 1;
+            $diagnosisIcdo = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'icdo') : collect();
+        @endphp
+        @if($diagnosisIcdo->isNotEmpty())
+            @foreach($diagnosisIcdo as $diagnosis)
+            <tr>
+                <td>{{ $icdOIndex++ }}</td>
+                <td>{{ $diagnosis->NM_ICD10 }}</td>
+                <td>{{ app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->get_paraedic_name($data->dokter_id) }}</td>
+                <td></td>
+                <td>{{ $diagnosis->ID_ICD10 }}</td>
+            </tr>
+            @endforeach
+        @else
+            <tr>
+                <td colspan="5" class="text-center">No Diagnosis ICD-O Available</td>
+            </tr>
+        @endif
+    </tbody>
+
+    <table>
     <tbody>
         <tr>
             <th class="align-middle text-center">No</th>

@@ -812,8 +812,11 @@ class AssesmentAwalDokterController extends Controller
         $reg_no = $request->reg_no;
         $reg_lama = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $reg_no)->first()->reg_lama ?? $reg_no;
     
-        $historySoap = getService(urlSimrs().'api/emr/cppt/latest/'.str_replace('/', '_', $reg_lama), true);
-        $historySoap = count($historySoap[0]) > 0 ? $historySoap[0] : [];
+        $historySoapRajal = getService(urlSimrs().'api/emr/cppt/latest/'.str_replace('/', '_', $reg_lama), true);
+        $historySoapRajal = count($historySoapRajal[0]) > 0 ? $historySoapRajal[0] : [];
+    
+        $historySoapIGD = getService(urlSimrs().'data_patient_notes/'.str_replace('/', '_', $reg_lama), true);
+        $historySoapIGD = is_array($historySoapIGD) ? $historySoapIGD : [];
     
         // Mengambil data tindakan
         $dataTindakanFromRajal = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$reg_lama, true);
@@ -830,24 +833,35 @@ class AssesmentAwalDokterController extends Controller
             }
         }
     
-        if (count($historySoap) > 0) {
-            foreach ($historySoap as $key_soap => $value_soap) {
+        if (count($historySoapRajal) > 0) {
+            foreach ($historySoapRajal as $key_soap => $value_soap) {
                 $filteredData = array_filter($dataTindakanFromRajal, function($item_tindakan) use ($value_soap) {
                     return $item_tindakan['cpoe_dokter_kode'] == $value_soap['reg_dokter_kode'];
                 });
                 
-                $historySoap[$key_soap]['soapdok_posisi'] = ucfirst($value_soap['level_user']);
-                $historySoap[$key_soap]['order_lainnya'] = array_values($filteredData);
+                $historySoapRajal[$key_soap]['soapdok_posisi'] = ucfirst($value_soap['level_user']);
+                $historySoapRajal[$key_soap]['order_lainnya'] = array_values($filteredData);
+                $historySoapRajal[$key_soap]['source'] = 'Rajal';
             }
         }
     
-        // usort($historySoap, function ($a, $b) {
-        //     return strtotime($b['updated_at']) - strtotime($a['updated_at']);
+        if (count($historySoapIGD) > 0) {
+            foreach ($historySoapIGD as $key_soap => $value_soap) {
+                $historySoapIGD[$key_soap]['soapdok_posisi'] = 'IGD';
+                $historySoapIGD[$key_soap]['order_lainnya'] = []; 
+                $historySoapIGD[$key_soap]['source'] = 'IGD';
+            }
+        }
+    
+        $allSoapData = array_merge($historySoapRajal, $historySoapIGD);
+    
+        // usort($allSoapData, function ($a, $b) {
+        //     return strtotime($b['updated_at'] ?? $b['soap_tanggal']) - strtotime($a['updated_at'] ?? $a['soap_tanggal']);
         // });
     
         return response()->json([
             'success' => true,
-            'data_soap' => $historySoap,
+            'data_soap' => $allSoapData,
         ]);
     }
 
