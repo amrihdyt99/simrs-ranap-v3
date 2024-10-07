@@ -4,7 +4,7 @@ namespace App\Utils;
 
 use App\Traits\NanoIDTraits;
 
-class LogActivityHelper
+class TagElementHelper
 {
     use NanoIDTraits;
 
@@ -129,5 +129,70 @@ class LogActivityHelper
         $json = json_encode($data, JSON_PRETTY_PRINT);
         $element = '<pre>' . $json . '</pre>';
         return $this->createBootstrapCollapse($caption, $element);
+    }
+
+
+    /**
+     * Create Bootstrap Badge
+     * @param string $severity is one of 'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'
+     * @param string $text is the text of the badge
+     * @return tag <span> with class="badge badge-$severity" and text
+     */
+    public function createBootstrapBadge($severity, $text)
+    {
+        return "<span class='badge badge-$severity'>$text</span>";
+    }
+
+    /**
+     * Create Bootstrap Blockquote
+     * @param string $text
+     * @param string $credit
+     * @param string $align is one of 'left', 'right', 'center'
+     * @return tag <blockquote> with <p> and <footer> elements
+     */
+    public function createBoostrapBlockquote($text, $credit, $align = 'left')
+    {
+        return "<blockquote class='blockquote text-" . $align . "'><p class='mb-0'>$text</p><footer class='blockquote-footer'>$credit</footer></blockquote>";
+    }
+
+    /**
+     * Create Deleted Text
+     * @param string $text
+     * @return tag <del> with text
+     */
+    public function createDeletedText($text)
+    {
+        return "<del>$text</del>";
+    }
+
+
+    /**
+     * Create underline text
+     * @param string $text
+     * @return tag <u> with text
+     */
+    public function createUnderlineText($text)
+    {
+        return "<u>$text</u>";
+    }
+
+    /**
+     * Create strong text
+     * @param string $text
+     * @return tag <strong> with text
+     */
+    public function createBoldText($text)
+    {
+        return "<strong>$text</strong>";
+    }
+
+    /**
+     * Create italic text
+     * @param string $text
+     * @return tag <em> with text
+     */
+    public function createItalicText($text)
+    {
+        return "<em>$text</em>";
     }
 }
