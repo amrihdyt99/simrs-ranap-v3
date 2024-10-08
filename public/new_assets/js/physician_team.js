@@ -5,6 +5,8 @@ $(document).ready(function() {
     if (urlOrigin == 'https://rsud.sumselprov.go.id') domUrl = urlOrigin + '/simrs_ranap/nyx-sistem/select2/m-paramedic';
     else domUrl = urlOrigin + '/nyx-sistem/select2/m-paramedic';
     
+    // $dom+'/nyx-sistem/select2/m-paramedic';
+
     triggerGetPhysicianTeamDokter();
 
     $('#btn_tambah_team').on('click', function() {
