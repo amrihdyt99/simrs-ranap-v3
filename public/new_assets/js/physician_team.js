@@ -1,7 +1,6 @@
 $(document).ready(function() {
     let urlOrigin = window.location.origin
     let domUrl = '';
-    console.log('URL Origin:', urlOrigin);
     // check if urlOrigin is from rsud.sumselprov.go.id
     if (urlOrigin == 'https://rsud.sumselprov.go.id') domUrl = urlOrigin + '/simrs_ranap/nyx-sistem/select2/m-paramedic';
     else domUrl = urlOrigin + '/nyx-sistem/select2/m-paramedic';
