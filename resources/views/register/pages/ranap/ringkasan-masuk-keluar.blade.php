@@ -212,7 +212,17 @@
                             </tr>
                             <tr>
                                 <td>Tgl Masuk / Jam : </td>
-                                <td>Tgl Keluar / Jam : </td>
+                                <td>{{ \Carbon\Carbon::parse($registration->reg_tgl)->format('d F Y') }} / {{ $registration->reg_jam }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tgl Keluar / Jam :</td>
+                                <td>
+                                   @empty($discharge)
+                                       -
+                                    @else
+                                    {{ \Carbon\Carbon::parse($discharge->pdischarge_tgl)->format('d F Y') }} / {{ $discharge->pdischarge_jam }}
+                                   @endempty
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -229,28 +239,34 @@
                         <h4>11. Kode ICD-10 / ICD-9 (<span class="italic">Diisi oleh dokter</span>)</h4>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="3">Diagnosa Utama : </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;">Diagnosa Skunder:</td>
-                    <td>1</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>2</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>3</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
+                @foreach ($diagnosa_utama as $item)
+                    <tr>
+                        <td style="min-width:40px;">
+                            {{ $loop->iteration == 1 ? 'Diagnosa Utama:' : '' }}
+                        </td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td style="min-width: 100px;">
+                            {{ $item->name ?? '-' }}
+                        </td>
+                        <td>
+                            {{ $item->code ?? '-' }}
+                        </td>
+                    </tr>
+                @endforeach
+                @foreach ($diagnosa_sekunder as $item)
+                    <tr>
+                        <td style="min-width:40px;">
+                            {{ $loop->iteration == 1 ? 'Diagnosa Skunder:' : '' }}
+                        </td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td style="min-width: 100px;">
+                            {{ $item->name ?? '-' }}
+                        </td>
+                        <td>
+                            {{ $item->code ?? '-' }}
+                        </td>
+                    </tr>
+                @endforeach
                 <tr>
                     <td style="min-width:40px;">Penyebab Kematian :</td>
                     <td>1</td>
@@ -269,24 +285,17 @@
                     <td style="min-width: 100px;"></td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td style="min-width:40px;">Tindakan/Prosedur :</td>
-                    <td>1</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
+               @foreach ($procedure as $item)
+               <tr>
+                    <td style="min-width:40px;">
+                        {{ $loop->iteration == 1 ? 'Tindakan/Procedure : ': '' }}
+                    </td>
+                    <td>{{ $loop->iteration }}</td>
+                    <td style="min-width: 100px;">{{ $item->name ?? '-' }}</td>
+                    <td>{{ $item->code?? '-' }}</td>
                 </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>2</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>3</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
+               @endforeach
+                
             </table>
         </div>
     </div>

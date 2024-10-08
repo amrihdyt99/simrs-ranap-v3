@@ -8,17 +8,21 @@ use Illuminate\Support\Facades\Http;
 
 class PatientRepository
 {
-    protected $utils, $db, $roomClass, $businessPartnerRepo;
+    protected $utils, $db, $roomClass, $businessPartnerRepo, $icd10, $icd9;
     public function __construct(
         ConnectionDB $connectioDb,
         RoomClassRepository $roomClassRepository,
         MasterBusinessPartnerRepository $masterBusinessPartnerRepository,
-        UtilsHelper $utilsHelper
+        UtilsHelper $utilsHelper,
+        ICD10Repository $icd10Repository,
+        ICD9Repository $icd9Repository
     ) {
         $this->db = $connectioDb;
         $this->roomClass = $roomClassRepository;
         $this->businessPartnerRepo = $masterBusinessPartnerRepository;
         $this->utils = $utilsHelper;
+        $this->icd10 = $icd10Repository;
+        $this->icd9 = $icd9Repository;
     }
 
 
@@ -127,6 +131,50 @@ class PatientRepository
             return $this->db->connDbMaster()->table('m_registrasi')
                 ->where('reg_medrec', $medrec)
                 ->count();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Get patient diagnose by registration number and type
+     * @param string $reg_no
+     * @param string $type is one of 'utama', 'sekunder', 'klausa' and 'icdo'
+     * @return mixed
+     */
+    public function getPatientDiagnoseByRegistrationNumber($reg_no, $type)
+    {
+        try {
+            return $this->db->connDbRanap()->table('rs_pasien_diagnosa')
+                ->leftJoin('icd10_bpjs', 'rs_pasien_diagnosa.pdiag_diagnosa', '=', 'icd10_bpjs.ID_ICD10')
+                ->where('rs_pasien_diagnosa.pdiag_reg', $reg_no)
+                ->where('pdiag_kategori', $type)
+                ->where('pdiag_deleted', 0)
+                ->select('icd10_bpjs.ID_ICD10 as code', 'icd10_bpjs.NM_ICD10 as name')
+                ->get();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getPatientProcedure($reg_no)
+    {
+        try {
+            return $this->db->connDbRanap()->table('rs_pasien_prosedur')
+                ->leftJoin('icd9cm_bpjs', 'rs_pasien_prosedur.pprosedur_prosedur', '=', 'icd9cm_bpjs.ID_TIND')
+                ->where('pprosedur_reg', $reg_no)
+                ->where('pprosedur_deleted', 0)
+                ->select('icd9cm_bpjs.ID_TIND as code', 'icd9cm_bpjs.NM_TINDAKAN as name')
+                ->get();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getPatientDischarge($reg_no)
+    {
+        try {
+            return $this->db->connDbRanap()->table('rs_pasien_discharge')->where('pdischarge_reg', $reg_no)->where('pdischarge_deleted', 0)->first();
         } catch (\Throwable $th) {
             throw $th;
         }

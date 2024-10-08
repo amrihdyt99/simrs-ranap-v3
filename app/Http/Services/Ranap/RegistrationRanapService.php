@@ -51,8 +51,14 @@ class RegistrationRanapService
                 'patient_marital_status' => $this->utils->parseMaritalStatus($data_patient->GCMaritalStatus),
                 'patient_occupation' => $this->utils->parseOccupation($data_patient->GCOccupation),
                 'patient_pj' => $this->pasienPjRepo->getPjPasien($reg_no),
+                'diagnosa_utama' => $this->patientRepo->getPatientDiagnoseByRegistrationNumber($reg_no, 'utama'),
+                'diagnosa_sekunder' => $this->patientRepo->getPatientDiagnoseByRegistrationNumber($reg_no, 'sekunder'),
+                'diagnosa_klausa' => $this->patientRepo->getPatientDiagnoseByRegistrationNumber($reg_no, 'klausa'),
+                'procedure' => $this->patientRepo->getPatientProcedure($reg_no),
+                'discharge' => $this->patientRepo->getPatientDischarge($reg_no)
             ];
-            // dd($context);
+            // dd($context['registration'], $context['discharge']);
+            // dd([$context['diagnosa_utama'], $context['diagnosa_sekunder'], $context['diagnosa_klausa'], $context['procedure']]);
             return view('register.pages.ranap.ringkasan-masuk-keluar', $context);
             // $payment_method = 
         } catch (\Throwable $th) {
