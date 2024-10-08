@@ -18,6 +18,7 @@ use App\Http\Controllers\Master\ServiceUnitController;
 use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\PractitionerController;
+use App\Http\Controllers\Master\v2\ClassCategoryController;
 use App\Http\Controllers\Master\v2\DepartmentV2Controller;
 use App\Http\Controllers\Master\v2\NewServiceUnitController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,7 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::resource('patient', PatientController::class);
     Route::resource('bed', BedController::class);
     Route::patch('bed/change-status-active/{id}', [BedController::class, 'changeStatusActive'])->name('bed.changeStatusActive');
+    Route::resource('class-category', ClassCategoryController::class);
     Route::resource('class', RoomClassController::class);
     Route::resource('medicine', MedicineController::class);
     Route::resource('indication', IndicationController::class);

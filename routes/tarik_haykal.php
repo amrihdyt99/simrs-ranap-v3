@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('tarik')->group(function () {
     Route::get('unit_room', [TarikDataController::class, 'unit_ruang']);
     Route::get('unit_item', [TarikDataController::class, 'unit_item']);
+    Route::get('class-category', [TarikDataController::class, 'classCategory']);
     Route::get('kelas', [TarikDataController::class, 'kelas']);
     Route::get('room', [TarikDataController::class, 'room']);
     Route::get('unit', [TarikDataController::class, 'unit']);

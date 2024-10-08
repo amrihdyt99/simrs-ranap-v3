@@ -29,7 +29,7 @@
               <a class="dropdown-item" href="{{ route('master.unit.index') }}">Service Unit Room</a>
               <a class="dropdown-item" href="{{ route('master.serviceunit.index') }}">Service Unit</a>
               <a class="dropdown-item" href="{{ route('master.location.index') }}">Location</a>
-              <a class="dropdown-item" href="{{ route('master.class.index') }}">Class Category</a>
+              <a class="dropdown-item" href="{{ route('master.class-category.index') }}">Class Category</a>
               <a class="dropdown-item" href="{{ route('master.class.index') }}">Class</a>
               <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">Room</a>
               <a class="dropdown-item" href="{{ route('master.bed.index') }}">Bed</a>
