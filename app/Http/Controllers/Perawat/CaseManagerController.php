@@ -62,4 +62,50 @@ class CaseManagerController extends Controller
             ], 500);
         }
     }
+
+    function store_case_manager_akumulasi(Request $request){
+        extract($request->all());
+
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), []);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $validator->errors()->all()
+                ], 422);
+            }
+
+            $cekAkumulasi = DB::connection('mysql')->table('case_manager_akumulasi')
+                ->where([
+                    ['reg_no', $akumulasi['reg_no']],
+                    ['med_rec', $akumulasi['med_rec']],
+                ])->count();
+
+            if ($cekAkumulasi > 0) {
+                $akumulasi['updated_at'] = Carbon::now();
+                $akumulasi['updated_by'] = $username;
+                $caseData = DB::connection('mysql')->table('case_manager_akumulasi')->where('reg_no', $akumulasi['reg_no'])->update($akumulasi);
+            } else {
+                $akumulasi['created_at'] = Carbon::now();
+                $akumulasi['created_by'] = $username;
+                $caseData = DB::connection('mysql')->table('case_manager_akumulasi')->insert($akumulasi);
+            }
+
+            DB::commit();
+            $response = response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil diperbarui',
+            ]);
+            
+            return $response;
+        } catch (\Throwable $throw) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $throw->getMessage()
+            ], 500);
+        }
+    }
 }

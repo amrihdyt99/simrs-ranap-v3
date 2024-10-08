@@ -239,16 +239,16 @@
                                             <label class="label-admisi">Kategori Pasien</label>
                                             @php
                                             $kategori_pasien = [
-                                                'bayi' => 'Bayi',
-                                                'anak' => 'Anak',
-                                                'dewasa' => 'Dewasa',
-                                                'kebidanan' => 'Kebidanan',
+                                            'bayi' => 'Bayi',
+                                            'anak' => 'Anak',
+                                            'dewasa' => 'Dewasa',
+                                            'kebidanan' => 'Kebidanan',
                                             ];
                                             @endphp
                                             <select id="kategori_pasien" name="kategori_pasien" class="form-control">
                                                 <option value="">Pilih</option>
                                                 @foreach ($kategori_pasien as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

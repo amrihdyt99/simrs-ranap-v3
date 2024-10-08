@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ranap;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\IGD\IGDServices;
+use App\Http\Services\Ranap\RegistrationRanapService;
 use App\Models\Bed;
 use App\Models\ICD10;
 use App\Models\KelasKategori;
@@ -33,10 +34,11 @@ class RegisterController extends Controller
 {
     use RanapRegistrationTrait, MasterPasienTrait, HttpRequestTraits, MasterBedTraits;
 
-    protected $igdService;
-    public function __construct(IGDServices $igdService)
+    protected $igdService, $regRanapService;
+    public function __construct(IGDServices $igdService, RegistrationRanapService $regRanapService)
     {
         $this->igdService = $igdService;
+        $this->regRanapService = $regRanapService;
     }
     public function index(Request $request)
     {
@@ -128,7 +130,7 @@ class RegisterController extends Controller
                 $gc1Url = route('register.ranap.gc1', ['reg_no' => $reg_no]);
                 //$gc2Url = route('register.ranap.gc2', ['reg_no' => $reg_no]);
                 $url_rawat_intensif = route('register.ranap.rawat-intensif', ['reg_no' => $reg_no]);
-
+                $url_ringkasan_masuk_keluar = route('register.ranap.ringkasan-masuk-keluar', $reg_no);
                 $button_dropdown =
                     '<div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -138,6 +140,7 @@ class RegisterController extends Controller
                             <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
                             <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                             <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
+                            <a class="dropdown-item" href="' . $url_ringkasan_masuk_keluar . '" target="_blank">Ringkasan Masuk & Keluar</a>
                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
                             <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
                             <button class="dropdown-item print-persetujuan-medis" data-reg_no="' . $query->reg_no . '">Persetujuan Medis</button> 
@@ -1189,5 +1192,10 @@ class RegisterController extends Controller
             ->get();
 
         return response()->json($data);
+    }
+
+    public function ringkasanMasukKeluarPasien($reg_no)
+    {
+        return $this->regRanapService->ringkasanMasukKeluarPasien($reg_no);
     }
 }

@@ -23,7 +23,7 @@ class IGDServices
         RoomClassRepository $roomClass,
         MasterRuanganRepository $masterRuangan,
         MasterBusinessPartnerRepository $masterBusinessPartner,
-        MasterRegistrationRepository $masterRegistrationRepository,
+        MasterRegistrationRepository $masterRegistrationRepository
     ) {
         $this->connection = $connectionDb;
         $this->roomClass = $roomClass;
@@ -138,10 +138,10 @@ class IGDServices
                 $room = $this->masterRuangan->findOneByRoomID($data['ranap_room']);
                 return $room->RoomName ?? '-';
             })
-            ->editColumn('ranap_business_partner', function ($data) {
-                $businessPartner = $this->masterBusinessPartner->findOneById($data['ranap_business_partner']);
-                return $businessPartner->BusinessPartnerName ?? '-';
-            })
+            // ->editColumn('ranap_business_partner', function ($data) {
+            //     $businessPartner = $this->masterBusinessPartner->findOneById($data['ranap_business_partner']);
+            //     return $businessPartner->BusinessPartnerName ?? '-';
+            // })
             ->rawColumns(['action'])
             ->make(true);
     }
