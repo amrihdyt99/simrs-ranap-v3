@@ -42,6 +42,8 @@ require __DIR__ . '/admin_nurse.php';
 require __DIR__ . '/resume_pasien.php';
 require __DIR__ . '/dietitian.php';
 require __DIR__ . '/farmasi.php';
+require __DIR__ . '/radiologi.php'; 
+require __DIR__ . '/laboratorium.php'; 
 // ZxcNyaaUniversal
 require __DIR__ . '/ZxcNyaaUniversal.php';
 require __DIR__ . '/tarik_haykal.php';

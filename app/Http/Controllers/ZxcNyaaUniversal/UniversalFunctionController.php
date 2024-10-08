@@ -59,7 +59,11 @@ class UniversalFunctionController extends Controller
         }
         elseif($level_user==='radiologi'){
             $redirect = true;
-            $url = '/perawat/dashboard';
+            $url = '/radiologi/dashboard';
+        }
+        elseif($level_user==='lab'){
+            $redirect = true;
+            $url = '/lab/dashboard';
         }
         elseif($level_user==='dokter'){
             $redirect = true;
@@ -832,10 +836,10 @@ class UniversalFunctionController extends Controller
                 'adminregister' => 'Admin Register',
                 // 'fisioterapis' => 'Fisioterapis',
                 'kasir' => 'Kasir',
-                // 'lab' => 'Laboratorium',
+                'lab' => 'Laboratorium',
                 'pendaftaran' => 'Pendaftaran',
                 'perawat' => 'Perawat',
-                // 'radiologi' => 'Radiologi',
+                'radiologi' => 'Radiologi',
                 // 'case_manager' => 'Case Manager',
                 // 'nutritionist' => 'Ahli Gizi / Nutritionist',
                 'dietitian' => 'Ahli Diet / Dietisien',

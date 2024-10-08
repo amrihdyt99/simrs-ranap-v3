@@ -267,6 +267,77 @@ trait RanapRegistrationTrait
         }
     }
 
+    public function getDataPersetujuanMedis($regno)
+    {
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_room_class', 'm_registrasi.reg_class', '=', 'm_room_class.ClassCode')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
+            ->select(
+                'm_registrasi.reg_no',
+                'm_pasien.MedicalNo as no_medrec',
+                'm_pasien.PatientName as nama_lengkap',
+                'm_pasien.DateOfBirth as tgl_lahir',
+                'm_pasien.GCSex as jenis_kelamin',
+                'm_paramedis.ParamedicName as reg_dokter',
+                'm_registrasi.reg_tgl',
+                'm_room_class.ClassName as room_class'
+            )
+            ->first();
+
+        if ($datamypatient) {
+            $penanggungJawab = DB::connection('mysql2')
+                ->table('m_registrasi_pj')
+                ->where('reg_no', $this->parseRegNoByUnderScore($regno))
+                ->select(
+                    'reg_pjawab_nama as familyname',
+                    'reg_hub_pasien as gcrelationShip',
+                    'reg_pjawab_alamat as keluarga_alamat',
+                    'tanggal_lahir as tanggal_lahir_pj'
+                )
+                ->get();
+
+            $datamypatient->penanggung_jawab = $penanggungJawab;
+
+            foreach ($penanggungJawab as $pj) {
+                if ($pj->tanggal_lahir_pj) {
+                    $pj->umur_pj = Carbon::parse($pj->tanggal_lahir_pj)->age;
+                }
+            }
+
+            $penanggungJawabList = DB::connection('mysql2')
+                ->table('m_registrasi_pj')
+                ->where('reg_no', $this->parseRegNoByUnderScore($regno))
+                ->pluck('reg_pjawab_nama')
+                ->toArray();
+
+            if (empty($penanggungJawabList)) {
+                $penanggungJawabList[] = $datamypatient->nama_lengkap;
+            } elseif (!in_array($datamypatient->nama_lengkap, $penanggungJawabList)) {
+                $penanggungJawabList[] = $datamypatient->nama_lengkap;
+            }
+
+            $datamypatient->penanggung_jawab_list = $penanggungJawabList;
+            $user = auth()->user();
+            $datamypatient->ttd_user = $user->signature;
+            $datamypatient->nama_user = $user->name;
+
+            // Check if data already exists in surat_persetujuan_medis
+            $suratPersetujuanMedis = DB::connection('mysql2')
+                ->table('surat_persetujuan_medis')
+                ->where('reg_no', $this->parseRegNoByUnderScore($regno))
+                ->first();
+
+            if ($suratPersetujuanMedis) {
+                $datamypatient->surat_persetujuan_medis = $suratPersetujuanMedis;
+            }
+        }
+
+        return $datamypatient;
+    }
+
     public function getDataSlipAdmisi($regno)
     {
         $datamypatient = DB::connection('mysql2')
@@ -297,14 +368,18 @@ trait RanapRegistrationTrait
                     $dataFromApi = $response->json();
                     if (!empty($dataFromApi)) {
                         $datamypatient->poli_asal = $dataFromApi['poli_asal'] ?? null;
+                        $datamypatient->ranap_diagnosa = $dataFromApi['ranap_diagnosa'] ?? null;
                     } else {
                         $datamypatient->poli_asal = null;
+                        $datamypatient->ranap_diagnosa = null;
                     }
                 } else {
                     $datamypatient->poli_asal = null;
+                    $datamypatient->ranap_diagnosa = null;
                 }
             } else {
                 $datamypatient->poli_asal = null;
+                $datamypatient->ranap_diagnosa = null;
             }
 
             $penanggungJawab = DB::connection('mysql2')
