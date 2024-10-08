@@ -12,6 +12,17 @@
                 <input type="date" class="form-control" id="end_date_ranap" placeholder="Sampai Tanggal">
             </div>
         </div>
+        <div class="col-sm-12 col-lg-1">
+            <div class="form-group">
+                <label for="limit">Limit</label>
+                <select class="form-control" id="limit">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+        </div>
         <div class="col-sm-12 col-lg-2 d-flex align-items-center">
             <button class="btn btn-primary" style="margin-top: 4px;" onclick="handleFilterDateRanap()">Filter</button>
         </div>
