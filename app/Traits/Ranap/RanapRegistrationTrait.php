@@ -32,7 +32,7 @@ trait RanapRegistrationTrait
         $data['kelas_baru'] = DB::connection('mysql2')
             ->table('m_kelas_ruangan_baru')
             ->get();
-        $data['physician'] = DB::connection('mysql')->table("rs_m_paramedic")->where(['GCParamedicType' => "X0055^001"])->get();
+        $data['physician'] = DB::connection('mysql2')->table("m_paramedis")->where(['GCParamedicType' => "X0055^001"])->where('IsActive', 1)->get();
         $data['bed'] = Bed::all();
         $data['icd10'] = ICD10::all();
         $data['cover_class'] = KelasKategori::all();
