@@ -607,9 +607,6 @@
 
                     let totalvalidation = 0
                     if (resp.validation.length > 0) {
-                        $('[id*="selecting_items"][data-category="all"]').hide()
-                        $('[id*="selecting_items"][value="all"]').hide()
-
                         $.each(resp.validation, function(i, item){
                             $.each(JSON.parse(item.pvalidation_selected), function(i, data_selected) {
                                 $('[id="checked_status"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
@@ -633,6 +630,18 @@
                         })
 
                         total = totalvalidation
+
+
+                        let countUncheckedItem = $('input[id="selecting_items"]').filter(function() {
+                            console.log( $(this).val())
+                            return $(this).attr('data-category') !== 'all' && $(this).val() !== 'all';
+                        }).length;
+
+                        if (countUncheckedItem == 0) {
+                            $('[id*="selecting_items"]').hide()
+                        } else {
+                            $('[id*="selecting_items"]').show()
+                        }
                     } else {
                         $('[id*="selecting_items"]').show()
                     }
