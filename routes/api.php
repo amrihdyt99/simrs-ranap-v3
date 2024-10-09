@@ -312,4 +312,8 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/assesment-neonatus', [RiwayatController::class, 'getAssesmentNeonatus'])->name('assesment-neonatus');
 	Route::get('/assesment-anak', [RiwayatController::class, 'getAssesmentAnak'])->name('assesment-anak');
 	Route::get('/assesment-obgyn', [RiwayatController::class, 'getAssesmentObgyn'])->name('assesment-obgyn');
+	Route::get('/edukasi-pasien', [RiwayatController::class, 'getEdukasiPasien'])->name('edukasi-pasien');
+	Route::get('/rekonsiliasi-obat', [RiwayatController::class, 'getRekonObat'])->name('rekonsiliasi-obat');
+	Route::get('/checklist-orientasi', [RiwayatController::class, 'getChecklistOrientasi'])->name('checklist-orientasi');
+	Route::get('/resiko-jatuh-morse', [RiwayatController::class, 'getResikoJatuhMorse'])->name('resiko-jatuh-morse');
 });

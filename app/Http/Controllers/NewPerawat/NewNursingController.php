@@ -1093,6 +1093,9 @@ class NewNursingController extends Controller
                 'ttd_pasien' => $ttdPasien,
                 'nama_keluarga_pasien' => $r->nama_keluarga_pasien,
                 'nama_perawat' => $r->nama_perawat,
+                'tgl_assesment_awal' => $r->tgl_assesment_awal,
+                'tgl_ttd' => $r->tgl_ttd,
+                'kepada_lain' => $r->kepada_lain,
 
             ]);
             return response()->json([
