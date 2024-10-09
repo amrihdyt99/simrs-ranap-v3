@@ -177,4 +177,96 @@ class RiwayatController extends Controller
             200
         );
     }
+
+    public function getRekonObat(Request $request)
+    {
+        $rekon_obat = DB::table('rekonsiliasi_obat')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $rekon_obat_items = DB::table('rekonsiliasi_obat_item')
+            ->where('reg_no', $request->reg_no)
+            ->get();
+
+        if (!$rekon_obat) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => [
+                    'rekon_obat' => $rekon_obat,
+                    'rekon_obat_items' => $rekon_obat_items
+                ]
+            ],
+            200
+        );
+    }
+
+    public function getChecklistOrientasi(Request $request)
+    {
+        $dbMaster = DB::connection('mysql2')->getDatabaseName();
+        $dbInap = DB::connection('mysql')->getDatabaseName();
+
+        $checklist_orientasi = DB::table($dbInap . '.rm3')
+            ->leftJoin($dbMaster . '.m_registrasi', 'rm3.reg_no', '=', 'm_registrasi.reg_no')
+            ->leftJoin($dbMaster . '.m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin($dbMaster . '.m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin($dbMaster . '.m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
+            ->leftJoin($dbMaster . '.m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
+            ->leftJoin($dbMaster . '.m_bed', 'm_registrasi.bed', '=', 'm_bed.bed_id')
+            ->leftJoin($dbMaster . '.m_ruangan', 'm_bed.room_id', '=', 'm_ruangan.RoomID')
+            ->leftJoin($dbMaster . '.m_room_class', 'm_bed.class_code', '=', 'm_room_class.ClassCode')
+            ->leftJoin($dbMaster . '.m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
+            ->leftJoin($dbMaster . '.m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->where('rm3.reg_no', $request->reg_no)
+            ->select(
+                'rm3.*',
+                'm_registrasi.reg_tgl as tgl_masuk_inap',
+                'm_pasien.PatientName',
+                'm_pasien.DateOfBirth',
+                'm_pasien.GCSex',
+                'm_paramedis.ParamedicName',
+                'm_bed.bed_code',
+                'm_ruangan.RoomName as ruang',
+                'm_unit.ServiceUnitName as kelompok',
+                'm_room_class.ClassName as kelas'
+            )
+            ->first();
+
+        if (!$checklist_orientasi) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $checklist_orientasi
+            ],
+            200
+        );
+    }
+
+    public function getResikoJatuhMorse(Request $request)
+    {
+        $resiko_jatuh_morse = DB::table('resiko_jatuh_skala_morse')
+            ->where('reg_no', $request->reg_no)
+            ->get();
+        
+        if (!$resiko_jatuh_morse) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $resiko_jatuh_morse
+            ],
+            200
+        );
+    }
+
+    
 }
+

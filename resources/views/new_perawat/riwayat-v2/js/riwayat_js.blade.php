@@ -1,5 +1,301 @@
 <script>
 
+    function yaTidakParser(input) {
+        return input === 1 ? "Ya" : input === 0 ? "Tidak" : "Input tidak valid";
+    }
+
+    function kategoriSadPersonParser(input) {
+        return input === 1 ? "Rendah ( 1-2 )" : input === 2 ? "Sedang ( 3-6 )" : input === 3 ? "Tinggi ( 7 - 10 )" : "Input tidak valid";
+    }
+
+    function kategoriAdlParser(input) {
+        switch (input) {
+            case 1:
+                return "Kategori I: Perawatan Minimal (Self Care), memerlukan waktu 1-2 jam / 24 jam";
+            case 2:
+                return "Kategori II: Kriteria Perawatan Partial (Intermediate Care), memerlukan waktu 3-4 jam / 24 jam";
+            case 3:
+                return "Kategori III: Kriteria Perawatan Maksimal (Total Care / Intensif Care), memerlukan waktu 5-6 jam / 24 jam";
+            default:
+                return "Input tidak valid";
+        }
+    }
+
+    function parseUnderscoreToSpace(input) {
+        if (typeof input === 'string') {
+            return input.replace(/_/g, ' ');
+        }
+        return input;
+    }
+
+    // Fungsi untuk mengisi checkbox
+    const setCheckboxes = (selector, values) => {
+        if (values) {
+            const valuesArray = values.split(',');
+            valuesArray.forEach(function(value) {
+                $(selector + '[value="'+value.trim()+'"]').prop('checked', true);
+            });
+        }
+    };
+
+    const setCustomCheckboxes = (selector, values) => {
+        const parsedValues = JSON.parse(values); // Parse JSON terlebih dahulu
+        if (Array.isArray(parsedValues) && parsedValues.length > 0) {
+            parsedValues.forEach(function(value) {
+                const checkbox = $(selector + '[value="'+value+'"]');
+                if (checkbox.length) {
+                    checkbox.prop('disabled', false); // Hapus atribut disabled sementara
+                    checkbox.prop('checked', true);
+                    checkbox.prop('disabled', true); // Kembalikan atribut disabled
+                }
+            });
+        }
+    };
+
+    // Fungsi untuk mengisi radio button
+    const setRadioButton = (tableId, name, value) => {
+        if (value) {
+            $('#'+tableId+' input[name="'+name+'"][value="'+value+'"]').prop('checked', true);
+        }
+    };
+
+    // Fungsi untuk mengisi textarea
+    const setTextarea = (selector, value) => {
+        if (value) {
+            $(selector).val(value);
+        }
+    };
+
+    // Fungsi untuk mengisi text
+    const setInputText = (selector, value) => {
+        if (value) {
+            $(selector).val(value);
+        }
+    };
+
+    // Fungsi untuk mengisi input date
+    const setInputDate = (selector, value) => {
+        if (value) {
+            $(selector).val(value);
+        }
+    };
+
+    // Fungsi untuk mengisi tanda tangan
+    const setSignature = (imgId, signatureData) => {
+        if (signatureData) {
+            const $img = $('#' + imgId);
+            $img.attr('src', signatureData);
+        }
+    };
+
+    function parseGenderSphaira(data) {
+        return data === '0001^M' ? 'Laki-Laki' : data === '0001^F' ? 'Perempuan' : 'Tidak Diketahui';
+    }
+
+    function parseDateToIndonesian(dateString) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', options);
+    }
+
+    function parseDateTimeToIndonesian(dateString) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', options);
+    }
+
+    function getResikoJatuhMorse() {
+        $.ajax({
+            url: '{{ route('perawat.resiko-jatuh-morse') }}',
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    const tableBody = $('#table-riwayat-morse tbody');
+                    tableBody.empty();
+                    
+                    response.data.forEach(function(item) {
+                        const row = `
+                            <tr>
+                                <td>${parseDateTimeToIndonesian(item.created_at)}</td>
+                                <td>${item.shift}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm view-detail" data-id="${item.id}">Lihat Detail</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                    });
+
+                    $('.view-detail').on('click', function() {
+                        const id = $(this).data('id');
+                        showMorseDetail(id);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function showMorseDetail(id) {
+        $.ajax({
+            url: "{{ route('get.detail.resiko.jatuh.skalamorse') }}",
+            method: 'POST',
+            data: {
+                reg_no: regno,
+                med_rec: medrec,
+                user_id: "{{ auth()->user()->id }}",
+                id: id,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log('showMorseDetail', response);
+                $('#resikoJatuhDetailModalLabelMorse').text('Detail Risiko Jatuh pada ' + formatDateTime(response.data.created_at));
+
+                let detailTable = $('#riwayat-data-morse');
+                detailTable.find('input[name="resiko_jatuh_morse_bulan_terakhir"][value="' + response.data.resiko_jatuh_morse_bulan_terakhir + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_medis_sekunder"][value="' + response.data.resiko_jatuh_morse_medis_sekunder + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_alat_bantu_jalan"][value="' + response.data.resiko_jatuh_morse_alat_bantu_jalan + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_infus"][value="' + response.data.resiko_jatuh_morse_infus + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_berjalan"][value="' + response.data.resiko_jatuh_morse_berjalan + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_mental"][value="' + response.data.resiko_jatuh_morse_mental + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_ketegori"][value="' + response.data.resiko_jatuh_morse_ketegori + '"]').prop('checked', true);
+
+                $('#resiko_jatuh_morse_total_skor_detail').text(response.data.resiko_jatuh_morse_total_skor);
+
+                let detailTable2 = $('#skala_morse_2');
+                let rendahArray = JSON.parse(response.data.intervensi_resiko_jatuh_skala_morse_rendah);
+                rendahArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_skala_morse_rendah[]"][value="' + item + '"]').prop('checked', true);
+                });
+
+                let sedangArray = JSON.parse(response.data.intervensi_resiko_jatuh_skala_morse_sedang);
+                sedangArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_skala_morse_sedang[]"][value="' + item + '"]').prop('checked', true);
+                });
+
+                let tinggiArray = JSON.parse(response.data.intervensi_resiko_jatuh_skala_morse_tinggi);
+                tinggiArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_skala_morse_tinggi[]"][value="' + item + '"]').prop('checked', true);
+                });
+
+                $('#riwayat-morse-show').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+                alert('Failed to fetch data for the selected item.');
+            }
+        });
+    }
+
+    function getChecklistOrientasi() {
+        $.ajax({
+            url: '{{ route('perawat.checklist-orientasi') }}',
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    const checklistData = response.data;
+                    // Mengisi data checklist
+                    $('#riwayat-checklist #no_medrec').text(checklistData.MedicalNo);
+                    $('#riwayat-checklist #nama_lengkap').text(checklistData.PatientName);
+                    $('#riwayat-checklist #tgl_lahir').text(checklistData.DateOfBirth);
+                    $('#riwayat-checklist #jenis_kelamin').text(parseGenderSphaira(checklistData.GCSex));
+                    $('#riwayat-checklist #lantai').text(checklistData.kelompok);
+                    $('#riwayat-checklist #bed_code').text(checklistData.bed_code);
+                    $('#riwayat-checklist #tgl_masuk').text(parseDateToIndonesian(checklistData.tgl_masuk_inap));
+                    $('#riwayat-checklist #tgl_assesment').text(parseDateToIndonesian(checklistData.tgl_assesment_awal));
+                    setInputText('#riwayat-checklist #sampai', checklistData.sampai);
+                    setCustomCheckboxes('#riwayat-checklist input[name="kepada[]"]', checklistData.kepada);
+                    setInputText('#riwayat-checklist #kepada_lain', checklistData.kepada_lain);
+                    setCheckboxes('#riwayat-checklist input[name="tidak"]', checklistData.tidak);
+                    setCustomCheckboxes('#riwayat-checklist input[name="satu[]"]', checklistData.satu);
+                    setCustomCheckboxes('#riwayat-checklist input[name="dua[]"]', checklistData.dua);
+                    setCustomCheckboxes('#riwayat-checklist input[name="tiga[]"]', checklistData.tiga);
+                    setCustomCheckboxes('#riwayat-checklist input[name="empat[]"]', checklistData.empat);
+                    setCustomCheckboxes('#riwayat-checklist input[name="empat[]"]', checklistData.empat);
+                    setCheckboxes('#riwayat-checklist input[name="gigi"]', checklistData.gigi);
+                    setCheckboxes('#riwayat-checklist input[name="lokasi_gigi"]', checklistData.lokasi_gigi);
+                    setInputText('#riwayat-checklist #bawa_gigi', checklistData.bawa_gigi);
+                    setCheckboxes('#riwayat-checklist input[name="alat"]', checklistData.alat);
+                    setCheckboxes('#riwayat-checklist input[name="lokasi_alat"]', checklistData.lokasi_alat);
+                    setInputText('#riwayat-checklist #bawa_alat', checklistData.bawa_alat);
+                    setCheckboxes('#riwayat-checklist input[name="uang"]', checklistData.uang);
+                    setCheckboxes('#riwayat-checklist input[name="uang_bawa"]', checklistData.uang_bawa);
+                    setInputText('#riwayat-checklist #barang_lain', checklistData.barang_lain);
+                    setInputText('#riwayat-checklist #nama_pihak_pasien', checklistData.nama_pihak_pasien);
+                    setInputText('#riwayat-checklist #sebagai_pihak_pasien', checklistData.sebagai_pihak_pasien);
+                    setSignature('signature_perawat_img', checklistData.ttd_perawat);
+                    setSignature('signature_pasien_img', checklistData.ttd_pasien);
+                    setInputText('#ttd_riwayat_checklist #nama_perawat', checklistData.nama_perawat);
+                    setInputText('#ttd_riwayat_checklist #nama_keluarga_pasien', checklistData.nama_keluarga_pasien);
+                }
+            }
+        });
+    }
+
+    
+
+    function getRekonObat() {
+        $.ajax({
+            url: '{{ route('perawat.rekonsiliasi-obat') }}',
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                if (response.status) {
+                    const rekonData = response.data.rekon_obat || {};
+                    const rekonObatItems = response.data.rekon_obat_items || [];
+                    
+                    // Mengisi radio button penggunaan obat sebelum admisi
+                    $(`input[name="penggunaan_sebelum_admisi"][value="${rekonData.penggunaan_sebelum_admisi || 0}"]`).prop('checked', true);
+                    
+                    // Mengisi tabel rekonsiliasi obat
+                    const tableBody = $('#riwayat-rekonsiliasi-obat tbody');
+                    tableBody.empty();
+                    
+                    rekonObatItems.forEach(function(obat) {
+                        tableBody.append(`
+                            <tr>
+                                <td>${obat.nama_obat}</td>
+                                <td>${obat.dosis}</td>
+                                <td>${obat.frekuensi}</td>
+                                <td>${obat.cara_beri}</td>
+                                <td>${obat.waktu_beri_terakhir}</td>
+                                <td>${obat.tindak_lanjut}</td>
+                                <td>${obat.aturan_ubah_pakai}</td>
+                            </tr>
+                        `);
+                    });
+                    
+                    // Mengisi tanggal dan waktu tanda tangan
+                    $('#time_ttd_dpjp').val(rekonData.time_ttd_dpjp || '');
+                    $('#time_ttd_farmasi').val(rekonData.time_ttd_farmasi || '');
+                    $('#time_ttd_perawat').val(rekonData.time_ttd_perawat || '');
+                    
+                    // Mengisi tanda tangan
+                    setSignature('ttd_dpjp', rekonData.ttd_dpjp);
+                    setSignature('ttd_farmasi', rekonData.ttd_farmasi);
+                    setSignature('ttd_perawat', rekonData.ttd_perawat);
+
+                    // Mengisi username
+                    $('#dokter_username').val(response.data.dokter?.username || '');
+                    $('#farmasi_username').val(response.data.farmasi?.username || '');
+                    $('#perawat_username').val(response.data.perawat?.username || '');
+                }
+            }
+        });
+    }
+
     function getEdukasiPasien() {
         $.ajax({
             url: '{{ route('perawat.edukasi-pasien') }}',
@@ -15,45 +311,6 @@
                     const gizi = response.data.edukasi_gizi || {};
                     const farmasi = response.data.edukasi_farmasi || {};
                     const rehabilitasi = response.data.edukasi_rehab || {};
-
-                    // Fungsi untuk mengisi checkbox
-                    const setCheckboxes = (selector, values) => {
-                        if (values) {
-                            const valuesArray = values.split(',');
-                            valuesArray.forEach(function(value) {
-                                $(selector + '[value="'+value.trim()+'"]').prop('checked', true);
-                            });
-                        }
-                    };
-
-                    // Fungsi untuk mengisi radio button
-                    const setRadioButton = (tableId, name, value) => {
-                        if (value) {
-                            $('#'+tableId+' input[name="'+name+'"][value="'+value+'"]').prop('checked', true);
-                        }
-                    };
-
-                    // Fungsi untuk mengisi textarea
-                    const setTextarea = (selector, value) => {
-                        if (value) {
-                            $(selector).val(value);
-                        }
-                    };
-
-                    // Fungsi untuk mengisi input date
-                    const setInputDate = (selector, value) => {
-                        if (value) {
-                            $(selector).val(value);
-                        }
-                    };
-
-                    // Fungsi untuk mengisi tanda tangan
-                    const setSignature = (imgId, signatureData) => {
-                        if (signatureData) {
-                            const $img = $('#' + imgId);
-                            $img.attr('src', signatureData);
-                        }
-                    };
 
                     // Mengisi data table rs_edukasi_pasien
                     setCheckboxes('#table-edukasi-riwayat input[name="bahasa[]"]', pasien.bahasa);
@@ -192,36 +449,6 @@
             }
         });
     }
-
-    function yaTidakParser(input) {
-        return input === 1 ? "Ya" : input === 0 ? "Tidak" : "Input tidak valid";
-    }
-
-    function kategoriSadPersonParser(input) {
-        return input === 1 ? "Rendah ( 1-2 )" : input === 2 ? "Sedang ( 3-6 )" : input === 3 ? "Tinggi ( 7 - 10 )" : "Input tidak valid";
-    }
-
-    function kategoriAdlParser(input) {
-        switch (input) {
-            case 1:
-                return "Kategori I: Perawatan Minimal (Self Care), memerlukan waktu 1-2 jam / 24 jam";
-            case 2:
-                return "Kategori II: Kriteria Perawatan Partial (Intermediate Care), memerlukan waktu 3-4 jam / 24 jam";
-            case 3:
-                return "Kategori III: Kriteria Perawatan Maksimal (Total Care / Intensif Care), memerlukan waktu 5-6 jam / 24 jam";
-            default:
-                return "Input tidak valid";
-        }
-    }
-
-    function parseUnderscoreToSpace(input) {
-        if (typeof input === 'string') {
-            return input.replace(/_/g, ' ');
-        }
-        return input;
-    }
-
-    
 
     //assesment awal
     function getAssesmentNeonatus(){
@@ -738,7 +965,20 @@
         }
 
         $('#riwayat-edukasi-pasien-tab').on('click', function() {
-                getEdukasiPasien();
+            getEdukasiPasien();
         });
+
+        $('#riwayat-rekonsiliasi-obat-tab').on('click', function() {
+            getRekonObat();
+        });
+
+        $('#riwayat-checklist-orientasi-tab').on('click', function() {
+            getChecklistOrientasi();
+        });
+
+        $('#riwayat-resiko-jatuh-tab').on('click', function() {
+            getResikoJatuhMorse();
+        });
+
     }
 </script>

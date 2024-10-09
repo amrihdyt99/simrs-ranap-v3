@@ -509,8 +509,8 @@
                             $('div[id*="assesment_"]').hide();
                             $('#assesment_1').show();
 
-                            getAlertAlergi(regno)
-                            getAlertJatuh(regno)
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
                             getAlertEWS(regno);
                         },
                         error: function(data) {
@@ -727,6 +727,9 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadAllFunctionDewasa();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -745,6 +748,9 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_anak')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -765,6 +771,9 @@
                             inject_view_data(data);
                             loadDatatableRekonObat();
                             loadSignature();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -901,6 +910,9 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadAllFunctionObgyn();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();

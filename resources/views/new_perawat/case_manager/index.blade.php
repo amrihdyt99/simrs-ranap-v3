@@ -8,7 +8,7 @@
     <li class="nav-item">
         <a class="nav-link" id="cek_form_tab_intra" data-toggle="tab" href="#akumulasi" role="tab"
             aria-controls="akumulasi" aria-selected="false">
-            Akumulasi</a>
+            Evaluasi</a>
     </li>
 </ul>
 

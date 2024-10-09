@@ -71,7 +71,7 @@
                 $('#resikoJatuhDetailModalLabelMorse').text('Detail Risiko Jatuh pada ' + formatDateTime(response.data.created_at));
 
                 let detailTable = $('#skala_morse1');
-                detailTable.find('input[name="resiko_jatuh_morse_bulan_terakhir"][value="' + response.data.resiko_jatuh_morse_medis_sekunder + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_bulan_terakhir"][value="' + response.data.resiko_jatuh_morse_bulan_terakhir + '"]').prop('checked', true);
                 detailTable.find('input[name="resiko_jatuh_morse_medis_sekunder"][value="' + response.data.resiko_jatuh_morse_medis_sekunder + '"]').prop('checked', true);
                 detailTable.find('input[name="resiko_jatuh_morse_alat_bantu_jalan"][value="' + response.data.resiko_jatuh_morse_alat_bantu_jalan + '"]').prop('checked', true);
                 detailTable.find('input[name="resiko_jatuh_morse_infus"][value="' + response.data.resiko_jatuh_morse_infus + '"]').prop('checked', true);
