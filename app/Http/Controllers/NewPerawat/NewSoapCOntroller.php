@@ -90,4 +90,26 @@ class NewSoapCOntroller extends Controller
             'data' => $data
         ]);
     }
+
+    public function getLastCpptData(Request $request)
+    {
+        $data = DB::connection('mysql')
+            ->table('rs_pasien_soaper')
+            ->where('soaper_reg', $request->regno)
+            ->where('soaper_perawat', 'like', 'PR%')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($data) {
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+    }
 }

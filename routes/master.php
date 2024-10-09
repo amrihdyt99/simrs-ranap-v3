@@ -10,6 +10,7 @@ use App\Http\Controllers\Master\RoomClassController;
 use App\Http\Controllers\Master\MedicineController;
 use App\Http\Controllers\Master\IndicationController;
 use App\Http\Controllers\Master\InterventionController;
+use App\Http\Controllers\Master\LogActivityController;
 use App\Http\Controllers\Master\OrganizationController;
 use App\Http\Controllers\Master\OutcomeController;
 use App\Http\Controllers\Master\RuanganController;
@@ -17,6 +18,8 @@ use App\Http\Controllers\Master\ServiceUnitController;
 use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\PractitionerController;
+use App\Http\Controllers\Master\v2\DepartmentV2Controller;
+use App\Http\Controllers\Master\v2\NewServiceUnitController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter,perawat'])->group(function () {
@@ -29,7 +32,7 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
 
     Route::resource('patient', PatientController::class);
     Route::resource('bed', BedController::class);
-    Route::patch('bed/change-status-active/{id}', [BedController::class,'changeStatusActive'])->name('bed.changeStatusActive');
+    Route::patch('bed/change-status-active/{id}', [BedController::class, 'changeStatusActive'])->name('bed.changeStatusActive');
     Route::resource('class', RoomClassController::class);
     Route::resource('medicine', MedicineController::class);
     Route::resource('indication', IndicationController::class);
@@ -38,20 +41,22 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::resource('clinical_pathway.outcome', OutcomeController::class)->shallow();
     Route::resource('clinical_pathway.intervention', InterventionController::class)->shallow();
     Route::resource('ruangan', RuanganController::class);
-    Route::patch('ruangan/change-status-active/{id}', [RuanganController::class,'changeStatusActive'])->name('ruangan.changeStatusActive');
+    Route::patch('ruangan/change-status-active/{id}', [RuanganController::class, 'changeStatusActive'])->name('ruangan.changeStatusActive');
     Route::resource('unit', UnitController::class);
-    Route::resource('tarif',\App\Http\Controllers\Master\TarifController::class);
-    Route::resource('user',\App\Http\Controllers\Master\UserController::class);
+    Route::resource('tarif', \App\Http\Controllers\Master\TarifController::class);
+    Route::resource('user', \App\Http\Controllers\Master\UserController::class);
     Route::resource('ketersediaanruangan', \App\Http\Controllers\Master\KetersediaanRuanganController::class);
-    Route::resource('serviceunit', \App\Http\Controllers\Master\ServiceUnitController::class);
-    Route::resource('departement', \App\Http\Controllers\Master\DepartementController::class);
+    // Route::resource('serviceunit', \App\Http\Controllers\Master\ServiceUnitController::class);
+    Route::resource('serviceunit', NewServiceUnitController::class);
+    Route::resource('site-departement', \App\Http\Controllers\Master\DepartementController::class);
+    Route::resource('departement', DepartmentV2Controller::class);
     Route::resource('location', \App\Http\Controllers\Master\LocationController::class);
     Route::resource('site', \App\Http\Controllers\Master\SiteController::class);
     Route::post('user/processor', [\App\Http\Controllers\master\UserController::class, 'processor'])->name('user.processor');
     Route::resource('practitioner', PractitionerController::class);
-    Route::patch('practitioner/change-status-active/{id}', [PractitionerController::class,'changeStatusActive'])->name('practitioner.changeStatusActive');
+    Route::patch('practitioner/change-status-active/{id}', [PractitionerController::class, 'changeStatusActive'])->name('practitioner.changeStatusActive');
     Route::resource('organization', OrganizationController::class);
-    Route::patch('organization/change-status-active/{id}', [OrganizationController::class,'changeStatusActive'])->name('organization.changeStatusActive');
+    Route::patch('organization/change-status-active/{id}', [OrganizationController::class, 'changeStatusActive'])->name('organization.changeStatusActive');
 
     Route::prefix('aksesRuangan')->group(function () {
         Route::get('/', [AksesRuanganController::class, 'index']);
@@ -59,9 +64,8 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
         Route::post('/store', [AksesRuanganController::class, 'store']);
         Route::post('/delete', [AksesRuanganController::class, 'delete']);
     });
-    
+
     Route::prefix('base')->group(function () {
         Route::get('/paramedic', [ApiMasterController::class, 'paramedic']);
     });
-
 });

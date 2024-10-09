@@ -243,6 +243,8 @@ class ResumeController extends Controller
         $diagnosisUtama = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->firstWhere('pdiag_kategori', 'utama') : null;
         $diagnosisSekunder = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'sekunder') : collect();
         $diagnosisKlausa = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'klausa') : collect();
+        $diagnosisIcdo = isset($data->diagnosa) ? collect(json_decode($data->diagnosa))->where('pdiag_kategori', 'icdo') : collect();
+        
         $tindakan = isset($data->tindakan) ? collect(json_decode($data->tindakan))->values() : collect();
         $prosedur = isset($data->prosedur) ? collect(json_decode($data->prosedur)) : collect();
         $terapi = isset($data->terapi) ? collect(json_decode($data->terapi)) : collect();

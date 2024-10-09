@@ -6,6 +6,7 @@ use App\Http\Controllers\IGD as IGD;
 use App\Http\Controllers\IGD\RegisterController;
 use App\Http\Controllers\Rajal\RegistrationRajalController;
 use App\Http\Controllers\InformasiPasien\RegisterDataController;
+use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\RegistrationCancelationController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,7 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
     Route::get('vclaim-manual/edit/{reg_no}', [Ranap\RegisterController::class, 'viewFormEditVClaimManual'])->where('reg_no', '(.*)')->name('register.vclaim.edit');
     Route::post('vclaim-manual/update/{id}', [Ranap\RegisterController::class, 'updateVclaim'])->name('register.vclaim.update');
     Route::post('vclaim-manual/delete/{id}', [Ranap\RegisterController::class, 'deleteVclaim'])->name('register.vclaim.delete');
+    Route::get('ringkasan-masuk-keluar/{reg_no}', [Ranap\RegisterController::class, 'ringkasanMasukKeluarPasien'])->where('reg_no', '(.*)')->name('register.ranap.ringkasan-masuk-keluar');
 });
 
 Route::prefix('igd')->middleware(['auth', 'role:adminregister'])->group(function () {
@@ -63,6 +65,7 @@ Route::get('/register/pages/informasi-pasien/{MedicalNo}/edit', [RegisterDataCon
 Route::put('/register/pages/informasi-pasien/{MedicalNo}', [RegisterDataController::class, 'update'])->name('register.informasi-pasien.update'); //edit
 Route::resource('informasi-pasien', RegisterDataController::class); // Route untuk menampilkan data pasien
 Route::get('register/informasi-pasien', [RegisterDataController::class, 'index'])->name('register.informasi-pasien.index');
+Route::get('register/informasi-pasien/riwayat-kunjungan/{medrec}', [PasienController::class, 'visitHistoryPatient'])->name('register.informasi-pasien.riwayat-kunjungan');
 Route::get('register/informasi-pasien/getData', [RegisterDataController::class, 'getData'])->name('register.informasi-pasien.getData');
 Route::get('register/informasi-pasien/generateMRN', [RegisterDataController::class, 'generateMRN'])->name('register.informasi-pasien.generateMRN');
 Route::get('register/informasi-pasien/checkMRN', [RegisterDataController::class, 'checkMRN'])->name('register.informasi-pasien.checkMRN');

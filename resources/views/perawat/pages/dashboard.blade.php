@@ -159,5 +159,69 @@
       }
     });
   }
+
+  function takeOver(_reg, _type = '', _room_id = '', _service_unit = ''){
+      let selectedRoom = localStorage.getItem('pilihruang');
+      if (selectedRoom) {
+        selectedRoom = selectedRoom.split(',')[0];
+      }
+      
+      if (selectedRoom && selectedRoom !== 'x') {
+        Swal.fire({
+          title: 'Konfirmasi',
+          text: 'Apakah Anda yakin ingin mengambil alih pasien ini?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, ambil alih',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: '{{url("")}}/perawat/takeOver',
+              type: 'post',
+              data: {
+                _token: '{{csrf_token()}}',
+                reg_no: _reg,
+                type: _type,
+                room_id: _room_id,
+                service_unit: _service_unit,
+                dokter_code: $user_perawat_
+              },
+              success: function(resp){
+                if (resp.success) {
+                  Swal.fire(
+                    'Berhasil!',
+                    resp.message,
+                    'success'
+                  )
+
+                  load_data(selectedRoom)
+
+                  $('a[href*="#my-"]').removeClass('active')
+                  $('a[href="#my-patient"]').addClass('active')
+
+                  $('div[class*="tab-pane"][id*="my-"]').removeClass('active')
+                  $('div[class*="tab-pane"][id="my-patient"]').addClass('active')
+                } else {
+                  Swal.fire(
+                    'Gagal!',
+                    resp.message,
+                    'error'
+                  )
+                }
+              }
+            })
+          }
+        })
+      } else {
+        Swal.fire(
+          'Peringatan',
+          'Mohon untuk pilih ruangan yang akan diakses',
+          'warning'
+        )
+      }
+    }
 </script>
 @endpush

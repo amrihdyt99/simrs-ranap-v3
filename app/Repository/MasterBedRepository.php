@@ -36,4 +36,10 @@ class MasterBedRepository
             ->where('m_bed.class_code', $class_code)
             ->get();
     }
+
+    public function findOne($id)
+    {
+        return $this->db->connDbMaster()
+            ->table('m_bed')->where('bed_id', $id)->first();
+    }
 }
