@@ -50,6 +50,10 @@ class BillingController extends AaaBaseController
         $data['diagnosis'] = $diagnosisPasien;
         $data['visit'] = $ceksoapdokter;
         $data['paket'] = $historypaket;
+        $data['payer_name'] = DB::connection('mysql2')
+            ->table('businesspartner')
+            ->where('id', $datamypatient->reg_cara_bayar)
+            ->first();
 
         return view('new_kasir.view', $data);
         // return view('kasir/billing/daftar_tagihan',$data);
@@ -92,6 +96,7 @@ class BillingController extends AaaBaseController
             $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
+            $item['NonBPJS'] = $value->non_bpjs;
 
             array_push($order_penunjang, $item);
         }
@@ -113,10 +118,14 @@ class BillingController extends AaaBaseController
             ['source' => str_contains($request->reg_rj, '/RJ/') ? 'Rawat Jalan' : 'IGD', 'data' => $order_penunjang_prev],
         ];
 
-        $validation = DB::table('rs_pasien_billing_validation')
+        $validation = DB::table('rs_pasien_billing_validation as a')
             ->where('pvalidation_reg', $request->reg_ri)
             ->where('pvalidation_status', 1)
-            ->first();
+            ->select([
+                'a.*',
+                DB::raw("(select name from ".getDatabase('master').".users where id = a.pvalidation_user) as pvalidation_name")
+            ])
+            ->get();
 
         return [
             'order' => $recap_penunjang,
@@ -284,62 +293,6 @@ class BillingController extends AaaBaseController
         }
 
         return $order_penunjang;
-    }
-
-    function addTindakan(Request $request)
-    {
-        //        $user=Auth::user();
-        $ordername = $request->itemTindakan;
-        $kategori = $request->jenisTindakan;
-        $price = $request->tarifItem;
-        $regmedrec = $request->regmedrec;
-        $kodetindakan = $request->kodetindakan;
-
-        $countorder = DB::connection('mysql')
-            ->table("job_orders")
-            ->get()
-            ->count();
-        $newDateFormat = str_replace('-', '', now()->toDateString());
-        $jenis = "";
-        if ($kategori == "Laboratorium") {
-            $jenis = "lab";
-            $orderNumberFormat = 'LAB/RI/' . $newDateFormat . $countorder;
-        } else if ($kategori == "Radiologi") {
-            $jenis = "radiologi";
-            $orderNumberFormat = 'RAD/RI/' . $newDateFormat . $countorder;
-        } else if ($kategori == "fisio") {
-            $jenis = "fisio";
-            $orderNumberFormat = 'FIS/RI/' . $newDateFormat . $countorder;
-        } else if ($kategori == "lainnya") {
-            $jenis = "lainnya";
-            $orderNumberFormat = 'ANY/RI/' . $newDateFormat . $countorder;
-        }
-        $jobOrder['reg_no'] = $request->reg_no;
-        $jobOrder['kode_dokter'] = $request->kode_dokter;
-        $jobOrder['waktu_order'] = now()->toDateTimeString();
-        //$jobOrder['service_unit'] = $request->service_unit;
-        $jobOrder['order_no'] = $orderNumberFormat;
-
-        $jobOrderDetail['jenis_order'] = $jenis;
-        $jobOrderDetail['reg_no'] = $request->reg_no;
-        $jobOrderDetail['item_code'] = $request->kodetindakan;
-        $jobOrderDetail['item_name'] = $request->itemTindakan;
-        $jobOrderDetail['qty'] = "1";
-        $jobOrderDetail['harga_jual'] = $request->tarifItem;
-        $jobOrderDetail['order_no'] = $orderNumberFormat;
-
-        $simpan = DB::connection('mysql')->table('job_orders')->insert($jobOrder);
-        if ($simpan == true) {
-            $simpan2 = DB::connection('mysql')->table('job_orders_dt')->insert($jobOrderDetail);
-            return response()->json(['status' => $simpan2, 'message' => 'Data berhasil disimpan']);
-        } else {
-            return response()->json(['status' => $simpan, 'message' => 'Gagal Menyimpan Data']);
-        }
-
-        /*$sql="INSERT INTO m_orders (user_order,order_name,kategori,price,tanggal_order,reg_medrec,status_bayar,kode_tindakan,isDeleted)
-                    VALUES(?,?,?,?,?,?,?,?,?)";
-
-        $simpan=DB::connection('mysql2')->insert($sql,[$user->getAuthIdentifier(),$ordername,$kategori,$price,date('Y-m-d'),$regmedrec,'0',$kodetindakan,"0"]);*/
     }
 
     function addBillingReview(Request $request)
@@ -580,6 +533,7 @@ class BillingController extends AaaBaseController
                 'pvalidation_status' => 1,
                 'pvalidation_selected' => $request->selected_orders,
                 'created_at' => date('Y-m-d H:i:s'),
+                'non_bpjs' => 0
             ];
 
             $check_ = DB::table('rs_pasien_billing_validation')
@@ -588,8 +542,8 @@ class BillingController extends AaaBaseController
                 ->count();
 
             if ($check_ > 0) {
-                $delete = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)
-                    ->delete();
+                // $delete = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)
+                //     ->delete();
 
                 $store = DB::table('rs_pasien_billing_validation')->insert($data);
             } else {

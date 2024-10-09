@@ -22,3 +22,30 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="modalOpenInvoiceList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Daftar Transaksi</h3>
+        </div>
+        <div class="modal-body">
+            <table class="table table-striped" id="tableListTransaksi">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Tanggal Transaksi</th>
+                  <th>Kode Transaksi</th>
+                  <th>Petugas Kasir</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          </div>
+      </div>
+    </div>
+  </div>
