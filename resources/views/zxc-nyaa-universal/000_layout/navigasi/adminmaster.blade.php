@@ -27,7 +27,7 @@
               <a class="dropdown-item" href="{{ route('master.departement.index') }}">Departement</a>
               <a class="dropdown-item" href="{{ route('master.site-departement.index') }}">Site Departement</a>
               <a class="dropdown-item" href="{{ route('master.departement-service-unit.index') }}">Departement Service Unit</a>
-              <a class="dropdown-item" href="{{ route('master.unit.index') }}">Service Unit Room</a>
+              <!-- <a class="dropdown-item" href="{{ route('master.unit.index') }}">Service Unit Room</a> -->
               <a class="dropdown-item" href="{{ route('master.serviceunit.index') }}">Service Unit</a>
               <a class="dropdown-item" href="{{ route('master.location.index') }}">Location</a>
               <a class="dropdown-item" href="{{ route('master.class-category.index') }}">Class Category</a>

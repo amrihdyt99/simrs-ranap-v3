@@ -113,7 +113,7 @@
                     orderable: false,
                     searchable: false,
                     render: function(columnData, type, rowData, meta) {
-                        if (columnData) {
+                        if (columnData == "1") {
                             return `<span class="badge badge-success text-white">Aktif</span>`;
                         } else {
                             return `<span class="badge badge-danger">Tidak Aktif</span>`;
