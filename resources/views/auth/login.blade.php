@@ -102,6 +102,24 @@
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+
+    <script>
+
+        // sessionStorage.removeItem('notify');
+        // sessionStorage.removeItem('notifyDate');
+
+        let notify = sessionStorage.getItem("notify")
+        let notifyDate = sessionStorage.getItem("notifyDate")
+
+        if (notify == 1 && notifyDate == "{{date('Y-m-d')}}") {
+            alert('Sebelum dimulai, pastikan telah pull dari github!. Atau pull setiap 20 menit sekali.')
+
+            sessionStorage.setItem("notify", 0)
+        } else {
+            sessionStorage.setItem("notify", 1)
+            sessionStorage.setItem("notifyDate", "{{date('Y-m-d')}}")
+        }
+    </script>
 </body>
 
 </html>
