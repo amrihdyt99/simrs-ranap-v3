@@ -38,6 +38,16 @@
                         <label>Tipe Item</label>
                         <input type="text" class="form-control cpoe_types" name="jenisorder" value="lainnya" readonly>
                     </div>
+                    <div class="form-group row mt-3">
+                        <div class="col-lg-3">
+                            <label>Non BPJS</label>
+                            <input type="radio" name="non_bpjs" value="1">
+                        </div>
+                        <div class="col-lg-3">
+                            <label>BPJS</label>
+                            <input type="radio" name="non_bpjs" value="0">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
