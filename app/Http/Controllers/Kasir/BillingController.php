@@ -50,6 +50,10 @@ class BillingController extends AaaBaseController
         $data['diagnosis'] = $diagnosisPasien;
         $data['visit'] = $ceksoapdokter;
         $data['paket'] = $historypaket;
+        $data['payer_name'] = DB::connection('mysql2')
+            ->table('businesspartner')
+            ->where('id', $datamypatient->reg_cara_bayar)
+            ->first();
 
         return view('new_kasir.view', $data);
         // return view('kasir/billing/daftar_tagihan',$data);
@@ -92,21 +96,22 @@ class BillingController extends AaaBaseController
             $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
+            $item['NonBPJS'] = $value->non_bpjs;
 
             array_push($order_penunjang, $item);
         }
 
-        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromLab($request->reg_ri));
-        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri));
-        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromPharmacy($request->reg_ri));
+        // $order_penunjang = array_merge($order_penunjang, $this->getOrderFromLab($request->reg_ri));
+        // $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri));
+        // $order_penunjang = array_merge($order_penunjang, $this->getOrderFromPharmacy($request->reg_ri));
 
-        if (str_contains($request->reg_rj, '/ER/')) {
-            $order_penunjang_prev = $this->getOrderFromSphaira($request->reg_rj, $request->class);
-        } else {
-            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromLab($request->reg_rj));
-            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
-            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
-        }
+        // if (str_contains($request->reg_rj, '/ER/')) {
+        //     $order_penunjang_prev = $this->getOrderFromSphaira($request->reg_rj, $request->class);
+        // } else {
+        //     $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromLab($request->reg_rj));
+        //     $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
+        //     $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
+        // }
 
         $recap_penunjang = [
             ['source' => 'Rawat Inap', 'data' => $order_penunjang],

@@ -183,7 +183,7 @@
                 </div>
                 <div class="form-group">
                     <h6>Payer</h6>
-                    <h3 id="bill_payer">{{ $pasien->reg_corp ?? '-' }}</h3>
+                    <h3 id="bill_payer">{{ $payer_name->BusinessPartnerName ?? '-' }}</h3>
                 </div>
             </div>
         </div>
@@ -270,6 +270,7 @@
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
     var classcode = "{{$pasien->charge_class_code}}"
+    var payer_id = "{{$pasien->reg_cara_bayar}}"
     var $reg_no = $reg.replace(/\//g, '_')
     var modal = '#modalEntryOrder'
 
@@ -535,6 +536,7 @@
                                             <input type="checkbox" id="selecting_items" class="float-right" value="` + sub_item.ItemUId + `" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)">
                                         </span>
                                         ` + sub_item.ItemName1 + `
+                                        `+(sub_item.NonBPJS == 1 ? `<span class="bg-success p-1 text-white" style="font-size: 12px; border-radius: 5px">Non BPJS</span>` : ``)+`
                                     </td>     
                                     <td>` + sub_item.ItemJumlah + `</td>     
                                     <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarifAwal).toFixed(2)) + `</td>     
@@ -649,6 +651,18 @@
 
                 selected_orders.push(data)
             })
+
+            if (payer_id == 2 && value == 'all' || category == 'all') {
+                let getNonBPJS = selected_orders.filter((obj) => obj.NonBPJS == 1)
+
+                selected_orders = selected_orders.filter(function(item) {
+                    return item.NonBPJS !== 1;
+                });
+
+                $.each(getNonBPJS, function(i, itm){
+                    $('[id="selecting_items"][value="'+itm.ItemUId+'"]').prop('checked', false)
+                })
+            }
         } else {
             if (category == 'all') {
                 selected_orders = []
@@ -1354,10 +1368,24 @@
         } else {
             $('#validasi-selisih').prop('checked', true)
 
-            $input_selisih = `
+            $input_personal = ''
+            $readonly = ''
+
+            if (this.value == 1) {
+                $input_personal = `
+                    <div class="form-group">
+                        <h6 for="">Nominal pembayaran oleh personal</h6>
+                        <input type="number" class="form-group form-control" placeholder="Masukkan nominal pembayaran oleh personal" name="pvalidation_multipayer_personal" onkeyup="calculationPersonal(this.value)">
+                    </div>
+                `
+
+                $readonly = 'readonly'
+            }
+
+            $input_selisih = $input_personal+`
                     <div class="form-group">
                         <h6 for="">Nominal pembayaran multi payer</h6>
-                        <input type="number" class="form-group form-control" placeholder="Masukkan nominal pembayaran multi payer" name="pvalidation_multipayer_total">
+                        <input type="number" class="form-group form-control" placeholder="Masukkan nominal pembayaran multi payer" name="pvalidation_multipayer_total" `+$readonly+`>
                     </div>
                 `;
 
@@ -1381,6 +1409,7 @@
             if ($index < 0) {
                 payment_method.push({
                     'method': $method,
+                    'multipayer_name': $('[name="pvalidation_multi_payer"] option:selected').text(),
                     'name': $('[name="pvalidation_multi_payer"]').val(),
                     'nominal_difference': $value,
                     'nominal': 0
@@ -1405,6 +1434,14 @@
 
         updateMultiPayer()
     })
+
+    function calculationPersonal(_value){
+        let nominalPersonal = total - _value
+
+        $('[name="pvalidation_multipayer_total"]').val(nominalPersonal)
+        
+        $('[name="pvalidation_multipayer_total"]').trigger('keyup');
+    }
 
     function updateMultiPayer() {
         $('[name="pvalidation_method[]"]:checked').each(function(i, item) {
