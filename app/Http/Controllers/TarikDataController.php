@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Master\ClassCategory;
+use App\Models\Master\DepartmentServiceUnit;
+use App\Models\Master\Room;
+use App\Models\Master\SiteDepartment;
 use App\Models\RoomClass;
 use App\Models\ServiceUnit;
 use Carbon\Carbon;
@@ -58,13 +61,40 @@ class TarikDataController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Data Departemen berhasil ditarik']);
     }
 
-    public function site_departement()
+    public function site_departement_old()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/site_departemen');
         DB::connection('mysql2')->table('m_unit_departemen')->delete();
         foreach ($data['data']  as $kue) {
             DB::connection('mysql2')
                 ->table('m_unit_departemen')->insert([$kue]);
+        }
+        echo 'Alhamdulillah';
+    }
+
+    public function site_departement()
+    {
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/site_departemen');
+        foreach ($data['data']  as $kue) {
+            unset($kue['LastUpdatedDateTime']);
+            $cek = SiteDepartment::find($kue['SiteDepartmentID']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_site_departemen')->insert([$kue]);
+            }
+        }
+        echo 'Alhamdulillah';
+    }
+
+    public function departement_service_unit()
+    {
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/departemen_service_unit');
+        foreach ($data['data']  as $kue) {
+            $cek = DepartmentServiceUnit::find($kue['ServiceUnitID']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_unit_departemen')->insert([$kue]);
+            }
         }
         echo 'Alhamdulillah';
     }
@@ -132,8 +162,11 @@ class TarikDataController extends Controller
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/room');
         DB::connection('mysql2')->table('m_ruangan')->delete();
         foreach ($data['data'] as $kue) {
-            DB::connection('mysql2')
-                ->table('m_ruangan')->insert([$kue]);
+            $cek = Room::find($kue['RoomID']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_ruangan')->insert([$kue]);
+            }
         }
         echo 'Alhamdulillah';
     }
