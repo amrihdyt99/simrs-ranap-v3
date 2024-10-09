@@ -1,12 +1,18 @@
 <ul class="nav nav-tabs" id="myTabNursing" role="tablist">
-    <li class="nav-item">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="form-tab" data-toggle="tab" href="#form" role="tab" aria-controls="form-tab-pane" aria-selected="true">MONITORING NATIONAL EARLY WARNING SYSTEM (NEWS)</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history-tab-pane" aria-selected="false">History</a>
+    </li>
+    <!-- <li class="nav-item">
         <a class="nav-link active" id="baru-all-tab" data-toggle="tab" href="#baru-all" role="tab"
             aria-controls="baru-all" aria-selected="false">Specialty</a>
-    </li>
-    <li class="nav-item">
+    </li> -->
+    <!-- <li class="nav-item">
         <a class="nav-link" id="specialty-tab" data-toggle="tab" href="#specialty" role="tab"
             aria-controls="specialty" aria-selected="false">Specialty History</a>
-    </li>
+    </li> -->
     <li class="nav-item">
         <a class="nav-link" id="fluid-balance-tab" data-toggle="tab" href="#fluid-balance" role="tab"
             aria-controls="fluid-balance" aria-selected="false">Fluid Balance</a>
@@ -32,17 +38,23 @@
     </li> --}}
 </ul>
 <div class="tab-content" id="myTabContentNursing">
-    <div class="tab-pane fade show active" id="baru-all" role="tabpanel" aria-labelledby="baru-all-tab">
+    <div class="tab-pane fade show active" id="form" role="tabpanel" aria-labelledby="form-tab">
+        @include('new_perawat.monitoring_news.new_entry_news')
+    </div>
+    <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+        @include('new_perawat.monitoring_news.history_entry_news')
+    </div>
+    <!-- <div class="tab-pane fade show active" id="baru-all" role="tabpanel" aria-labelledby="baru-all-tab">
         @include('new_perawat.nursing.new_allv2', ['reg_no' => $registrationInap->reg_no])
     </div>
 
     <div class="tab-pane fade" id="specialty" role="tabpanel" aria-labelledby="specialty-tab">
         @include('new_perawat.nursing.new_nursing_specialty', ['vitaldata' => $vitaldata])
-    </div>
+    </div> -->
     <div class="tab-pane fade" id="fluid-balance" role="tabpanel" aria-labelledby="fluid-balance-tab">
         @include('new_perawat.nursing.fluid_balance_form_baru', [
-            'dataTransfusi' => $dataTransfusi,
-            'dataFluidBalanceBaru' => $dataFluidBalanceBaru,
+        'dataTransfusi' => $dataTransfusi,
+        'dataFluidBalanceBaru' => $dataFluidBalanceBaru,
         ])
     </div>
     <div class="tab-pane fade" id="table-fluid-balance" role="tabpanel" aria-labelledby="specialty-tab">
@@ -53,9 +65,9 @@
     </div> --}}
     <div class="tab-pane fade" id="drugs" role="tabpanel" aria-labelledby="drugs-tab">
         @include('new_perawat.nursing.new_prescribe', [
-            'obat' => $obat,
-            'obatdaridokter' => $obatdaridokter,
-            'datamypatient' => $datamypatient,
+        'obat' => $obat,
+        'obatdaridokter' => $obatdaridokter,
+        'datamypatient' => $datamypatient,
         ])
     </div>
     <div class="tab-pane fade" id="drugstable" role="tabpanel" aria-labelledby="drug-tab">
@@ -66,6 +78,8 @@
     </div> --}}
 
 </div>
+
+@include('new_perawat.monitoring_news.detail_news')
 <script>
     $(document).ready(function() {
         function calculateTotalGCS() {

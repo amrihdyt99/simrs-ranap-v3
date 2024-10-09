@@ -7,6 +7,7 @@ use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
+use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
 use App\Http\Controllers\Perawat\CaseManagerController;
@@ -74,6 +75,7 @@ Route::post('sendOtherInstructions', [\App\Http\Controllers\NewDokter\OrderObatC
 
 Route::post('/getCpoe', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'getCPOEDokter'])->name('get.cpoe.dokter');
 Route::post('addSoapDokter', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_soap_dokter'])->name('add.soap.dokter');
+Route::post('getDataHistorySoap', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'get_data_history_soap'])->name('get.data.history.soap');
 Route::post('addDiagnosa', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_diagnosa'])->name('add.diagnosa');
 Route::post('addProsedur', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'add_prosedur'])->name('add.prosedur');
 Route::get('getDiagnosa/{noreg}', [\App\Http\Controllers\NewDokter\AssesmentAwalDokterController::class, 'get_diagnosa'])->name('get.diagnosa');
@@ -94,6 +96,8 @@ Route::get('/dataOpenDischargeRequest', [\App\Http\Controllers\NewDokter\NewDisc
 Route::post('/openDischargeRequest', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'openDischargeRequest']);
 Route::post('/openDischargeApprove', [\App\Http\Controllers\NewDokter\NewDischargeController::class, 'openDischargeApprove']);
 //api perawat
+
+Route::get('getLastCpptData', [\App\Http\Controllers\NewPerawat\NewSoapController::class, 'getLastCpptData']);
 Route::post('addSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'addsoap'])->name('add.soap.new.perawat');
 Route::post('getSoapNewPerawat', [\App\Http\Controllers\NewPerawat\NewSoapCOntroller::class, 'getsoapbyreg'])->name('get.soap.new.perawat');
 Route::post('addFluidBalanceBaru', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addFluidBalanceBaru'])->name('add.fluidbalance.new.perawat');
@@ -219,6 +223,7 @@ Route::get('getBussinessPartner', [RegisterController::class, 'getBussinessPartn
 Route::post('getDokumen', [RegisterController::class, 'getNoDocument'])->name('get.document');
 Route::get('transfer-internal/getRoom', [TransferInternalController::class, 'getUnitRoom'])->name('transfer-internal.getRoom');
 Route::get('transfer-internal/getPerawat', [TransferInternalController::class, 'getPerawat'])->name('transfer-internal.getPerawat');
+Route::get('get-ews-info', [NewNursingController::class, 'getEWSScore'])->name('get.ews-info');
 
 Route::get('getProvinsi', [RegisterController::class, 'getProvinsi'])->name('get.provinsi');
 Route::post('getRegency', [RegisterController::class, 'getRegency'])->name('get.regency');
@@ -260,6 +265,9 @@ Route::group(['prefix' => 'sphaira'], function () {
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
+	Route::get('visit-history/{medicalRecord}/ranap', [PasienController::class, 'visitHistoryRanap'])->name('visit.history.ranap');
+	Route::get('visit-history/{medicalRecord}/rajal', [PasienController::class, 'visitHistoryRajal'])->name('visit.history.rajal');
+	Route::get('visit-history/{medicalRecord}/igd', [PasienController::class, 'visitHistoryIGD'])->name('visit.history.igd');
 	Route::get('web-visit-history/{medicalRecord}', [PasienController::class, 'webVisitHistory'])->name('web.visit.history');
 });
 
@@ -278,6 +286,7 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('get-rekon-ttd', [RekonsiliasiObatController::class, 'get_ttd_verif_obat'])->name('get-rekon-ttd.get');
 	Route::post('store-rekonsiliasi-obat', [RekonsiliasiObatController::class, 'store_rekonsiliasi_obat'])->name('rekonsiliasi-obat.store');
 	Route::post('store-case-manager', [CaseManagerController::class, 'store_case_manager'])->name('case-manager.store');
+	Route::post('store-case-manager-akumulasi', [CaseManagerController::class, 'store_case_manager_akumulasi'])->name('case-manager-akumulasi.store');
 });
 
 Route::prefix('bed')->name('bed.')->group(function () {

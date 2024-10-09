@@ -228,6 +228,7 @@
     @include('new_dokter.modal.multiorgan')
     @include('new_dokter.modal.openDischarge')
     @include('new_perawat.modal.assesment')
+    @include('new_dokter.modal.soap_history')
 @endsection
 
 @section('scripts')

@@ -125,9 +125,13 @@ class ApiMasterController extends Controller
 			$query->where(function($q) use ($r) {
 				$q->where('ID_ICD10', 'like', 'X%')
 				  ->orWhere('ID_ICD10', 'like', 'V%');
+
+				if ($r->category === 'C') {
+					$q->orWhere('ID_ICD10', 'like', 'C%');
+				}
 			});
 		}
-	
+
 		if (isset($r->searchParams)) {
 			$query->where(function($q) use ($r) {
 				$q->where('NM_ICD10', 'like', '%' . $r->searchParams . '%')
@@ -435,8 +439,8 @@ class ApiMasterController extends Controller
 		if (isset($request->params)) {
 			$dat = $dat
 				->whereRaw("
-					GCParamedicType = ? 
-					and (lower(FirstName) like ? or lower(LastName) like ? or ParamedicCode like ?)", 
+					GCParamedicType = ?
+					and (lower(FirstName) like ? or lower(LastName) like ? or ParamedicCode like ?)",
 					[$request->paramedic_type, '%'.$request->params.'%', '%'.$request->params.'%', '%'.$request->params.'%']
 				);
 		}

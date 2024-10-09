@@ -242,7 +242,8 @@
                         <br>
                         <div id="action_button">
                             <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
-                            {{-- <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button> --}}
+                            <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button>
+                            <button id="btn-cetak-summary" class="btn btn-secondary float-right mb-3 mx-1">CETAK SUMMARY</button>
                             <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button>
                             <button id="btn-validasi-billing" class="btn btn-info float-right mb-3">KONFIRMASI PEMBAYARAN</button>
                         </div>
@@ -259,6 +260,7 @@
 @include('new_kasir.modal.payer')
 @include('new_kasir.modal.entry_order')
 @include('new_kasir.modal.open_invoice')
+@include('new_kasir.modal.detail_invoice')
 {{-- @include('dokter.modal.detail_tindakan') --}}
 
 @endsection
@@ -469,8 +471,6 @@
                 class: classcode,
             },
             beforeSend: function() {
-                getStatusTagihan()
-
                 $('[id="panel-order"] tbody').html(`
                     <tr>
                         <td colspan="7" class="text-center"><div class="lds-dual-ring"></div></td>    
@@ -480,12 +480,12 @@
             success: function(resp) {
                 $('#load_action_button').hide()
                 $('[id="panel-order"] tbody').html('')
-                
+
                 if (resp) {
-                    $.each(resp.order, function(i, item){
+                    $.each(resp.order, function(i, item) {
                         $('[id="panel-order"] tbody').append(`
                             <tr class="bg-warning">
-                                <td colspan="7"><b>`+item.source+`</b></td>    
+                                <td colspan="7"><b>` + item.source + `</b></td>    
                             </tr>
                         `)
 
@@ -496,13 +496,13 @@
                             $tindakan = sub_item.ItemTindakan.replace(/ /g, '_')
                             $tindakan = $tindakan.toLowerCase()
 
-                            $count_header = $(`[id="order_header_`+$tindakan+`"][data-source="`+item.source+`"]`).length
+                            $count_header = $(`[id="order_header_` + $tindakan + `"][data-source="` + item.source + `"]`).length
 
                             $row_header = `
-                                `+(i != 0 ? `<tr><td colspan="7"><br></td></tr>`: ``)+`
-                                <tr id="order_header_` + $tindakan + `" data-source="`+item.source+`">
-                                    <td class="text-capitalize"><b>`+sub_item.ItemTindakan+`</b></td> 
-                                    <td><input type="checkbox" id="selecting_items" class="float-right" value="all" data-category="` + sub_item.ItemTindakan + `" data-source="`+item.source+`" style="transform: scale(1.2)"></td>   
+                                ` + (i != 0 ? `<tr><td colspan="7"><br></td></tr>` : ``) + `
+                                <tr id="order_header_` + $tindakan + `" data-source="` + item.source + `">
+                                    <td class="text-capitalize"><b>` + sub_item.ItemTindakan + `</b></td> 
+                                    <td><input type="checkbox" id="selecting_items" class="float-right" value="all" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)"></td>   
                                 </tr>
                             `
 
@@ -528,20 +528,20 @@
                             }
 
                             $row_detail = ` 
-                                <tr class="` + $class + `" data-source="`+item.source+`">
+                                <tr class="` + $class + `" data-source="` + item.source + `">
                                     <td class="text-capitalize"></td>   
                                     <td>
                                         <span id="checked_status" style="margin-right: 10px" value="` + sub_item.ItemUId + `" data-code="` + sub_item.ItemCode + `" data-id="` + sub_item.ItemOrder + `">
-                                            <input type="checkbox" id="selecting_items" class="float-right" value="` + sub_item.ItemUId + `" data-category="` + sub_item.ItemTindakan + `" data-source="`+item.source+`" style="transform: scale(1.2)">
+                                            <input type="checkbox" id="selecting_items" class="float-right" value="` + sub_item.ItemUId + `" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)">
                                         </span>
-                                        `+sub_item.ItemName1+`
+                                        ` + sub_item.ItemName1 + `
                                     </td>     
-                                    <td>`+sub_item.ItemJumlah+`</td>     
-                                    <td>Rp. `+formatNumber(parseFloat(sub_item.ItemTarifAwal).toFixed(2))+`</td>     
-                                    <td>Rp. `+formatNumber(parseFloat(sub_item.ItemTarif).toFixed(2))+`</td>     
-                                    <td>`+sub_item.ItemDokter+`</td>     
+                                    <td>` + sub_item.ItemJumlah + `</td>     
+                                    <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarifAwal).toFixed(2)) + `</td>     
+                                    <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarif).toFixed(2)) + `</td>     
+                                    <td>` + sub_item.ItemDokter + `</td>     
                                     <td class="p-3">
-                                        `+$btn+`    
+                                        ` + $btn + `    
                                     </td>
                                 </tr>
                             `
@@ -549,6 +549,8 @@
                             $('[id="panel-order"] tbody').append($row_detail)
                         })
                     })
+
+                    getStatusTagihan()
 
                     if (resp.validation) {
                         $('[id*="selecting_items"]').hide()
@@ -580,7 +582,7 @@
         if (confirm('Apakah anda yakin akan menghapus item ini ?')) {
             let inputCode = prompt("Peminta")
             let inputRequester = prompt("Alasan")
-            
+
             if (inputCode && inputRequester) {
                 $.ajax({
                     url: '{{url("kasir/billing/deleteItem")}}',
@@ -628,7 +630,7 @@
                 $('#selecting_items:not([data-category="all"])').prop('checked', true)
             } else {
                 if (value == 'all') {
-                    $('#selecting_items[data-category="' + category + '"][data-source="'+source+'"]').prop('checked', true)
+                    $('#selecting_items[data-category="' + category + '"][data-source="' + source + '"]').prop('checked', true)
 
                     $object = orders.filter(element => element.ItemTindakan == category && element.ItemSource == source)
                 } else {
@@ -655,11 +657,11 @@
             } else {
                 selected_orders = selected_orders.filter(function(item) {
                     if (value == 'all') {
-                        $('[id="selecting_items"][data-category="' + category + '"][data-source="'+source+'"]').prop('checked', false)
+                        $('[id="selecting_items"][data-category="' + category + '"][data-source="' + source + '"]').prop('checked', false)
 
                         return item.ItemTindakan !== category || item.ItemSource !== source;
                     } else {
-                        $('[id="selecting_items"][value="all"][data-category="' + category + '"][data-source="'+source+'"]').prop('checked', false)
+                        $('[id="selecting_items"][value="all"][data-category="' + category + '"][data-source="' + source + '"]').prop('checked', false)
 
                         if ($host == '127.0.0.1' || $host == 'rj.id') {
                             // value = parseInt(value)
@@ -933,12 +935,14 @@
 
                     $('#btn-validasi-billing').hide();
                     $('#btn-cetak-invoice').show();
+                    $('#btn-cetak-summary').show();
                     $('#btn-kwitansi').show();
 
-                    if (resp.pvalidation_status == 1 && payer == 'BPJS' || $level_ == 'admin') {
-                    }
+                    if (resp.pvalidation_status == 1 && payer == 'BPJS' || $level_ == 'admin') {}
                     $('#btn_open_invoice').show()
                     $('[name="open_id"]').val(resp.id)
+
+                    $('span[onclick*="deleteItem("]').hide()
                 } else {
                     $('#status-tagihan').text('BELUM DIBAYAR');
                     $('#status-tagihan').addClass('btn btn-danger');
@@ -946,6 +950,7 @@
 
                     $('#btn-validasi-billing').show();
                     $('#btn-cetak-invoice').hide();
+                    $('#btn-cetak-summary').hide();
                     $('#btn_open_invoice').hide();
                     $('#btn-kwitansi').hide();
 
@@ -960,6 +965,8 @@
                         $('#btn-validasi-billing').show()
                         $('#not_review_transactions').html('')
                     }
+
+                    $('span[onclick*="deleteItem("]').show()
                 }
             }
         });
@@ -1190,11 +1197,66 @@
     });
 
     $('#btn-cetak-invoice').click(function() {
-        $reg_split = $reg.split('/').join('');
-        if (confirm('Pastikan komputer anda sudah terkoneksi dengan perangkat Printer')) {
-            window.open("{{url('kasir/kasir/invoice')}}/" + $reg_no, '_blank');
-        }
+        $.ajax({
+            url: '{{ route("kasir.cetak.invoice") }}',
+            type: 'GET',
+            data: {
+                reg_no: '{{ $reg_no }}',
+            },
+            success: function(data) {
+                // Create a new window for printing
+                var printWindow = window.open('', '', 'height=800,width=1000');
+
+                // Add content to the new window
+                printWindow.document.write(data);
+
+                // Close the document to render the content
+                printWindow.document.close();
+
+                // Trigger the print dialog
+                printWindow.print();
+
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
     });
+
+    $('#btn-cetak-summary').click(function() {
+        $.ajax({
+            url: '{{ route("kasir.cetak.summary") }}',
+            type: 'GET',
+            data: {
+                reg_no: '{{ $reg_no }}',
+            },
+            success: function(data) {
+                // Create a new window for printing
+                var printWindow = window.open('', '', 'height=800,width=1000');
+
+                // Add content to the new window
+                printWindow.document.write(data);
+
+                // Close the document to render the content
+                printWindow.document.close();
+
+                // Trigger the print dialog
+                printWindow.print();
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+
+    // $('#btn-cetak-invoice').click(function() {
+    //     $reg_split = $reg.split('/').join('');
+    //     if (confirm('Pastikan komputer anda sudah terkoneksi dengan perangkat Printer')) {
+    //         window.open("{{url('kasir/kasir/invoice')}}/" + $reg_no, '_blank');
+    //     }
+    // });
+
+
     $('#btn-kwitansi').click(function() {
         $('#modalKwitansi').modal('show');
     });
@@ -1344,13 +1406,13 @@
         updateMultiPayer()
     })
 
-    function updateMultiPayer(){
-        $('[name="pvalidation_method[]"]:checked').each(function(i, item){
+    function updateMultiPayer() {
+        $('[name="pvalidation_method[]"]:checked').each(function(i, item) {
             let value = $(item).val()
 
             removeFromArray(value)
 
-            $('[id="pay-method"] [id="'+value.replace(' ', '')+'"]').remove()
+            $('[id="pay-method"] [id="' + value.replace(' ', '') + '"]').remove()
             $(`#row_detail_payment [id="row_payment_changes_` + $method + `"]`).remove()
 
             $('[name*="pvalidation_method[]"]').prop('checked', false).removeAttr('checked')
@@ -1540,6 +1602,27 @@
 
             // Create a new window for printing
             var printWindow = window.open('', '', 'height=500,width=800');
+
+            // Add content to the new window
+            printWindow.document.write(modalContent);
+
+            // Close the document to render the content
+            printWindow.document.close();
+
+            // Trigger the print dialog
+            printWindow.print();
+        });
+
+        $('#btn-print-invoice').click(function() {
+            $('#modalInvoice').modal('hide');
+            $('#modalPrintInvoice').modal('hide');
+            $('.modal-backdrop').remove();
+
+
+            var modalContent = $('#printInvoiceContent').html(); // Get modal content
+
+            // Create a new window for printing
+            var printWindow = window.open();
 
             // Add content to the new window
             printWindow.document.write(modalContent);

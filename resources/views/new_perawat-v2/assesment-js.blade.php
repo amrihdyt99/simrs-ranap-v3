@@ -373,7 +373,7 @@
             },
             success: function(resp) {
                 // console.log(resp);
-                
+
                 if (resp.geriatri && resp.geriatri.kategori_geriatri) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`
@@ -382,7 +382,7 @@
                         </div>
                     `);
                 }
-                
+
                 if (resp.morse && resp.morse.resiko_jatuh_morse_kategori) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`
@@ -391,7 +391,7 @@
                         </div>
                     `);
                 }
-                
+
                 if (resp.dumpty && resp.dumpty.kategori_humpty_dumpty) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`
@@ -400,7 +400,7 @@
                         </div>
                     `);
                 }
-                
+
                 if (resp.bayi === true) {
                     $('[id="alert_blink"]').show();
                     $('#alert_indikator').append(`
@@ -414,6 +414,53 @@
                 console.error("Error fetching fall risk alert:", error);
             }
         });
+    }
+
+    function getAlertEWS(_reg) {
+        $.ajax({
+            url: '{{url("")}}/api/get-ews-info',
+            data: {
+                reg_no: _reg,
+            },
+            success: function(resp) {
+                console.log(resp);
+                $('#ews_info').empty();
+
+                if (resp.news_total >= 7) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-danger blink text-white">Zona Merah</span>
+                    `)
+                }
+
+                if (resp.news_total == 5 || resp.news_total == 6) {
+                    $('#ews_info').append(`
+                        <span class="badge blink text-white" style="background-color: #f5710c;">Zona Orange</span>
+
+                    `)
+                }
+
+                if (resp.news_total >= 1 && resp.news_total <= 4) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-warning  blink text-white" >Zona Kuning</span>
+
+                    `)
+                }
+
+                if (resp.news_total == 0) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-success blink text-white" >Zona Hijau</span>
+
+                    `)
+                }
+
+                if (!resp) {
+                    $('#ews_info').append(`
+                        <span class="badge badge-secondary blink text-black" >EWS masih kosong</span>
+
+                    `)
+                }
+            }
+        })
     }
 
 
@@ -464,6 +511,7 @@
 
                             getAlertAlergi(regno)
                             getAlertJatuh(regno)
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -656,6 +704,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             getSoapPerawat();
+                            loadHistorySoapPerawat();
                             $('#btn-save-soap').click(function() {
                                 addbtnSaveSoap();
                             });
@@ -908,6 +957,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nursing_full')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            loadDatatableNews();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1147,7 +1197,6 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.monitoring_news')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            loadDatatableNews();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -2237,8 +2286,8 @@
     }
 
     function loadAllSignatures(type) {
-    UniversalSignaturePad(`signature-${type}-sasaran`, `ttd_sasaran_${type}`);
-    UniversalSignaturePad(`signature-${type}-edukator`, `ttd_edukator_${type}`);
+        UniversalSignaturePad(`signature-${type}-sasaran`, `ttd_sasaran_${type}`);
+        UniversalSignaturePad(`signature-${type}-edukator`, `ttd_edukator_${type}`);
     }
 
     const UniversalSignaturePads = {};
@@ -2247,7 +2296,7 @@
         const canvas = document.getElementById(canvasId);
         const hiddenInput = document.getElementById(hiddenInputId);
         if (!canvas || !hiddenInput) {
-            
+
             return;
         }
 
@@ -2288,3 +2337,4 @@
 @include('new_perawat.assesment.obgyn.js.obgyn_js')
 @include('new_perawat.rekonsiliasi_obat.js.rekonsiliasi_obat_js')
 @include('new_perawat.case_manager.js.case_manager_js')
+@include('new_perawat.soap.js.soap_perawat_js')

@@ -133,7 +133,7 @@ function baseTemplate(data){
 
         $.each(new_diagnosa, function(i, item){
             let $content_diagnosa = ''
-            $('[id="subRowDiagnosa"] [catergory="'+item.category+'"]').html('')
+            $('[id="subRowDiagnosa"] [category="'+item.category+'"]').html('')
 
             $.each(item.detail, function(sub_i, sub_item){
                 resumeDiagnosa.push(sub_item)
@@ -172,6 +172,23 @@ function baseTemplate(data){
         $('[id="icd9-table-body"]').html(`
             `+$td_prosedur+`
         `)
+    }
+
+    if (data.diagnosa) {
+        let icdoData = data.diagnosa.filter(d => d.pdiag_kategori === 'icdo');
+        let $td_icdo = '';
+
+        $.each(icdoData, function(i, item){
+            resumeDiagnosa.push(item);
+            $td_icdo += `
+                <tr>
+                    <td>
+                        `+item.ID_ICD10+` - `+item.NM_ICD10+`
+                    </td>
+                </tr>`
+        })
+
+        $('[id="icdo-table-body"]').html($td_icdo);
     }
 
     let klausaDiagnosa = data.diagnosa.filter(d => d.pdiag_kategori === 'klausa');

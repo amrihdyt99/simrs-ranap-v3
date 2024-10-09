@@ -148,7 +148,7 @@
       });
     }
 
-    function takeOver(_reg, _type = ''){
+    function takeOver(_reg, _type = '', _room_id = '', _service_unit = ''){
       if (_type == 'cancel') {
         if (!confirm('Apakah anda yakin akan membatalkan pelayanan pasien ?')) {
           return;
@@ -162,6 +162,8 @@
             _token: '{{csrf_token()}}',
             reg_no: _reg,
             type: _type,
+            room_id: _room_id,
+            service_unit: _service_unit,
             dokter_code: $user_dokter_
           },
           success: function(resp){

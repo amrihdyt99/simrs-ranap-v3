@@ -31,7 +31,6 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="font-weight-bold" for="assesment">ASSESMENT</label>
-                            {{-- <textarea class="form-control" id="assesment" rows="8" name="soapdok_assesment"></textarea> --}}
                             <div class="row">
                                 <div class="col">
                                     <table class="table table-striped table_diagnosa">
@@ -61,6 +60,15 @@
                                                         <option value="">-- Pilih Diagnosa Klausa --</option>
                                                     </select>
                                                     <div id="selected-diagnosa-klausa" class="my-3 font-weight-bold"></div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>ICD-O</th>
+                                                <td>
+                                                    <select name="pasien_icdo" id="select-icdo" category="icdo" onchange="pilih_diag($(this).attr('category'), this.value)" style="width: 100%" class="form-control select2">
+                                                        <option value="">-- Pilih ICD-O --</option>
+                                                    </select>
+                                                    <div id="selected-diagnosa-icdo" class="my-3 font-weight-bold"></div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -277,6 +285,7 @@
             icd10('#select-diagnosa-utama')
             icd10('#select-diagnosa-sekunder')
             icd10('#select-diagnosa-klausa', 'X') 
+            icd10('#select-icdo', 'C');
             get_diag()
             get_pro()
         })
@@ -342,7 +351,7 @@
 					$.each(r, function(index, row) {
                         $('[id="selected-diagnosa-'+row.pdiag_kategori+'"]').append(`
                             `+row.ID_ICD10+` | `+row.NM_ICD10+` 
-                            `+($user_dokter_ == $id_dpjp ? '<div type="button" class="badge badge-danger" onclick="hapus_diag(`+row.pdiag_id+`)">X</div>' : '')+`
+                            `+($user_dokter_ == $id_dpjp ? '<div type="button" class="badge badge-danger" onclick="hapus_diag('+row.pdiag_id+')">X</div>' : '')+`
                             <br>
                         `)
 					});
