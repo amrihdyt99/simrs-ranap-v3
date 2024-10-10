@@ -350,7 +350,6 @@
             },
 
             success: function(data) {
-                console.log(data)
                 if ($type == 'LAB') {
                     $sub_type = 'Laboraturium';
                 } else if ($type == 'RAD') {
@@ -462,6 +461,8 @@
         // getItem('LAIN')
 
         $('[id*="selecting_items"]').prop('checked', false)
+        $('[id="multi_payer"]').val("").trigger('change')
+        $('[id="tableListTransaksi"] tbody').html('')
 
         $.ajax({
             url: "{{url('')}}/kasir/billing/detail_order",
@@ -490,6 +491,16 @@
                             </tr>
                         `)
 
+
+                        if (item.source == 'Rawat Inap') {
+                            item.data.push({
+                                'ItemTindakan': 'Non BPJS',
+                                'NonBPJS': 1,
+                                'ItemTarif': 0,
+                                'ItemJumlah': 0
+                            })
+                        }
+
                         $.each(item.data, function(sub_i, sub_item) {
                             sub_item.ItemSource = item.source
                             orders.push(sub_item)
@@ -503,7 +514,9 @@
                                 ` + (i != 0 ? `<tr><td colspan="7"><br></td></tr>` : ``) + `
                                 <tr id="order_header_` + $tindakan + `" data-source="` + item.source + `">
                                     <td class="text-capitalize"><b>` + sub_item.ItemTindakan + `</b></td> 
-                                    <td><input type="checkbox" id="selecting_items" class="float-right" value="all" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)"></td>   
+                                    <td>
+                                        `+(sub_item.ItemTindakan != 'Non BPJS' ? `<input type="checkbox" id="selecting_items" class="float-right" value="all" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)">` : ``)+`
+                                    </td>   
                                 </tr>
                             `
 
@@ -518,21 +531,21 @@
                                 $class = 'bg-danger text-white p-2'
 
                                 reviews.push({
-                                    'name': data,
+                                    'name': sub_item,
                                     'count': 1
                                 })
                             }
 
                             $btn = ''
                             if (($level_ == 'admin' || $level_ == 'kasir') && sub_item.ItemTindakan == 'lainnya') {
-                                $btn = `<span type="button" onclick="deleteItem('` + sub_item.ItemOrder + `')"><i class="fas fa-trash text-danger"></i></span>`
+                                $btn = `<span type="button" data-code="` + sub_item.ItemCode + `" data-id="` + sub_item.ItemOrder + `" onclick="deleteItem('` + sub_item.ItemOrder + `')"><i class="fas fa-trash text-danger"></i></span>`
                             }
 
                             $row_detail = ` 
                                 <tr class="` + $class + `" data-source="` + item.source + `">
                                     <td class="text-capitalize"></td>   
                                     <td>
-                                        <span id="checked_status" style="margin-right: 10px" value="` + sub_item.ItemUId + `" data-code="` + sub_item.ItemCode + `" data-id="` + sub_item.ItemOrder + `">
+                                        <span id="checked_status" style="margin-right: 10px" value="` + sub_item.ItemUId + `" data-code="` + sub_item.ItemCode + `" data-id="` + sub_item.ItemOrder + `" data-nonbpjs="`+sub_item.NonBPJS+`">
                                             <input type="checkbox" id="selecting_items" class="float-right" value="` + sub_item.ItemUId + `" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)">
                                         </span>
                                         ` + sub_item.ItemName1 + `
@@ -548,21 +561,88 @@
                                 </tr>
                             `
 
-                            $('[id="panel-order"] tbody').append($row_detail)
+                            if (sub_item.ItemTindakan != 'Non BPJS' && sub_item.NonBPJS != 1) {
+                                $('[id="panel-order"] tbody').append($row_detail)
+                            }
                         })
+
+                        // ITEM NON BPJS
+                        let getNonBPJSData = item.data.filter((obj) => obj.NonBPJS == 1)
+
+                        if (getNonBPJSData.length > 0) {
+                            $.each(getNonBPJSData, function(sub_i_non_bpjs, item_non_bpjs){
+                                $btn = ''
+                                if (($level_ == 'admin' || $level_ == 'kasir') && (item_non_bpjs.ItemTindakan == 'lainnya' || item_non_bpjs.ItemTindakan == 'Non BPJS')) {
+                                    $btn = `<span type="button" data-code="` + item_non_bpjs.ItemCode + `" data-id="` + item_non_bpjs.ItemOrder + `" onclick="deleteItem('` + item_non_bpjs.ItemOrder + `')"><i class="fas fa-trash text-danger"></i></span>`
+                                }
+
+                                $row_detail = ` 
+                                    <tr data-source="Rawat Inap">
+                                        <td class="text-capitalize"></td>   
+                                        <td>
+                                            <span id="checked_status" style="margin-right: 10px" value="` + item_non_bpjs.ItemUId + `" data-code="` + item_non_bpjs.ItemCode + `" data-id="` + item_non_bpjs.ItemOrder + `" data-nonbpjs="`+item_non_bpjs.NonBPJS+`">
+                                                <input type="checkbox" id="selecting_items" class="float-right" value="` + item_non_bpjs.ItemUId + `" data-category="` + item_non_bpjs.ItemTindakan + `" data-nonbpjs data-source="Rawat Inap" style="transform: scale(1.2)">
+                                            </span>
+                                            ` + item_non_bpjs.ItemName1 + `
+                                            `+(item_non_bpjs.NonBPJS == 1 ? `<span class="bg-success p-1 text-white" style="font-size: 12px; border-radius: 5px">Non BPJS</span>` : ``)+`
+                                        </td>     
+                                        <td>` + item_non_bpjs.ItemJumlah + `</td>     
+                                        <td>Rp. ` + formatNumber(parseFloat(item_non_bpjs.ItemTarifAwal).toFixed(2)) + `</td>     
+                                        <td>Rp. ` + formatNumber(parseFloat(item_non_bpjs.ItemTarif).toFixed(2)) + `</td>     
+                                        <td>` + item_non_bpjs.ItemDokter + `</td>     
+                                        <td class="p-3">
+                                            ` + $btn + `    
+                                        </td>
+                                    </tr>
+                                `
+
+                                if (item_non_bpjs.ItemCode) {
+                                    $('[id="order_header_non_bpjs"]').after($row_detail)
+                                }
+                            })
+                        }
                     })
 
                     getStatusTagihan()
 
-                    if (resp.validation) {
-                        $('[id*="selecting_items"]').hide()
-                        $.each(JSON.parse(resp.validation.pvalidation_selected), function(i, data_selected) {
-                            console.log(data_selected)
-                            $('[id="checked_status"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
+                    let totalvalidation = 0
+                    if (resp.validation.length > 0) {
+                        $.each(resp.validation, function(i, item){
+                            $.each(JSON.parse(item.pvalidation_selected), function(i, data_selected) {
+                                $('[id="checked_status"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').html('<i class="fas fa-check fa-lg float-right text-success"></i>')
+
+                                $('span[type="button"][data-code="' + data_selected.ItemCode + '"][data-id="' + data_selected.ItemOrder + '"]').hide()
+                            })
+
+                            totalvalidation += parseFloat(item.pvalidation_total)
+
+                            $row_transaksi = `
+                                <tr>
+                                    <td>`+(i + 1)+`</td>    
+                                    <td>`+moment(item.created_at).format('DD/MM/YYYY HH:mm:ss')+`</td>    
+                                    <td>`+item.pvalidation_code+`</td>
+                                    <td>`+item.pvalidation_name+`</td>
+                                    <td><button type="button" class="btn btn-info btn-sm" onclick="proceedOpenInvoice(`+item.id+`)"><i class="fas fa-arrow-right"></i> Proses</button></td>
+                                </tr>
+                            `
+
+                            $('[id="tableListTransaksi"] tbody').append($row_transaksi)
                         })
 
+                        total = totalvalidation
 
-                        total = resp.validation.pvalidation_total
+                        let uncheckedItem = $('input[id="selecting_items"]').filter(function() {
+                            return $(this).attr('data-category') !== 'all' && $(this).val() !== 'all';
+                        });
+
+                        $('[id*="selecting_items"]').hide()
+
+                        $.each(uncheckedItem, function(i, item){
+                            let uncheckedItemCategory = $(item).attr('data-category')
+                            let uncheckedItemSource = $(item).attr('data-source')
+
+                            $('[id*="selecting_items"][data-category="'+uncheckedItemCategory+'"][data-source="'+uncheckedItemSource+'"]').show()
+                        })
                     } else {
                         $('[id*="selecting_items"]').show()
                     }
@@ -652,7 +732,7 @@
                 selected_orders.push(data)
             })
 
-            if (payer_id == 2 && value == 'all' || category == 'all') {
+            if (payer_id == 2 && (value == 'all' || category == 'all')) {
                 let getNonBPJS = selected_orders.filter((obj) => obj.NonBPJS == 1)
 
                 selected_orders = selected_orders.filter(function(item) {
@@ -663,6 +743,8 @@
                     $('[id="selecting_items"][value="'+itm.ItemUId+'"]').prop('checked', false)
                 })
             }
+
+            $('[id="btn-validasi-billing"]').show()
         } else {
             if (category == 'all') {
                 selected_orders = []
@@ -686,10 +768,10 @@
                 });
                 $('[id*="selecting_items"][data-category="all"]').prop('checked', false)
             }
+
+            $('[id="btn-validasi-billing"]').hide()
         }
-
-        console.log(selected_orders)
-
+        
         total = selected_orders.reduce((acc, o) => acc + (parseFloat(o.ItemTarif) * parseFloat(o.ItemJumlah)), 0)
 
         $('[id="validasi-tagihan"]').html('Rp. ' + formatNumber(formatNumber(parseFloat(total).toFixed(2))))
@@ -805,72 +887,6 @@
     //     }
     // });
 
-    $('#btn-review-billing').click(function() {
-        $('#modalReview').modal('show');
-
-        $.ajax({
-            url: "{{url('auth/api/kasir/data_order')}}",
-            type: "POST",
-            dataSrc: "",
-            data: {
-                _token: "{{csrf_token()}}",
-                reg_no: $reg,
-                review: 1,
-            },
-            beforeSend: function() {
-                $('#table-review-kasir').html('');
-            },
-            success: function(resp) {
-                total = 0;
-                $.each(resp, function(i, data) {
-
-                    $row_review = `
-                            <tr style="text-align: left" class="r-service-cat">
-                                <td colspan="4"><b>Jenis Layanan : ` + data.ItemTindakan + `</b></td>
-                            </tr>
-                        `;
-                    $('#table-review-kasir').append($row_review);
-
-                    subtotal = 0;
-                    $.each(data['data'], function(i, item) {
-                        $sub_row_review = `
-                                <tr style="text-align: left">
-                                    <td>` + moment(item.ItemTanggal).format('DD/MM/Y') + `</td>
-                                    <td>` + item.ItemName1 + `</td>
-                                    <td>` + item.ItemJumlah + `</td>
-                                    <td class="text-right">Rp. ` + formatNumber(item.ItemTarif) + `</td>
-                                </tr>
-                            `;
-                        $('#table-review-kasir').append($sub_row_review);
-
-                        subtotal += Number(item.ItemTarif);
-                    });
-
-                    $row_subtotal = `
-                            <tr>
-                                <td colspan="3" class="text-right">Sub Total</td>
-                                <td class="text-right">Rp. ` + formatNumber(subtotal) + `</td>    
-                            </tr>
-                            <tr><td colspan="4"></td></tr>
-                            <tr><td colspan="4"></td></tr>
-                        `;
-                    $('#table-review-kasir').append($row_subtotal);
-
-                    total += subtotal;
-
-                });
-
-                $row_total = `
-                        <tr class="text-uppercase font-weight-bold">
-                            <td colspan="3">TOTAL</td>
-                            <td class="text-right">Rp. ` + formatNumber(total) + `</td>
-                        </tr>
-                    `;
-                $('#table-review-kasir-total').html($row_total);
-            }
-        });
-    });
-
     $('#btn-save-validasi').click(function() {
         loadingButton('pending', '#btn-save-validasi')
 
@@ -923,7 +939,6 @@
                             loadingButton('success', '#btn-save-validasi', 'Ya')
                         },
                         error: function(resp) {
-                            console.log(resp);
                         }
                     });
                 }
@@ -955,8 +970,6 @@
                     if (resp.pvalidation_status == 1 && payer == 'BPJS' || $level_ == 'admin') {}
                     $('#btn_open_invoice').show()
                     $('[name="open_id"]').val(resp.id)
-
-                    $('span[onclick*="deleteItem("]').hide()
                 } else {
                     $('#status-tagihan').text('BELUM DIBAYAR');
                     $('#status-tagihan').addClass('btn btn-danger');
@@ -1232,7 +1245,7 @@
 
             },
             error: function(error) {
-                console.log(error);
+                
             }
         });
     });
@@ -1258,7 +1271,7 @@
                 printWindow.print();
             },
             error: function(error) {
-                console.log(error);
+                
             }
         });
     });
@@ -1295,7 +1308,7 @@
                 $('#modalPrintKwitansi').modal('show');
             },
             error: function(error) {
-                console.log(error);
+                
             }
         });
     });
@@ -1327,7 +1340,7 @@
                 }
             },
             error: function(resp) {
-                console.log(error);
+                
             }
         });
     });
@@ -1557,8 +1570,15 @@
     })
 
     $('#btn_open_invoice').click(function() {
-        $('#modalOpenInvoice').modal('show')
+        $('#modalOpenInvoiceList').modal('show')
     })
+
+    function proceedOpenInvoice(_id){
+        $('#modalOpenInvoice').modal('show')
+        $('#modalOpenInvoiceList').modal('hide')
+
+        $('[name="open_id"]').val(_id)
+    }
 
     $('#btn_save_open_invoice').click(function() {
         if ($('[name="open_desc"]').val() == '') {
@@ -1579,7 +1599,7 @@
                     }
                 },
                 error: function(resp) {
-                    console.log(error);
+                    
                 }
             });
         }
