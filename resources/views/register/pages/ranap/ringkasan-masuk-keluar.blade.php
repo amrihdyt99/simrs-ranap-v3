@@ -83,40 +83,8 @@
                     <td>{{ $patient->DateOfBirth ? \Carbon\Carbon::parse($patient->DateOfBirth)->format('d F Y') : '-' }}</td>
                 </tr>
                 <tr>
-                    <td rowspan="4">Alamat Lengkap</td>
-                    <td>Jalan : - </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="flex">
-                            <div>Lorong : - </div>
-                            <div class="flex">
-                                <div>RT : - </div>
-                                <div>RW : - </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="flex">
-                            <div>Kelurahan/Desa : - </div>
-                            <div class="flex">
-                                <div>Kecamatan : - </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="flex">
-                            <div>Kabuptaen/Kota : - </div>
-                            <div class="flex">
-                                <div>Provinsi : - </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                    <td>Alamat Lengkap</td>
+                    <td>{{ $patient->PatientAddress ?? '-' }} </td>
                 <tr>
                     <td colspan="2">
                         <div class="flex">
@@ -212,7 +180,17 @@
                             </tr>
                             <tr>
                                 <td>Tgl Masuk / Jam : </td>
-                                <td>Tgl Keluar / Jam : </td>
+                                <td>{{ \Carbon\Carbon::parse($registration->reg_tgl)->format('d F Y') }} / {{ $registration->reg_jam }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tgl Keluar / Jam :</td>
+                                <td>
+                                   @empty($discharge)
+                                       -
+                                    @else
+                                    {{ \Carbon\Carbon::parse($discharge->pdischarge_tgl)->format('d F Y') }} / {{ $discharge->pdischarge_jam }}
+                                   @endempty
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -229,28 +207,34 @@
                         <h4>11. Kode ICD-10 / ICD-9 (<span class="italic">Diisi oleh dokter</span>)</h4>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="3">Diagnosa Utama : </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;">Diagnosa Skunder:</td>
-                    <td>1</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>2</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>3</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
+                @foreach ($diagnosa_utama as $item)
+                    <tr>
+                        <td style="min-width:40px;">
+                            {{ $loop->iteration == 1 ? 'Diagnosa Utama:' : '' }}
+                        </td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td style="min-width: 100px;">
+                            {{ $item->name ?? '-' }}
+                        </td>
+                        <td>
+                            {{ $item->code ?? '-' }}
+                        </td>
+                    </tr>
+                @endforeach
+                @foreach ($diagnosa_sekunder as $item)
+                    <tr>
+                        <td style="min-width:40px;">
+                            {{ $loop->iteration == 1 ? 'Diagnosa Skunder:' : '' }}
+                        </td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td style="min-width: 100px;">
+                            {{ $item->name ?? '-' }}
+                        </td>
+                        <td>
+                            {{ $item->code ?? '-' }}
+                        </td>
+                    </tr>
+                @endforeach
                 <tr>
                     <td style="min-width:40px;">Penyebab Kematian :</td>
                     <td>1</td>
@@ -269,24 +253,17 @@
                     <td style="min-width: 100px;"></td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td style="min-width:40px;">Tindakan/Prosedur :</td>
-                    <td>1</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
+               @foreach ($procedure as $item)
+               <tr>
+                    <td style="min-width:40px;">
+                        {{ $loop->iteration == 1 ? 'Tindakan/Procedure : ': '' }}
+                    </td>
+                    <td>{{ $loop->iteration }}</td>
+                    <td style="min-width: 100px;">{{ $item->name ?? '-' }}</td>
+                    <td>{{ $item->code?? '-' }}</td>
                 </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>2</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="min-width:40px;"></td>
-                    <td>3</td>
-                    <td style="min-width: 100px;"></td>
-                    <td></td>
-                </tr>
+               @endforeach
+                
             </table>
         </div>
     </div>

@@ -136,12 +136,12 @@ class RegisterController extends Controller
                             Action
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
-                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                             <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
+                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
+                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
+                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
                             <a class="dropdown-item" href="' . $url_ringkasan_masuk_keluar . '" target="_blank">Ringkasan Masuk & Keluar</a>
                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
-                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
                         </div>' .
                     '</div>';
                 return $button_dropdown;
