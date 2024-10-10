@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware(['auth', 'role:nutritionist,dietitian,dokter_gizi'])->group(function () {
 Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi,farmasi,radiologi', 'shift'])->group(function () {
 
-    Route::get('/radiologi/dashboard', [DashboardController::class,'index'])->name('radiologi.dashboard');
+    Route::match(['get', 'post'], '/radiologi/dashboard', [DashboardController::class,'index'])->name('radiologi.dashboard');
     Route::get('/radiologi/detail_pasien', [DetailPasienRadiologiController::class, 'index'])->name('radiologi.detail_pasien_list');
     Route::get('/radiologi/detail_pasien/{MedicalNo}', [DetailPasienRadiologiController::class, 'show'])->where('MedicalNo','(.*)')->name('radiologi.patient_detail');
     Route::get('/radiologi/detail_pasien_register/{reg_no}', [DetailPasienRadiologiController::class,"show2"])->where('reg_no','(.*)')->name('radiologi.patient_detail_registrasi');
@@ -25,4 +25,8 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
 
     });
 
+   // Route::get('/radiologi/get-radiology-result', [DashboardController::class, 'getRadiologiResult'])->name('radiologi.get_radiology_result');
+    Route::get('/radiologi/hasil-radiologi', [DashboardController::class, 'getRadiologiResult'])->name('radiologi.hasil_radiologi');
+
+    
 });

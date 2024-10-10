@@ -3,24 +3,50 @@
 @section('nyaa_content_header')
 <div class="card">
   <div class="card-header p-2">
-    <h3 class="card-title">Daftar Order Lab</h3>
+    <h3 class="card-title">Daftar Order Radiologi</h3>
   </div>
   <div class="card-body">
-    <!-- Filter Tanggal -->
-    <form action="{{ route('radiologi.dashboard') }}" method="GET" class="mb-4">
+    <!-- Filter Form -->
+    <form action="{{ route('radiologi.dashboard') }}" method="POST" class="mb-4">
+      @csrf
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
           <div class="form-group">
             <label for="start_date">Tanggal Awal:</label>
-            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request('start_date', date('Y-m-d', strtotime('-7 days'))) }}">
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date', $startDate ?? date('Y-m-d', strtotime('-7 days'))) }}">
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <div class="form-group">
             <label for="end_date">Tanggal Akhir:</label>
-            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request('end_date', date('Y-m-d')) }}">
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date', $endDate ?? date('Y-m-d')) }}">
           </div>
         </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="patient_name">Nama Pasien:</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" value="{{ old('patient_name', $patientName ?? '') }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="medical_no">No. Rekam Medis:</label>
+            <input type="text" class="form-control" id="medical_no" name="medical_no" value="{{ old('medical_no', $medicalNo ?? '') }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="registration_no">No. Registrasi:</label>
+            <input type="text" class="form-control" id="registration_no" name="registration_no" value="{{ old('registration_no', $registrationNo ?? '') }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="job_order_no">No. Order:</label>
+            <input type="text" class="form-control" id="job_order_no" name="job_order_no" value="{{ old('job_order_no', $jobOrderNo ?? '') }}">
+          </div>
+        </div>
+      </div>
         <div class="col-md-2 d-flex align-items-end">
           <button type="submit" class="btn btn-primary">Filter</button>
         </div>
@@ -43,6 +69,7 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
+            <th>No. Order</th>
             <th>No. Registrasi</th>
             <th>No. Rekam Medis</th>
             <th>Nama Pasien</th>
@@ -54,9 +81,10 @@
         <tbody>
           @foreach($mergedData as $order)
           <tr>
+            <td>{{ $order['JobOrderNo'] ?? '-' }}</td>
             <td>{{ $order['local_reg_no'] ?? $order['registration_no'] }}</td>
             <td>{{ $order['medical_no'] }}</td>
-            <td>{{ $order['patient_name'] ?? 'Tidak tersedia' }}</td>
+            <td>{{ $order['nama_pasien'] ?? 'Tidak tersedia' }}</td>
             <td>{{ \Carbon\Carbon::parse($order['created_at'])->format('d/m/Y H:i') }}</td>
             <td>
               <ul>
@@ -66,7 +94,8 @@
               </ul>
             </td>
             <td>
-              <a href="{{ route('radiologi.patient_detail', $order['medical_no']) }}" class="btn btn-sm btn-primary">Detail</a>
+              <!-- <a href="{{ route('radiologi.patient_detail', $order['medical_no']) }}" class="btn btn-sm btn-primary">Detail</a> -->
+              <button type="button" class="btn btn-sm btn-primary hasil-radiologi-btn" data-job-order-no="{{ $order['JobOrderNo'] }}">Hasil Radiologi</button>
             </td>
           </tr>
           @endforeach
@@ -75,8 +104,57 @@
     @else
       <p>Tidak ada data yang ditemukan.</p>
     @endif
-  </div>
-</div>
+
+    <style>
+  .modal-dialog.custom-width {
+    max-width: 80%; 
+    width: 80%; 
+    max-height: 90%; 
+    height: 90%; 
+  }
+
+  .modal-body iframe {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+    <!-- Modal -->
+    <div class="modal fade" id="radiologiResultModal" tabindex="-1" role="dialog" aria-labelledby="radiologiResultModalLabel" aria-hidden="true">
+      <div class="modal-dialog custom-width" role="document">
+        <div class="modal-content">
+          <div class="modal-header d-flex justify-content-between">
+            <h5 class="modal-title" id="radiologiResultModalLabel">Hasil Radiologi</h5>
+            <div class="d-flex align-items-center">
+              <button id="printButton" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div id="labResultContent"></div>
+            <iframe id="radiologiResultFrame" src="" style="border:none; width: 100%; height: calc(100vh - 150px);"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('.hasil-radiologi-btn').on('click', function() {
+          var jobOrderNo = $(this).data('job-order-no');
+          var url = "{{ route('radiologi.hasil_radiologi') }}?ono=" + jobOrderNo;
+          $('#radiologiResultFrame').attr('src', url);
+          $('#radiologiResultModal').modal('show');
+        });
+
+        $('#printButton').on('click', function() {
+          var iframe = document.getElementById('radiologiResultFrame');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.print();
+          }
+        });
+      });
+    </script>
 @endsection
 
 @push('scripts')

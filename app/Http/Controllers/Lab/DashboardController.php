@@ -7,7 +7,9 @@ use App\Models\RegistrationInap;
 use Illuminate\Http\Request;
 use App\Traits\HttpRequestTraits;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -15,10 +17,115 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            return $this->ajax_index($request);
+        try {
+            $startDate = $request->input('start_date', date('Y-m-d', strtotime('-7 days')));
+            $endDate = $request->input('end_date', date('Y-m-d'));
+            $jobOrderNo = $request->input('job_order_no');
+            $registrationNo = $request->input('registration_no');
+            $medicalNo = $request->input('medical_no');
+            $patientName = $request->input('patient_name');
+
+            $apiUrl = 'https://rsud.sumselprov.go.id/simrs-rajal/api/lab/patient';
+            $params = [
+                'params' => [
+                    [
+                        'key' => 'a.created_at',
+                        'value' => $startDate,
+                        'method' => 'whereDate',
+                        'range' => '>='
+                    ],
+                    [
+                        'key' => 'a.created_at',
+                        'value' => $endDate,
+                        'method' => 'whereDate',
+                        'range' => '<='
+                    ]
+                ]
+            ];
+
+            if ($jobOrderNo) {
+                $params['params'][] = [
+                    'key' => 'a.JobOrderNo',
+                    'value' => $jobOrderNo
+                ];
+            }
+
+            if ($registrationNo) {
+                $params['params'][] = [
+                    'key' => 'registration_no',
+                    'value' => $registrationNo
+                ];
+            }
+
+            if ($medicalNo) {
+                $params['params'][] = [
+                    'key' => 'medical_no',
+                    'value' => $medicalNo
+                ];
+            }
+
+            if ($patientName) {
+                $params['params'][] = [
+                    'key' => 'b.PatientName',
+                    'value' => $patientName,
+                    'like' => true
+                ];
+            }
+
+            Log::info('API Request:', ['url' => $apiUrl, 'params' => $params]);
+
+            $response = Http::get($apiUrl, $params);
+
+            Log::info('API Response Status: ' . $response->status());
+            Log::info('API Response Headers:', $response->headers());
+            Log::info('API Response Body:', ['body' => $response->body()]);
+
+            if ($response->successful()) {
+                $laboratoryOrders = $response->json();
+
+                if (empty($laboratoryOrders) || !is_array($laboratoryOrders)) {
+                    Log::warning('API returned empty or invalid response', ['response' => $laboratoryOrders]);
+                    return view('laboratorium.dashboard', ['mergedData' => collect(), 'message' => 'Tidak ada data yang ditemukan atau format respons tidak valid.']);
+                }
+                $regNos = collect($laboratoryOrders)->pluck('registration_no')->toArray();
+
+                $registrations = DB::connection('mysql2')
+                    ->table('m_registrasi')
+                    ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+                    ->whereIn('m_registrasi.reg_lama', $regNos)
+                    ->select('m_registrasi.reg_lama', 'm_registrasi.reg_no', 'm_pasien.PatientName', 'm_registrasi.reg_medrec')
+                    ->get();
+
+                Log::info('Local database query result:', $registrations->toArray());
+
+                $mergedData = collect($laboratoryOrders)->map(function ($order) use ($registrations) {
+                    $registration = $registrations->firstWhere('reg_lama', $order['registration_no']);
+                    $mergedOrder = array_merge($order, [
+                        'local_reg_no' => $registration ? $registration->reg_no : null,
+                        'patient_name' => $registration ? $registration->PatientName : null,
+                    ]);
+                    Log::info('Merged order:', $mergedOrder);
+                    return $mergedOrder;
+                });
+
+                return view('laboratorium.dashboard', compact('mergedData', 'startDate', 'endDate', 'jobOrderNo', 'registrationNo', 'medicalNo'));
+            } else {
+                Log::error('API request failed', ['status' => $response->status(), 'body' => $response->body()]);
+                return view('laboratorium.dashboard', ['mergedData' => collect(), 'error' => 'Gagal mengambil data dari API. Status: ' . $response->status()]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error in dashboard: ' . $e->getMessage());
+            return view('laboratorium.dashboard', [
+                'mergedData' => collect(),
+                'error' => 'Terjadi kesalahan saat mengambil data: ' . $e->getMessage(),
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'jobOrderNo' => $jobOrderNo,
+                'registrationNo' => $registrationNo,
+                'medicalNo' => $medicalNo,
+                'patientName' => $patientName
+            ]);
         }
-        return view('laboratorium.dashboard');
     }
 
     public function ajax_index($request)
@@ -69,49 +176,32 @@ class DashboardController extends Controller
             ->toJson();
     }
 
-
-    // public function dashboard()
-    // {
-    //     $datamypatient=DB::connection('mysql2')
-    //         ->table('m_registrasi')
-    //         ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
-    //         ->leftJoin('m_paramedis','m_registrasi.reg_dokter','=','m_paramedis.ParamedicCode')
-    //         ->leftJoin('m_ruangan_baru','m_registrasi.service_unit','=','m_ruangan_baru.id')
-    //         ->leftJoin('m_kelas_ruangan_baru','m_registrasi.bed','=','m_kelas_ruangan_baru.id')
-    //         ->where('m_registrasi.reg_discharge','!=','3')
-    //         ->orderByDesc('m_registrasi.reg_tgl')
-    //         ->get();
-    //     return view('perawat.pages.dashboard',['myPatient' => $datamypatient, 'myArea' => $datamypatient]);
-    // }
-
-    public function saveShift(Request $request)
+    public function getLaboratoriumResult(Request $request)
     {
-        $request->validate([
-            'shift' => 'required|string',
-        ]);
+        $jobOrderNo = $request->query('ono');
+        $url = 'https://rsud.sumselprov.go.id/labor/api/result-lab?ono=' . $jobOrderNo;
 
-        session()->forget('user_shift');
-        
-        session(['user_shift' => $request->shift]);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        return response()->json(['success' => true]);
+        $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if ($err) {
+            return view('laboratorium.hasil_lab', ['error' => 'An error occurred while fetching laboratory results: ' . $err]);
+        }
+
+        $data = json_decode($response, true);
+
+        // Log the response for debugging
+        Log::info('Laboratory Result Response:', $data);
+
+        if (isset($data['data']) && !empty($data['data'])) {
+            return view('laboratorium.hasil_lab', ['laboratoryData' => $data['data']]);
+        } else {
+            return view('laboratorium.hasil_lab', ['error' => 'Pemeriksaan Belum Dilakukan']);
+        }
     }
-
-
-
-
-
-    // public function dashboard()
-    // {
-    //     $datamypatient=DB::connection('mysql2')
-    //         ->table('m_registrasi')
-    //         ->leftJoin('m_pasien','m_registrasi.reg_medrec','=','m_pasien.MedicalNo')
-    //         ->leftJoin('m_paramedis','m_registrasi.reg_dokter','=','m_paramedis.ParamedicCode')
-    //         ->leftJoin('m_ruangan_baru','m_registrasi.service_unit','=','m_ruangan_baru.id')
-    //         ->leftJoin('m_kelas_ruangan_baru','m_registrasi.bed','=','m_kelas_ruangan_baru.id')
-    //         ->where('m_registrasi.reg_discharge','!=','3')
-    //         ->orderByDesc('m_registrasi.reg_tgl')
-    //         ->get();
-    //     return view('perawat.pages.dashboard',['myPatient' => $datamypatient, 'myArea' => $datamypatient]);
-    // }
 }

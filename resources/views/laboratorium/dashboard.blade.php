@@ -3,201 +3,171 @@
 @section('nyaa_content_header')
 <div class="card">
   <div class="card-header p-2">
-    <ul class="nav nav-pills">
-
-      <li class="nav-item text-sm"><a class="nav-link active" href="#my-patient" data-toggle="tab">My Patient</a>
-      </li>
-    </ul>
-  </div><!-- /.card-header -->
+    <h3 class="card-title">Daftar Order Laboratorium</h3>
+  </div>
   <div class="card-body">
-    <div class="tab-content">
-      {{--<div class="active tab-pane" id="my-area">
-                <div class="card">
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <table id="example2" class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="text-sm">Reg No</th>
-                                    <th class="text-sm">Patient's Name</th>
-                                    <th class="text-sm">MRN</th>
-                                    <th class="text-sm">Doctor's Name</th>
-                                    <th class="text-sm">Loc</th>
-                                    <th class="text-sm">Payer</th>
-                                    <th class="text-sm">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($myArea as $item)
-                                <tr>
-                                    <td class="text-sm">{{$item->reg_no}}</td>
-      <td class="text-sm">{{$item->PatientName}}</td>
-      <td class="text-sm">{{$item->reg_medrec}}</td>
-      </td>
-      <td class="text-sm">{{$item->ParamedicName}}</td>
-      <td class="text-sm">{{$item->nama_ruangan}}</td>
-      <td class="text-sm">{{$item->reg_cara_bayar}}</td>
-      <td class="text-sm">
-        <form action="" method="">
-          <button type="submit" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-clipboard-check"></i>Ambil
-          </button>
-          <a href="{{route('perawat.patient.detail',['reg_no'=>$item->reg_no])}}" target="_blank" class="btn btn-sm btn-outline-success"><i class="mr-2 fa fa-clipboard-check"></i>Detail</a>
-        </form>
-      </td>
-      </tr>
-      @endforeach
-      </tbody>
-      </table>
-    </div>
-    <!-- /.card-body -->
-  </div>
-</div>--}}
+    <!-- Filter Form -->
+    <form action="{{ route('laboratorium.dashboard') }}" method="POST" class="mb-4">
+      @csrf
+      <div class="row">
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="start_date">Tanggal Awal:</label>
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date', $startDate ?? date('Y-m-d', strtotime('-7 days'))) }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="end_date">Tanggal Akhir:</label>
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date', $endDate ?? date('Y-m-d')) }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="patient_name">Nama Pasien:</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" placeholder="Nama Pasien" value="{{ old('patient_name', $patientName ?? '') }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="medical_no">No. Rekam Medis:</label>
+            <input type="text" class="form-control" id="medical_no" name="medical_no" placeholder="XX-XX-XX-XX" value="{{ old('medical_no', $medicalNo ?? '') }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="registration_no">No. Registrasi:</label>
+            <input type="text" class="form-control" id="registration_no" placeholder="QREG/XX/XXXX" name="registration_no" value="{{ old('registration_no', $registrationNo ?? '') }}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="job_order_no">No. Order:</label>
+            <input type="text" class="form-control" id="job_order_no" placeholder="RLAB/XXXXXX" name="job_order_no" value="{{ old('job_order_no', $jobOrderNo ?? '') }}">
+          </div>
+        </div>
+      </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+      </div>
+    </form>
 
-<div class="form-row">
-  <div class="form-group col-sm-12 col-md-6 col-lg-4">
-    <p class="m-0">Filter Ruangan *</p>
-    <select id="nama_ruangan" class="deteksi_change form-control">
-      <option value="">-- SEMUA --</option>
-    </select>
-  </div>
-  <div class="form-group col-sm-12 col-md-6 col-lg-4">
-    <p class="m-0">Tanggal Registrasi *</p>
-    <input name="reg_tgl" id="reg_tgl" autocomplete="off" type="text"
-      class="deteksi_change_dp form-control" onchange="dt_dst()" data-toggle="datetimepicker">
-  </div>
-  <div class="form-group col-sm-12">
-    <button type="button" id="refresh" class="btn btn-secondary btn-sm">Reset Filter</button>
-  </div>
-</div>
+    @if(isset($error))
+      <div class="alert alert-danger">
+        {{ $error }}
+      </div>
+    @endif
 
-<div class="active tab-pane" id="my-patient">
-  <div class="card">
-    <!-- /.card-header -->
-    <div class="card-body">
-      <table id="example1" class="w-100 table table-bordered table-hover">
+    @if(isset($message))
+      <div class="alert alert-info">
+        {{ $message }}
+      </div>
+    @endif
+
+    @if(isset($mergedData) && $mergedData->isNotEmpty())
+      <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th class="text-sm">Reg No</th>
-            <th class="text-sm">Tanggal Registrasi</th>
-            <th class="text-sm">Patient's Name</th>
-            <th class="text-sm">MRN</th>
-            <th class="text-sm">Doctor's Name</th>
-            <th class="text-sm">Loc</th>
-            <th class="text-sm">Payer</th>
-            <th class="text-sm">Action</th>
+            <th>No. Order</th>
+            <th>No. Registrasi</th>
+            <th>No. Rekam Medis</th>
+            <th>Nama Pasien</th>
+            <th>Tanggal Order</th>
+            <th>Jenis Pemeriksaan</th>
+            <th>Aksi</th>
           </tr>
         </thead>
-
+        <tbody>
+          @foreach($mergedData as $order)
+          <tr>
+            <td>{{ $order['JobOrderNo'] ?? '-' }}</td>
+            <td>{{ $order['local_reg_no'] ?? $order['registration_no'] }}</td>
+            <td>{{ $order['medical_no'] }}</td>
+            <td>{{ $order['nama_pasien'] ?? 'Tidak tersedia' }}</td>
+            <td>{{ \Carbon\Carbon::parse($order['created_at'])->format('d/m/Y H:i') }}</td>
+            <td>
+              <ul>
+                @foreach($order['detail_order'] as $detail)
+                <li>{{ $detail['ItemName'] }}</li>
+                @endforeach
+              </ul>
+            </td>
+            <td>  
+              <button type="button" class="btn btn-sm btn-primary hasil-laboratorium-btn" data-job-order-no="{{ $order['JobOrderNo'] }}">Hasil Laboratorium</button>
+            </td>
+          </tr>
+          @endforeach
+        </tbody>
       </table>
+    @else
+      <p>Tidak ada data yang ditemukan.</p>
+    @endif
+
+    <style>
+  .modal-dialog.custom-width {
+    max-width: 80%; 
+    width: 80%; 
+    max-height: 90%; 
+    height: 90%; 
+  }
+
+  .modal-body iframe {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+    <!-- Modal -->
+    <div class="modal fade" id="laboratoriumResultModal" tabindex="-1" role="dialog" aria-labelledby="laboratoriumResultModalLabel" aria-hidden="true">
+      <div class="modal-dialog custom-width" role="document">
+        <div class="modal-content">
+          <div class="modal-header d-flex justify-content-between">
+            <h5 class="modal-title" id="laboratoriumResultModalLabel">Hasil Laboratorium</h5>
+            <div class="d-flex align-items-center">
+              <button id="printButton" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div id="labResultContent"></div>
+            <iframe id="laboratoriumResultFrame" src="" style="border:none; width: 100%; height: calc(100vh - 150px);"></iframe>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- /.card-body -->
-  </div>
-</div>
-</div>
-</div>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('.hasil-laboratorium-btn').on('click', function() {
+          var jobOrderNo = $(this).data('job-order-no');
+          var url = "{{ route('laboratorium.hasil_lab') }}?ono=" + jobOrderNo;
+          $('#laboratoriumResultFrame').attr('src', url);
+          $('#laboratoriumResultModal').modal('show');
+        });
+
+        $('#printButton').on('click', function() {
+          var iframe = document.getElementById('laboratoriumResultFrame');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.print();
+          }
+        });
+      });
+    </script>
 @endsection
 
-@push('nyaa_scripts')
-<!-- Page specific script -->
+@push('scripts')
 <script>
-  $(function() {
-    load_data();
-    neko_datepicker("reg_tgl");
-  });
-
-  $(function() {
-    neko_select2_init(`{{ route('nyaa_universal.select2.m_ruangan_baru_all') }}`, 'nama_ruangan');
-  })
-
-  $(function() {
-    $(".deteksi_change").on("change", function() {
-      dt_dst();
-    });
-    $("#refresh").on("click", function() {
-      dt_dst('reset');
+  $(function () {
+    $('.table').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
     });
   });
-
-  function dt_dst(reset = null) {
-    if (reset === 'reset') {
-      $('#nama_ruangan').val('').trigger('change');
-    }
-    neko_refresh_datatable('example1');
-  }
-
-
-  function load_data() {
-    $('#example1').DataTable({
-      processing: true,
-      serverSide: true,
-      responsive: true,
-      scrollX: true,
-      lengthMenu: [10, 25, 50, 100, 200, 500],
-      ajax: {
-        url: "{{ url()->current() }}",
-        type: "POST",
-        headers: {
-          "X-HTTP-Method-Override": "GET"
-        },
-        data: {
-          'nama_ruangan': function() {
-            return $("#nama_ruangan").val()
-          },
-          'reg_tgl': function() {
-            return $("#reg_tgl").val()
-          },
-        },
-      },
-      columns: [{
-          data: "reg_no",
-          name: "m_registrasi.reg_no",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "reg_tgl",
-          name: "m_registrasi.reg_tgl",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "PatientName",
-          name: "m_pasien.PatientName",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "reg_medrec",
-          name: "m_registrasi.reg_medrec",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "ParamedicName",
-          name: "m_paramedis.ParamedicName",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "RoomName",
-          name: "m_ruangan.RoomName",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "reg_cara_bayar",
-          name: "m_registrasi.reg_cara_bayar",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "aksi_data",
-          orderable: false,
-          searchable: false,
-        },
-      ],
-    });
-  }
 </script>
 @endpush
