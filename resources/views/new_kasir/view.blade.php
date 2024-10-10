@@ -531,7 +531,7 @@
                                 $class = 'bg-danger text-white p-2'
 
                                 reviews.push({
-                                    'name': data,
+                                    'name': sub_item,
                                     'count': 1
                                 })
                             }
@@ -631,17 +631,18 @@
 
                         total = totalvalidation
 
-
-                        let countUncheckedItem = $('input[id="selecting_items"]').filter(function() {
-                            console.log( $(this).val())
+                        let uncheckedItem = $('input[id="selecting_items"]').filter(function() {
                             return $(this).attr('data-category') !== 'all' && $(this).val() !== 'all';
-                        }).length;
+                        });
 
-                        if (countUncheckedItem == 0) {
-                            $('[id*="selecting_items"]').hide()
-                        } else {
-                            $('[id*="selecting_items"]').show()
-                        }
+                        $('[id*="selecting_items"]').hide()
+
+                        $.each(uncheckedItem, function(i, item){
+                            let uncheckedItemCategory = $(item).attr('data-category')
+                            let uncheckedItemSource = $(item).attr('data-source')
+
+                            $('[id*="selecting_items"][data-category="'+uncheckedItemCategory+'"][data-source="'+uncheckedItemSource+'"]').show()
+                        })
                     } else {
                         $('[id*="selecting_items"]').show()
                     }
