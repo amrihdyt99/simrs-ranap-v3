@@ -26,11 +26,11 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form action="{{ route('master.ketersediaanruangan.update', $bed->bed_id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
+                    <form id="formKetersediaanKamar" action="{{ route('master.ketersediaanruangan.update', $bed->bed_id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -65,9 +65,9 @@
                                         <div class="form-group">
                                             <label>Status Kamar</label>
                                             <select class="form-control select2bs4" name="bed_status" id="bed_status">
-                                                <option value="0116^R" {{ $bed->status_ketersediaan === '0116^R' ? 'selected':'' }}>Ready</option>
-                                                <option value="0116^O" {{ $bed->status_ketersediaan === '0116^O' ? 'selected':'' }}>Sedang Dipakai</option>
-                                                <option value="0116^C" {{ $bed->status_ketersediaan === '0116^C' ? 'selected':'' }}>Cleaning</option>
+                                                <option value="0116^R" {{ $bed->bed_status === '0116^R' ? 'selected':'' }}>Ready</option>
+                                                <option value="0116^O" {{ $bed->bed_status === '0116^O' ? 'selected':'' }}>Sedang Dipakai</option>
+                                                <option value="0116^C" {{ $bed->bed_status === '0116^C' ? 'selected':'' }}>Cleaning</option>
                                             </select>
                                         </div>
                                     </div>
@@ -79,6 +79,7 @@
                                         </div>
                                     </div>
 
+                                    @if ($pasien != null)
 
                                     <div class="col-md-12">
 
@@ -87,24 +88,67 @@
                                             <div class="card-body">
                                                 <div class="row">
 
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Medical Number</label>
+                                                            <input class="form-control" id="" name="" value="{{ $pasien->MedicalNo }}" disabled />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Nama Pasien</label>
+                                                            <input class="form-control" id="" name="" value="{{ $pasien->PatientName }}" disabled />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Tanggal Lahir Pasien</label>
+                                                            <input class="form-control" id="" name="" value="{{app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->carbon_format_day_date_id($pasien->DateOfBirth) }}" disabled />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Jenis Kelamin</label>
+                                                            <input class="form-control" id="" name="" value="{{app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->jenis_kelamin_sphaira($pasien->GCSex) }}" disabled />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Umur</label>
+                                                            <input class="form-control" id="" name="" value="{{app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->kalkulasi_umur($pasien->DateOfBirth) }}" disabled />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Tanggal Masuk Ruangan</label>
+                                                            <input class="form-control" id="" name="" value="{{app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->carbon_format_day_date_id($bed->bed_history->ReceiveTransferDate) }}" disabled />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
                                     </div>
+                                    @endif
+                                </div>
+                            </div>
 
-
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary mt-3">Simpan</button>
+                            </div>
+                            <!-- /.card -->
                         </div>
-                    </div>
-                    <!-- /.card -->
+                    </form>
+                    <!-- /.col -->
                 </div>
-                <!-- /.col -->
+                <!-- /.row -->
             </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
+            <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
 </div>
@@ -115,5 +159,41 @@
     $('.select2bs4').select2({
         theme: 'bootstrap4'
     })
+
+    $("#formKetersediaanKamar").submit(function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let btnSubmit = form.find("[type='submit']");
+        let btnSubmitHtml = btnSubmit.html();
+        let url = form.attr("action");
+        let data = new FormData(this);
+        $.ajax({
+            beforeSend: function() {
+                btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            cache: false,
+            processData: false,
+            contentType: false,
+            type: "POST",
+            url: url,
+            data: data,
+            success: function(response) {
+                btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+                if (response.status === "success") {
+                    neko_notify('success', `Data berhasil disimpan`);
+                } else {
+                    neko_notify('error', `Ups, something wrong !`);
+
+                }
+            },
+            error: function(response) {
+                btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+                neko_notify('error', `Ups, something wrong !`);
+            }
+        });
+    });
 </script>
 @endpush

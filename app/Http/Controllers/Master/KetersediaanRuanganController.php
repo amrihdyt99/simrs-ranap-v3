@@ -145,21 +145,90 @@ class KetersediaanRuanganController extends Controller
             'class',
             'registration',
             'registration.pasien',
+            'bed_history',
         ])->where('bed_id', $id)->first();
 
-        $pasien = DB::connection('mysql2')->table('m_registrasi')
-            ->select('m_pasien.*')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->where('m_registrasi.reg_no', $request->reg_no)
-            ->first();
+        $pasien = null;
+        if (isset($bed->bed_history)) {
+            $pasien = DB::connection('mysql2')->table('m_registrasi')
+                ->select('m_pasien.*')
+                ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+                ->leftjoin('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+                ->where('m_registrasi.reg_no', $bed->bed_history->RegNo)
+                ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+                ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+                ->first();
+        }
 
-        dd($pasien);
-
-
-        return view('master.pages.ketersediaan_ruangan.v2.update', compact('bed'));
+        return view('master.pages.ketersediaan_ruangan.v2.update', compact('bed', 'pasien'));
     }
 
     public function update(Request $request, $id)
+    {
+        $ruangan_tersedia = DB::connection('mysql2')
+            ->table("m_bed")
+            ->where('id', $id)
+            ->first();
+
+        if (
+            !$ruangan_tersedia
+        ) {
+            return abort(404);
+        }
+
+        $rules = [
+            'bed_status' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "status"    => "error",
+                "message"   => "validation error !"
+            ]);
+        }
+
+        $exPaviliun = explode('::', $request->id_paviliun);
+        //var_dump($exPaviliun[0]);
+        $idpaviliun = $exPaviliun[0];
+        $namapaviliun = $exPaviliun[1];
+        $exRuangan = explode('::', $request->id_ruangan);
+        $roomcode = $exRuangan[0];
+        $roomname = $exRuangan[1];
+        $nomor_bed = $request->nomor_bed;
+        $status_ketersediaan = $request->status_ketersediaan;
+        $is_temporary = $request->is_temporary;
+
+        $params = array();
+        $params['id_paviliun'] = $idpaviliun;
+        $params['nama_pavilun'] = $namapaviliun;
+        $params['room_code'] = $roomcode;
+        $params['nama_ruangan'] = $roomname;
+        $params['nomor_bed'] = $nomor_bed;
+        $nama_kelas = "";
+        if ($request->id_kelas == "1") {
+            $nama_kelas = "Kelas I";
+        } else if ($request->id_kelas == "2") {
+            $nama_kelas = "Kelas II";
+        } else if ($request->id_kelas == "3") {
+            $nama_kelas = "Kelas III";
+        } else if ($request->id_kelas == "4") {
+            $nama_kelas = "VIP";
+        } else if ($request->id_kelas == "5") {
+            $nama_kelas = "VVIP";
+        }
+        $params['nama_kelas'] = $nama_kelas;
+        $params['status_ketersediaan'] = $status_ketersediaan;
+        $params['is_temporary'] = $is_temporary;
+        $params['harga_perhari'] = $request->harga_perhari;
+        $simpan = DB::connection('mysql2')->table('ketersediaan_ruangan')
+            ->where('id', $id)
+            ->update($params);
+
+        return redirect()->route('master.ketersediaanruangan.index')->with("success", "Data User Berhasil Disimpan.");
+    }
+
+    public function update_old(Request $request, $id)
     {
         $ruangan_tersedia = DB::connection('mysql2')
             ->table("ketersediaan_ruangan")
