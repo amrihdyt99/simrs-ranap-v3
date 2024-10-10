@@ -1,4 +1,12 @@
 $(document).ready(function() {
+    let urlOrigin = window.location.origin
+    let domUrl = '';
+    // check if urlOrigin is from rsud.sumselprov.go.id
+    if (urlOrigin == 'https://rsud.sumselprov.go.id') domUrl = urlOrigin + '/simrs_ranap/nyx-sistem/select2/m-paramedic';
+    else domUrl = urlOrigin + '/nyx-sistem/select2/m-paramedic';
+    
+    // $dom+'/nyx-sistem/select2/m-paramedic';
+
     triggerGetPhysicianTeamDokter();
 
     $('#btn_tambah_team').on('click', function() {
@@ -26,7 +34,7 @@ $(document).ready(function() {
         });
     });
 
-    neko_select2_init_data($dom+'/nyx-sistem/select2/m-paramedic', 'physician_kode_dokter', {
+    neko_select2_init_data(domUrl, 'physician_kode_dokter', {
         placeholder: 'Pilih Dokter'
     });
 

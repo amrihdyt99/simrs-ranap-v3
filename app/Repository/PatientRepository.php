@@ -8,17 +8,21 @@ use Illuminate\Support\Facades\Http;
 
 class PatientRepository
 {
-    protected $utils, $db, $roomClass, $businessPartnerRepo;
+    protected $utils, $db, $roomClass, $businessPartnerRepo, $icd10, $icd9;
     public function __construct(
         ConnectionDB $connectioDb,
         RoomClassRepository $roomClassRepository,
         MasterBusinessPartnerRepository $masterBusinessPartnerRepository,
-        UtilsHelper $utilsHelper
+        UtilsHelper $utilsHelper,
+        ICD10Repository $icd10Repository,
+        ICD9Repository $icd9Repository
     ) {
         $this->db = $connectioDb;
         $this->roomClass = $roomClassRepository;
         $this->businessPartnerRepo = $masterBusinessPartnerRepository;
         $this->utils = $utilsHelper;
+        $this->icd10 = $icd10Repository;
+        $this->icd9 = $icd9Repository;
     }
 
 
@@ -48,8 +52,9 @@ class PatientRepository
     public function visitHistoryRanap($medrec)
     {
         try {
-            $start_date = request()->query('start') ?? date('Y-m-d');
-            $end_date = request()->query('end') ?? date('Y-m-d');
+            $start_date = request()->query('start');
+            $end_date = request()->query('end');
+            $limit = request()->query('limit') ?? 10;
 
             $data = $this->db->connDbMaster()->table('m_registrasi')
                 ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -59,7 +64,15 @@ class PatientRepository
                 ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.BusinessPartnerCode')
                 ->leftJoin('m_room_class', 'm_registrasi.reg_class', '=', 'm_room_class.ClassCode')
                 ->where('reg_medrec', $medrec)
-                ->whereBetween('reg_tgl', [$start_date, $end_date])
+                ->when($start_date, function ($query, $start_date) {
+                    return $query->whereDate('reg_tgl', '>=', $start_date);
+                })
+                ->when($end_date, function ($query, $end_date) {
+                    return $query->whereDate('reg_tgl', '<=', $end_date);
+                })
+                ->when($limit, function ($query, $limit) {
+                    return $query->limit($limit);
+                })
                 ->select(
                     'm_registrasi.reg_no',
                     'm_registrasi.reg_medrec',
@@ -127,6 +140,50 @@ class PatientRepository
             return $this->db->connDbMaster()->table('m_registrasi')
                 ->where('reg_medrec', $medrec)
                 ->count();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Get patient diagnose by registration number and type
+     * @param string $reg_no
+     * @param string $type is one of 'utama', 'sekunder', 'klausa' and 'icdo'
+     * @return mixed
+     */
+    public function getPatientDiagnoseByRegistrationNumber($reg_no, $type)
+    {
+        try {
+            return $this->db->connDbRanap()->table('rs_pasien_diagnosa')
+                ->leftJoin('icd10_bpjs', 'rs_pasien_diagnosa.pdiag_diagnosa', '=', 'icd10_bpjs.ID_ICD10')
+                ->where('rs_pasien_diagnosa.pdiag_reg', $reg_no)
+                ->where('pdiag_kategori', $type)
+                ->where('pdiag_deleted', 0)
+                ->select('icd10_bpjs.ID_ICD10 as code', 'icd10_bpjs.NM_ICD10 as name')
+                ->get();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getPatientProcedure($reg_no)
+    {
+        try {
+            return $this->db->connDbRanap()->table('rs_pasien_prosedur')
+                ->leftJoin('icd9cm_bpjs', 'rs_pasien_prosedur.pprosedur_prosedur', '=', 'icd9cm_bpjs.ID_TIND')
+                ->where('pprosedur_reg', $reg_no)
+                ->where('pprosedur_deleted', 0)
+                ->select('icd9cm_bpjs.ID_TIND as code', 'icd9cm_bpjs.NM_TINDAKAN as name')
+                ->get();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getPatientDischarge($reg_no)
+    {
+        try {
+            return $this->db->connDbRanap()->table('rs_pasien_discharge')->where('pdischarge_reg', $reg_no)->where('pdischarge_deleted', 0)->first();
         } catch (\Throwable $th) {
             throw $th;
         }
