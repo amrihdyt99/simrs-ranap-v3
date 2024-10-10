@@ -137,12 +137,12 @@ class RegisterController extends Controller
                             Action
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
-                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                             <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
+                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
+                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
+                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
                             <a class="dropdown-item" href="' . $url_ringkasan_masuk_keluar . '" target="_blank">Ringkasan Masuk & Keluar</a>
                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
-                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
                             <button class="dropdown-item print-persetujuan-medis" data-reg_no="' . $query->reg_no . '">Persetujuan Medis</button> 
                         </div>' .
                     '</div>';
@@ -625,7 +625,7 @@ class RegisterController extends Controller
                 'witness2' => 'nullable|string',
                 'nama_witness2' => 'nullable|string',
             ]);
-        
+
             // Check if data already exists
             $existingData = SuratPersetujuanMedis::where('reg_no', $validatedData['reg_no'])->first();
             if ($existingData) {
@@ -635,7 +635,7 @@ class RegisterController extends Controller
             }
 
             $newData = SuratPersetujuanMedis::create($validatedData);
-        
+
             return response()->json(['success' => true, 'message' => 'Data persetujuan medis berhasil disimpan.', 'data' => $newData]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['success' => false, 'message' => $e->errors()], 422);
@@ -887,13 +887,13 @@ class RegisterController extends Controller
                 // Add penanggung jawab pasien
                 RegistrasiPJawab::insert(request()->pj_pasien);
             }
-            
+
             // Ambil reg_lama dari tabel m_registrasi
             $reg_lama = DB::connection('mysql2')
                 ->table('m_registrasi')
                 ->where('reg_no', request()->reg_no)
                 ->value('reg_lama');
-            
+
             // dd($param_pasien);
             DB::commit();
 
@@ -1149,22 +1149,25 @@ class RegisterController extends Controller
         $query = $request->q;
         $mrn = $request->mrn;
 
-        $data = Pasien::select('m_pasien.PatientName', 'm_pasien.SSN',
-        DB::raw("IFNULL(keluarga.FamilyName, '') as FamilyName"), 
-        'keluarga.GCRelationShip', 
-        'keluarga.PhoneNo', 
-        'keluarga.Address', 
-        'keluarga.DateOfBirth', 
-        'keluarga.Sex', 
-        'keluarga.Job')     
-        ->where(function ($q) use ($query) {
+        $data = Pasien::select(
+            'm_pasien.PatientName',
+            'm_pasien.SSN',
+            DB::raw("IFNULL(keluarga.FamilyName, '') as FamilyName"),
+            'keluarga.GCRelationShip',
+            'keluarga.PhoneNo',
+            'keluarga.Address',
+            'keluarga.DateOfBirth',
+            'keluarga.Sex',
+            'keluarga.Job'
+        )
+            ->where(function ($q) use ($query) {
                 $q->where('m_pasien.PatientName', 'LIKE', "%" . $query . "%")
-                  ->orWhere('keluarga.FamilyName', 'LIKE', "%" . $query . "%");
+                    ->orWhere('keluarga.FamilyName', 'LIKE', "%" . $query . "%");
             })
             ->when($mrn, function ($query, $mrn) {
                 $query->leftJoin('m_keluarga_pasien as keluarga', function ($join) use ($mrn) {
                     $join->on('m_pasien.MedicalNo', '=', 'keluarga.MedicalNo')
-                        ->Where('keluarga.MedicalNo', $mrn);    
+                        ->Where('keluarga.MedicalNo', $mrn);
                 });
             })
             ->get();
@@ -1178,11 +1181,11 @@ class RegisterController extends Controller
         $query = $request->q;
         $mrn = $request->mrn;
 
-        $data = Pasien::select('m_pasien.PatientName', 'm_pasien.SSN','keluarga.FamilyName', 'keluarga.GCRelationShip', 'keluarga.PhoneNo', 'keluarga.Address', 'keluarga.DateOfBirth', 'keluarga.Sex', 'keluarga.Job')
-        ->leftJoin('m_keluarga_pasien as pasien', "m_pasien.MedicalNo", "=", "pasien.MedicalNo")    
-        ->where(function ($q) use ($query) {
+        $data = Pasien::select('m_pasien.PatientName', 'm_pasien.SSN', 'keluarga.FamilyName', 'keluarga.GCRelationShip', 'keluarga.PhoneNo', 'keluarga.Address', 'keluarga.DateOfBirth', 'keluarga.Sex', 'keluarga.Job')
+            ->leftJoin('m_keluarga_pasien as pasien', "m_pasien.MedicalNo", "=", "pasien.MedicalNo")
+            ->where(function ($q) use ($query) {
                 $q->where('m_pasien.PatientName', 'LIKE', "%" . $query . "%")
-                  ->orWhere('keluarga.FamilyName', 'LIKE', "%" . $query . "%");
+                    ->orWhere('keluarga.FamilyName', 'LIKE', "%" . $query . "%");
             })
             ->when($mrn, function ($query, $mrn) {
                 $query->leftJoin('m_keluarga_pasien as keluarga', function ($join) use ($mrn) {

@@ -52,8 +52,9 @@ class PatientRepository
     public function visitHistoryRanap($medrec)
     {
         try {
-            $start_date = request()->query('start') ?? date('Y-m-d');
-            $end_date = request()->query('end') ?? date('Y-m-d');
+            $start_date = request()->query('start');
+            $end_date = request()->query('end');
+            $limit = request()->query('limit') ?? 10;
 
             $data = $this->db->connDbMaster()->table('m_registrasi')
                 ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -63,7 +64,15 @@ class PatientRepository
                 ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.BusinessPartnerCode')
                 ->leftJoin('m_room_class', 'm_registrasi.reg_class', '=', 'm_room_class.ClassCode')
                 ->where('reg_medrec', $medrec)
-                ->whereBetween('reg_tgl', [$start_date, $end_date])
+                ->when($start_date, function ($query, $start_date) {
+                    return $query->whereDate('reg_tgl', '>=', $start_date);
+                })
+                ->when($end_date, function ($query, $end_date) {
+                    return $query->whereDate('reg_tgl', '<=', $end_date);
+                })
+                ->when($limit, function ($query, $limit) {
+                    return $query->limit($limit);
+                })
                 ->select(
                     'm_registrasi.reg_no',
                     'm_registrasi.reg_medrec',

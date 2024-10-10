@@ -714,7 +714,7 @@
     element_visit_history = document.getElementById('visit-history')
     $(document).ready(function() {
         let urls = "{{ route('pasien.web.visit.history', ':medicalRecord') }}"
-        let data_pj = <?= isset($pjawab_pasien) ? json_encode($pjawab_pasien) : '[]'; ?>;
+        let data_pj = @json(isset($pjawab_pasien) ? $pjawab_pasien : []);
 
         urls = urls.replace(':medicalRecord', medicalNo)
         $.ajax({
@@ -748,27 +748,41 @@
                             <input class="form-control" name="pj_pasien[` +
                             meta.row + `][reg_no]" value="` + "{{ $registration->reg_no }}" + `" type="hidden" required >
                             <input class="form-control" name="pj_pasien[` +
-                            meta.row + `][reg_pjawab_nama]" value="` + columnData + `" required readonly>`;
+                            meta.row + `][reg_pjawab_nama]" value="` + columnData + `" required>`;
                     }
                 }, {
                     data: 'reg_hub_pasien',
                     render: function(columnData, type, rowData, meta) {
-                        return `<input class="form-control" name="pj_pasien[` +
-                            meta.row + `][reg_hub_pasien]" value="` + columnData + `" required readonly>`;
+                        const options = [
+                            'Diri sendiri',
+                            'Orang tua',
+                            'Anak',
+                            'Suami/istri',
+                            'Kerabat/saudara',
+                            'Lain-lain'
+                        ];
+                        let select = `<select class="form-control" name="pj_pasien[${meta.row}][reg_hub_pasien]" required>`;
+                        options.forEach(option => {
+                            const selected = option === columnData ? 'selected' : '';
+                            select += `<option value="${option}" ${selected}>${option}</option>`;
+                        });
+                        select += `</select>`;
+
+                        return select;
                     }
                 },
                 {
                     data: 'reg_pjawab_nohp',
                     render: function(columnData, type, rowData, meta) {
                         return `<input class="form-control" name="pj_pasien[` +
-                            meta.row + `][reg_pjawab_nohp]" value="` + columnData + `" required readonly>`;
+                            meta.row + `][reg_pjawab_nohp]" value="` + columnData + `" required>`;
                     }
                 },
                 {
                     data: 'reg_pjawab_nik',
                     render: function(columnData, type, rowData, meta) {
                         return `<input class="form-control" name="pj_pasien[` +
-                            meta.row + `][reg_pjawab_nik]" value="` + columnData + `" required readonly>`;
+                            meta.row + `][reg_pjawab_nik]" value="` + columnData + `" required>`;
                     }
                 },
                 {
@@ -796,14 +810,14 @@
                     data: 'reg_pjawab_bayar',
                     render: function(columnData, type, rowData, meta) {
                         return `<input class="form-control" name="pj_pasien[` +
-                            meta.row + `][reg_pjawab_bayar]" value="` + columnData + `" required readonly>`;
+                            meta.row + `][reg_pjawab_bayar]" value="` + columnData + `" required>`;
                     }
                 },
                 {
                     data: 'reg_pjawab_alamat',
                     render: function(columnData, type, rowData, meta) {
                         return `<input class="form-control" name="pj_pasien[` +
-                            meta.row + `][reg_pjawab_alamat]" value="` + columnData + `" required readonly>`;
+                            meta.row + `][reg_pjawab_alamat]" value="` + columnData + `" required>`;
                     }
                 },
                 {

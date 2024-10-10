@@ -165,8 +165,9 @@
     const handleFilterDateRanap = async()=>{
         const startDate = $('#start_date_ranap').val();
         const endDate = $('#end_date_ranap').val();
+        const limit = $('#limit').val();
         const urlHistoryRanap = '{{ route("pasien.visit.history.ranap", ":med") }}';
-        const url = urlHistoryRanap.replace(':med', medrec) + `?start=${startDate}&end=${endDate}`;
+        const url = urlHistoryRanap.replace(':med', medrec) + `?start=${startDate}&end=${endDate}&limit=${limit}`;
         $('#ranapTable').DataTable().ajax.url(url).load();
     }
 

@@ -83,40 +83,8 @@
                     <td>{{ $patient->DateOfBirth ? \Carbon\Carbon::parse($patient->DateOfBirth)->format('d F Y') : '-' }}</td>
                 </tr>
                 <tr>
-                    <td rowspan="4">Alamat Lengkap</td>
-                    <td>Jalan : - </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="flex">
-                            <div>Lorong : - </div>
-                            <div class="flex">
-                                <div>RT : - </div>
-                                <div>RW : - </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="flex">
-                            <div>Kelurahan/Desa : - </div>
-                            <div class="flex">
-                                <div>Kecamatan : - </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="flex">
-                            <div>Kabuptaen/Kota : - </div>
-                            <div class="flex">
-                                <div>Provinsi : - </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                    <td>Alamat Lengkap</td>
+                    <td>{{ $patient->PatientAddress ?? '-' }} </td>
                 <tr>
                     <td colspan="2">
                         <div class="flex">
