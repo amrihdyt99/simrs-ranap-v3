@@ -89,7 +89,8 @@
                         <!-- /.col -->
                     </div>
                 </form>
-
+                
+                <h1 class="d-none">Countdown: <span id="countdown"></span> seconds</h1>
             </div>
             <!-- /.login-card-body -->
         </div>
@@ -102,6 +103,55 @@
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
+
+    <script>
+
+        sessionStorage.removeItem('notify');
+        sessionStorage.removeItem('notifyDate');
+
+        let notify = sessionStorage.getItem("notify")
+        let notifyDate = sessionStorage.getItem("notifyDate")
+
+        if (notify == 1 && notifyDate == "{{date('Y-m-d')}}") {
+            alert('Sebelum dimulai, pastikan telah pull dari github!. Atau pull setiap 20 menit sekali.')
+
+            sessionStorage.setItem("notify", 0)
+        } else {
+            sessionStorage.setItem("notify", 1)
+            sessionStorage.setItem("notifyDate", "{{date('Y-m-d')}}")
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let countdownElement = document.getElementById('countdown');
+            
+            // Retrieve the countdown value from sessionStorage or start from 20 seconds if not set
+            let timeLeft = parseInt(sessionStorage.getItem('countdown')) || 20;
+
+            // Function to update countdown value every second
+            const countdownTimer = setInterval(() => {
+                // Decrement time left
+                timeLeft--;
+                
+                // Display the remaining time
+                countdownElement.textContent = timeLeft;
+
+                // Save the remaining time to sessionStorage
+                sessionStorage.setItem('countdown', timeLeft);
+
+                // If countdown reaches 0, reset to 20 minutes (1200 seconds)
+                if (timeLeft <= 0) {
+                    timeLeft = 1200;  // 20 minutes in seconds
+                    sessionStorage.setItem('countdown', timeLeft);
+
+                    alert('Sebelum dimulai, pastikan telah pull dari github!. Atau pull setiap 20 menit sekali.')
+                }
+            }, 1000);
+
+            // Initialize display
+            countdownElement.textContent = timeLeft;
+        });
+
+    </script>
 </body>
 
 </html>

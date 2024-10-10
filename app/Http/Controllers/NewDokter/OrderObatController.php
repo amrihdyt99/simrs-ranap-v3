@@ -717,6 +717,7 @@ class OrderObatController extends Controller
                     'harga_jual' => $request->cpoe_tarif[$key],
                     'qty' => 1,
                     'created_by_name' => $request->name ?? null,
+                    'non_bpjs' => $request->non_bpjs ?? 0
                 ];
 
                 $check_existing_item = DB::table('job_orders_dt')
