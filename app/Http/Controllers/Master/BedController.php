@@ -22,10 +22,12 @@ class BedController extends Controller
     }
     public function index(Request $request)
     {
+
+
         if ($request->ajax()) {
             return $this->ajax_index($request);
         }
-        return view('master.pages.bed.index');
+        return view('master.pages.bed.index', $data);
     }
 
     public function ajax_index(Request $request)
@@ -48,9 +50,9 @@ class BedController extends Controller
 
         if ($request->has('is_deleted') && $request->is_deleted !== '') {
             if ($request->is_deleted == '1') {
-                $bedQuery->where('is_deleted', 1);
+                $bedQuery->where('m_bed.is_deleted', "1");
             } else if ($request->is_deleted == '0') {
-                $bedQuery->where('is_deleted', 0);
+                $bedQuery->where('m_bed.is_deleted', "0");
             }
         }
 
@@ -100,8 +102,14 @@ class BedController extends Controller
         $data['service_unit'] = DB::connection('mysql2')->table('m_unit_departemen')
             ->leftJoin('m_unit', 'm_unit.ServiceUnitCode', '=', 'm_unit_departemen.ServiceUnitCode')
             ->where('m_unit_departemen.IsActive', 1)->get();
-        $data['room'] = DB::connection('mysql2')->table('m_ruangan')->get();
-        $data['class'] = RoomClass::all();
+        $data['room'] = DB::connection('mysql2')->table('m_ruangan')->where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+        $data['class'] = RoomClass::where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
         $data['site'] = DB::connection('mysql2')->table("m_site")->where([['IsActive', 1], ['IsDeleted', 0]])->get();
         return view('master.pages.bed.create', $data);
     }
@@ -135,8 +143,14 @@ class BedController extends Controller
         $data['service_unit'] = DB::connection('mysql2')->table('m_unit_departemen')
             ->leftJoin('m_unit', 'm_unit.ServiceUnitCode', '=', 'm_unit_departemen.ServiceUnitCode')
             ->where('m_unit_departemen.IsActive', 1)->get();
-        $data['room'] = DB::connection('mysql2')->table('m_ruangan')->get();
-        $data['class'] = RoomClass::all();
+        $data['room'] = DB::connection('mysql2')->table('m_ruangan')->where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+        $data['class'] = RoomClass::where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
         $data['site'] = DB::connection('mysql2')->table("m_site")->where([['IsActive', 1], ['IsDeleted', 0]])->get();
         $data['bed'] = $bed;
 
