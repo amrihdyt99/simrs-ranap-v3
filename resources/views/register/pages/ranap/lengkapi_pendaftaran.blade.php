@@ -430,6 +430,11 @@
                                             <label class="label-admisi">Link Registration</label>
                                             <select id="link_regis" name="link_regis" class="form-control select2bs4">
                                                 <option value="">-</option>
+                                                @if($registration->reg_lama)
+                                                <option value="{{ $registration->reg_lama }}" selected>{{ $registration->reg_lama }}</option>
+                                                @elseif($registration->reg_lama_igd)
+                                                <option value="{{ $registration->reg_lama_igd }}" selected>{{ $registration->reg_lama_igd }}</option>
+                                                @endif
                                             </select>
                                         </div>
                                     </div>
@@ -503,6 +508,9 @@
                                                         <th>Hub dengan pasien</th>
                                                         <th>Nomor Telepon</th>
                                                         <th>NIK</th>
+                                                        <th>Tanggal Lahir</th>
+                                                        <th>Jenis Kelamin</th>
+                                                        <th>Pekerjaan</th>
                                                         <th>Penanggungjawab Pembayaran</th>
                                                         <th>Penanggungjawab Alamat</th>
                                                         <th>Aksi</th>
@@ -629,6 +637,22 @@
                     <div class="form-group">
                         <label class="label-admisi">NIK Penanggungjawab</label>
                         <input type="text" class="form-control" name="reg_pjawab_nik" id="reg_pjawab_nik" placeholder="NIK penanggungjawab pasien" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">Tanggal Lahir</label>
+                        <input type="date" class="form-control" name="tanggal_lahir" id="tanggal_lahir" placeholder="Tanggal lahir penanggungjawab pasien" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">Jenis Kelamin</label>
+                        <select name="jenis_kelamin" id="jenis_kelamin" class="form-control" required>
+                            <option value="">-- Pilih jenis kelamin --</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-admisi">Pekerjaan Penanggungjawab</label>
+                        <input type="text" class="form-control" name="pekerjaan_keluarga" id="pekerjaan_keluarga" placeholder="Pekerjaan keluarga penanggungjawab pasien" required>
                     </div>
                     <div class="form-group">
                         <label class="label-admisi">Penanggungjawab Pembayaran</label>
@@ -762,6 +786,27 @@
                     }
                 },
                 {
+                    data: 'tanggal_lahir',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][tanggal_lahir]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
+                    data: 'jenis_kelamin',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][jenis_kelamin]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
+                    data: 'pekerjaan_keluarga',
+                    render: function(columnData, type, rowData, meta) {
+                        return `<input class="form-control" name="pj_pasien[` +
+                            meta.row + `][pekerjaan_keluarga]" value="` + columnData + `" required readonly>`;
+                    }
+                },
+                {
                     data: 'reg_pjawab_bayar',
                     render: function(columnData, type, rowData, meta) {
                         return `<input class="form-control" name="pj_pasien[` +
@@ -794,11 +839,19 @@
             },
         });
 
-        let autocomplete = $('#reg_pjawab_nama').easyAutocomplete({
+        let genderMap = {
+            '0001^X': 'Tidak Diketahui',
+            '0001^M': 'Laki-laki',
+            '0001^F': 'Perempuan',
+            '0001^U': 'Tidak Dapat Ditentukan',
+            '0001^N': 'Tidak Mengisi'
+        };
+
+       let autocomplete = $('#reg_pjawab_nama').easyAutocomplete({
             adjustWidth: false,
             url: `{{ route('api.get-pasien-keluarga') }}`,
             getValue: function(element) {
-                return element.PatientName;
+                return element.FamilyName ? element.FamilyName : element.PatientName;
             },
             ajaxSettings: {
                 dataType: "json",
@@ -826,17 +879,23 @@
             if (e.keyCode == 13) {
                 e.preventDefault();
                 if ($(this).val() !== '') {
-                    let name = autocomplete.getSelectedItemData().PatientName;
-                    let hub = autocomplete.getSelectedItemData().GCRelationShip;
-                    let ssn = autocomplete.getSelectedItemData().SSN;
-                    let phone = autocomplete.getSelectedItemData().PhoneNo;
-                    let address = autocomplete.getSelectedItemData().Address;
+                    let selectedItem = autocomplete.getSelectedItemData();
+                    let name = selectedItem.PatientName;
+                    let hub = selectedItem.GCRelationShip;
+                    let sex = genderMap[selectedItem.Sex] || selectedItem.Sex;
+                    let date_of_birth = selectedItem.DateOfBirth;
+                    let ssn = selectedItem.SSN;
+                    let phone = selectedItem.PhoneNo;
+                    let address = selectedItem.Address;
+                    let job = selectedItem.Job;
 
-                    // $('#pjModal').modal('show');
                     $('#reg_hub_pasien').val(hub).trigger("change");
                     $('#pjModal').find('input[name="reg_pjawab_nohp"]').val(phone);
                     $('#pjModal').find('input[name="reg_pjawab_nik"]').val(ssn);
                     $('#pjModal').find('input[name="reg_pjawab_alamat"]').val(address);
+                    $('#pjModal').find('input[name="tanggal_lahir"]').val(date_of_birth);
+                    $('#pjModal').find('#jenis_kelamin').val(sex).trigger("change");
+                    $('#pjModal').find('input[name="pekerjaan_keluarga"]').val(job);
                 }
             }
         });

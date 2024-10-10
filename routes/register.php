@@ -16,7 +16,10 @@ Route::prefix('ranap')->middleware(['auth', 'role:adminregister'])->group(functi
     Route::get('batal/{no}', [Ranap\RegisterController::class, 'batal_ranap'])->name('register.ranap.batal');
     Route::get('/rawat-intensif/{reg_no}', [Ranap\RegisterController::class, 'rawatIntensif'])->where('reg_no', '(.*)')->name('register.ranap.rawat-intensif');
     Route::get('/api/generate-newborn-mrn', [RegisterController::class, 'generateNewbornMRN']);
+    Route::get('persetujuan-medis/{reg_no}', [Ranap\RegisterController::class, 'persetujuanMedis'])->where('reg_no', '(.*)')->name('register.ranap.persetujuan-medis');
+    Route::post('/ranap/persetujuan-medis', [Ranap\RegisterController::class, 'storeSuratPersetujuanMedis'])->name('register.ranap.persetujuan-medis.store');    
 
+    Route::get('/persetujuan-medis/{reg_no}', [Ranap\AgreementController::class, 'persetujuanMedis'])->where('reg_no', '(.*)')->name('register.ranap.persetujuan-medis');
     // Route::get('/formnew', [Ranap\RegisterController::class, 'formRegisterInap'])->name('register.ranap.newpatient');
     Route::get('/form', [Ranap\RegisterController::class, 'formRegisterInap'])->name('register.ranap.create');
     Route::post('/form', [Ranap\RegisterController::class, 'storeRegisterInap'])->name('register.ranap.store');
@@ -86,4 +89,5 @@ Route::prefix('agreement')->name('agreement.')->group(function () {
     Route::get('/admisi/{reg_no}', [Ranap\AgreementController::class, 'slipAdmisi'])->where('reg_no', '(.*)')->name('admisi');
     Route::get('/general-consent/{reg_no}', [Ranap\AgreementController::class, 'generalConsent'])->where('reg_no', '(.*)')->name('general-consent');
     Route::get('/rawat-intensif/{reg_no}', [Ranap\AgreementController::class, 'rawatIntensif'])->where('reg_no', '(.*)')->name('rawat-intensif');
+    Route::get('/persetujuan-medis/{reg_no}', [Ranap\AgreementController::class, 'persetujuanMedis'])->where('reg_no', '(.*)')->name('persetujuan-medis');
 });
