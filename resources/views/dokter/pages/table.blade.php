@@ -42,6 +42,16 @@
                             <i class="mr-2 fa fa-share-square"></i>Ambil Alih
                         </button>
                     @else
+                        @php
+                            $isKonsul = isset($row->physician_team_role) && in_array('Konsul', json_decode($row->physician_team_role));
+                        @endphp
+                        
+                        @if ($isKonsul)
+                            <div class="alert alert-warning mb-2" role="alert">
+                                <i class="fa fa-exclamation-triangle mr-2"></i>Pasien memerlukan konsultasi
+                            </div>
+                        @endif
+                        
                         <a href="{{route('dokter.patient.summary',['patient'=>$row->reg_no])}}" class="mb-1 btn btn-sm btn-outline-primary">
                             <i class="mr-2 fa fa-clipboard-check"></i>Periksa
                         </a><br>
@@ -50,7 +60,7 @@
                         </a><br>
                         <button type="button" onclick="takeOver('{{$row->reg_no}}', 'cancel')" class="btn btn-sm btn-outline-danger">
                             <i class="mr-2 fa fa-times"></i>Batal
-                        </a>
+                        </button>
                     @endif
                 </td>
             </tr>
@@ -58,3 +68,12 @@
         </tbody>
     </table>
 </div>
+
+
+
+<style>
+.alert {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+}
+</style>
