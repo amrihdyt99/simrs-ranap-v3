@@ -149,6 +149,15 @@ class KetersediaanRuanganController extends Controller
             'registration.pasien',
         ])->where('bed_id', $id)->first();
 
+        $latest = DB::connection('mysql2')->table('m_bed_history')
+            ->select('m_bed_history.*')
+            ->where('m_bed_history.FromBedID', $id)
+            ->orWhere('m_bed_history.ToBedID', $id)
+            ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+            ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+            ->first();
+        // dd($latest);
+
         // dd($bed->bed_history);
 
         $pasien = null;
@@ -214,6 +223,8 @@ class KetersediaanRuanganController extends Controller
                     'FromChargeClassCode' => $historyBed->RequestTransferDate,
                     'RequestTransferDate' => Carbon::now()->toDateString(),
                     'RequestTransferTime'   => Carbon::now()->toTimeString(),
+                    'ReceiveTransferDate' => Carbon::now()->toDateString(),
+                    'ReceiveTransferTime'   => Carbon::now()->toTimeString(),
                     'Description'   => 'Pasien Pulang',
                     'CreatedBy'     => auth()->user()->username,
                     'RequestedBy'   => auth()->user()->username,

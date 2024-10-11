@@ -61,8 +61,12 @@
                     <div class="left-tab" id="tab-pemeriksaan-penunjang" onclick="clickTab('pemeriksaan-penunjang')">
                         Hasil Pemeriksaan Penunjang
                     </div>
-                </div>
-
+                </div>  
+                <div class="row">
+                    <div class="left-tab" id="tab-persetujuan-penolakan" onclick="clickTab('persetujuan-penolakan')">
+                        Persetujuan/Penolakan Tindakan Medis
+                    </div>
+                </div>  
                 {{-- <div class="row">--}}
                 {{-- <div class="left-tab" id="tab-konsultasi" onclick="clickTab('konsultasi')">--}}
                 {{-- Konsultasi--}}
@@ -93,7 +97,7 @@
                         Discharge
                     </div>
                 </div>
-
+                
                 <div class="row">
                     <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
                         Riwayat
@@ -152,6 +156,11 @@
                                 <div id="panel-pemeriksaan-penunjang">
                                     <div class="text-black" style="font-size: 14px">
                                         @include('new_dokter.pemeriksaan_penunjang.index')
+                                    </div>
+                                </div>
+                                <div id="panel-persetujuan-penolakan">
+                                    <div class="text-black" style="font-size: 14px">
+                                        @include('new_dokter.persetujuan_penolakan.index')
                                     </div>
                                 </div>
 

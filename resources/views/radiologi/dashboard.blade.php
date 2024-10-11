@@ -2,12 +2,12 @@
 
 @section('nyaa_content_header')
 <div class="card">
-  <div class="card-header p-2">
+  <div class="card-header">
     <h3 class="card-title">Daftar Order Radiologi</h3>
   </div>
   <div class="card-body">
     <!-- Filter Form -->
-    <form action="{{ route('radiologi.dashboard') }}" method="POST" class="mb-4">
+    <form action="{{ route('radiologi.dashboard') }}" method="POST">
       @csrf
       <div class="row">
         <div class="col-md-2">
@@ -25,30 +25,31 @@
         <div class="col-md-2">
           <div class="form-group">
             <label for="patient_name">Nama Pasien:</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" value="{{ old('patient_name', $patientName ?? '') }}">
+            <input type="text" class="form-control" id="patient_name" name="patient_name" placeholder="Nama Pasien" value="{{ old('patient_name', $patientName ?? '') }}">
           </div>
         </div>
         <div class="col-md-2">
           <div class="form-group">
             <label for="medical_no">No. Rekam Medis:</label>
-            <input type="text" class="form-control" id="medical_no" name="medical_no" value="{{ old('medical_no', $medicalNo ?? '') }}">
+            <input type="text" class="form-control" id="medical_no" name="medical_no" placeholder="XX-XX-XX-XX" value="{{ old('medical_no', $medicalNo ?? '') }}">
           </div>
         </div>
         <div class="col-md-2">
           <div class="form-group">
             <label for="registration_no">No. Registrasi:</label>
-            <input type="text" class="form-control" id="registration_no" name="registration_no" value="{{ old('registration_no', $registrationNo ?? '') }}">
+            <input type="text" class="form-control" id="registration_no" name="registration_no" placeholder="QREG/XX/XXXXX"" value="{{ old('registration_no', $registrationNo ?? '') }}">
           </div>
         </div>
         <div class="col-md-2">
           <div class="form-group">
             <label for="job_order_no">No. Order:</label>
-            <input type="text" class="form-control" id="job_order_no" name="job_order_no" value="{{ old('job_order_no', $jobOrderNo ?? '') }}">
+            <input type="text" class="form-control" id="job_order_no" name="job_order_no" placeholder="RIMG/XX/XXXXX" value="{{ old('job_order_no', $jobOrderNo ?? '') }}">
           </div>
         </div>
       </div>
-        <div class="col-md-2 d-flex align-items-end">
+        <div class="col-md-12 d-flex justify-content-between align-items-end">
           <button type="submit" class="btn btn-primary">Filter</button>
+          <button id="printTableButton" class="btn btn-outline-primary"> <i class="fas fa-print mr-2"></i>Data Pasien</button>
         </div>
       </div>
     </form>
@@ -94,8 +95,9 @@
               </ul>
             </td>
             <td>
-              <!-- <a href="{{ route('radiologi.patient_detail', $order['medical_no']) }}" class="btn btn-sm btn-primary">Detail</a> -->
-              <button type="button" class="btn btn-sm btn-primary hasil-radiologi-btn" data-job-order-no="{{ $order['JobOrderNo'] }}">Hasil Radiologi</button>
+              <div class="d-flex flex-column align-items-center my-2">
+                <button type="button" class="btn btn-sm btn-outline-primary hasil-radiologi-btn" data-job-order-no="{{ $order['JobOrderNo'] }}">Hasil Radiologi</button>
+              </div>
             </td>
           </tr>
           @endforeach
@@ -152,6 +154,23 @@
           if (iframe && iframe.contentWindow) {
             iframe.contentWindow.print();
           }
+        });
+        $('#printTableButton').on('click', function() {
+          var table = $('table').clone(); 
+          table.find('th:last-child, td:last-child').remove(); 
+          var tableHtml = table.wrap('<div>').parent().html();
+          var newWindow = window.open('', '_blank', 'height=600,width=800');
+          newWindow.document.write('<html><head><title>Informasi Pasien</title>');
+          newWindow.document.write('<style>');
+          newWindow.document.write('@media print { @page { size: A4 landscape; margin: 10mm; } body { margin: 0; } }');
+          newWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
+          newWindow.document.write('table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid black; padding: 8px; text-align: left; }');
+          newWindow.document.write('</style></head><body>');
+          newWindow.document.write('<h3>Informasi Pasien</h3>');
+          newWindow.document.write(tableHtml);
+          newWindow.document.write('</body></html>');
+          newWindow.document.close();
+          newWindow.print();
         });
       });
     </script>

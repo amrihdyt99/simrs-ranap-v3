@@ -33,7 +33,32 @@ class BillingController extends AaaBaseController
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
             ->leftJoin('m_unit', 'm_unit.ServiceUnitCode', '=', 'm_registrasi.service_unit')
             ->where(['m_registrasi.reg_no' => $reg_no])
-            ->get()->first();
+            ->select([
+                'reg_medrec',
+                'reg_tgl',
+                'reg_status',
+                'reg_cara_bayar',
+                'reg_cara_bayar',
+                'charge_class_code',
+                'reg_diagnosis',
+                'reg_lama',
+                'reg_cara_bayar',
+
+                'PatientName',
+                'm_pasien.SSN',
+                'm_pasien.PatientAddress',
+                'm_pasien.MobilePhoneNo1',
+                'm_pasien.DateOfBirth',
+                'm_pasien.GCSex',
+
+                'ParamedicCode',
+                'ParamedicName',
+                'ServiceUnitName',
+            ])
+            ->first();
+
+        $datamypatient = mergeObject($datamypatient, getCurrentLocation($reg_no));
+
         $diagnosisPasien = DB::connection('mysql')->table('icd10_bpjs')->where('ID_ICD10', $datamypatient->reg_diagnosis)->first();
         $ceksoapdokter = DB::connection('mysql')
             ->table('rs_pasien_soapdok')
@@ -740,14 +765,14 @@ class BillingController extends AaaBaseController
             ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-            ->where('m_registrasi.reg_no', $billing_detail->pvalidation_reg)
+            ->where('m_registrasi.reg_no', $request->reg_no)
             ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
             ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
 
-        // dd($data_ri);
+        // dd($data_luar);
 
 
         return view('kasir.billing.review_invoice', [

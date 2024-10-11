@@ -198,9 +198,10 @@
                     {{ $radiologyData['result']['report_text'] ?? 'Data tidak tersedia' }}
                 </div>
                 <div class="col-sm-12 pt-3 conclusion">
-
                     {{ $radiologyData['result']['conclusion'] ?? 'Data tidak tersedia' }}
+                    {{ $radiologyData['file'] ?? 'data gambar tidak tersedia'}}
                 </div>
+              
             </div>
             <div class="row pt-5 pb-2 pl-2 pr-2">
                 <div class="col-sm-6 pt-3 text-center">
@@ -308,6 +309,23 @@
     }
     let report_text = `{!! nl2br(e($radiologyData['result']['report_text'] ?? 'Data tidak tersedia')) !!}`;
     let conclusion = `{!! nl2br(e($radiologyData['result']['conclusion'] ?? 'Data tidak tersedia')) !!}`;
+    let fileUrl = `{!! $radiologyData['file'] ?? '' !!}`;
+    function openExternalViewer() {
+        if (fileUrl) {
+            window.open(fileUrl, '_blank');
+        } else {
+            alert('File URL tidak tersedia');
+        }
+    }
+    $(document).ready(function() {
+        $('.report-text').html(report_text.replaceAll('\n', '<br>'));
+        $('.conclusion').html(conclusion.replaceAll('\n', '<br>'));
+        $('<button>')
+            .text('Buka File Radiologi')
+            .addClass('btn btn-outline-secondary mt-3')
+            .on('click', openExternalViewer)
+            .appendTo('.content-access');
+    });
     $(document).ready(function() {
         $('.report-text').html(report_text.replaceAll('\n', '<br>'));
         $('.conclusion').html(conclusion.replaceAll('\n', '<br>'));

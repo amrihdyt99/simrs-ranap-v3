@@ -153,7 +153,7 @@ header("Content-type: text/css; charset: UTF-8");
             <tr>
               <td>Document Contract</td>
               <td>:</td>
-              <td>{{ $billing->pvalidation_code }}</td>
+              <td>{{ $billing->pvalidation_code ?? '' }}</td>
             </tr>
           </tbody>
         </table>
@@ -412,7 +412,7 @@ header("Content-type: text/css; charset: UTF-8");
           @endisset
           <tr>
             <td class="text-right" colspan="4"><b>SUBTOTAL RAWAT JALAN</b></td>
-            <td class="text-right"><b>{{ number_format($data_luar['total_luar'], 2)}}</b></td>
+            <td class="text-right"><b>{{ number_format($data_luar['total_all'], 2)}}</b></td>
           </tr>
         </tbody>
         @endif

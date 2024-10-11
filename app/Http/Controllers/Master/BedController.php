@@ -27,7 +27,7 @@ class BedController extends Controller
         if ($request->ajax()) {
             return $this->ajax_index($request);
         }
-        return view('master.pages.bed.index', $data);
+        return view('master.pages.bed.index');
     }
 
     public function ajax_index(Request $request)
