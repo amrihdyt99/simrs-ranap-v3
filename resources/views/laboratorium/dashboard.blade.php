@@ -47,9 +47,10 @@
           </div>
         </div>
       </div>
-        <div class="col-md-2 d-flex align-items-end">
-          <button type="submit" class="btn btn-primary">Filter</button>
-        </div>
+      <div class="col-md-12 d-flex justify-content-between align-items-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <button id="printTableButton" class="btn btn-outline-primary"> <i class="fas fa-print mr-2"></i>Data Pasien</button>
+      </div>
       </div>
     </form>
 
@@ -146,11 +147,31 @@
           $('#laboratoriumResultModal').modal('show');
         });
 
+        // Update the print button functionality
         $('#printButton').on('click', function() {
-          var iframe = document.getElementById('laboratoriumResultFrame');
+          var iframe = document.getElementById('laboratoriumResultFrame'); // Corrected the iframe ID
           if (iframe && iframe.contentWindow) {
             iframe.contentWindow.print();
           }
+        });
+
+        // Add new functionality for printing the table
+        $('#printTableButton').on('click', function() {
+          var table = $('table').clone(); 
+          table.find('th:last-child, td:last-child').remove(); 
+          var tableHtml = table.wrap('<div>').parent().html();
+          var newWindow = window.open('', '_blank', 'height=600,width=800');
+          newWindow.document.write('<html><head><title>Informasi Pasien</title>');
+          newWindow.document.write('<style>');
+          newWindow.document.write('@media print { @page { size: A4 landscape; margin: 10mm; } body { margin: 0; } }');
+          newWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
+          newWindow.document.write('table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid black; padding: 8px; text-align: left; }');
+          newWindow.document.write('</style></head><body>');
+          newWindow.document.write('<h3>Informasi Pasien</h3>');
+          newWindow.document.write(tableHtml);
+          newWindow.document.write('</body></html>');
+          newWindow.document.close();
+          newWindow.print();
         });
       });
     </script>
