@@ -60,6 +60,8 @@ class HomeController extends Controller
 
             $data['pasien'][$key]->RoomName = $room->RoomName ?? null;
             $data['pasien'][$key]->Payer = $payer->BusinessPartnerName ?? null;
+
+            $data['pasien'][$key]->CurrentLocation = !empty(getCurrentLocation($value->reg_no)) ? getCurrentLocation($value->reg_no) : null;
         }
 
         // usort($data['pasien']->toArray(), function($a, $b) {
