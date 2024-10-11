@@ -1,4 +1,4 @@
-<div class="modal fade" id="resikoJatuhDetailNeonatus" tabindex="-1" role="dialog"
+<div class="modal fade" id="riwayat-neonatus-show" tabindex="-1" role="dialog"
     aria-labelledby="resikoJatuhDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -12,7 +12,7 @@
                 <h3><b>Penilaian Risiko Jatuh Pasien Neonatus</b></h3>
 
                 <!-- Table 1: Risiko Rendah, Edukasi, Evaluasi -->
-                <table class="table1 w-100" id="resiko_jatuh_neonatus_table1">
+                <table class="table1 w-100" id="riwayat-data-neonatus">
                     <!-- Risiko Rendah -->
                     <tr>
                         <td rowspan="6">
@@ -126,7 +126,7 @@
                 </table>
 
                 <!-- Table 2: Signatures -->
-                <table class="table1 w-100" id="resiko_jatuh_neonatus_table2">
+                <table class="table1 w-100" id="riwayat-data-neonatus-ttd">
                     <tr>
                         <td style="width: 500px; text-align: center; vertical-align: middle; padding: 10px;">
                             <div style="display: flex; flex-direction: column; align-items: center;">

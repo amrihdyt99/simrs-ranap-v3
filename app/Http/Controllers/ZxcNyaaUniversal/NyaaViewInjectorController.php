@@ -1568,6 +1568,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
             ->first();
 
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();

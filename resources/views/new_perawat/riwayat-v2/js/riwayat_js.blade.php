@@ -59,6 +59,12 @@
         }
     };
 
+    const setRadioButton2 = (name, value) => {
+        if (value) {
+            $('input[name="'+name+'"][value="'+value+'"]').prop('checked', true);
+        }
+    };
+
     // Fungsi untuk mengisi textarea
     const setTextarea = (selector, value) => {
         if (value) {
@@ -102,6 +108,965 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
         const date = new Date(dateString);
         return date.toLocaleDateString('id-ID', options);
+    }
+
+    function loadDtRiwayatTiDiagnostik() {
+        // Hapus DataTable jika sudah ada
+        if ($.fn.DataTable.isDataTable('#dt_serah_terima_diagnostik')) {
+            $('#dt_serah_terima_diagnostik').DataTable().clear().destroy();
+        }
+
+        let dt_riwayat_ti_diagnostik = $('#dt_serah_terima_diagnostik').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [10, 25, 50, 100, 200, 500],
+            scrollX: true,
+            ajax: {
+                url: "{{ route('perawat.dt-riwayat-ti-diagnostik') }}",
+                data: function(d) {
+                    d.reg_no = "{{ $reg }}";
+                },
+            },
+            columns: [{
+                data: "lab",
+                name: "lab",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "xray",
+                name: "xray",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "mri",
+                name: "mri",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "ct_scan",
+                name: "ct_scan",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "ekg",
+                name: "ekg",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "echo",
+                name: "echo",
+                orderable: true,
+                searchable: true,
+            }],
+        });
+    }
+
+    function getSerahTerimaTI() {
+        $.ajax({
+            url: "{{ route('perawat.serah-terima-ti') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    $('#transfer_terima_tanggal').val(data.transfer_terima_tanggal);
+                    $('#transfer_terima_kondisi').val(data.transfer_terima_kondisi);
+                    $('#transfer_terima_gcs_e').val(data.transfer_terima_gcs_e);
+                    $('#transfer_terima_gcs_m').val(data.transfer_terima_gcs_m);
+                    $('#transfer_terima_gcs_v').val(data.transfer_terima_gcs_v);
+                    $('#transfer_terima_td').val(data.transfer_terima_td);
+                    $('#transfer_terima_n').val(data.transfer_terima_n);
+                    $('#transfer_terima_suhu').val(data.transfer_terima_suhu);
+                    $('#transfer_terima_p').val(data.transfer_terima_p);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Terjadi kesalahan: ', error);
+            }
+        })
+    }
+
+    function loadDtRiwayatTiStatus() {
+        // Hapus DataTable jika sudah ada
+        if ($.fn.DataTable.isDataTable('#riwayat_ti_status')) {
+            $('#riwayat_ti_status').DataTable().clear().destroy();
+        }
+
+        let dt_riwayat_ti_status = $('#riwayat_ti_status').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [10, 25, 50, 100, 200, 500],
+            scrollX: true,
+            ajax: {
+                url: "{{ route('perawat.dt-riwayat-ti-status') }}",
+                data: function(d) {
+                    d.reg_no = "{{ $reg }}";
+                },
+            },
+            columns: [{
+                data: "waktu",
+                name: "waktu",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "kesadaran",
+                name: "kesadaran",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "td",
+                name: "td",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "hr",
+                name: "hr",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "rr",
+                name: "rr",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "spo2",
+                name: "spo2",
+                orderable: true,
+                searchable: true,
+            }],
+        });
+    }
+
+    function loadDtRiwayatTiObat() {
+        // Hapus DataTable jika sudah ada
+        if ($.fn.DataTable.isDataTable('#riwayat_ti_obat')) {
+            $('#riwayat_ti_obat').DataTable().clear().destroy();
+        }
+
+        let dt_riwayat_ti_obat = $('#riwayat_ti_obat').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [10, 25, 50, 100, 200, 500],
+            scrollX: true,
+            ajax: {
+                url: "{{ route('perawat.dt-riwayat-ti-obat') }}",
+                data: function(d) {
+                    d.reg_no = "{{ $reg }}";
+                },
+            },
+            columns: [{
+                data: "item_id",
+                name: "item_id",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "quantity",
+                name: "quantity",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "item_unit_code",
+                name: "item_unit_code",
+                orderable: true,
+                searchable: true,
+            }],
+        });
+    }
+
+    function loadDtRiwayatTiAlat() {
+        // Hapus DataTable jika sudah ada
+        if ($.fn.DataTable.isDataTable('#riwayat_ti_alat')) {
+            $('#riwayat_ti_alat').DataTable().clear().destroy();
+        }
+
+        let dt_riwayat_ti_alat = $('#riwayat_ti_alat').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [10, 25, 50, 100, 200, 500],
+            scrollX: true,
+            ajax: {
+                url: "{{ route('perawat.dt-riwayat-ti-alat') }}",
+                data: function(d) {
+                    d.reg_no = "{{ $reg }}";
+                },
+            },
+            columns: [{
+                data: "nama_alat_terpasang",
+                name: "nama_alat_terpasang",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "nama_alat_terpasang",
+                name: "nama_alat_terpasang",
+                orderable: true,
+                searchable: true,
+            }],
+        });
+    }
+
+    function getPersiapanPasienTI() {
+        $.ajax({
+            url: "{{ route('perawat.persiapan-pasien-ti') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let persiapan = response.persiapan_pasien;
+                    let ruangan_asal = response.ruangan_asal;
+                    let ruangan_tujuan = response.ruangan_tujuan;
+
+                    $('#transfer_unit_asal').val(ruangan_asal.bed_code + ' - ' + ruangan_asal.ruang + ' - ' + ruangan_asal.kelompok + ' - ' + ruangan_asal.kelas);
+                    $('#transfer_unit_tujuan').val(ruangan_tujuan.bed_code + ' - ' + ruangan_tujuan.ruang + ' - ' + ruangan_tujuan.kelompok + ' - ' + ruangan_tujuan.kelas);
+                    $('#transfer_class').val(persiapan.class_name);
+                    $('#transfer_charge_class').val(persiapan.charge_class_name);
+                    $('#perawat_tujuan_input').val(persiapan.diterima_oleh_nama);
+                    $('#transfer_waktu_hubungi').val(persiapan.transfer_waktu_hubungi);
+                    $('#ditransfer_waktu').val(persiapan.ditransfer_waktu);
+                    setRadioButton2('transfer_kategori', persiapan.transfer_kategori);
+                    $('#transfer_alasan_masuk').val(persiapan.transfer_alasan_masuk);
+                    $('#transfer_diagnosis').val(persiapan.transfer_diagnosis);
+                    $('#transfer_temuan').val(persiapan.transfer_temuan);
+                    setRadioButton2('transfer_alergi', persiapan.transfer_alergi);
+                    $('#transfer_alergi_text').val(persiapan.transfer_alergi_text);
+                    setRadioButton2('transfer_kewaspaan', persiapan.transfer_kewaspaan);
+                    $('#transfer_gcs_e').val(persiapan.transfer_gcs_e);
+                    $('#transfer_gcs_m').val(persiapan.transfer_gcs_m);
+                    $('#transfer_gcs_v').val(persiapan.transfer_gcs_v);
+                    $('#transfer_td').val(persiapan.transfer_td);
+                    $('#transfer_N').val(persiapan.transfer_N);
+                    $('#transfer_skala_nyeri').val(persiapan.transfer_skala_nyeri);
+                    $('#transfer_suhu').val(persiapan.transfer_suhu);
+                    $('#transfer_p').val(persiapan.transfer_p);
+                    $('#transfer_spo2').val(persiapan.transfer_spo2);
+                    setCustomCheckboxes('input[name="transfer_dokumen_yang_disertakan[]"]', persiapan.transfer_dokumen_yang_disertakan);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Terjadi kesalahan: ', error);
+            }
+        });
+    }
+
+    function loadDtRiwayatTfInternal() {
+        // Hapus DataTable jika sudah ada
+        if ($.fn.DataTable.isDataTable('#table_riwayat_tf_internal')) {
+            $('#table_riwayat_tf_internal').DataTable().clear().destroy();
+        }
+
+        let dt_riwayat_tf_internal = $('#table_riwayat_tf_internal').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [10, 25, 50, 100, 200, 500],
+            scrollX: true,
+            ajax: {
+                url: "{{ route('perawat.dt-riwayat-tf-internal') }}",
+                data: function(d) {
+                    d.reg_no = "{{ $reg }}";
+                }
+            },
+            columns: [{
+                data: "transfer_reg",
+                name: "transfer_reg",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "PatientName",
+                name: "PatientName",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "MedicalNo",
+                name: "MedicalNo",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "bed_code_asal",
+                name: "bed_code_asal",
+                orderable: true,
+                searchable: true,
+                render: function(data, type, row, meta) {
+                    return '[' + row.bed_code_asal + '] ' + row.bed_asal_name + ' - ' + row.bed_asal_unit + ' - ' + row.bed_asal_class;
+                }
+            }, {
+                data: "bed_code_tujuan",
+                name: "bed_code_tujuan",
+                orderable: true,
+                searchable: true,
+                render: function(data, type, row, meta) {
+                    return '[' + row.bed_code_tujuan + '] ' + row.bed_tujuan_name + ' - ' + row.bed_tujuan_unit + ' - ' + row.bed_tujuan_class;
+                }
+            }, {
+                data: "transfer_waktu_hubungi",
+                name: "transfer_waktu_hubungi",
+                orderable: true,
+                searchable: true,
+            }, {
+                data: "ditransfer_waktu",
+                name: "ditransfer_waktu",
+                orderable: true,
+                searchable: true,
+            }, {
+                data: 'status_transfer',
+                name: 'status_transfer',
+                render: function(columnData, type, rowData, meta) {
+                    if (columnData) {
+                        return `<span class="badge badge-success text-white">Sudah Diterima</span>`;
+                    } else {
+                        return `<span class="badge badge-danger">Belum Diterima</span>`;
+                    }
+                }
+            }],
+        });
+    }
+
+    function getCaseManager() {
+        $.ajax({
+            url: "{{ route('perawat.case-manager') }}",
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                console.log(response);
+                if(response.status){
+                    let case_manager = response.case_manager;
+                    let case_manager_evaluasi = response.case_manager_evaluasi;
+
+                    // Mengisi data ke dalam form
+                    setCheckboxes('input[name="identifikasi_masalah[]"]', case_manager.identifikasi_masalah);
+                    $('#keadaan_fungsional').val(case_manager.keadaan_fungsional);
+                    $('#riwayat_kesehatan').val(case_manager.riwayat_kesehatan);
+                    $('#perilaku_psiko_sosial').val(case_manager.perilaku_psiko_sosial);
+                    $('#masalah_isu_sosial').val(case_manager.masalah_isu_sosial);
+                    $('#kendala_pembiayaan').val(case_manager.kendala_pembiayaan);
+                    $('#kebutuhan_discharge').val(case_manager.kebutuhan_discharge);
+                    $('#potensi_penundaan').val(case_manager.potensi_penundaan);
+                    $('#potensi_komplain').val(case_manager.potensi_komplain);
+                    $('#perencanaan_manegemen').val(case_manager.perencanaan_manegemen);
+                    $('#target_hasil').val(case_manager.target_hasil);
+                    setSignature('riwayat_case_ttd_perawat', case_manager.ttd_perawat);
+                    setSignature('riwayat_case_ttd_pasien', case_manager.ttd_pasien);
+                    setSignature('riwayat_case_ttd_saksi', case_manager.ttd_saksi);
+                    $('#nama_saksi_asses').val(case_manager.saksi_name);
+                    $('#nama_perawat_asses').val(case_manager.perawat_name);
+                    $('#nama_pasien_asses').val(case_manager.pasien_name);
+                    $('#tanggal_ttd_asses').val(case_manager.tanggal_ttd);
+
+                    setSignature('riwayat_eval_ttd_perawat', case_manager_evaluasi.ttd_perawat);
+                    setSignature('riwayat_eval_ttd_pasien', case_manager_evaluasi.ttd_pasien);
+                    setSignature('riwayat_eval_ttd_saksi', case_manager_evaluasi.ttd_saksi);
+                    $('#tgl_evaluasi').val(case_manager_evaluasi.tgl_akumulasi);
+                    $('#nama_perawat_eval').val(case_manager_evaluasi.perawat_name);
+                    $('#nama_pasien_eval').val(case_manager_evaluasi.pasien_name);
+                    $('#nama_saksi_eval').val(case_manager_evaluasi.saksi_name);
+                    $('#tanggal_ttd_eval').val(case_manager_evaluasi.tgl_ttd);
+                    $('textarea[name="pelaksanaan"]').val(case_manager_evaluasi.pelaksanaan);
+                    $('textarea[name="hasil"]').val(case_manager_evaluasi.hasil);
+                    $('input[name="terminasi"]').val(case_manager_evaluasi.terminasi);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+            } 
+        });
+    }
+
+    function getPersetujuanTindakanMedis() {
+        $.ajax({
+            url: "{{ route('perawat.persetujuan-tindakan-medis') }}",
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.status) {
+                    let informasi = response.informasi;
+                    let setuju = response.setuju;
+                    let tolak = response.tolak;
+
+                    // Mengisi data ke dalam form
+                    $('#informasi_nama_tindakan').val(informasi.informasi_nama_tindakan);
+                    $('#ParamedicCode').val(informasi.ParamedicName);
+                    $('#informasi_pemberi_info').val(informasi.informasi_pemberi_info);
+                    $('#informasi_penerima_info').val(informasi.informasi_penerima_info);
+                    $('#informasi_diberikan_pada').val(informasi.informasi_diberikan_pada);
+                    $('#informasi_diagnosis_text').val(informasi.informasi_diagnosis_text);
+                    $('#informasi_dasar_diagnosis_text').val(informasi.informasi_dasar_diagnosis_text);
+                    $('#informasi_tindakan_kedokteran_text').val(informasi.informasi_tindakan_kedokteran_text);
+                    $('#informasi_indikasi_tindakan_text').val(informasi.informasi_indikasi_tindakan_text);
+                    $('#informasi_tata_cara_text').val(informasi.informasi_tata_cara_text);
+                    $('#informasi_tujuan_text').val(informasi.informasi_tujuan_text);
+                    $('#informasi_risiko_text').val(informasi.informasi_risiko_text);
+                    $('#informasi_komplikasi_text').val(informasi.informasi_komplikasi_text);
+                    $('#informasi_prognosis_text').val(informasi.informasi_prognosis_text);
+                    $('#informasi_alternatif_text').val(informasi.informasi_alternatif_text);
+                    $('#informasi_lain_lain_text').val(informasi.informasi_lain_lain_text);
+                    setSignature('ttd_info_dokter', informasi.informasi_ttd_dokter);
+                    setSignature('ttd_info_penerima', informasi.informasi_ttd_penerima_informasi);
+                    $('#nama_dokter').val(informasi.nama_dokter);
+                    $('#nama_penerima_informasi').val(informasi.nama_penerima_informasi);
+
+                    $('#persetujuan_nama_1').val(setuju.persetujuan_nama_1);
+                    setRadioButton('riwayat_setuju_tindakan','persetujuan_jenis_kelamin_1', setuju.persetujuan_jenis_kelamin_1);
+                    $('#persetujuan_tanggal_lahir_1').val(setuju.persetujuan_tanggal_lahir_1);
+                    $('#persetujuan_alamat_1').val(setuju.persetujuan_alamat_1);
+                    $('#persetujuan_pernyataan').val(setuju.persetujuan_pernyataan);
+                    setRadioButton('riwayat_setuju_tindakan','persetujuan_terhadap', setuju.persetujuan_terhadap);
+                    
+                    $('#persetujuan_nama_2').val(setuju.persetujuan_nama_2);
+                    setRadioButton('riwayat_setuju_tindakan','persetujuan_jenis_kelamin_2', setuju.persetujuan_jenis_kelamin_2);
+                    $('#persetujuan_tanggal_lahir_2').val(setuju.persetujuan_tanggal_lahir_2);
+                    $('#persetujuan_alamat_2').val(setuju.persetujuan_alamat_2);
+                    $('#persetujuan_tanggal_waktu_ttd').val(setuju.persetujuan_tanggal_waktu_ttd);
+                    setSignature('ttd_setuju_menyatakan', setuju.persetujuan_ttd_yg_menyatakan);
+                    setSignature('ttd_setuju_dokter', setuju.persetujuan_ttd_dokter);
+                    setSignature('ttd_setuju_keluarga', setuju.persetujuan_ttd_keluarga);
+                    setSignature('ttd_setuju_perawat', setuju.persetujuan_ttd_perawat);
+                    $('#nama_persetujuan_penerima').val(setuju.nama_persetujuan_penerima);
+                    $('#nama_persetujuan_dokter').val(setuju.nama_persetujuan_dokter);
+                    $('#nama_persetujuan_keluarga').val(setuju.nama_persetujuan_keluarga);
+                    $('#nama_persetujuan_perawat').val(setuju.nama_persetujuan_perawat);
+
+                    $('#penolakan_nama_1').val(tolak.penolakan_nama_1);
+                    setRadioButton('riwayat_tolak_tindakan','penolakan_jenis_kelamin_1', tolak.penolakan_jenis_kelamin_1);
+                    $('#penolakan_tanggal_lahir_1').val(tolak.penolakan_tanggal_lahir_1);
+                    $('#penolakan_alamat_1').val(tolak.penolakan_alamat_1);
+                    $('#penolakan_pernyataan').val(tolak.penolakan_pernyataan);
+                    setRadioButton('riwayat_tolak_tindakan','penolakan_terhadap', tolak.penolakan_terhadap);
+                    
+                    $('#penolakan_nama_2').val(tolak.penolakan_nama_2);
+                    setRadioButton('riwayat_tolak_tindakan','penolakan_jenis_kelamin_2', tolak.penolakan_jenis_kelamin_2);
+                    $('#penolakan_tanggal_lahir_2').val(tolak.penolakan_tanggal_lahir_2);
+                    $('#penolakan_alamat_2').val(tolak.penolakan_alamat_2);
+                    $('#penolakan_tanggal_ttd').val(tolak.penolakan_tanggal_ttd);
+                    setSignature('ttd_penolakan_menyatakan', tolak.penolakan_ttd_yg_menyatakan);
+                    setSignature('ttd_penolakan_dokter', tolak.penolakan_ttd_dokter);
+                    setSignature('ttd_penolakan_keluarga', tolak.penolakan_ttd_keluarga);
+                    setSignature('ttd_penolakan_perawat', tolak.penolakan_ttd_perawat);
+                    $('#nama_penolakan_penerima').val(tolak.nama_penolakan_penerima);
+                    $('#nama_penolakan_dokter').val(tolak.nama_penolakan_dokter);
+                    $('#nama_penolakan_keluarga').val(tolak.nama_penolakan_keluarga);
+                    $('#nama_penolakan_perawat').val(tolak.nama_penolakan_perawat);
+
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+            }
+        });
+    }
+
+    function getMonitoringTransfusiDarah() {
+        $.ajax({
+            url: "{{ route('perawat.monitoring-transfusi-darah') }}",
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                if (response.status) {
+                    let data = response.data;
+                    console.log(data);
+                    let tbody = $('#riwayat-moni-darah tbody');
+                    tbody.empty(); // Hapus data sebelumnya
+                    data.forEach(item => {
+                        tbody.append(`
+                            <tr>
+                                <td class="text-center">${item.nomor_kantong}</td>
+                                <td class="text-center">${item.golongan_darah}</td>
+                                <td class="text-center">${item.jenis_darah}</td>
+                                <td class="text-center">${parseDateToIndonesian(item.tanggal_kadarluarsa)}</td>
+                                <td class="text-center">${item.penerima_darah}</td>
+                                <td class="text-center">${parseDateToIndonesian(item.waktu_transfusi)}</td>
+                                <td class="text-center">${item.keadaan_umum}</td>
+                                <td class="text-center">${item.suhu_tubuh}</td>
+                                <td class="text-center">${item.nadi}</td>
+                                <td class="text-center">${item.tekanan_darah}</td>
+                                <td class="text-center">${item.respiratory_rate}</td>
+                                <td class="text-center">${item.volume_warna_urin}</td>
+                                <td class="text-center">${item.gejala_reaksi_transfusi}</td>
+                                <td class="text-center">${item.pilihan_menit}</td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    console.error('Gagal mengambil data');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+            }
+        });
+    }
+        
+
+    function getRiwayatFluidBalance() {
+        $.ajax({
+            url: "{{ route('perawat.fluid-balance') }}",
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                if (response.status) {
+                    let data = response.data;
+                    let tbody = $('#data-fluid-balance');
+                    tbody.empty(); // Hapus data sebelumnya
+
+                    data.forEach(item => {
+                        tbody.append(`
+                            <tr>
+                                <td class="text-center">${parseDateTimeToIndonesian(item.tanggal_waktu_pemberian)}</td>
+                                <td class="text-center">${item.cairan_transfusi}</td>
+                                <td class="text-center">${item.jumlah_cairan}</td>
+                                <td class="text-center">${item.minum}</td>
+                                <td class="text-center">${item.sonde}</td>
+                                <td class="text-center">${item.urine}</td>
+                                <td class="text-center">${item.drain}</td>
+                                <td class="text-center">${item.iwl_muntah}</td>
+                                <td class="text-center">${item.balance}</td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    console.error('Gagal mengambil data');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+            }
+        });
+    }
+
+    function loadDatatableMoniNews() {
+        // Hapus DataTable jika sudah ada
+        if ($.fn.DataTable.isDataTable('#dt_riwayat_moni_news')) {
+            $('#dt_riwayat_moni_news').DataTable().clear().destroy();
+        }
+
+        let dt_riwayat_moni_news = $('#dt_riwayat_moni_news').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [10, 25, 50, 100, 200, 500],
+            scrollX: true,
+            ajax: {
+                url: "{{ route('perawat.dt-monitoring-news') }}",
+                data: function(d) {
+                    d.reg_no = "{{ $reg }}";
+                }
+            },
+            columns: [
+                {
+                    data: "created_at",
+                    name: "created_at",
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: "shift",
+                    name: "shift",
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    className: 'text-center',
+                    orderable: false,
+                    searchable: false,
+                }
+            ]
+        });
+    }
+
+    function detailRiwayatMoniNews(id) {
+        $.ajax({
+            url: `{{ route('get.detail.monitoringnews', ':id') }}`.replace(':id', id),
+            method: 'GET',
+            success: function(response) {
+                // console.log('inixx',response);
+                if (response.status === 'success') {
+                    let detail = response.data;
+                    let detailTable = $('#table_riwayat_detail_news');
+
+                    $('#table_riwayat_detail_news #aktual_pernafasaan').val(detail.aktual_pernafasaan);
+                    $('#table_riwayat_detail_news #aktual_saturasi_oksigen').val(detail.aktual_saturasi_oksigen);
+                    $('#table_riwayat_detail_news #aktual_suhu').val(detail.aktual_suhu);
+                    $('#table_riwayat_detail_news #aktual_tekanan_darah').val(detail.aktual_tekanan_darah);
+                    $('#table_riwayat_detail_news #aktual_nadi').val(detail.aktual_nadi);
+                    detailTable.find('input[name="news_total"]').val(detail.news_total);
+                    detailTable.find('input[name="news_gula_darah"]').val(detail.news_gula_darah);
+                    detailTable.find('input[name="news_analisa_gas_darah"]').val(detail.news_analisa_gas_darah);
+                    detailTable.find('input[name="news_penilaian_tik"]').val(detail.news_penilaian_tik);
+
+                    updateRadioButton(detailTable, 'pernafasaan', detail.pernafasaan);
+                    updateRadioButton(detailTable, 'saturasi_oksigen', detail.saturasi_oksigen);
+                    updateRadioButton(detailTable, 'o2_tambahan', detail.o2_tambahan);
+                    updateRadioButton(detailTable, 'suhu', detail.suhu);
+                    updateRadioButton(detailTable, 'tekanan_darah', detail.tekanan_darah);
+                    updateRadioButton(detailTable, 'nadi', detail.nadi);
+                    updateRadioButton(detailTable, 'tingkat_kesadaran', detail.tingkat_kesadaran);
+                    updateRadioButton(detailTable, 'news_kategori', detail.news_kategori);
+
+                    $('#riwayatdetailnews').modal('show');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#riwayatdetailnews').html('<p>Gagal mengambil detail.</p>');
+                console.error(`Error: ${error}`);
+            }
+        });
+    }
+
+    function getNurseNote() {
+        $.ajax({
+            url: '{{ route('perawat.nurse-note') }}',
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                console.log(response);
+                const tableBody = $('#riwayat-nurse-note tbody');
+                tableBody.empty();
+                
+                response.data.forEach(function(item) {
+                    const row = `
+                        <tr>
+                            <td>${parseDateToIndonesian(item.tgl_note)}</td>
+                            <td>${item.jam_note}</td>
+                            <td>${item.catatan}</td>
+                            <td>${item.id_nurse} <img src="${item.ttd_perawat}" alt="Tanda Tangan Perawat" style="width: 100px; height: auto;"></td>
+                        </tr>
+                    `;
+                    tableBody.append(row);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function getResikoJatuhNeonatus() {
+        $.ajax({
+            url: '{{ route('perawat.resiko-jatuh-neonatus') }}',
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    const tableBody = $('#table-riwayat-neonatus tbody');
+                    tableBody.empty();
+                    
+                    response.data.forEach(function(item) {
+                        const row = `
+                            <tr>
+                                <td>${parseDateTimeToIndonesian(item.created_at)}</td>
+                                <td>${item.shift}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm view-detail" data-id="${item.id}">Lihat Detail</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                    });
+
+                    $('.view-detail').on('click', function() {
+                        const id = $(this).data('id');
+                        showNeonatusDetail(id);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function showNeonatusDetail(id) {
+        $.ajax({
+            url: "{{ route('get.detail.resiko.jatuh.neonatus') }}",
+            method: 'POST',
+            data: {
+                reg_no: regno, // Replace with your variable or value
+                med_rec: medrec, // Replace with your variable or value
+                user_id: "{{ auth()->user()->id }}",
+                id: id,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $('#resikoJatuhDetailModalLabelNeonatus').text('Detail Risiko Jatuh pada ' + (response.data.created_at ? formatDateTime(response.data.created_at) : ''));
+
+                let detailTable1 = $('#riwayat-data-neonatus');
+
+                let intervensiTidakBeresiko = JSON.parse(response.data.internvensi_tidak_beresiko_neonatus || "[]");
+                let edukasi = JSON.parse(response.data.edukasi || "[]");
+                let evaluasi = JSON.parse(response.data.evaluasi || "[]");
+
+                intervensiTidakBeresiko.forEach(function(item) {
+                    detailTable1.find(
+                        `input[name="internvensi_tidak_beresiko_neonatus[]"][value="${item}"]`
+                    ).prop('checked', true);
+                });
+
+                edukasi.forEach(function(item) {
+                    detailTable1.find(`input[name="edukasi[]"][value="${item}"]`).prop('checked', true);
+                });
+
+                evaluasi.forEach(function(item) {
+                    detailTable1.find(`input[name="evaluasi[]"][value="${item}"]`).prop('checked', true);
+                });
+
+                $('#tgl_ttd_keluarga_neonatus_detail').val(response.data.tgl_ttd_keluarga);
+                $('#nama_keluarga_detail').val(response.data.nama_keluarga);
+                $('#nama_petugas_detail').val(response.data.nama_petugas);
+                let signaturePadKeluargaDetail = new SignaturePad(document.getElementById(
+                    'resiko_jatuh_neonatus_ttd_canvas_keluarga_detail'));
+                signaturePadKeluargaDetail.fromDataURL(response.data.ttd_keluarga);
+                signaturePadKeluargaDetail.off();
+                $('#tgl_ttd_petugas_neonatus_detail').val(response.data.tgl_ttd_petugas);
+                let signaturePadPetugasDetail = new SignaturePad(document.getElementById(
+                    'resiko_jatuh_neonatus_ttd_canvas_petugas_detail'));
+                signaturePadPetugasDetail.fromDataURL(response.data.ttd_petugas);
+                signaturePadPetugasDetail.off();
+
+                $('#riwayat-neonatus-show').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+                alert('Failed to fetch data for the selected item.');
+            }
+        });
+    }
+
+    function getResikoJatuhGeriatri() {
+        $.ajax({
+            url: '{{ route('perawat.resiko-jatuh-geriatri') }}',
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    const tableBody = $('#table-riwayat-geriatri tbody');
+                    tableBody.empty();
+                    
+                    response.data.forEach(function(item) {
+                        const row = `
+                            <tr>
+                                <td>${parseDateTimeToIndonesian(item.created_at)}</td>
+                                <td>${item.shift}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm view-detail" data-id="${item.resiko_jatuh_geriatri_id}">Lihat Detail</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                    });
+
+                    $('.view-detail').on('click', function() {
+                        const id = $(this).data('id');
+                        showGeriatriDetail(id);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function showGeriatriDetail(id) {
+        $.ajax({
+            url: "{{ route('get.detail.resiko.jatuh.geriatri') }}",
+            method: 'POST',
+            data: {
+                regno: regno,
+                medrec: medrec,
+                user_id: "{{ auth()->user()->id }}",
+                id: id,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // console.log('ini isi',response);
+                $('#resikoJatuhDetailModalLabel').text('Detail Risiko Jatuh ' + 'Pada ' + (response.data.created_at ? formatDateTime(response.data.created_at) : ''));
+
+                let detailTable = $('#riwayat-data-geriatri');
+
+                detailTable.find('input[name="resiko_jatuh_geriatri_gangguan_gaya_berjalan"][value="' +
+                    response.data.resiko_jatuh_geriatri_gangguan_gaya_berjalan + '"]').prop('checked',
+                    true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_pusing"][value="' + response.data
+                    .resiko_jatuh_geriatri_pusing + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_kebingungan"][value="' + response.data
+                    .resiko_jatuh_geriatri_kebingungan + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_nokturia"][value="' + response.data
+                    .resiko_jatuh_geriatri_nokturia + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_kebingungan_intermiten"][value="' +
+                    response.data.resiko_jatuh_geriatri_kebingungan_intermiten + '"]').prop('checked',
+                    true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_kelemahan_umum"][value="' + response
+                    .data.resiko_jatuh_geriatri_kelemahan_umum + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_obat_beresiko_tinggi"][value="' +
+                    response.data.resiko_jatuh_geriatri_obat_beresiko_tinggi + '"]').prop('checked',
+                    true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_riwayat_jatuh_12_bulan"][value="' +
+                    response.data.resiko_jatuh_geriatri_riwayat_jatuh_12_bulan + '"]').prop('checked',
+                    true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_osteoporosis"][value="' + response.data
+                    .resiko_jatuh_geriatri_osteoporosis + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_pendengaran_dan_pengeliatan"][value="' +
+                    response.data.resiko_jatuh_geriatri_pendengaran_dan_pengeliatan + '"]').prop(
+                    'checked', true);
+                detailTable.find('input[name="resiko_jatuh_geriatri_70_tahun_keatas"][value="' + response
+                    .data.resiko_jatuh_geriatri_70_tahun_keatas + '"]').prop('checked', true);
+
+                $('#total_skor_geriatri_detail').text(response.data.skor_total_geriatri);
+
+                detailTable.find('input[name="kategori_geriatri"][value="' + response.data
+                    .kategori_geriatri + '"]').prop('checked', true);
+
+                let detailTable2 = $('#riwayat-data-geriatri2');
+
+                let rendahArray = JSON.parse(response.data.intervensi_resiko_jatuh_rendah);
+                rendahArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_rendah[]"][value="' +
+                        item + '"]').prop('checked', true);
+                });
+
+                let sedangArray = JSON.parse(response.data.intervensi_resiko_jatuh_sedang);
+                sedangArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_sedang[]"][value="' +
+                        item + '"]').prop('checked', true);
+                });
+
+                let tinggiArray = JSON.parse(response.data.intervensi_resiko_jatuh_tinggi);
+                tinggiArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_tinggi[]"][value="' +
+                        item + '"]').prop('checked', true);
+                });
+
+                $('#riwayat-geriatri-show').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+                alert('Failed to fetch data for the selected item.');
+            }
+        });
+    }
+
+    function getResikoJatuhHumpty() {
+        $.ajax({
+            url: '{{ route('perawat.resiko-jatuh-humpty') }}',
+            type: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                if (response.status) {
+                    const tableBody = $('#table-riwayat-humpty tbody');
+                    tableBody.empty();
+                    
+                    response.data.forEach(function(item) {
+                        const row = `
+                            <tr>
+                                <td>${parseDateTimeToIndonesian(item.created_at)}</td>
+                                <td>${item.shift}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm view-detail" data-id="${item.id}">Lihat Detail</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                    });
+
+                    $('.view-detail').on('click', function() {
+                        const id = $(this).data('id');
+                        showHumptyDetail(id);
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function showHumptyDetail(id) {
+        $.ajax({
+            url: "{{ route('get.detail.resiko.jatuh.humptydumpty') }}",
+            method: 'POST',
+            data: {
+                reg_no: regno,
+                med_rec: medrec,
+                user_id: "{{ auth()->user()->id }}",
+                id: id,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $('#resikoJatuhDetailModalLabel').text('Detail Risiko Jatuh pada ' + formatDateTime(response.data.created_at));
+
+                let detailTable = $('#riwayat-data-humpty');
+
+                detailTable.find('input[name="humpty_dumpty_umur"][value="' + response.data.humpty_dumpty_umur + '"]').prop('checked', true);
+                detailTable.find('input[name="humpty_dumpty_jenis_kelamin"][value="' + response.data.humpty_dumpty_jenis_kelamin + '"]').prop('checked', true);
+                detailTable.find('input[name="humpty_dumpty_diagnosis"][value="' + response.data.humpty_dumpty_diagnosis + '"]').prop('checked', true);
+                detailTable.find('input[name="humpty_dumpty_gangguan_kognitif"][value="' + response.data.humpty_dumpty_gangguan_kognitif + '"]').prop('checked', true);
+                detailTable.find('input[name="humpty_dumpty_faktor_lingkungan"][value="' + response.data.humpty_dumpty_faktor_lingkungan + '"]').prop('checked', true);
+                detailTable.find('input[name="humpty_dumpty_respon_terhadap_anastesi"][value="' + response.data.humpty_dumpty_respon_terhadap_anastesi + '"]').prop('checked', true);
+                detailTable.find('input[name="humpty_dumpty_gangguan_obat"][value="' + response.data.humpty_dumpty_gangguan_obat + '"]').prop('checked', true);
+                detailTable.find('input[name="kategori_humpty_dumpty"][value="' + response.data.kategori_humpty_dumpty + '"]').prop('checked', true);
+
+                $('#total_skor_humpty_dumpty_detail').text(response.data.total_skor_humpty_dumpty);
+
+                let detailTable2 = $('#riwayat-data-humpty2');
+
+                let rendahArray = JSON.parse(response.data.intervensi_resiko_jatuh_humpty_dumpty_rendah);
+                rendahArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_humpty_dumpty_rendah[]"][value="' + item + '"]').prop('checked', true);
+                });
+
+                let tinggiArray = JSON.parse(response.data.intervensi_resiko_jatuh_humpty_dumpty_tinggi);
+                tinggiArray.forEach(function(item) {
+                    detailTable2.find('input[name="intervensi_resiko_jatuh_humpty_dumpty_tinggi[]"][value="' + item + '"]').prop('checked', true);
+                });
+
+                $('#riwayat-humpty-show').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+                alert('Failed to fetch data for the selected item.');
+            }
+        });
     }
 
     function getResikoJatuhMorse() {
@@ -154,8 +1119,8 @@
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                console.log('showMorseDetail', response);
-                $('#resikoJatuhDetailModalLabelMorse').text('Detail Risiko Jatuh pada ' + formatDateTime(response.data.created_at));
+                // console.log('showMorseDetail', response);
+                $('#resikoJatuhDetailModalLabelMorse').text('Detail Risiko Jatuh pada ' + (response.data.created_at ? formatDateTime(response.data.created_at) : ''));
 
                 let detailTable = $('#riwayat-data-morse');
                 detailTable.find('input[name="resiko_jatuh_morse_bulan_terakhir"][value="' + response.data.resiko_jatuh_morse_bulan_terakhir + '"]').prop('checked', true);
@@ -531,7 +1496,7 @@
                 reg_no: regno,
             },
             success: function(response) {
-                console.log(response);
+                // console.log(response);
                 if(response.status){
                     $('#tgl-assesment').text(response.data.created_at);
                     $('#riwayat-assesment-anak #alergi').text(yaTidakParser(response.data.alergi));
@@ -978,7 +1943,59 @@
 
         $('#riwayat-resiko-jatuh-tab').on('click', function() {
             getResikoJatuhMorse();
+            getResikoJatuhHumpty();
+            getResikoJatuhGeriatri();
+            getResikoJatuhNeonatus();
         });
 
+        $('#riwayat-nurse-note-tab').on('click', function() {
+            getNurseNote();
+        });
+
+        $('#riwayat-monitoring-news-tab').on('click', function() {
+            loadDatatableMoniNews();
+        });
+
+        $('#riwayat-fluid-balance-tab').on('click', function() {
+            getRiwayatFluidBalance();
+        });
+
+        $('#riwayat-transfusi-darah-tab').on('click', function() {
+            getMonitoringTransfusiDarah();
+        });
+
+        $('#riwayat-persetujuan-tab').on('click', function() {
+            getPersetujuanTindakanMedis();
+        });
+
+        $('#riwayat-case-manager-tab').on('click', function() {
+            getCaseManager();
+        });
+
+        $('#riwayat-tf-internal-tab').on('click', function() {
+            loadDtRiwayatTfInternal();
+            getPersiapanPasienTI();
+            getSerahTerimaTI();
+        });
+
+        $('#riwayat_transfer_tab').on('click', function() {
+            loadDtRiwayatTfInternal();
+        });
+
+        $('#alat_terpasang_tab').on('click', function() {
+            loadDtRiwayatTiAlat();
+        });
+
+        $('#obat_cairan_tab').on('click', function() {
+            loadDtRiwayatTiObat();
+        });
+
+        $('#status_pasien_tab').on('click', function() {
+            loadDtRiwayatTiStatus();
+        });
+
+        $('#serah_terima_tab').on('click', function() {
+            loadDtRiwayatTiDiagnostik();
+        });
     }
 </script>
