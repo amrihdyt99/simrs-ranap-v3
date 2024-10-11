@@ -146,44 +146,63 @@
         <div class="card">
             <div class="card-body">
                 <div class="form-group">
-                    <h6>No Rekam Medis</h6>
-                    <h3>{{$pasien->reg_medrec}}</h3>
+                    <small>No Rekam Medis</small>
+                    <b><h6>{{$pasien->reg_medrec}}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Tanggal Kunjungan</h6>
-                    <h3 id="bill_tgl_kunjungan">{{ Carbon\Carbon::parse($pasien->reg_tgl)->format('d/m/Y') }}</h3>
+                    <small>Tanggal Kunjungan</small>
+                    <b><h6 id="bill_tgl_kunjungan">{{ Carbon\Carbon::parse($pasien->reg_tgl)->format('d/m/Y') }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Nama Pasien</h6>
-                    <h3 id="bill_nama">{{ $pasien->PatientName }}</h3>
+                    <small>Nama Pasien</small>
+                    <b><h6 id="bill_nama">{{ $pasien->PatientName }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Tanggal Lahir</h6>
-                    <h3 id="bill_tgl_lahir">{{ $pasien->DateOfBirth }}</h3>
+                    <small>Tanggal Lahir</small>
+                    <b><h6 id="bill_tgl_lahir">{{ $pasien->DateOfBirth }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Jenis Kelamin</h6>
-                    <h3 id="bill_jk">{{ $pasien->GCSex == "0001^F" ? "Perempuan" : "Laki-Laki" }}</h3>
+                    <small>Jenis Kelamin</small>
+                    <b><h6 id="bill_jk">{{ $pasien->GCSex == "0001^F" ? "Perempuan" : "Laki-Laki" }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>DPJP Utama</h6>
-                    <h3 id="bill_dpjp">{{ $pasien->ParamedicName }}</h3>
+                    <small>NIK</small>
+                    <b><h6 id="bill_tgl_lahir">{{ $pasien->SSN }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Poliklinik</h6>
-                    <h3 id="bill_poli">{{ $pasien->ServiceUnitName ?? '-' }}</h3>
+                    <small>No. Telepon</small>
+                    <b><h6 id="bill_tgl_lahir">{{ $pasien->MobilePhoneNo1 }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Diagnosa</h6>
-                    <h3 id="bill_diagnosis">{{ $diagnosis->NM_ICD10 ?? '-' }}</h3>
+                    <small>Alamat</small>
+                    <b><h6 id="bill_tgl_lahir">{{ $pasien->PatientAddress }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Jenis Kunjungan</h6>
-                    <h3 id="bill_jenis_kunj">{{ $pasien->reg_status ?? '-' }}</h3>
+                    <small>DPJP Utama</small>
+                    <b><h6 id="bill_dpjp">{{ $pasien->ParamedicName }}</b></h6>
                 </div>
                 <div class="form-group">
-                    <h6>Payer</h6>
-                    <h3 id="bill_payer">{{ $payer_name->BusinessPartnerName ?? '-' }}</h3>
+                    <small>Ruang Rawat</small>
+                    <b><h6 id="bill_poli">
+                        {{ $pasien->ServiceUnitName ?? '-' }} - 
+                        {{ $pasien->RoomName ?? '-' }}
+                    </b></h6>
+                </div>
+                <div class="form-group">
+                    <small>Diagnosa</small>
+                    <b><h6 id="bill_diagnosis">{{ $diagnosis->NM_ICD10 ?? '-' }}</b></h6>
+                </div>
+                <div class="form-group">
+                    <small>Jenis Kunjungan</small>
+                    <b><h6 id="bill_jenis_kunj">{{ $pasien->reg_status ?? '-' }}</b></h6>
+                </div>
+                <div class="form-group">
+                    <small>Payer</small>
+                    <b><h6 id="bill_payer">{{ $payer_name->BusinessPartnerName ?? '-' }}</b></h6>
+                </div>
+                <div class="form-group">
+                    <small>Kelas Perawatan</small>
+                    <b><h6 id="bill_payer">{{ $pasien->ChargeClassCodeName ?? '-' }}</b></h6>
                 </div>
             </div>
         </div>
@@ -269,7 +288,7 @@
 <script>
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
-    var classcode = "{{$pasien->charge_class_code}}"
+    var classcode = "{{$pasien->ChargeClassCode}}"
     var payer_id = "{{$pasien->reg_cara_bayar}}"
     var $reg_no = $reg.replace(/\//g, '_')
     var modal = '#modalEntryOrder'
