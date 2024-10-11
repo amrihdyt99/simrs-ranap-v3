@@ -118,6 +118,11 @@ Route::post('addRujukanPersiapanPasien', [\App\Http\Controllers\NewPerawat\NewNu
 Route::post('addRujukanSerahTerima', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanSerahTerima'])->name('add.RujukanSerahTerima');
 
 //baru
+// Route::post('/saveDokterKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'saveDokterKonsul'])->name('save.dokter.konsul');
+
+Route::post('/addKonsulDokter', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'addKonsulDokter']);
+Route::post('/getKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getKonsul']);
+
 Route::post('addassesmetawalanak', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPengkajianPasienAnak'])->name('add.assesmentawalanak');
 Route::post('addmonitoringtransfusidarah', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addMonitoringTransfusiDarah'])->name('add.monitoringtransfusidarah');
 Route::post('addlaporanpersalinanobgyn', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addLaporanPersalinanObgyn'])->name('add.laporanpersalinanobgyn');
@@ -154,6 +159,8 @@ Route::post('addCathlabSignOut', [\App\Http\Controllers\NewPerawat\NewNursingCon
 Route::post('pemeriksaan_bayi', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'simpan_pemeriksaan_bayi'])->name('add.pemeriksaan_bayi');
 Route::get('getdokter', [App\Http\Controllers\NewPerawat\NewNursingController::class, 'getPhysician'])->name('get.dokter');
 Route::post('addphysicianteamDokter', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'addPhysicianTeamDokter'])->name('add.physicianteam.dokter');
+Route::post('/getKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getKonsul']);
+Route::post('/saveKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'saveKonsul']);
 Route::delete('/deletePhysicianTeamDokter/{id}', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'deletePhysicianTeamDokter'])->name('delete.physicianteam.dokter');
 Route::post('addphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPhysicianTeam'])->name('add.physicianteam');
 Route::post('getphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getPhysicianTeam'])->name('get.physicianteam');
