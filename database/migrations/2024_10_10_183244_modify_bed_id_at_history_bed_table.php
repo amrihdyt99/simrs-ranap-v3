@@ -13,7 +13,9 @@ class ModifyBedIdAtHistoryBedTable extends Migration
      */
     public function up()
     {
-        //
+        Schema::connection('mysql2')->table('m_bed_history', function (Blueprint $table) {
+            $table->unsignedBigInteger('ToBedID')->nullable()->change();
+        });
     }
 
     /**

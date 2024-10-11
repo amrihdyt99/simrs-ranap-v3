@@ -41,7 +41,8 @@ class Bed extends Model
 
     public function bed_history()
     {
-        return $this->hasOne(BedHistory::class, 'ToBedID')->orderBy('ReceiveTransferDate', 'desc')
+        return $this->hasOne(BedHistory::class, 'ToBedID')
+            ->orderBy('ReceiveTransferDate', 'desc')
             ->orderBy('ReceiveTransferTime', 'desc');
     }
 }

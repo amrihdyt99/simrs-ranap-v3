@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bed;
+use App\Models\Master\BedHistory;
 use App\Models\RoomClass;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -145,13 +147,14 @@ class KetersediaanRuanganController extends Controller
             'class',
             'registration',
             'registration.pasien',
-            'bed_history',
         ])->where('bed_id', $id)->first();
+
+        // dd($bed->bed_history);
 
         $pasien = null;
         if (isset($bed->bed_history)) {
             $pasien = DB::connection('mysql2')->table('m_registrasi')
-                ->select('m_pasien.*')
+                ->select('m_pasien.*', 'm_registrasi.reg_no')
                 ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
                 ->leftjoin('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
                 ->where('m_registrasi.reg_no', $bed->bed_history->RegNo)
@@ -165,22 +168,10 @@ class KetersediaanRuanganController extends Controller
 
     public function update(Request $request, $id)
     {
-        $ruangan_tersedia = DB::connection('mysql2')
-            ->table("m_bed")
-            ->where('id', $id)
-            ->first();
+        $validator = Validator::make($request->all(), [
+            'bed_status' => ['required'],
+        ]);
 
-        if (
-            !$ruangan_tersedia
-        ) {
-            return abort(404);
-        }
-
-        $rules = [
-            'bed_status' => 'required',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json([
                 "status"    => "error",
@@ -188,44 +179,71 @@ class KetersediaanRuanganController extends Controller
             ]);
         }
 
-        $exPaviliun = explode('::', $request->id_paviliun);
-        //var_dump($exPaviliun[0]);
-        $idpaviliun = $exPaviliun[0];
-        $namapaviliun = $exPaviliun[1];
-        $exRuangan = explode('::', $request->id_ruangan);
-        $roomcode = $exRuangan[0];
-        $roomname = $exRuangan[1];
-        $nomor_bed = $request->nomor_bed;
-        $status_ketersediaan = $request->status_ketersediaan;
-        $is_temporary = $request->is_temporary;
 
-        $params = array();
-        $params['id_paviliun'] = $idpaviliun;
-        $params['nama_pavilun'] = $namapaviliun;
-        $params['room_code'] = $roomcode;
-        $params['nama_ruangan'] = $roomname;
-        $params['nomor_bed'] = $nomor_bed;
-        $nama_kelas = "";
-        if ($request->id_kelas == "1") {
-            $nama_kelas = "Kelas I";
-        } else if ($request->id_kelas == "2") {
-            $nama_kelas = "Kelas II";
-        } else if ($request->id_kelas == "3") {
-            $nama_kelas = "Kelas III";
-        } else if ($request->id_kelas == "4") {
-            $nama_kelas = "VIP";
-        } else if ($request->id_kelas == "5") {
-            $nama_kelas = "VVIP";
+        if ($request->bed_status === "0116^O") {
+            return response()->json([
+                "status"    => "error",
+                "message"   => "Pilih status kamar yang lain !"
+            ]);
         }
-        $params['nama_kelas'] = $nama_kelas;
-        $params['status_ketersediaan'] = $status_ketersediaan;
-        $params['is_temporary'] = $is_temporary;
-        $params['harga_perhari'] = $request->harga_perhari;
-        $simpan = DB::connection('mysql2')->table('ketersediaan_ruangan')
-            ->where('id', $id)
-            ->update($params);
 
-        return redirect()->route('master.ketersediaanruangan.index')->with("success", "Data User Berhasil Disimpan.");
+
+
+        DB::connection('mysql')->beginTransaction();
+        DB::connection('mysql2')->beginTransaction();
+
+        try {
+            if ($request->has('bed_history_id')) {
+
+
+
+                $bed = Bed::find($id);
+                $bed->update([
+                    'bed_status' => $request->bed_status,
+                    'registration_no' => '-',
+                ]);
+
+                $historyBed = BedHistory::find($request->bed_history_id);
+
+                $history = array(
+                    'RegNo' => $historyBed->RegNo,
+                    'MedicalNo' => $historyBed->MedicalNo,
+                    'TableRef' => 'm_bed',
+                    'FromBedID' => $historyBed->ToBedID,
+                    'FromClassCode' => $historyBed->ToClassCode,
+                    'FromChargeClassCode' => $historyBed->RequestTransferDate,
+                    'RequestTransferDate' => Carbon::now()->toDateString(),
+                    'RequestTransferTime'   => Carbon::now()->toTimeString(),
+                    'Description'   => 'Pasien Pulang',
+                    'CreatedBy'     => auth()->user()->username,
+                    'RequestedBy'   => auth()->user()->username,
+                    'created_at' => Carbon::now(),
+                );
+
+                DB::connection('mysql2')->table('m_bed_history')->insert($history);
+            } else {
+
+                $bed->update([
+                    'bed_status' => $request->bed_status,
+                    'registration_no' => '-',
+                ]);
+            }
+
+            DB::connection('mysql')->commit();
+            DB::connection('mysql2')->commit();
+            $response = response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ]);
+        } catch (\Throwable $throw) {
+            //throw $th;
+            DB::connection('mysql')->rollBack();
+            DB::connection('mysql2')->rollBack();
+            // dd($throw->getMessage());
+            abort(500, $throw->getMessage());
+        }
+
+        return $response;
     }
 
     public function update_old(Request $request, $id)

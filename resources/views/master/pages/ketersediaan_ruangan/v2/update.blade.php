@@ -87,11 +87,19 @@
                                             <div class="card-header">Informasi Pasien</div>
                                             <div class="card-body">
                                                 <div class="row">
+                                                    <input class="form-control" type="hidden" id="bed_history_id" name="bed_history_id" value="{{ $bed->bed_history->id }}" readonly />
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Nomor Registrasi</label>
+                                                            <input class="form-control" id="" name="" value="{{ $pasien->reg_no }}" readonly />
+                                                        </div>
+                                                    </div>
 
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label>Medical Number</label>
-                                                            <input class="form-control" id="" name="" value="{{ $pasien->MedicalNo }}" disabled />
+                                                            <input class="form-control" id="" name="" value="{{ $pasien->MedicalNo }}" readonly />
                                                         </div>
                                                     </div>
 
@@ -139,7 +147,11 @@
                             </div>
 
                             <div class="card-footer">
+                                @if ($bed->bed_status === '0116^O')
+                                <button id="btnConfirmPulang" type="submit" class="btn btn-warning mt-3">Konfirmasi Pasien Pulang</button>
+                                @else
                                 <button type="submit" class="btn btn-primary mt-3">Simpan</button>
+                                @endif
                             </div>
                             <!-- /.card -->
                         </div>
@@ -167,31 +179,46 @@
         let btnSubmitHtml = btnSubmit.html();
         let url = form.attr("action");
         let data = new FormData(this);
-        $.ajax({
-            beforeSend: function() {
-                btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            cache: false,
-            processData: false,
-            contentType: false,
-            type: "POST",
-            url: url,
-            data: data,
-            success: function(response) {
-                btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
-                if (response.status === "success") {
-                    neko_notify('success', `Data berhasil disimpan`);
-                } else {
-                    neko_notify('error', `Ups, something wrong !`);
-
-                }
-            },
-            error: function(response) {
-                btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
-                neko_notify('error', `Ups, something wrong !`);
+        Swal.fire({
+            title: 'Konfirmasi Kepulangan Pasien ?',
+            text: "Pasien tidak bisa dikembalikan ke ruangan !",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, konfirmasi!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    beforeSend: function() {
+                        btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    success: function(response) {
+                        btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+                        if (response.status === "success") {
+                            neko_notify('success', `Data berhasil disimpan`);
+                            setTimeout(function() {
+                                location.href = "{{ route('master.ketersediaanruangan.index') }}";
+                            }, 1000)
+                        } else {
+                            neko_notify('error', response.message);
+                        }
+                    },
+                    error: function(response) {
+                        btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+                        neko_notify('error', `Ups, something wrong !`);
+                    }
+                });
             }
         });
     });

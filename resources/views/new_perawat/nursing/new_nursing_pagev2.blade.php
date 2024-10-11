@@ -93,6 +93,7 @@
 
 @include('new_perawat.monitoring_news.detail_news')
 @include('new_perawat.nursing.v2.modal.add_drugs')
+@include('new_perawat.nursing.v2.modal.add_drug_item')
 @include('new_perawat.nursing.v2.modal.edit_drugs')
 <script>
     $(document).ready(function() {
