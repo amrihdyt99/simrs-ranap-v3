@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Http\Services\masterBedServices;
 use App\Models\Bed;
+use App\Models\Master\DepartmentServiceUnit;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
@@ -21,18 +22,20 @@ class BedController extends Controller
     }
     public function index(Request $request)
     {
+
+
         if ($request->ajax()) {
             return $this->ajax_index($request);
         }
-        return view('master.pages.bed.index');
+        return view('master.pages.bed.index', $data);
     }
 
     public function ajax_index(Request $request)
     {
         $bedQuery = Bed::with([
-            'unit',
+            'd_service_unit.unit',
             'room',
-            'class_category',
+            'class',
             'registration',
             'registration.pasien',
         ]);
@@ -47,25 +50,17 @@ class BedController extends Controller
 
         if ($request->has('is_deleted') && $request->is_deleted !== '') {
             if ($request->is_deleted == '1') {
-                $bedQuery->where('is_deleted', 1);
+                $bedQuery->where('m_bed.is_deleted', "1");
             } else if ($request->is_deleted == '0') {
-                $bedQuery->where('is_deleted', 0);
+                $bedQuery->where('m_bed.is_deleted', "0");
             }
         }
-
 
         if ($request->has('is_active') && $request->is_active !== '') {
             if ($request->is_active == '1') {
-                $bedQuery->where('is_active', 1);
+                $bedQuery->where('is_active', '1');
             } else if ($request->is_active == '0') {
-                $bedQuery->where('is_active', 0);
-            }
-        }
-        if ($request->has('bed_status') && $request->bed_status !== '') {
-            if ($request->bed_status == 'ready') {
-                $bedQuery->where('bed_status', 'ready');
-            } else if ($request->bed_status == '0116^O') {
-                $bedQuery->where('bed_status', '0116^O');
+                $bedQuery->where('is_active', '0');
             }
         }
 
@@ -98,28 +93,24 @@ class BedController extends Controller
 
                 return $editButton . $deleteButton . $deactivateButton . $activateButton;
             })
-            ->editColumn('reg_no', function ($query) {
-                return $query->registration ? $query->registration->reg_no : '';
-            })
-            ->editColumn('medrec', function ($query) {
-                return $query->registration ? $query->registration->reg_medrec : '';
-            })
-            ->editColumn('RoomName', function ($query) {
-                return $query->room ? $query->room->RoomName : '';
-            })
-            ->editColumn('PatientName', function ($query) {
-                return $query->registration ? ($query->registration->pasien ? $query->registration->pasien->PatientName : '') : '';
-            })
             ->escapeColumns([])
             ->toJson();
     }
 
     public function create()
     {
-        $data['service_unit'] = DB::connection('mysql')->table('rs_m_service_unit')->get();
-        $data['room'] = DB::connection('mysql')->table('rs_m_service_room')->get();
-        $data['class'] = RoomClass::all();
-        $data['site'] = DB::connection('mysql2')->table("m_site")->get();
+        $data['service_unit'] = DB::connection('mysql2')->table('m_unit_departemen')
+            ->leftJoin('m_unit', 'm_unit.ServiceUnitCode', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->where('m_unit_departemen.IsActive', 1)->get();
+        $data['room'] = DB::connection('mysql2')->table('m_ruangan')->where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+        $data['class'] = RoomClass::where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+        $data['site'] = DB::connection('mysql2')->table("m_site")->where([['IsActive', 1], ['IsDeleted', 0]])->get();
         return view('master.pages.bed.create', $data);
     }
 
@@ -128,11 +119,12 @@ class BedController extends Controller
         $input = $request->validate([
             'service_unit_id' => ['required'],
             'room_id' => ['required'],
+            'bed_code' => ['required'],
             'class_code' => ['required'],
             'site_code' => ['required'],
+            'is_temporary' => ['required'],
         ]);
 
-        $input['is_temporary'] = '0';
         $input['is_deleted'] = '0';
         $input['is_active'] = '1';
         $input['bed_status'] = 'ready';
@@ -148,11 +140,19 @@ class BedController extends Controller
 
     public function edit(Bed $bed)
     {
-        $data['service_unit'] = ServiceUnit::all();
-        $data['room'] = ServiceRoom::all();
-        $data['class'] = RoomClass::all();
+        $data['service_unit'] = DB::connection('mysql2')->table('m_unit_departemen')
+            ->leftJoin('m_unit', 'm_unit.ServiceUnitCode', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->where('m_unit_departemen.IsActive', 1)->get();
+        $data['room'] = DB::connection('mysql2')->table('m_ruangan')->where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+        $data['class'] = RoomClass::where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+        $data['site'] = DB::connection('mysql2')->table("m_site")->where([['IsActive', 1], ['IsDeleted', 0]])->get();
         $data['bed'] = $bed;
-        $data['site'] = DB::connection('mysql2')->table("m_site")->get();
 
         return view('master.pages.bed.update', $data);
     }
@@ -162,11 +162,12 @@ class BedController extends Controller
         $bed = Bed::where('bed_id', $id)->first();
 
         $input = $request->validate([
-            'service_unit_id' => 'required',
-            'room_id' => 'required',
-            'class_code' => 'required',
-            'site_code' => 'required',
-            'is_temporary' => 'required',
+            'service_unit_id' => ['required'],
+            'room_id' => ['required'],
+            'bed_code' => ['required'],
+            'class_code' => ['required'],
+            'site_code' => ['required'],
+            'is_temporary' => ['required'],
         ]);
 
         $input['gc_type_of_bed'] = $request->gc_type_of_bed;

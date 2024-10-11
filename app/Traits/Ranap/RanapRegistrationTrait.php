@@ -256,7 +256,7 @@ trait RanapRegistrationTrait
                 'RegNo' => $registration->reg_no,
                 'MedicalNo' => $registration->reg_medrec,
                 'HistoryRefCode' => $registration->reg_lama,
-                'ToUnitServiceID' => $serviceUnitRoom->ServiceUnitID ?? null,
+                'ToUnitServiceID' => $bed->service_unit_id ?? null,
                 'ToBedID' => $registration->bed,
                 'ToClassCode' => $registration->reg_class,
                 'ToChargeClassCode' => $registration->charge_class_code,

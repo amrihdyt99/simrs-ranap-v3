@@ -124,8 +124,8 @@ class ApiMasterController extends Controller
 		if (isset($r->category)) {
 			$query->where(function ($q) use ($r) {
 				$q->where('ID_ICD10', 'like', 'X%')
-				  ->orWhere('ID_ICD10', 'like', 'V%');
-				
+					->orWhere('ID_ICD10', 'like', 'V%');
+
 				if ($r->category === 'C') {
 					$q->orWhere('ID_ICD10', 'like', 'C%');
 				}
@@ -228,9 +228,24 @@ class ApiMasterController extends Controller
 		return response()->json($json, $json['code']);
 	}
 
-	public function site_department()
+	public function departemen_service_unit()
 	{
 		$dat = DB::connection('sqlsrv_sphaira')->table('DepartmentServiceUnit')->get();
+		if ($dat) {
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = $dat;
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
+	}
+
+	public function site_department()
+	{
+		$dat = DB::connection('sqlsrv_sphaira')->table('SiteDepartment')->get();
 		if ($dat) {
 			$json['code'] = 200;
 			$json['msg'] = 'Ok';
@@ -457,6 +472,22 @@ class ApiMasterController extends Controller
 		foreach ($tables as $table) {
 			echo $table->TABLE_NAME . '<br>';
 		}
+	}
+
+
+	public function checkTable(Request $request)
+	{
+		$dat = DB::connection('sqlsrv_sphaira')->table($request->table)->get();
+		if ($dat) {
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = $dat;
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
 	}
 
 	public function department()

@@ -47,31 +47,15 @@ class RuanganController extends Controller
 
         return DataTables()
             ->of($ruangan)
-            ->editColumn('aksi_data', function ($query) {
-                $editUrl = route('master.ruangan.edit', [$query->RoomID]);
+            ->addColumn('action', function ($row) {
+                $editUrl = route('master.ruangan.edit', [$row->RoomID]);
 
-                $editButton = '<a href="' . $editUrl . '" class="protecc btn btn-sm btn-info mr-2 mb-2">
-                            Edit
-                        </a>';
+                $actionBtn = '<div class="btn-group" role="group">';
+                $actionBtn .= "<button type='button' class='btn btn-warning'><a href='$editUrl'><i class='fas fa-edit'></i> Edit</a></button>";
+                $actionBtn .= "<button type='button' class='btn btn-danger' onclick='confirmDelete(this)' data-id='$row->RoomID'><i class='fas fa-trash'></i> Hapus</button>";
+                $actionBtn .= '</div>';
 
-                $deleteButton = '<button type="button" class="protecc btn btn-sm btn-danger mr-2 mb-2" 
-                                onclick="confirmDelete(this)" 
-                                data-id="' . $query->RoomID . '">
-                                Hapus
-                            </button>';
-                $activateButton = $query->IsActive == 0
-                    ? '<button type="button" class="protecc btn btn-sm btn-success mr-2 mb-2" 
-                                            onclick="changeStatus(this)"
-                                            data-id="' . $query->RoomID . '">Aktifkan</button>'
-                    : '';
-
-                $deactivateButton = $query->IsActive == 1
-                    ? '<button type="button" class="protecc btn btn-sm btn-warning mr-2 mb-2" 
-                                            onclick="changeStatus(this)"
-                                            data-id="' . $query->RoomID . '">Nonaktifkan</button>'
-                    : '';
-
-                return $editButton . $deleteButton . $deactivateButton . $activateButton;
+                return $actionBtn;
             })
             ->escapeColumns([])
             ->toJson();
@@ -116,16 +100,17 @@ class RuanganController extends Controller
         $validation = $request->validate([
             'RoomCode' => ['required'],
             'RoomName' => ['required'],
+            'IP' => ['string', 'nullable'],
+            'IsActive'  => ['numeric'],
         ]);
 
         $validation['IsDeleted'] = $request->input('IsDeleted', 0);
-        $validation['IsActive'] = $request->input('IsActive', 1);
         $validation['LastUpdatedBy'] = Auth::user()->id;
-        $validation['LastUpdatedDateTime'] = Carbon::now();
+        $validation['LastUpdatedDateTime'] = Carbon::now()->format('Y-m-d H:i:s');
 
         DB::connection('mysql2')->table('m_ruangan')->insert($validation);
 
-        return redirect()->route('master.ruangan.index')->with("success", "Data User Berhasil Ditambah.");
+        return redirect()->route('master.ruangan.index')->with("success", "Data Room Berhasil Ditambah.");
     }
 
     /**
@@ -161,15 +146,16 @@ class RuanganController extends Controller
     {
         $validation = $request->validate([
             'RoomCode' => ['required'],
-            'RoomName' => ['required'],
+            'IP' => ['string', 'nullable'],
+            'IsActive'  => ['numeric'],
         ]);
 
         $validation['LastUpdatedBy'] = Auth::user()->id;
-        $validation['LastUpdatedDateTime'] = Carbon::now();
+        $validation['LastUpdatedDateTime'] = Carbon::now()->format('Y-m-d H:i:s');
 
         DB::connection('mysql2')->table('m_ruangan')->where('RoomID', $id)->update($validation);
 
-        return redirect()->route('master.ruangan.index')->with("success", "Data User Berhasil Diubah.");
+        return redirect()->route('master.ruangan.index')->with("success", "Data Ruangan Berhasil Diubah.");
     }
 
     /**

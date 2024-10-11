@@ -286,11 +286,11 @@ header("Content-type: text/css; charset: UTF-8");
           </tr>
           @endforeach
           @endisset
-          @isset($rj_item['obat'])
+          @isset($rj_item['Medication'])
           <tr>
             <td colspan="5"><b>Obat</b></td>
           </tr>
-          @foreach ($rj_item['obat'] as $item )
+          @foreach ($rj_item['Medication'] as $item )
           <tr>
             <td class="text-center">{{ $item['ItemTanggal'] }}</td>
             <td>{{ $item['ItemName1'] }}</td>
@@ -363,11 +363,11 @@ header("Content-type: text/css; charset: UTF-8");
           </tr>
           @endforeach
           @endisset
-          @isset($igd_item['obat'])
+          @isset($igd_item['Medication'])
           <tr>
             <td colspan="5"><b>Obat</b></td>
           </tr>
-          @foreach ($igd_item['obat'] as $item )
+          @foreach ($igd_item['Medication'] as $item )
           <tr>
             <td class="text-center">{{ $item['ItemTanggal'] }}</td>
             <td>{{ $item['ItemName1'] }}</td>
@@ -469,11 +469,18 @@ header("Content-type: text/css; charset: UTF-8");
               <tr>
                 <td>Total Tagihan</td>
                 <td>:</td>
-                <td class="text-right"><b>{{ number_format(($total_tagihan - $payer['Discount Global']['nominal']), 2)}}</b></td>
+                <td class="text-right"><b>{{ number_format(($total_tagihan - $disc), 2)}}</b></td>
               </tr>
               <tr>
                 <td colspan="3">Metode Pembayaran</td>
               </tr>
+              @isset($payer['Multipayer'])
+              <tr>
+                <td>Multipayer</td>
+                <td>:</td>
+                <td class="text-right"><b>{{ number_format($payer['Multipayer']['nominal_difference'], 2) }}</b></td>
+              </tr>
+              @endisset
               @isset($payer['Kredit'])
               <tr>
                 <td>Kredit</td>

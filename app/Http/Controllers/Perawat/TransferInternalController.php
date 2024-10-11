@@ -282,7 +282,8 @@ class TransferInternalController extends Controller
                 DB::connection('mysql2')->table('m_bed_history')->insert($history);
 
 
-                DB::commit();
+                DB::connection('mysql')->commit();
+                DB::connection('mysql2')->commit();
                 $response = response()->json([
                     'status' => 'success',
                     'message' => 'Data berhasil disimpan',

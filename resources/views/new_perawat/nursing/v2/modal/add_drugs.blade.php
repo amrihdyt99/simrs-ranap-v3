@@ -1,5 +1,5 @@
 <div class="modal fade" id="addNursingDrugModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="detailModalLabel">Tambah Nursing Drugs</h5>
@@ -10,17 +10,22 @@
 
       <div class="modal-body" id="modalDetailContent">
         <form id="formNursingDrugNew">
+          <input id="nursing_drug_items" name="nursing_drug_items" type="hidden" value="[]">
           <div class="card-body">
-            <div class="form-group">
-              <label class="text-sm">Nama Obat</label>
-              <select id="obat" name="kode_obat" class="form-control select2bs4">
-                <option value="">-</option>
-                @foreach ($obatdaridokter as $row)
-                <option value="{{ $row->item_code . ', ' . $row->item_name}}">
-                  {{ $row->item_name }}
-                </option>
-                @endforeach
-              </select>
+            <button type="button" class="btn btn-success mb-3 float-right" id="btnTambahNursingItemDrugs" onclick="loadModalNursingDrugItem()"><i class="fas fa-plus "></i> Tambah Obat</button>
+            <div class="table-responsive">
+              <table id="dt_nursing_drugs_item" class="table table-lg table-bordered nowrap" style="width:100%">
+                <thead>
+                  <tr class="bg-warning text-black">
+                    <th><b>Kode Obat</b></th>
+                    <th><b>Nama Obat</b></th>
+                    <th><b>Dosis</b></th>
+                    <th><b>Frekuensi</b></th>
+                    <th><b>Aksi</b></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
             <div class="form-group">
               <label class="text-sm">Nama Dokter</label>
@@ -52,28 +57,9 @@
               </select>
             </div>
             <div class="form-group">
-              <table class="table table-bordered table-hover treatment table-sm">
-                <thead>
-                  <tr>
-                    <th class="text-sm">Dosis<code>*</code></th>
-                    <th class="text-sm">Frekuensi<code>*</code></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-sm">
-                      <input type="number" class="text-sm form-control form-control-sm" name="dosis">
-                    </td>
-                    <td class="text-sm">
-                      <input type="number" class="text-sm form-control form-control-sm" name="frekuensi">
-                    </td>
-                  </tr>
-              </table>
-            </div>
-            <div class="form-group">
               <label for="" class="text-sm">Tanggal Pemberian</label>
               <input type="date" class="form-control" name="tgl_pemberian"
-                value="">
+                value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
             </div>
             <div class="row">
               @for ($i = 0; $i<24 ; $i++)

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\ClassCategory;
 use App\Models\RoomClass;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,52 +22,20 @@ class RoomClassController extends Controller
 
     public function ajax_index(Request $request)
     {
-        $ruangan = DB::connection('mysql2')->table('m_room_class');
-
-        if ($request->has('IsDeleted') && $request->IsDeleted !== '') {
-            if ($request->IsDeleted == '1') {
-                $ruangan->where('IsDeleted', 1);
-            } else if ($request->IsDeleted == '0') {
-                $ruangan->where('IsDeleted', 0);
-            }
-        }
-
-        if ($request->has('IsActive') && $request->IsActive !== '') {
-            if ($request->IsActive == '1') {
-                $ruangan->where('IsActive', 1);
-            } else if ($request->IsActive == '0') {
-                $ruangan->where('IsActive', 0);
-            }
-        }
+        $ruangan = DB::connection('mysql2')->table('m_room_class')
+            ->leftJoin('m_class_category', 'm_class_category.ClassCategoryCode', '=', 'm_room_class.ClassCategoryCode')->get();
 
         return DataTables()
             ->of($ruangan)
-            ->editColumn('aksi_data', function ($query) {
-                $editUrl = route('master.ruangan.edit', [$query->ClassCode]);
+            ->addColumn('action', function ($row) {
+                $editUrl = route('master.class.edit', [$row->ClassCode]);
 
-                $editButton = '<a href="' . $editUrl . '" class="protecc btn btn-sm btn-info mr-2 mb-2">
-                            Edit
-                        </a>';
+                $actionBtn = '<div class="btn-group" role="group">';
+                $actionBtn .= "<button type='button' class='btn btn-warning'><a href='$editUrl'><i class='fas fa-edit'></i> Edit</a></button>";
+                $actionBtn .= "<button type='button' class='btn btn-danger' onclick='confirmDelete(this)' data-id='$row->ClassCode'><i class='fas fa-trash'></i> Hapus</button>";
+                $actionBtn .= '</div>';
 
-                $deleteButton = '<button type="button" class="protecc btn btn-sm btn-danger mr-2 mb-2" 
-                                onclick="confirmDelete(this)" 
-                                data-id="' . $query->ClassCode . '">
-                                Hapus
-                            </button>';
-
-                $activateButton = $query->IsActive == 0
-                    ? '<button type="button" class="protecc btn btn-sm btn-success mr-2 mb-2" 
-                                            onclick="changeStatus(this)"
-                                            data-id="' . $query->ClassCode . '">Aktifkan</button>'
-                    : '';
-
-                $deactivateButton = $query->IsActive == 1
-                    ? '<button type="button" class="protecc btn btn-sm btn-warning mr-2 mb-2" 
-                                            onclick="changeStatus(this)"
-                                            data-id="' . $query->ClassCode . '">Nonaktifkan</button>'
-                    : '';
-
-                return $editButton . $deleteButton . $deactivateButton . $activateButton;
+                return $actionBtn;
             })
             ->escapeColumns([])
             ->toJson();
@@ -73,15 +43,25 @@ class RoomClassController extends Controller
 
     public function create()
     {
-        return view('master.pages.class.create');
+
+        $classCategory = ClassCategory::where('IsActive', 1)->get();
+
+        return view('master.pages.class.create', compact('classCategory'));
     }
 
     public function store(Request $request)
     {
         $input = $request->validate([
             'ClassCode' => ['required', 'string'],
-            'ClassName' => ['required', 'string']
+            'ClassName' => ['required', 'string'],
+            'ShortName' => ['string'],
+            'Initial' => ['string'],
+            'ClassCategoryCode' => ['required', 'string'],
+            'IsActive'  => ['numeric'],
         ]);
+
+        $input['LastUpdatedBy'] = auth()->user()->username;
+        $input['LastUpdatedDateTime'] = Carbon::now()->format('Y-m-d H:i:s');
 
         RoomClass::create($input);
 
@@ -90,15 +70,21 @@ class RoomClassController extends Controller
 
     public function edit(RoomClass $class)
     {
-        return view('master.pages.class.update', ['room_class' => $class]);
+        $classCategory = ClassCategory::where('IsActive', 1)->get();
+        return view('master.pages.class.update', ['room_class' => $class, 'classCategory' => $classCategory]);
     }
 
     public function update(Request $request, RoomClass $class)
     {
         $input = $request->validate([
-            'ClassCode' => ['required', 'string'],
-            'ClassName' => ['required', 'string']
+            'ClassName' => ['required', 'string'],
+            'ShortName' => ['string'],
+            'Initial' => ['string'],
+            'ClassCategoryCode' => ['required', 'string'],
+            'IsActive'  => ['numeric'],
         ]);
+        $input['LastUpdatedBy'] = auth()->user()->username;
+        $input['LastUpdatedDateTime'] = Carbon::now()->format('Y-m-d H:i:s');
 
         $class->update($input);
         return redirect()->route('master.class.index');
