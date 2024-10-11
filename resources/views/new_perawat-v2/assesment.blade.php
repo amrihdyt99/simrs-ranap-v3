@@ -160,7 +160,7 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
                 @else
-                @if(Auth::user()->level_user=="radiologi")
+                @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
                 <div class="row">
                     <div class="left-tab active" id="tab-radiologi" onclick="clickTab('radiologi')">
                         Radiologi
@@ -183,7 +183,7 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div> --}}
 
-               
+
 
                 @if ($dataPasien->kategori_pasien == 'dewasa')
                 <div class="row">
@@ -303,7 +303,7 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
 
-               
+
 
                 <div class="row">
                     <div class="left-tab" id="tab-nursing" onclick="clickTab('nursing')">
@@ -313,11 +313,11 @@ $registrasi_data = DB::connection('mysql2')
 
                 <div class="row">
                     <div class="left-tab" id="tab-transfusi" onclick="clickTab('transfusi')">
-                        Monitoring Transfusi Darah 
+                        Monitoring Transfusi Darah
                     </div>
                 </div>
 
-                
+
 
                 <div class="row">
                     <div class="left-tab" id="tab-persetujuan_penolakan" onclick="clickTab('persetujuan_penolakan')">
@@ -438,26 +438,26 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div> --}}
 
-               
+
 
                 @endif
                 @endif
                 @endif
 
-               
-
-
-
-
+                <div class="row">
+                    <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
+                        Riwayat
+                    </div>
+                </div>
             </div>
-            @if(Auth::user()->level_user=="radiologi")
+            @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
             <div class="col" style="max-width: 85%;">
                 <div class="row">
                     <div class="col-lg-12 pl-0 pr-1">
                         <div class="card">
                             <div class="card-body">
                                 <div id="panel-radiologi">
-                                    <h2 class="text-black">Order Radiologi</h2>
+                                    <h2 class="text-black">Order Radiologi pp</h2>
                                     @include('new_perawat.radiologi.pesanan_radiologi')
                                 </div>
                             </div>

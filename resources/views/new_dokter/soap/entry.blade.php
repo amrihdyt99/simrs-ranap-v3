@@ -18,7 +18,7 @@
     <button class="btn btn-success float-right mb-3" id="btn-add-soap"><i class="fas fa-plus"></i> Tambah CPPT</button>
 @endif
 
-<button class="btn btn-primary float-right mb-3" onclick="$('#modalViewHistorySoap').modal('show')"><i class="fas fa-history"></i> View History SOAP</button>
+<button class="btn btn-primary float-right mb-3 mr-1" onclick="$('#modalViewHistorySoap').modal('show')"><i class="fas fa-history"></i> View History SOAP</button>
 
 
 <table class="table1" rules="all" style="width:100%">

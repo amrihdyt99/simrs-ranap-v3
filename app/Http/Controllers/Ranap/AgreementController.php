@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 class AgreementController extends Controller
 {
     use RanapRegistrationTrait;
+    
     public function slipAdmisi($reg_no)
     {
         $data = $this->getDataSlipAdmisi($reg_no);
@@ -25,5 +26,11 @@ class AgreementController extends Controller
     {
         $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
         return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
+    }
+
+    public function persetujuanMedis($reg_no)
+    {
+        $data_pasien = $this->getDataPersetujuanMedis($reg_no);
+        return view('register.pages.ranap.persetujuan-medis', compact('data_pasien'));
     }
 }

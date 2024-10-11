@@ -9,7 +9,10 @@ class Department extends Model
 {
     use HasFactory;
 
-    protected $table = 'rs_m_department';
+    protected $table = 'm_departemen';
     protected $primaryKey = 'DepartmentCode';
-    protected $connection = 'mysql';
+    protected $keyType = 'string';
+    protected $connection = 'mysql2';
+    public $incrementing = FALSE;
+    protected $guarded = [];
 }

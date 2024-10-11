@@ -50,6 +50,10 @@ class BillingController extends AaaBaseController
         $data['diagnosis'] = $diagnosisPasien;
         $data['visit'] = $ceksoapdokter;
         $data['paket'] = $historypaket;
+        $data['payer_name'] = DB::connection('mysql2')
+            ->table('businesspartner')
+            ->where('id', $datamypatient->reg_cara_bayar)
+            ->first();
 
         return view('new_kasir.view', $data);
         // return view('kasir/billing/daftar_tagihan',$data);
@@ -92,6 +96,7 @@ class BillingController extends AaaBaseController
             $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
+            $item['NonBPJS'] = $value->non_bpjs;
 
             array_push($order_penunjang, $item);
         }
@@ -101,7 +106,8 @@ class BillingController extends AaaBaseController
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromPharmacy($request->reg_ri));
 
         if (str_contains($request->reg_rj, '/ER/')) {
-            $order_penunjang_prev = $this->getOrderFromSphaira($request->reg_rj, $request->class);
+            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromSphaira($request->reg_rj, $request->class));
+            $order_penunjang_prev = array_merge($order_penunjang_prev, $this->physicianBillFromSphaira($request->reg_rj, $request->class));
         } else {
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromLab($request->reg_rj));
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
@@ -113,10 +119,14 @@ class BillingController extends AaaBaseController
             ['source' => str_contains($request->reg_rj, '/RJ/') ? 'Rawat Jalan' : 'IGD', 'data' => $order_penunjang_prev],
         ];
 
-        $validation = DB::table('rs_pasien_billing_validation')
+        $validation = DB::table('rs_pasien_billing_validation as a')
             ->where('pvalidation_reg', $request->reg_ri)
             ->where('pvalidation_status', 1)
-            ->first();
+            ->select([
+                'a.*',
+                DB::raw("(select name from " . getDatabase('master') . ".users where id = a.pvalidation_user) as pvalidation_name")
+            ])
+            ->get();
 
         return [
             'order' => $recap_penunjang,
@@ -148,8 +158,8 @@ class BillingController extends AaaBaseController
                     $item['ItemJumlah'] = 1;
                     $item['ItemDokter'] = $value->dokter_order;
                     $item['ItemPoli'] = $value->poli_order;
-                    // $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
-                    $item['ItemReview'] = 1;
+                    $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
+                    // $item['ItemReview'] = 1;
 
                     if ($sub_value->status_cancel == 'N' && $sub_value->status_failed == 'N') {
                         array_push($order_penunjang, $item);
@@ -184,8 +194,8 @@ class BillingController extends AaaBaseController
                     $item['ItemJumlah'] = 1;
                     $item['ItemDokter'] = $value->dokter_order;
                     $item['ItemPoli'] = $value->poli_order;
-                    // $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
-                    $item['ItemReview'] = 1;
+                    $item['ItemReview'] = $value->status_approve == 'Y' ? 1 : 0;
+                    // $item['ItemReview'] = 1;
 
                     if ($sub_value->status_cancel == 'N' && $sub_value->status_failed == 'N') {
                         array_push($order_penunjang, $item);
@@ -225,8 +235,8 @@ class BillingController extends AaaBaseController
                 $item['ItemJumlah'] = $v->quantity;
                 $item['ItemDokter'] = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode', $value->kode_dokter)->first()->ParamedicName;
                 $item['ItemPoli'] = $value->kode_poli;
-                // $item['ItemReview'] = $value->is_review == false ? 0 : 1;
-                $item['ItemReview'] = 1;
+                $item['ItemReview'] = $value->is_review == false ? 0 : 1;
+                // $item['ItemReview'] = 0;
 
                 array_push($order_penunjang, $item);
             }
@@ -286,60 +296,34 @@ class BillingController extends AaaBaseController
         return $order_penunjang;
     }
 
-    function addTindakan(Request $request)
+    public function physicianBillFromSphaira($reg_no, $class)
     {
-        //        $user=Auth::user();
-        $ordername = $request->itemTindakan;
-        $kategori = $request->jenisTindakan;
-        $price = $request->tarifItem;
-        $regmedrec = $request->regmedrec;
-        $kodetindakan = $request->kodetindakan;
+        $itemOrder = json_decode(getService(urlSimrs() . 'api/igd/itemOrder/physicianBill?reg_no=' . $reg_no . '&class=' . $class));
 
-        $countorder = DB::connection('mysql')
-            ->table("job_orders")
-            ->get()
-            ->count();
-        $newDateFormat = str_replace('-', '', now()->toDateString());
-        $jenis = "";
-        if ($kategori == "Laboratorium") {
-            $jenis = "lab";
-            $orderNumberFormat = 'LAB/RI/' . $newDateFormat . $countorder;
-        } else if ($kategori == "Radiologi") {
-            $jenis = "radiologi";
-            $orderNumberFormat = 'RAD/RI/' . $newDateFormat . $countorder;
-        } else if ($kategori == "fisio") {
-            $jenis = "fisio";
-            $orderNumberFormat = 'FIS/RI/' . $newDateFormat . $countorder;
-        } else if ($kategori == "lainnya") {
-            $jenis = "lainnya";
-            $orderNumberFormat = 'ANY/RI/' . $newDateFormat . $countorder;
-        }
-        $jobOrder['reg_no'] = $request->reg_no;
-        $jobOrder['kode_dokter'] = $request->kode_dokter;
-        $jobOrder['waktu_order'] = now()->toDateTimeString();
-        //$jobOrder['service_unit'] = $request->service_unit;
-        $jobOrder['order_no'] = $orderNumberFormat;
+        $order_penunjang = [];
 
-        $jobOrderDetail['jenis_order'] = $jenis;
-        $jobOrderDetail['reg_no'] = $request->reg_no;
-        $jobOrderDetail['item_code'] = $request->kodetindakan;
-        $jobOrderDetail['item_name'] = $request->itemTindakan;
-        $jobOrderDetail['qty'] = "1";
-        $jobOrderDetail['harga_jual'] = $request->tarifItem;
-        $jobOrderDetail['order_no'] = $orderNumberFormat;
+        foreach ($itemOrder as $key => $value) {
+            $item['ItemUId'] = Str::random(5);
+            $item['ItemReg'] = $value->RegistrationNo;
+            $item['ItemCode'] = $value->ItemCode;
+            $item['ItemOrder'] = $value->ItemID;
+            $item['ItemOrderCode'] = $value->ItemCode;
+            $item['ItemTanggal'] = $value->TransactionDateTime;
+            $item['ItemName1'] = $value->ItemName1;
+            $item['ItemBundle'] = null;
+            $item['ItemTindakan'] = 'lainnya';
+            $item['ItemTarif'] = $value->TotalPersonal;
+            $item['ItemTarifAwal'] = $value->TotalPersonal;
+            $item['ItemJumlah'] = $value->DispenseQty;
+            $item['ItemDokter'] = $value->ParamedicName;
+            $item['ItemPoli'] = '';
+            $item['ItemReview'] = '-';
+            $item['NonBPJS'] = 0;
 
-        $simpan = DB::connection('mysql')->table('job_orders')->insert($jobOrder);
-        if ($simpan == true) {
-            $simpan2 = DB::connection('mysql')->table('job_orders_dt')->insert($jobOrderDetail);
-            return response()->json(['status' => $simpan2, 'message' => 'Data berhasil disimpan']);
-        } else {
-            return response()->json(['status' => $simpan, 'message' => 'Gagal Menyimpan Data']);
+            array_push($order_penunjang, $item);
         }
 
-        /*$sql="INSERT INTO m_orders (user_order,order_name,kategori,price,tanggal_order,reg_medrec,status_bayar,kode_tindakan,isDeleted)
-                    VALUES(?,?,?,?,?,?,?,?,?)";
-
-        $simpan=DB::connection('mysql2')->insert($sql,[$user->getAuthIdentifier(),$ordername,$kategori,$price,date('Y-m-d'),$regmedrec,'0',$kodetindakan,"0"]);*/
+        return $order_penunjang;
     }
 
     function addBillingReview(Request $request)
@@ -515,6 +499,21 @@ class BillingController extends AaaBaseController
         }
     }
 
+    public function getListBilling(Request $request)
+    {
+        $bills = DB::connection('mysql')->table('rs_pasien_billing_validation')
+            ->where([
+                ['pvalidation_status', 1],
+                ['pvalidation_reg', $request->reg_no],
+            ])
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $bills,
+        ]);
+    }
+
     function cetakinvoice($regno)
     {
         $datamypatient = DB::connection('mysql2')
@@ -580,6 +579,7 @@ class BillingController extends AaaBaseController
                 'pvalidation_status' => 1,
                 'pvalidation_selected' => $request->selected_orders,
                 'created_at' => date('Y-m-d H:i:s'),
+                'non_bpjs' => 0
             ];
 
             $check_ = DB::table('rs_pasien_billing_validation')
@@ -588,8 +588,8 @@ class BillingController extends AaaBaseController
                 ->count();
 
             if ($check_ > 0) {
-                $delete = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)
-                    ->delete();
+                // $delete = DB::table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg)
+                //     ->delete();
 
                 $store = DB::table('rs_pasien_billing_validation')->insert($data);
             } else {
@@ -648,15 +648,131 @@ class BillingController extends AaaBaseController
         ]);
     }
 
-    public function cetakInvoiceNew(Request $request)
+    function cetakReview(Request $request)
     {
         $billing_detail = DB::connection('mysql')->table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg_no)->first();
+        $data = json_decode($request->data, true);
+        $data_ri = $data[0];
+        $ri_item_by_type = [];
+        $total_ri = 0;
+
+        foreach ($data_ri['data'] as $item) {
+            if ($item['ItemTindakan'] == 'Radiologi') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'lainnya') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Medication') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            }
+            $total_ri += ($item['ItemTarif'] * $item['ItemJumlah']);
+        }
+        $data_ri['total_all'] = $total_ri;
+        unset($data_ri['data']);
+
+        $data_luar = isset($data[1]) ? $data[1] : [];
+        $total_luar = 0;
+        $data_luar_item = [];
+
+        if (count($data_luar) > 0) {
+            if ($data_luar['source'] === "IGD") {
+                foreach ($data_luar['data'] as $item) {
+                    if ($item['ItemTindakan'] == 'Radiologi') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Laboratory') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'lainnya') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Medication') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Imaging') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    }
+                    $total_luar += ($item['ItemTarif'] * $item['ItemJumlah']);
+                }
+            } else {
+                foreach ($data_luar['data'] as $item) {
+                    if ($item['ItemTindakan'] == 'Radiologi') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'lainnya') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Medication') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    }
+                    $total_luar += ($item['ItemTarif'] * $item['ItemJumlah']);
+                }
+            }
+            $data_luar['total_all'] = $total_luar;
+            unset($data_luar['data']);
+        }
+
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->get()->first();
+
+
+        $ruangan = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+            ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+            ->where('m_registrasi.reg_no', $billing_detail->pvalidation_reg)
+            ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+            ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+            ->first();
+
+        $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
+
+        // dd($data_ri);
+
+
+        return view('kasir.billing.review_invoice', [
+            'data'              => $data,
+            'patient'           => $datamypatient,
+            'ruangan'           => $ruangan,
+            'data_ri'           => $data_ri,
+            'ri_item'           => $ri_item_by_type,
+            'data_luar'         => $data_luar,
+            'ex_item'         => $data_luar_item,
+            'user'              => $user,
+            'billing'       => $billing_detail,
+        ]);
+    }
+
+
+    public function cetakInvoiceNew(Request $request)
+    {
+        $billing_detail = DB::connection('mysql')->table('rs_pasien_billing_validation')->where('id', $request->id)->first();
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
+            ->where(['m_registrasi.reg_no' => $billing_detail->pvalidation_reg])
             ->get()->first();
 
         $all_item = json_decode($billing_detail->pvalidation_selected, true);
@@ -748,18 +864,17 @@ class BillingController extends AaaBaseController
             ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->leftJoin('m_unit_departemen', function ($join) {
-                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
-            })
+            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->where('m_registrasi.reg_no', $billing_detail->pvalidation_reg)
             ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
             ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
+
+        // dd($payer_by_method);
 
         return view('kasir.billing.invoice_new', [
             'patient'           => $datamypatient,

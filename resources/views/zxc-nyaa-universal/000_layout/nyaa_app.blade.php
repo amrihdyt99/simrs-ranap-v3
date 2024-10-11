@@ -90,6 +90,7 @@
         @yield('content')
       </div>
     </div>
+  </div>
     <script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
     <script src="{{asset('')}}new_assets/vendors/base/vendor.bundle.base.js"></script>
     <script src="{{asset('')}}new_assets/js/jquery-ui.js"></script>
@@ -194,6 +195,7 @@
 </script>
 @endif
 
+@stack('blade-scripts')
 
 </body>
 

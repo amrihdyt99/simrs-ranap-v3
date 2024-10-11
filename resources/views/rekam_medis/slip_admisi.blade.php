@@ -85,12 +85,12 @@
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>Alamat Pasien</td>
-                                    <td>:{{$datapasien->PatientAddress ?? '-'}}</td>
+                                    <td>: {{$datapasien->PatientAddress ?? '-'}}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>Penanggung Jawab</td>
-                                    <td>:{{$datapasien->reg_pjawab ?? '-'}}</td>
+                                    <td>: <span id="selected_penanggung_jawab">{{ $datapasien->penanggung_jawab ?? '' }}</span></td>
                                 </tr>
                                 {{-- <tr>
                                    <td>&nbsp;</td>
@@ -115,8 +115,8 @@
                         <td width="19">&nbsp;</td>
                         <td width="22"><strong>II.</strong></td>
                         <td width="166"><strong>Diagnosis masuk</strong></td>
-                        <td></td>
-                        <td colspan="4">&nbsp;</td>
+                        <td>:</td>
+                        <td colspan="4">&nbsp;{{$datamypatient->ranap_diagnosa ?? '-'}}</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -554,20 +554,19 @@ IRD--}}
                             </form>
                             @endif
                             <div class="form-group">
-                                        <label for="penanggung_jawab"></label>
-                                        <select name="penanggung_jawab" id="penanggung_jawab" class="form-control d-print-none" onchange="document.getElementById('selected_penanggung_jawab').innerText = this.options[this.selectedIndex].text; this.style.display='none';">
-                                            <option value="">Pilih Penanggung Jawab</option>
-                                            @foreach($datapasien->penanggung_jawab_list as $penanggung_jawab)
-                                                <option value="{{ $penanggung_jawab }}">( {{ $penanggung_jawab }} )</option>
-                                            @endforeach
-                                        </select>
-                                        <span id="selected_penanggung_jawab" class="d-none d-print-block">
-                                            @if(isset($datapasien->penanggung_jawab))
-                                                {{ $datapasien->penanggung_jawab }}
-                                            @endif
-                                        </span>
-                                        <span id="selected_penanggung_jawab" class="d-none d-print-block"></span>
-                                    </div>
+                                <label for="penanggung_jawab"></label>
+                                <select name="penanggung_jawab" id="penanggung_jawab" class="form-control d-print-none">
+                                    <option value="">Pilih Penanggung Jawab</option>
+                                    @foreach($datapasien->penanggung_jawab_list as $penanggung_jawab)
+                                        <option value="{{ $penanggung_jawab }}">( {{ $penanggung_jawab }} )</option>
+                                    @endforeach
+                                </select>
+                                <span id="selected_penanggung_jawab_display" class="d-none d-print-block">
+                                    @if(isset($datapasien->penanggung_jawab))
+                                        {{ $datapasien->penanggung_jawab }}
+                                    @endif
+                                </span>
+                            </div>
                         </td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -685,14 +684,17 @@ IRD--}}
     document.addEventListener("DOMContentLoaded", function() {
         var penanggungJawabSelect = document.getElementById("penanggung_jawab");
         var selectedPenanggungJawab = document.getElementById("selected_penanggung_jawab");
+        var selectedPenanggungJawabDisplay = document.getElementById("selected_penanggung_jawab_display");
         var regNo = "{{ $datapasien->reg_no }}"; // Assuming reg_no is available in $datapasien
 
         // Check if a patient has already been selected
         if (localStorage.getItem("penanggung_jawab_selected_" + regNo)) {
             var selectedValue = localStorage.getItem("penanggung_jawab_selected_" + regNo);
             selectedPenanggungJawab.innerText = selectedValue;
+            selectedPenanggungJawabDisplay.innerText = selectedValue;
             penanggungJawabSelect.style.display = 'none';
             selectedPenanggungJawab.classList.remove('d-none');
+            selectedPenanggungJawabDisplay.classList.remove('d-none');
         }
 
         penanggungJawabSelect.addEventListener("change", function() {
@@ -701,8 +703,10 @@ IRD--}}
             if (confirmation) {
                 localStorage.setItem("penanggung_jawab_selected_" + regNo, selectedText);
                 selectedPenanggungJawab.innerText = selectedText;
+                selectedPenanggungJawabDisplay.innerText = selectedText;
                 penanggungJawabSelect.style.display = 'none';
                 selectedPenanggungJawab.classList.remove('d-none');
+                selectedPenanggungJawabDisplay.classList.remove('d-none');
             }
         });
     });

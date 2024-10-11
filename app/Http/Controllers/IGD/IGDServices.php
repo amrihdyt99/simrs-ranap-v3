@@ -23,7 +23,7 @@ class IGDServices
         RoomClassRepository $roomClass,
         MasterRuanganRepository $masterRuangan,
         MasterBusinessPartnerRepository $masterBusinessPartner,
-        MasterRegistrationRepository $masterRegistrationRepository,
+        MasterRegistrationRepository $masterRegistrationRepository
     ) {
         $this->connection = $connectionDb;
         $this->roomClass = $roomClass;

@@ -115,13 +115,13 @@ class RegisterDataController extends Controller
     public function getData()
     {
 
+        //    $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
+        //         ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec')
+        //         ->whereNull('m_registrasi.reg_no');
+        //     return DataTables::of($pasien)
         $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
-            ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec')
-            ->whereNull('m_registrasi.reg_no');
+            ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec');
         return DataTables::of($pasien)
-            // $pasien = Pasien::select(['m_pasien.MedicalNo', 'm_pasien.PatientName', 'm_pasien.DateOfBirth', 'm_pasien.GCSex', 'm_pasien.PatientAddress', 'm_pasien.MobilePhoneNo1'])
-            //     ->leftJoin('m_registrasi', 'm_pasien.MedicalNo', '=', 'm_registrasi.reg_medrec');
-            // return DataTables::of($pasien)
             ->addColumn('action', function ($row) {
                 $btn_visit_history = '<a href="' . route('register.informasi-pasien.riwayat-kunjungan', $row->MedicalNo) . '" class="btn btn-primary btn-sm">Visit History</a>';
                 $action = $btn_visit_history . '
@@ -203,6 +203,7 @@ class RegisterDataController extends Controller
     {
         $pasien = Pasien::where('MedicalNo', $id)->first();
         if ($pasien) {
+            PasienInformasi::where('MedicalNo', $id)->delete();
             $pasien->delete();
             return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus.']);
         } else {

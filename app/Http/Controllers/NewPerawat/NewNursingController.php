@@ -76,13 +76,14 @@ class NewNursingController extends Controller
             $obat = DB::connection('mysql')->table('nursing_drugs')
                 ->where([
                     ['reg_no', $request->reg_no],
-                    ['is_deleted', 0]
+                    ['is_deleted', 0],
+                    ['created_by', $request->username],
                 ])->get();
             return DataTables()
                 ->of($obat)
                 ->addColumn('action', function ($row) {
                     $actionBtn = '<div class="btn-group" role="group" >';
-                    $actionBtn .= "<button type='button' class='btn btn-warning btn-edit-drug' onclick='editModalNursingDrug($row->id)' data-transfer_code='$row->id'><i class='fas fa-edit'></i></i></button>";
+                    $actionBtn .= "<button type='button' class='btn btn-info btn-edit-drug' onclick='editModalNursingDrug($row->id)' data-transfer_code='$row->id'><i class='fas fa-eye'></i></i></button>";
                     $actionBtn .= "<button type='button' class='btn btn-danger btn-delete-drug' onclick='deleteNursingDrug($row->id)'><i class='fas fa-trash'></i></button>";
                     $actionBtn .= '</div>';
                     return $actionBtn;
@@ -96,26 +97,23 @@ class NewNursingController extends Controller
     {
         // dd($request->all());
         try {
-            $obat = explode(', ', $request->kode_obat);
-
             $valData = $request->validate([
-                'dosis' => ['required'],
-                'frekuensi' => ['required'],
-                'kode_obat' => '',
+                'nursing_drug_items' => ['required'],
                 'cara_pemberian' => '',
                 'kode_dokter' => '',
             ]);
+
+            unset($valData['nursing_drug_items']);
             $valData['reg_no'] = $request->reg_no;
+            $valData['item_obat'] = $request->nursing_drug_items;
             $valData['antibiotik'] = $request->antibiotik;
             $valData['nama_dokter'] = $request->nama_dokter;
-            $valData['kode_obat'] = $obat[0];
-            $valData['nama_obat'] = $obat[1];
             $valData['shift'] = $request->user_shift;
             $valData['tgl_pemberian'] = $request->tgl_pemberian;
             $valData['created_by'] = $request->created_by;
             $valData['created_by_name'] = (DB::connection('mysql2')->table('users')->where('username', $request->created_by)->first())->name;
             $valData['waktu_pemberian'] = json_encode($request->data_perjam);
-            $valData['created_at'] = Carbon::now();;
+            $valData['created_at'] = Carbon::now();
 
             DB::connection('mysql')->table('nursing_drugs')->insert($valData);
             return response()->json([

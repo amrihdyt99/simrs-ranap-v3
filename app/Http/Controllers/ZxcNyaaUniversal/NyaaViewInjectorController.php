@@ -1360,7 +1360,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'medrec' => $request->medrec,
             'data_pasien' => optional($data_pasien),
         );
-        
+
         return view('new_perawat.riwayat-v2.index')
             ->with($context);
     }
@@ -1709,7 +1709,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('reg_no', $request->reg_no)
             ->where('med_rec', $request->medrec)
             ->first();
-        
+
         $case_manager_akumulasi = DB::connection('mysql')->table('case_manager_akumulasi')
             ->where('reg_no', $request->reg_no)
             ->where('med_rec', $request->medrec)

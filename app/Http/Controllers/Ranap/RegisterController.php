@@ -13,6 +13,7 @@ use App\Models\Pasien;
 use App\Models\PasienVClaim;
 use App\Models\RegistrasiPJawab;
 use App\Models\RegistrationInap;
+use App\Models\SuratPersetujuanMedis;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
@@ -136,12 +137,13 @@ class RegisterController extends Controller
                             Action
                         </button>
                         <div class="dropdown-menu">
-                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
-                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                             <a class="dropdown-item" href="' . $url_barcode . '" target="_blank">Print Barcode</a>
+                            <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
+                            <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
+                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
                             <a class="dropdown-item" href="' . $url_ringkasan_masuk_keluar . '" target="_blank">Ringkasan Masuk & Keluar</a>
                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
-                            <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
+                            <button class="dropdown-item print-persetujuan-medis" data-reg_no="' . $query->reg_no . '">Persetujuan Medis</button> 
                         </div>' .
                     '</div>';
                 return $button_dropdown;
@@ -195,6 +197,9 @@ class RegisterController extends Controller
         $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
         return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
     }
+
+
+
 
     public function batal_ranap($no)
     {
@@ -395,8 +400,11 @@ class RegisterController extends Controller
 
             foreach ($pj_pasien as $pj) {
                 $pj['reg_no'] = $registerNumber;
-                RegistrasiPJawab::created($pj);
+                RegistrasiPJawab::create($pj);
             }
+
+            //tambahkan ini juga karena akan menyimpan data pj pasien ke tabel nya anjay
+            $pjawab_pasien = RegistrasiPJawab::where('reg_no', $this->parseRegNoByUnderScore($registerNumber))->get();
 
             // dd($pj_pasien);
 
@@ -590,6 +598,57 @@ class RegisterController extends Controller
         return view('document.general_consent_hal_2', $data);
     }
 
+    public function persetujuanMedis($reg_no)
+    {
+        $data_pasien = $this->getDataPersetujuanMedis($reg_no);
+        return view('register.pages.ranap.persetujuan-medis', compact('data_pasien'));
+    }
+
+    public function storeSuratPersetujuanMedis(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'reg_no' => 'required|string',
+                'penanggung_jawab' => 'required|string',
+                'umur_penanggung_jawab' => 'required|integer',
+                'alamat_penanggung_jawab' => 'required|string',
+                'hubungan_penanggung_jawab' => 'required|string',
+                'penanggung_jawab_2' => 'nullable|string',
+                'umur_penanggung_jawab_2' => 'nullable|integer',
+                'alamat_penanggung_jawab_2' => 'nullable|string',
+                'hubungan_penanggung_jawab_2' => 'nullable|string',
+                'kondisi_medis' => 'required|array',
+                'kondisi_medis.*' => 'required|string',
+                'kondisi_medis_lain_lain' => 'nullable|string',
+                'signature1' => 'nullable|string',
+                'witness1' => 'nullable|string',
+                'witness2' => 'nullable|string',
+                'nama_witness2' => 'nullable|string',
+            ]);
+
+            // Check if data already exists
+            $existingData = SuratPersetujuanMedis::where('reg_no', $validatedData['reg_no'])->first();
+            if ($existingData) {
+                // Update existing data
+                $existingData->update($validatedData);
+                return response()->json(['success' => true, 'message' => 'Data persetujuan medis berhasil diupdate.', 'data' => $existingData]);
+            }
+
+            $newData = SuratPersetujuanMedis::create($validatedData);
+
+            return response()->json(['success' => true, 'message' => 'Data persetujuan medis berhasil disimpan.', 'data' => $newData]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function getSuratPersetujuanMedis($reg_no)
+    {
+        $data_pasien = $this->getDataPersetujuanMedis($reg_no);
+        return view('register.pages.ranap.persetujuan-medis', compact('data_pasien'));
+    }
     function uploadTtdAdmisi(Request $request)
     {
         $regno = $request->reg_no;
@@ -828,6 +887,13 @@ class RegisterController extends Controller
                 // Add penanggung jawab pasien
                 RegistrasiPJawab::insert(request()->pj_pasien);
             }
+
+            // Ambil reg_lama dari tabel m_registrasi
+            $reg_lama = DB::connection('mysql2')
+                ->table('m_registrasi')
+                ->where('reg_no', request()->reg_no)
+                ->value('reg_lama');
+
             // dd($param_pasien);
             DB::commit();
 
@@ -1083,12 +1149,47 @@ class RegisterController extends Controller
         $query = $request->q;
         $mrn = $request->mrn;
 
-        $data = Pasien::leftJoin('m_keluarga_pasien as pasien', "m_pasien.MedicalNo", "=", "pasien.MedicalNo")
-            ->select('m_pasien.PatientName', 'm_pasien.SSN', 'keluarga.GCRelationShip', 'keluarga.PhoneNo', 'keluarga.Address')
-            ->where('m_pasien.PatientName', 'LIKE', "%" . $query . "%")
+        $data = Pasien::select(
+            'm_pasien.PatientName',
+            'm_pasien.SSN',
+            DB::raw("IFNULL(keluarga.FamilyName, '') as FamilyName"),
+            'keluarga.GCRelationShip',
+            'keluarga.PhoneNo',
+            'keluarga.Address',
+            'keluarga.DateOfBirth',
+            'keluarga.Sex',
+            'keluarga.Job'
+        )
+            ->where(function ($q) use ($query) {
+                $q->where('m_pasien.PatientName', 'LIKE', "%" . $query . "%")
+                    ->orWhere('keluarga.FamilyName', 'LIKE', "%" . $query . "%");
+            })
             ->when($mrn, function ($query, $mrn) {
                 $query->leftJoin('m_keluarga_pasien as keluarga', function ($join) use ($mrn) {
-                    $join->on('m_pasien.MedicalNo', '=', 'keluarga.FamilyMedicalNo')->where('keluarga.MedicalNo', $mrn);
+                    $join->on('m_pasien.MedicalNo', '=', 'keluarga.MedicalNo')
+                        ->Where('keluarga.MedicalNo', $mrn);
+                });
+            })
+            ->get();
+
+        return response()->json($data);
+    }
+
+
+    public function getPasienKeluargaOld(Request $request)
+    {
+        $query = $request->q;
+        $mrn = $request->mrn;
+
+        $data = Pasien::select('m_pasien.PatientName', 'm_pasien.SSN', 'keluarga.FamilyName', 'keluarga.GCRelationShip', 'keluarga.PhoneNo', 'keluarga.Address', 'keluarga.DateOfBirth', 'keluarga.Sex', 'keluarga.Job')
+            ->leftJoin('m_keluarga_pasien as pasien', "m_pasien.MedicalNo", "=", "pasien.MedicalNo")
+            ->where(function ($q) use ($query) {
+                $q->where('m_pasien.PatientName', 'LIKE', "%" . $query . "%")
+                    ->orWhere('keluarga.FamilyName', 'LIKE', "%" . $query . "%");
+            })
+            ->when($mrn, function ($query, $mrn) {
+                $query->leftJoin('m_keluarga_pasien as keluarga', function ($join) use ($mrn) {
+                    $join->on('m_pasien.MedicalNo', '=', 'keluarga.FamilyMedicalNo')->orWhere('keluarga.MedicalNo', $mrn);
                 });
             })
             ->get();
