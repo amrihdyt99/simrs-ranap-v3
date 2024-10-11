@@ -238,9 +238,105 @@ header("Content-type: text/css; charset: UTF-8");
           @endisset
           <tr>
             <td class="text-right" colspan="4"><b>SUBTOTAL RAWAT INAP</b></td>
-            <td class="text-right"><b>{{ number_format($ri_item['subtotal'], 2)}}</b></td>
+            <td class="text-right"><b>{{ number_format($data_ri['total_all'], 2)}}</b></td>
           </tr>
         </tbody>
+        @if (isset($data_luar))
+        @if ($data_luar['source'] === "IGD")
+        <thead>
+          <tr>
+            <td class="text-center" colspan="5">
+              <b>
+                <h6>IGD</h6>
+              </b>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-center">Tanggal</td>
+            <td>Nama</td>
+            <td class="text-right">Tarif</td>
+            <td class="text-center">Jumlah</td>
+            <td class="text-right">Total</td>
+          </tr>
+        </thead>
+
+        <tbody>
+          @isset($ex_item['Laboratory'])
+          <tr>
+            <td colspan="5"><b>Laboratorium</b></td>
+          </tr>
+          @foreach ($ex_item['Laboratory'] as $item )
+          <tr>
+            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
+            <td>{{ $item['ItemName1'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
+            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
+          </tr>
+          @endforeach
+          @endisset
+          @isset($ex_item['Radiologi'])
+          <tr>
+            <td colspan="5"><b>Radiologi</b></td>
+          </tr>
+          @foreach ($ex_item['Radiologi'] as $item )
+          <tr>
+            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
+            <td>{{ $item['ItemName1'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
+            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
+          </tr>
+          @endforeach
+          @endisset
+          @isset($ex_item['Medication'])
+          <tr>
+            <td colspan="5"><b>Obat</b></td>
+          </tr>
+          @foreach ($ex_item['Medication'] as $item )
+          <tr>
+            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
+            <td>{{ $item['ItemName1'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
+            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
+          </tr>
+          @endforeach
+          @endisset
+          @isset($ex_item['Imaging'])
+          <tr>
+            <td colspan="5"><b>Imaging</b></td>
+          </tr>
+          @foreach ($ex_item['Imaging'] as $item )
+          <tr>
+            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
+            <td>{{ $item['ItemName1'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
+            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
+          </tr>
+          @endforeach
+          @endisset
+          @isset($ex_item['lainnya'])
+          <tr>
+            <td colspan="5"><b>Lainnya</b></td>
+          </tr>
+          @foreach ($ex_item['lainnya'] as $item )
+          <tr>
+            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
+            <td>{{ $item['ItemName1'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
+            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
+            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
+          </tr>
+          @endforeach
+          @endisset
+          <tr>
+            <td class="text-right" colspan="4"><b>SUBTOTAL IGD</b></td>
+            <td class="text-right"><b>{{ number_format($data_luar['total_all'], 2)}}</b></td>
+          </tr>
+        </tbody>
+        @elseif ($data_luar['source'] === "Rawat Jalan")
         <thead>
           <tr>
             <td class="text-center" colspan="5">
@@ -258,11 +354,11 @@ header("Content-type: text/css; charset: UTF-8");
           </tr>
         </thead>
         <tbody>
-          @isset($rj_item['Laboratorium'])
+          @isset($ex_item['Laboratorium'])
           <tr>
             <td colspan="5"><b>Laboratorium</b></td>
           </tr>
-          @foreach ($rj_item['Laboratorium'] as $item )
+          @foreach ($ex_item['Laboratorium'] as $item )
           <tr>
             <td class="text-center">{{ $item['ItemTanggal'] }}</td>
             <td>{{ $item['ItemName1'] }}</td>
@@ -272,11 +368,11 @@ header("Content-type: text/css; charset: UTF-8");
           </tr>
           @endforeach
           @endisset
-          @isset($rj_item['Radiologi'])
+          @isset($ex_item['Radiologi'])
           <tr>
             <td colspan="5"><b>Radiologi</b></td>
           </tr>
-          @foreach ($rj_item['Radiologi'] as $item )
+          @foreach ($ex_item['Radiologi'] as $item )
           <tr>
             <td class="text-center">{{ $item['ItemTanggal'] }}</td>
             <td>{{ $item['ItemName1'] }}</td>
@@ -286,11 +382,11 @@ header("Content-type: text/css; charset: UTF-8");
           </tr>
           @endforeach
           @endisset
-          @isset($rj_item['Medication'])
+          @isset($ex_item['Medication'])
           <tr>
             <td colspan="5"><b>Obat</b></td>
           </tr>
-          @foreach ($rj_item['Medication'] as $item )
+          @foreach ($ex_item['Medication'] as $item )
           <tr>
             <td class="text-center">{{ $item['ItemTanggal'] }}</td>
             <td>{{ $item['ItemName1'] }}</td>
@@ -300,11 +396,11 @@ header("Content-type: text/css; charset: UTF-8");
           </tr>
           @endforeach
           @endisset
-          @isset($rj_item['lainnya'])
+          @isset($ex_item['lainnya'])
           <tr>
             <td colspan="5"><b>Lainnya</b></td>
           </tr>
-          @foreach ($rj_item['lainnya'] as $item )
+          @foreach ($ex_item['lainnya'] as $item )
           <tr>
             <td class="text-center">{{ $item['ItemTanggal'] }}</td>
             <td>{{ $item['ItemName1'] }}</td>
@@ -316,107 +412,20 @@ header("Content-type: text/css; charset: UTF-8");
           @endisset
           <tr>
             <td class="text-right" colspan="4"><b>SUBTOTAL RAWAT JALAN</b></td>
-            <td class="text-right"><b>{{ number_format($rj_item['subtotal'], 2)}}</b></td>
+            <td class="text-right"><b>{{ number_format($data_luar['total_luar'], 2)}}</b></td>
           </tr>
-          <thead>
-            <tr>
-              <td class="text-center" colspan="5">
-                <b>
-                  <h6>IGD</h6>
-                </b>
-              </td>
-            </tr>
-            <tr>
-              <td class="text-center">Tanggal</td>
-              <td>Nama</td>
-              <td class="text-right">Tarif</td>
-              <td class="text-center">Jumlah</td>
-              <td class="text-right">Total</td>
-            </tr>
-          </thead>
-        <tbody>
-          @isset($igd_item['Laboratory'])
-          <tr>
-            <td colspan="5"><b>Laboratorium</b></td>
-          </tr>
-          @foreach ($igd_item['Laboratory'] as $item )
-          <tr>
-            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
-            <td>{{ $item['ItemName1'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
-            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
-          </tr>
-          @endforeach
-          @endisset
-          @isset($igd_item['Radiologi'])
-          <tr>
-            <td colspan="5"><b>Radiologi</b></td>
-          </tr>
-          @foreach ($igd_item['Radiologi'] as $item )
-          <tr>
-            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
-            <td>{{ $item['ItemName1'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
-            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
-          </tr>
-          @endforeach
-          @endisset
-          @isset($igd_item['Medication'])
-          <tr>
-            <td colspan="5"><b>Obat</b></td>
-          </tr>
-          @foreach ($igd_item['Medication'] as $item )
-          <tr>
-            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
-            <td>{{ $item['ItemName1'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
-            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
-          </tr>
-          @endforeach
-          @endisset
-          @isset($igd_item['Imaging'])
-          <tr>
-            <td colspan="5"><b>Imaging</b></td>
-          </tr>
-          @foreach ($igd_item['Imaging'] as $item )
-          <tr>
-            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
-            <td>{{ $item['ItemName1'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
-            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
-          </tr>
-          @endforeach
-          @endisset
-          @isset($igd_item['lainnya'])
-          <tr>
-            <td colspan="5"><b>Lainnya</b></td>
-          </tr>
-          @foreach ($igd_item['lainnya'] as $item )
-          <tr>
-            <td class="text-center">{{ $item['ItemTanggal'] }}</td>
-            <td>{{ $item['ItemName1'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'],2) }}</td>
-            <td class="text-center">{{ $item['ItemJumlah'] }}</td>
-            <td class="text-right">{{ number_format($item['ItemTarif'] * $item['ItemJumlah'], 2)}}</td>
-          </tr>
-          @endforeach
-          @endisset
-          <tr>
-            <td class="text-right" colspan="4"><b>SUBTOTAL IGD</b></td>
-            <td class="text-right"><b>{{ number_format($igd_item['subtotal'], 2)}}</b></td>
-          </tr>
+        </tbody>
+        @endif
+        @endif
+        <tfoot>
           @php
-          $total_tagihan = $rj_item['subtotal'] + $ri_item['subtotal'] + $igd_item['subtotal'];
+          $total_tagihan = $data_ri['total_all'] + $data_luar['total_all'];
           @endphp
           <tr>
             <td class="text-right" colspan="4"><b>TOTAL</b></td>
             <td class="text-right"><b>{{ number_format($total_tagihan, 2)}}</b></td>
           </tr>
-        </tbody>
+        </tfoot>
       </table>
     </div>
 
@@ -447,77 +456,6 @@ header("Content-type: text/css; charset: UTF-8");
               </tbody>
             </table>
           </div>
-        </div>
-        <div class="col-sm-6">
-          <table class="table">
-            <tbody>
-              <tr>
-                <td>Total</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format($total_tagihan, 2)}}</b></td>
-              </tr>
-              @php
-              $disc = $payer['Discount Global']['nominal'] ?? 0;
-              @endphp
-              @isset($payer['Discount Global'])
-              <tr>
-                <td>Diskon</td>
-                <td>:</td>
-                <td class="text-right">{{ number_format($payer['Discount Global']['nominal'], 2) }}</td>
-              </tr>
-              @endisset
-              <tr>
-                <td>Total Tagihan</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format(($total_tagihan - $disc), 2)}}</b></td>
-              </tr>
-              <tr>
-                <td colspan="3">Metode Pembayaran</td>
-              </tr>
-              @isset($payer['Multipayer'])
-              <tr>
-                <td>Multipayer</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format($payer['Multipayer']['nominal_difference'], 2) }}</b></td>
-              </tr>
-              @endisset
-              @isset($payer['Kredit'])
-              <tr>
-                <td>Kredit</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format($payer['Kredit']['nominal'], 2) }}</b></td>
-              </tr>
-              @endisset
-              @isset($payer['Debit'])
-              <tr>
-                <td>Debit</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format($payer['Debit']['nominal'], 2) }}</b></td>
-              </tr>
-              @endisset
-              @isset($payer['Virtual Account'])
-              <tr>
-                <td>Virtual Account</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format($payer['Virtual Account']['nominal'], 2) }}</b></td>
-              </tr>
-              @endisset
-              @isset($payer['Transfer'])
-              <tr>
-                <td>Transfer</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format($payer['Transfer']['nominal'], 2) }}</b></td>
-              </tr>
-              @endisset
-              @isset($payer['Cash'])
-              <tr>
-                <td>Cash</td>
-                <td>:</td>
-                <td class="text-right"><b>{{ number_format(($payer['Cash']['amount_cash'] - $payer['Cash']['amount_changes']), 2) }}</b></td>
-              </tr>
-              @endisset
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
