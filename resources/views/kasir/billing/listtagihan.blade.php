@@ -42,7 +42,13 @@
                         <td>{{$row->reg_no}}</td>
                         <td>{{$row->PatientName}}</td>
                         <td>{{$row->Payer}}</td>
-                        <td>{{$row->RoomName ?? '-'}} <br> {{$row->ServiceUnitName ?? '-'}} <br> {{$row->charge_class_code ? 'Kelas '.$row->charge_class_code : '-'}}</td>
+                        <td>
+                            @if ($row->CurrentLocation)
+                                {{$row->CurrentLocation['RoomName'] ?? '-'}} <br> {{$row->CurrentLocation['ServiceUnitName'] ?? '-'}} <br> {{$row->CurrentLocation['ChargeClassCode'] ? 'Kelas '.$row->CurrentLocation['ChargeClassCode'] : '-'}}
+                            @else
+                                {{$row->RoomName ?? '-'}} <br> {{$row->ServiceUnitName ?? '-'}} <br> {{$row->charge_class_code ? 'Kelas '.$row->charge_class_code : '-'}}
+                            @endif
+                        </td>
                         {{-- <td>{{$row->charge_class_code}}</td> --}}
                     </tr>
                     @endforeach
