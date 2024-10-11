@@ -124,7 +124,7 @@ class BillingController extends AaaBaseController
             ->where('pvalidation_status', 1)
             ->select([
                 'a.*',
-                DB::raw("(select name from ".getDatabase('master').".users where id = a.pvalidation_user) as pvalidation_name")
+                DB::raw("(select name from " . getDatabase('master') . ".users where id = a.pvalidation_user) as pvalidation_name")
             ])
             ->get();
 
@@ -296,9 +296,10 @@ class BillingController extends AaaBaseController
         return $order_penunjang;
     }
 
-    public function physicianBillFromSphaira($reg_no, $class){
+    public function physicianBillFromSphaira($reg_no, $class)
+    {
         $itemOrder = json_decode(getService(urlSimrs() . 'api/igd/itemOrder/physicianBill?reg_no=' . $reg_no . '&class=' . $class));
-        
+
         $order_penunjang = [];
 
         foreach ($itemOrder as $key => $value) {
@@ -321,7 +322,7 @@ class BillingController extends AaaBaseController
 
             array_push($order_penunjang, $item);
         }
-        
+
         return $order_penunjang;
     }
 
@@ -498,6 +499,21 @@ class BillingController extends AaaBaseController
         }
     }
 
+    public function getListBilling(Request $request)
+    {
+        $bills = DB::connection('mysql')->table('rs_pasien_billing_validation')
+            ->where([
+                ['pvalidation_status', 1],
+                ['pvalidation_reg', $request->reg_no],
+            ])
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $bills,
+        ]);
+    }
+
     function cetakinvoice($regno)
     {
         $datamypatient = DB::connection('mysql2')
@@ -632,15 +648,131 @@ class BillingController extends AaaBaseController
         ]);
     }
 
-    public function cetakInvoiceNew(Request $request)
+    function cetakReview(Request $request)
     {
         $billing_detail = DB::connection('mysql')->table('rs_pasien_billing_validation')->where('pvalidation_reg', $request->reg_no)->first();
+        $data = json_decode($request->data, true);
+        $data_ri = $data[0];
+        $ri_item_by_type = [];
+        $total_ri = 0;
+
+        foreach ($data_ri['data'] as $item) {
+            if ($item['ItemTindakan'] == 'Radiologi') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'lainnya') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Medication') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            }
+            $total_ri += ($item['ItemTarif'] * $item['ItemJumlah']);
+        }
+        $data_ri['total_all'] = $total_ri;
+        unset($data_ri['data']);
+
+        $data_luar = isset($data[1]) ? $data[1] : [];
+        $total_luar = 0;
+        $data_luar_item = [];
+
+        if (count($data_luar) > 0) {
+            if ($data_luar['source'] === "IGD") {
+                foreach ($data_luar['data'] as $item) {
+                    if ($item['ItemTindakan'] == 'Radiologi') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Laboratory') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'lainnya') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Medication') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Imaging') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    }
+                    $total_luar += ($item['ItemTarif'] * $item['ItemJumlah']);
+                }
+            } else {
+                foreach ($data_luar['data'] as $item) {
+                    if ($item['ItemTindakan'] == 'Radiologi') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'lainnya') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    } else if ($item['ItemTindakan'] == 'Medication') {
+                        $type = $item['ItemTindakan'];
+                        $data_luar_item[$type][] = $item;
+                    }
+                    $total_luar += ($item['ItemTarif'] * $item['ItemJumlah']);
+                }
+            }
+            $data_luar['total_all'] = $total_luar;
+            unset($data_luar['data']);
+        }
+
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->get()->first();
+
+
+        $ruangan = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
+            ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+            ->where('m_registrasi.reg_no', $billing_detail->pvalidation_reg)
+            ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+            ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+            ->first();
+
+        $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
+
+        // dd($data_ri);
+
+
+        return view('kasir.billing.review_invoice', [
+            'data'              => $data,
+            'patient'           => $datamypatient,
+            'ruangan'           => $ruangan,
+            'data_ri'           => $data_ri,
+            'ri_item'           => $ri_item_by_type,
+            'data_luar'         => $data_luar,
+            'ex_item'         => $data_luar_item,
+            'user'              => $user,
+            'billing'       => $billing_detail,
+        ]);
+    }
+
+
+    public function cetakInvoiceNew(Request $request)
+    {
+        $billing_detail = DB::connection('mysql')->table('rs_pasien_billing_validation')->where('id', $request->id)->first();
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
+            ->where(['m_registrasi.reg_no' => $billing_detail->pvalidation_reg])
             ->get()->first();
 
         $all_item = json_decode($billing_detail->pvalidation_selected, true);
@@ -732,18 +864,17 @@ class BillingController extends AaaBaseController
             ->join('m_bed', 'm_bed.bed_id', '=', 'm_bed_history.ToBedID')
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->leftJoin('m_unit_departemen', function ($join) {
-                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
-            })
+            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->where('m_registrasi.reg_no', $billing_detail->pvalidation_reg)
             ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
             ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
+
+        // dd($payer_by_method);
 
         return view('kasir.billing.invoice_new', [
             'patient'           => $datamypatient,

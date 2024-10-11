@@ -1,5 +1,5 @@
 <div class="modal fade" id="editNursingDrugModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="detailModalLabel">Tambah Nursing Drugs</h5>
@@ -10,19 +10,22 @@
 
       <div class="modal-body" id="modalDetailContent">
         <form id="formEditNursingDrugNew">
+          <input id="detail_nursing_drug_items" name="nursing_drug_items" type="hidden" value="[]">
           <input type="hidden" class="form-control" id="id_nursing_drug" name="id_nursing_drug"
             value="" />
           <div class="card-body">
-            <div class="form-group">
-              <label class="text-sm">Nama Obat</label>
-              <select id="obat" name="kode_obat" class="form-control select2bs4">
-                <option value="">-</option>
-                @foreach ($obatdaridokter as $row)
-                <option value="{{ $row->item_code . ', ' . $row->item_name}}">
-                  {{ $row->item_name }}
-                </option>
-                @endforeach
-              </select>
+            <div class="table-responsive">
+              <table id="dt_detail_nursing_drugs_item" class="table table-lg table-bordered nowrap" style="width:100%">
+                <thead>
+                  <tr class="bg-warning text-black">
+                    <th><b>Kode Obat</b></th>
+                    <th><b>Nama Obat</b></th>
+                    <th><b>Dosis</b></th>
+                    <th><b>Frekuensi</b></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
             </div>
             <div class="form-group">
               <label class="text-sm">Nama Dokter</label>
@@ -52,25 +55,6 @@
                 <option value="E">E</option>
                 <option value="D">D</option>
               </select>
-            </div>
-            <div class="form-group">
-              <table class="table table-bordered table-hover treatment table-sm">
-                <thead>
-                  <tr>
-                    <th class="text-sm">Dosis<code>*</code></th>
-                    <th class="text-sm">Frekuensi<code>*</code></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="text-sm">
-                      <input type="number" class="text-sm form-control form-control-sm" id="dosis" name="dosis">
-                    </td>
-                    <td class="text-sm">
-                      <input type="number" class="text-sm form-control form-control-sm" id="frekuensi" name="frekuensi">
-                    </td>
-                  </tr>
-              </table>
             </div>
             <div class="form-group">
               <label for="" class="text-sm">Tanggal Pemberian</label>
@@ -110,7 +94,7 @@
 
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary" onclick="updateNursingDrug()">Update</button>
+      <!-- <button type="button" class="btn btn-primary" onclick="updateNursingDrug()">Update</button> -->
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
     </div>
   </div>
