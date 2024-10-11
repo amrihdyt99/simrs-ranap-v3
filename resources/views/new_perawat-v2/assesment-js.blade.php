@@ -372,7 +372,7 @@
                 tgl_lahir_pasien: tgl_lahir_pasien,
             },
             success: function(resp) {
-                // console.log(resp);
+                // console.log('resp', resp);
 
                 if (resp.geriatri && resp.geriatri.kategori_geriatri) {
                     $('[id="alert_blink"]').show();
@@ -423,7 +423,7 @@
                 reg_no: _reg,
             },
             success: function(resp) {
-                console.log(resp);
+                // console.log(resp);
                 $('#ews_info').empty();
 
                 if (resp.news_total >= 7) {
@@ -769,11 +769,11 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_neonatus')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            loadDatatableRekonObat();
-                            loadSignature();
                             getAlertAlergi(regno);
                             getAlertJatuh(regno);
                             getAlertEWS(regno);
+                            loadDatatableRekonObat();
+                            loadSignature();
                         },
                         error: function(data) {
                             clear_show_error();

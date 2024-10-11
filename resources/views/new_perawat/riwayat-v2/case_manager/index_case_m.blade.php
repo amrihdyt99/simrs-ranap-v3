@@ -15,10 +15,10 @@
 <div class="text-black" style="font-size: 14px">
     <div class="tab-content" id="tabcthlab">
         <div id="assesment" class="tab-pane fade show active" role="tabpanel" aria-labelledby="cek_form_tab_pra">
-            @include('new_perawat\case_manager\tab\assesment')
+            @include('new_perawat.riwayat-v2.case_manager.riwayat_assesment')
         </div>
         <div id="akumulasi" class="tab-pane fade" role="tabpanel" aria-labelledby="cek_form_tab_intra">
-            @include('new_perawat\case_manager\tab\evaluasi')
+            @include('new_perawat.riwayat-v2.case_manager.riwayat_evaluasi')
         </div>
     </div>
 </div>

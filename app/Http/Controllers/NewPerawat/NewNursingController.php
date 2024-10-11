@@ -411,7 +411,8 @@ class NewNursingController extends Controller
         $params = array(
             'no_reg' => $request->reg_no,
             'med_rec' => $request->med_rec,
-            'tanggal_waktu_pemberian' => $request->tanggal_waktu_pemberian,
+            'nama_perawat' => $request->nama_perawat,
+            'tanggal_waktu_pemberian' => $request->tanggal_pemberian,
             'cairan_transfusi' => $request->cairan_transfusi,
             'jumlah_cairan' => $request->jumlah_transfusi,
             'minum' => $request->minum,
@@ -1111,6 +1112,13 @@ class NewNursingController extends Controller
     {
         $regno = $request->reg_no;
         $medrec = $request->medrec;
+
+        $ttd_perawat = DB::connection('mysql2')
+            ->table('users')
+            ->where('name', $request->kode_perawat)
+            ->select('signature')
+            ->first();
+
         $params = array(
             'id_nurse' => $request->kode_perawat,
             'reg_no' => $regno,
@@ -1119,6 +1127,7 @@ class NewNursingController extends Controller
             'tgl_note' => date('Y-m-d', strtotime($request->tgl_pemberian)),
             'jam_note' => date('H:i:s', strtotime($request->tgl_pemberian)),
             'created_at' => date('Y-m-d H:i:s'),
+            'ttd_perawat' => $ttd_perawat->signature,
         );
 
         $simpan = DB::connection('mysql')
@@ -2462,6 +2471,7 @@ class NewNursingController extends Controller
             'volume_warna_urin' => $request->volume_warna_urin,
             'gejala_reaksi_transfusi' => $request->gejala_reaksi_transfusi,
             'pilihan_menit' => $request->pilihan_menit,
+            'created_at' => Carbon::now(),
         );
 
         $simpan = DB::connection('mysql')
@@ -3007,6 +3017,8 @@ class NewNursingController extends Controller
             'news_penilaian_tik' => $request->news_penilaian_tik,
             'tanggal_dan_waktu' => Carbon::now(),
             'user_id' => $request->user_id,
+            'shift' => $request->shift,
+            'created_at' => Carbon::now(),
         );
 
         $simpan = DB::connection('mysql')
