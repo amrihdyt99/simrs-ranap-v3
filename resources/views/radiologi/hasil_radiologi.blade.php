@@ -201,6 +201,13 @@
 
                     {{ $radiologyData['result']['conclusion'] ?? 'Data tidak tersedia' }}
                 </div>
+                <div class="col-sm-12 pt-3">
+                    @if(isset($radiologyData['result']['file']) && !empty($radiologyData['result']['file']))
+                        <a href="{{ $radiologyData['result']['file'] }}" target="_blank" class="btn btn-primary">Lihat Gambar Radiologi</a>
+                    @else
+                        <p>Tidak ada file gambar radiologi tersedia</p>
+                    @endif
+                </div>
             </div>
             <div class="row pt-5 pb-2 pl-2 pr-2">
                 <div class="col-sm-6 pt-3 text-center">
