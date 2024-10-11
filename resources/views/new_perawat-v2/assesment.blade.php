@@ -160,7 +160,7 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
                 @else
-                @if(Auth::user()->level_user=="radiologi")
+                @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab") 
                 <div class="row">
                     <div class="left-tab active" id="tab-radiologi" onclick="clickTab('radiologi')">
                         Radiologi
@@ -435,19 +435,15 @@ $registrasi_data = DB::connection('mysql2')
                         Riwayat
                     </div>
                 </div>
-
-
-
-
             </div>
-            @if(Auth::user()->level_user=="radiologi")
+            @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
             <div class="col" style="max-width: 85%;">
                 <div class="row">
                     <div class="col-lg-12 pl-0 pr-1">
                         <div class="card">
                             <div class="card-body">
                                 <div id="panel-radiologi">
-                                    <h2 class="text-black">Order Radiologi</h2>
+                                    <h2 class="text-black">Order Radiologi pp</h2>
                                     @include('new_perawat.radiologi.pesanan_radiologi')
                                 </div>
                             </div>

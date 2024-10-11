@@ -9,7 +9,8 @@
             border: none;
         }
         .full-width {
-            width: 100%;
+            width: 80%;
+            margin: 0 auto;
         }
         @media print {
             .no-print {
@@ -37,9 +38,8 @@
             <h4 class="text-center" style="text-align: center;"><b>PERSETUJUAN PERAWATAN DI INSTALASI RAWAT INTENSIF</b></h4>
         </div>
     <div class="card mt-5">
-        
         <div class="card-body">
-            <table class="full-width" border="1">
+            <table class="full-width" border="1" cellpadding="0">
                 <tbody>
                     <tr>
                         <td class="no-border" colspan="2">Saya yang bertanda tangan di bawah ini:</td>
@@ -92,7 +92,7 @@
                     <!-- <tr>
                         <td colspan="2">Saya menyatakan mengerti:</td>
                     </tr> -->
-                    <tr>
+                    <tr class="no-border">
                         <td colspan="2">Saya menyatakan mengerti:
                             <ol>
                                 <li>Bahwa berdasarkan penjelasan dokter, selama perawatan di Instalasi Rawat Intensif, dinyatakan tindakan apapun yang dilakukan selalu mengandung beberapa konsekuensi dari resiko. 

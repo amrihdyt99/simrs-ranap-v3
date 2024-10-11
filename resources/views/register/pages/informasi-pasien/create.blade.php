@@ -207,11 +207,11 @@
                                                             <label class="label-admisi">Jenis Kelamin</label>
                                                             <select name="Sex[]" class="form-control">
                                                                 <option value=""></option>
-                                                                <option value="0001^X">Tidak Diketahui</option>
-                                                                <option value="0001^M">Laki-laki</option>
-                                                                <option value="0001^F">Perempuan</option>
-                                                                <option value="0001^U">Tidak Dapat Ditentukan</option>
-                                                                <option value="0001^N">Tidak Mengisi</option>
+                                                                <option>Tidak Diketahui</option>
+                                                                <option>Laki-laki</option>
+                                                                <option>Perempuan</option>
+                                                                <option>Tidak Dapat Ditentukan</option>
+                                                                <option>Tidak Mengisi</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -275,7 +275,7 @@ document.getElementById('searchMrn').addEventListener('click', function() {
                     document.getElementById('telepon_1').value = patient.MobilePhoneNo1;
                     document.getElementById('gol_darah').value = patient.GCBloodType;
                     document.getElementById('rhesus').value = patient.BloodRhesus.trim() || ""; 
-                    document.getElementById('alamat').value = patient.PatientAddress || ""; 
+                    document.getElementById('alamat').value = patient.Line1 || ""; 
                     calculateAge();
                 } else {
                     alert('Data pasien tidak ditemukan');
