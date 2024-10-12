@@ -110,6 +110,602 @@
         return date.toLocaleDateString('id-ID', options);
     }
 
+    const formatRupiah = (angka, prefix = 'Rp. ') => {
+        let number_string = angka.toString().replace(/[^0-9]/g, '');
+        let sisa = number_string.length % 3;
+        let rupiah = number_string.substr(0, sisa);
+        let ribuan = number_string.substr(sisa).match(/\d{3}/g);
+        
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        
+        return prefix + rupiah + ',00'; 
+    };
+
+    const formatHargaJual = (harga) => {
+        return formatRupiah(harga);
+    };
+
+    function getChecklistPulang(){
+        $.ajax({
+            url: "{{ route('perawat.checklist-pulang') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    setCustomCheckboxes('input[name="satu[]"]', data.satu);
+                    setCustomCheckboxes('input[name="dua[]"]', data.dua);
+                    setCustomCheckboxes('input[name="tiga[]"]', data.tiga);
+                    setCustomCheckboxes('input[name="empat[]"]', data.empat);
+                    setCustomCheckboxes('input[name="lima[]"]', data.lima);
+                }
+            },
+        })
+    }
+
+    function getBayiBaruLahirPemeriksaan(){
+        $.ajax({
+            url: "{{ route('perawat.bayi-baru-lahir-pemeriksaan') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    $('#keadaan_umum_r').val(data.keadaan_umum);
+                    $('#suhu_r').val(data.suhu);
+                    $('#pernafasan_r').val(data.pernafasan);
+                    $('#denyut_nadi_r').val(data.denyut_nadi);
+                    $('#berat_badan_r').val(data.berat_badan);
+                    $('#panjang_badan_r').val(data.panjang_badan);
+                    $('#bentuk_kepala_r').val(data.bentuk_kepala);
+                    $('#fontanel_r').val(data.fontanel);
+                    $('#molding_r').val(data.molding);
+                    $('#caput_succedaneum_r').val(data.caput_succedaneum);
+                    $('#chepal_hematoom_r').val(data.chepal_hematoom);
+                    $('#muka_r').val(data.muka);
+                    $('#conjungtiva_r').val(data.conjungtiva);
+                    $('#sklera_r').val(data.sklera);
+                    $('#bola_mata_r').val(data.bola_mata);
+                    $('#gerakan_bola_mata_r').val(data.gerakan_bola_mata);
+                    $('#bentuk_telinga_r').val(data.bentuk_telinga);
+                    $('#posisi_telinga_r').val(data.posisi_telinga);
+                    $('#lobang_telinga_r').val(data.lobang_telinga);
+                    $('#bibir_r').val(data.bibir);
+                    $('#leher_r').val(data.leher);
+                    $('#dada_r').val(data.dada);
+                    $('#tali_pusat_r').val(data.tali_pusat);
+                    $('#posisi_punggung_r').val(data.posisi_punggung);
+                    $('#fleksibilitas_tulang_punggung_r').val(data.fleksibilitas_tulang_punggung);
+                    $('#kelainan_punggung_r').val(data.kelainan_punggung);
+                    $('#ekstermitas_atas_r').val(data.ekstermitas_atas);
+                    $('#ekstermitas_bawah_r').val(data.ekstermitas_bawah);
+                    $('#abdomen_bentuk_r').val(data.abdomen_bentuk);
+                    $('#abdomen_palpasi_r').val(data.abdomen_palpasi);
+                    $('#kelainan_abdomen_r').val(data.kelainan_abdomen);
+                    $('#genetalia_jenis_kelamin_r').val(data.genetalia_jenis_kelamin);
+                    $('#genetalia_kelainan_r').val(data.genetalia_kelainan);
+                    $('#anus_r').val(data.anus);
+                    $('#menghisap_r').val(data.menghisap);
+                    $('#menoleh_r').val(data.menoleh);
+                    $('#menggenggam_r').val(data.menggenggam);
+                    $('#babinski_r').val(data.babinski);
+                    $('#moro_r').val(data.moro);
+                    $('#tonic_nack_r').val(data.tonic_nack);
+                    $('#lingkar_kepala_r').val(data.lingkar_kepala);
+                    $('#lingkar_dada_r').val(data.lingkar_dada);
+                    $('#lingkar_lengan_atas_r').val(data.lingkar_lengan_atas);
+                    $('#miksi_r').val(data.miksi);
+                    $('#meconeum_r').val(data.meconeum);
+                    $('#hb_r').val(data.hb);
+                    $('#golongan_darah_r').val(data.golongan_darah);
+                    $('#ht_r').val(data.ht);
+                    $('#pengobatan_r').val(data.pengobatan);
+                }
+            },
+        })
+    }
+
+    function getBayiBaruLahirAnamnesa(){
+        $.ajax({
+            url: "{{ route('perawat.bayi-baru-lahir-anamnesa') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    $('#no_rm_bayi').val(data.no_rm_bayi);
+                    $('#no_rm_ibu').val(data.no_rm_ibu);
+                    $('#nama_bayi').val(data.nama_bayi);
+                    $('#tempat_lahir_bayi').val(data.tempat_lahir_bayi);
+                    $('#tanggal_lahir_bayi').val(data.tanggal_lahir_bayi);
+                    $('#jenis_kelamin_bayi').val(data.jenis_kelamin_bayi);
+                    $('#nama_ibu').val(data.nama_ibu);
+                    $('#umur_ibu').val(data.umur_ibu);
+                    $('#agama_ibu').val(data.agama_ibu);
+                    $('#suku_bangsa_ibu').val(data.suku_bangsa_ibu);
+                    $('#pendidikan_ibu').val(data.pendidikan_ibu);
+                    $('#pekerjaan_ibu').val(data.pekerjaan_ibu);
+                    $('#alamat_ibu').val(data.alamat_ibu);
+                    $('#nama_ayah').val(data.nama_ayah);
+                    $('#umur_ayah').val(data.umur_ayah);
+                    $('#agama_ayah').val(data.agama_ayah);
+                    $('#suku_bangsa_ayah').val(data.suku_bangsa_ayah);
+                    $('#pendidikan_ayah').val(data.pendidikan_ayah);
+                    $('#pekerjaan_ayah').val(data.pekerjaan_ayah);
+                    $('#alamat_ayah').val(data.alamat_ayah);
+                    $('#pendarahan').val(data.pendarahan);
+                    $('#pre_eklampsia').val(data.pre_eklampsia);
+                    $('#eklampsia').val(data.eklampsia);
+                    $('#penyakit_kelamin').val(data.penyakit_kelamin);
+                    $('#lain_lain_riwayat_kehamilan').val(data.lain_lain_riwayat_kehamilan);
+                    $('#makanan').val(data.makanan);
+                    $('#obat_obatan_r').val(data.obat_obatan);
+                    $('#merokok_r').val(data.merokok);
+                    $('#lain_lain_kebiasaan').val(data.lain_lain_kebiasaan);
+                    $('#jenis_persalinan').val(data.jenis_persalinan);
+                    $('#ditolong_oleh').val(data.ditolong_oleh);
+                    $('#kala_satu').val(data.kala_satu);
+                    $('#kala_dua').val(data.kala_dua);
+                    $('#ketuban_Pecah').val(data.ketuban_Pecah);
+                    $('#warna_r').val(data.warna);
+                    $('#bau').val(data.bau);
+                    $('#komplikasi_persalinan_ibu').val(data.komplikasi_persalinan_ibu);
+                    $('#komplikasi_persalinan_bayi').val(data.komplikasi_persalinan_bayi);
+                    $('#warna_kulit_1_menit').val(data.warna_kulit_1_menit);
+                    $('#denyut_nadi_1_menit').val(data.denyut_nadi_1_menit);
+                    $('#reaksi_rangsangan_1_menit').val(data.reaksi_rangsangan_1_menit);
+                    $('#warna_kulit_5_menit').val(data.warna_kulit_5_menit);
+                    $('#denyut_nadi_5_menit').val(data.denyut_nadi_5_menit);
+                    $('#reaksi_rangsangan_5_menit').val(data.reaksi_rangsangan_5_menit);
+                    $('#pengisapan_lendir').val(data.pengisapan_lendir);
+                    $('#ambu').val(data.ambu);
+                    $('#lama_ambu').val(data.lama_ambu);
+                    $('#massage_jantung').val(data.massage_jantung);
+                    $('#lama_massage_jantung').val(data.lama_massage_jantung);
+                    $('#intubasi').val(data.intubasi);
+                    $('#lama_intubasi').val(data.lama_intubasi);
+                    $('#pemakaian_oksigen').val(data.pemakaian_oksigen);
+                    $('#lama_pemakaian_oksigen').val(data.lama_pemakaian_oksigen);
+                    $('#therapy').val(data.therapy);
+                    $('#keterangan').val(data.keterangan);
+                }
+            },
+        })
+    }
+
+    function getRiwayatAdminNurse(){
+        $.ajax({
+            url: "{{ route('perawat.admin-nurse') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    const tableBody = $('#riwayat_admin_nurse_body');
+                    tableBody.empty();
+                    let total = 0; // Inisialisasi total
+
+                    data.forEach(function(item) {
+                        const row = `
+                            <tr>
+                                <td>${item.order_no}</td>
+                                <td>${item.item_code}</td>
+                                <td>${item.item_name}</td>
+                                <td>${item.qty}</td>
+                                <td>${item.harga_jual}</td>
+                                <td>${item.harga_jual * item.qty}</td>
+                                <td>${item.waktu_order}</td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                        total += item.harga_jual * item.qty; // Menghitung total
+                    });
+
+                    // Menambahkan baris total di bawah tabel
+                    const footerRow = `
+                        <tr style="background: rgb(255, 234, 0) !important">
+                            <td colspan="5" class="text-right">Grand Total</td>
+                            <td>${formatHargaJual(total)}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    `;
+                    tableBody.append(footerRow);
+                }
+            },
+        })
+    }
+
+    function getPhysicianTeam(){
+        $.ajax({
+            url: "{{ route('perawat.physician-team') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    const tableBody = $('#riwayat_physician_team tbody');
+                    tableBody.empty();
+
+                    data.forEach(function(item) {
+                        const row = `
+                            <tr>
+                                <td>${item.nama_dokter}</td>
+                                <td>${item.kategori}</td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                    });
+                }
+            },
+        })
+    }
+
+    function getObservasiPaskaTindakanCathlab() {
+        $.ajax({
+            url: "{{ route('perawat.observasi-paska-tindakan-cathlab') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    setInputDate('#tanggal_observasi', data.tanggal_observasi);
+                    setInputText('#waktu_observasi', data.waktu_observasi);
+                    setInputText('#tekanan_darah_obs', data.tekanan_darah);
+                    setInputText('#nadi_obs', data.nadi);
+                    setInputText('#pernapasan', data.pernapasan);
+                    setInputText('#spo2_obs', data.spo2);
+                    
+                    setInputDate('#tanggal_sirkulasi', data.tanggal_sirkulasi);
+                    setInputText('#waktu_sirkulasi', data.waktu_sirkulasi);
+                    setInputText('#nadi_sirkulasi', data.nadi_sirkulasi);
+                    setInputText('#suhu_kulit', data.suhu_kulit);
+                    setInputText('#warna', data.warna);
+                    setInputText('#isi_nadi', data.isi_nadi);
+                    setInputText('#sensasi', data.sensasi);
+                    setInputText('#pergerakan', data.pergerakan);
+                    setInputText('#pendarahan_lipat_paha', data.pendarahan_lipat_paha);
+                    setInputText('#hematoma', data.hematoma);
+                }
+            },
+        })
+    }
+
+    function getPemantauanPaskaTindakanCathlab() {
+        $.ajax({
+            url: "{{ route('perawat.pemantauan-paska-tindakan-cathlab') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    $('#dokter_yang_merawat').val(data.dokter_yang_merawat);
+                    $('#diagnosa_medis').val(data.diagnosa_medis);
+                    $('#masalah_keperawatan').val(data.masalah_keperawatan);
+                    $('#prosedur_yang_dilakukan').val(data.prosedur_yang_dilakukan);
+                    $('#hasil_prosedur').val(data.hasil_prosedur);
+                    $('#keadaan_umum').val(data.keadaan_umum);
+                    $('#gcs').val(data.gcs);
+                    $('#pupil_reaksi_kanan').val(data.pupil_reaksi_kanan);
+                    $('#pupil_reaksi_kiri').val(data.pupil_reaksi_kiri);
+                    $('#td').val(data.td);
+                    $('#nadi_val').val(data.nadi);
+                    $('#rr').val(data.rr);
+                    $('#suhu_val').val(data.suhu);
+                    $('#spo2').val(data.spo2);
+                    $('#skala_nyeri_val').val(data.skala_nyeri);
+                    
+                    setCustomCheckboxes('input[name="akses[]"]', data.akses);
+                    $('#akses_femoralis_lainnya_val').val(data.akses_femoralis_text);
+                    
+                    $('#sheat_aff').val(data.sheat_aff);
+                    
+                    setCustomCheckboxes('input[name="teknik_hemostasis[]"]', data.teknik_hemostasis);
+                    $('#teknik_hemostasis_lainnya').val(data.teknik_hemostasis_text);
+                    
+                    $('#komplikasi').val(data.komplikasi);
+                    $('#total_kontras').val(data.total_kontras);
+                    
+                    setCustomCheckboxes('input[name="diet[]"]', data.diet);
+                    $('#diet_khusus').val(data.diet_khusus_text);
+                    
+                    $('#bab').val(data.bab);
+                    $('#bak').val(data.bak);
+                    
+                    setCustomCheckboxes('input[name="mobilisasi[]"]', data.mobilisasi);
+                    
+                    $('#hal_istimewa_pasien').val(data.hal_istimewa_pasien);
+                    $('#assessment').val(data.assessment);
+                    
+                    setCustomCheckboxes('input[name="recommendations[]"]', data.recommendations);
+                }
+            },
+        })
+    }
+
+    function getCathlabSignOut(){
+        $.ajax({
+            url: "{{ route('perawat.cathlab-sign-out') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    $('#cath_signout_pukul').val(data.cath_signout_pukul);
+                    $('#cath_signout_tindakan').val(data.cath_signout_tindakan);
+                    $('#cath_signout_implan').val(data.cath_signout_implan);
+                    setRadioButton2('cath_signout_alat', data.cath_signout_alat);
+                    setRadioButton2('cath_signout_prosedur', data.cath_signout_prosedur);
+                    $('#cath_signout_prosedur_text').val(data.cath_signout_prosedur_text);
+                    $('#cath_signout_dokter_operator').val(data.cath_signout_dokter_operator);
+                    $('#cath_signout_dokter_anastesi').val(data.cath_signout_dokter_anastesi);
+                    $('#cath_signout_perawat_anastesi').val(data.cath_signout_perawat_anastesi);
+                    $('#cath_signout_perawat').val(data.cath_signout_perawat);
+                    $('#cath_signout_perawat_scrub').val(data.cath_signout_perawat_scrub);
+                    $('#cath_signout_perawat_hemodinamic').val(data.cath_signout_perawat_hemodinamic);
+                    $('#cath_timeout_tim_petugas_lain').val(data.cath_timeout_tim_petugas_lain);
+                }
+            },
+        })
+    }
+
+    function getCathlabTimeOut(){
+        $.ajax({
+            url: "{{ route('perawat.cathlab-time-out') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    $('#cath_timeout_pukul').val(data.cath_timeout_pukul);
+                    $('#cath_timeout_nama_pasien').val(data.cath_timeout_nama_pasien);
+                    $('#cath_timeout_tgl_lahir').val(data.cath_timeout_tgl_lahir);
+                    $('#cath_timeout_diagnostik').val(data.cath_timeout_diagnostik);
+                    $('#cath_timeout_intervensi').val(data.cath_timeout_intervensi);
+                    setRadioButton2('cath_timeout_tim', data.cath_timeout_tim);
+                    $('#cath_timeout_tim_dokter').val(data.cath_timeout_tim_dokter);
+                    $('#cath_timeout_tim_circulating').val(data.cath_timeout_tim_circulating);
+                    $('#cath_timeout_tim_dokter_anastesi').val(data.cath_timeout_tim_dokter_anastesi);
+                    $('#cath_timeout_tim_perawat_anastesi').val(data.cath_timeout_tim_perawat_anastesi);
+                    $('#cath_timeout_perawat_scrub').val(data.cath_timeout_perawat_scrub);
+                    $('#cath_timeout_perawat_hemodinamic').val(data.cath_timeout_perawat_hemodinamic);
+                    $('#cath_timeout_tim_petugas_lain').val(data.cath_timeout_tim_petugas_lain);
+                    $('#cath_timeout_obat').val(data.cath_timeout_obat);
+                    $('#cath_timeout_ureum').val(data.cath_timeout_ureum);
+                    $('#cath_timeout_kreatinin').val(data.cath_timeout_kreatinin);
+                    $('#cath_timeout_akses').val(data.cath_timeout_akses);
+                    $('#cath_timeout_estimasi').val(data.cath_timeout_estimasi);
+                    $('#cath_timeout_tindakan').val(data.cath_timeout_tindakan);
+                    $('#cath_timeout_pertanyaan').val(data.cath_timeout_pertanyaan);
+                    $('#cath_timeout_tim_siap').val(data.cath_timeout_tim_siap);
+                }
+            },
+        })
+    }
+
+    function getCathlabSignIn(){
+        $.ajax({
+            url: "{{ route('perawat.cathlab-sign-in') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    
+                    $('#cath_signin_pukul').val(data.cath_signin_pukul);
+                    setRadioButton2('cath_signin_identifikasi', data.cath_signin_identifikasi);
+                    setRadioButton2('cath_signin_persetujuan', data.cath_signin_persetujuan);
+                    setRadioButton2('cath_signin_anastesi', data.cath_signin_anastesi);
+                    setRadioButton2('cath_signin_prosedur', data.cath_signin_prosedur);
+                    setRadioButton2('cath_signin_puasa', data.cath_signin_puasa);
+                    setRadioButton2('cath_signin_alergi', data.cath_signin_alergi);
+                    $('#cath_signin_alergi_text').val(data.cath_signin_alergi_text);
+                    setRadioButton2('cath_signin_antibiotik', data.cath_signin_antibiotik);
+                    $('#cath_signin_antibiotik_text').val(data.cath_signin_antibiotik_text);
+                    setRadioButton2('cath_signin_laboratorium', data.cath_signin_laboratorium);
+                    $('#cath_signin_ureum_val').val(data.cath_signin_ureum);
+                    $('#cath_signin_creatinin_val').val(data.cath_signin_creatinin);
+                    $('#cath_signin_pt_val').val(data.cath_signin_pt);
+                    $('#cath_signin_aptt_val').val(data.cath_signin_aptt);
+                    $('#cath_signin_lainnya_val').val(data.cath_signin_lainnya);
+                    setRadioButton2('cath_signin_ekg', data.cath_signin_ekg);
+                    setRadioButton2('cath_signin_infus', data.cath_signin_infus);
+                    setRadioButton2('cath_signin_gigi', data.cath_signin_gigi);
+                    setRadioButton2('cath_signin_mesin', data.cath_signin_mesin);
+                    setRadioButton2('cath_signin_alat', data.cath_signin_alat);
+                    $('#cath_signin_perawat').val(data.cath_signin_perawat);
+                }
+            },
+        })
+    }
+
+    function getPemantauanHemodinamik() {
+        $.ajax({
+            url: "{{ route('perawat.pemantauan-hemodinamik') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    // Mengisi data tekanan darah
+                    if (data.tekanan_darah) {
+                        let tekananDarah = JSON.parse(data.tekanan_darah);
+                        $('input[name="tekanan_darah[]"]').each(function(index) {
+                            $(this).val(tekananDarah[index] || '');
+                        });
+                    }
+
+                    // Mengisi data nadi
+                    if (data.nadi) {
+                        let nadi = JSON.parse(data.nadi);
+                        $('input[name="nadi[]"]').each(function(index) {
+                            $(this).val(nadi[index] || '');
+                        });
+                    }
+
+                    // Mengisi data pernapasan
+                    if (data.pernapasan) {
+                        let pernapasan = JSON.parse(data.pernapasan);
+                        $('input[name="pernapasan[]"]').each(function(index) {
+                            $(this).val(pernapasan[index] || '');
+                        });
+                    }
+
+                    // Mengisi data SPO2
+                    if (data.spo2) {
+                        let spo2 = JSON.parse(data.spo2);
+                        $('input[name="spo2[]"]').each(function(index) {
+                            $(this).val(spo2[index] || '');
+                        });
+                    }
+
+                    // Mengisi data perubahan kondisi
+                    setInputText('textarea[name="perubahan_kondisi"]', data.perubahan_kondisi);
+                }
+            },
+        })
+    }
+
+    function getCatatanIntraTindakanCathlab() {
+        $.ajax({
+            url: "{{ route('perawat.catatan-intra-tindakan-cathlab') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    // Mengisi data sesuai id
+                    setInputText('#pasien_tiba', data.pasien_tiba);
+                    setInputText('#time_out', data.time_out);
+                    setInputText('#cek_fungsi_peralatan', data.cek_fungsi_peralatan);
+                    setInputText('#preparasi_di', data.preparasi_di);
+                    setInputText('#desinfektan_dengan', data.desinfektan_dengan);
+                    setInputText('#tipe_pembiusan', data.tipe_pembiusan);
+                    setInputText('#akses', data.akses);
+                    setInputText('#catheter_diagnostik', data.catheter_diagnostik);
+                    setInputText('#value_diagnostik', data.value_diagnostik);
+                    setInputText('#kontras', data.kontras);
+                    setInputText('#guiding_catheter', data.guiding_chateter);
+                    setInputText('#balon_ukuran', data.balon_ukuran);
+                    setInputText('#balon_jumlah', data.balon_jumlah);
+                    setInputText('#balon_jenis', data.balon_jenis);
+                    setInputText('#jumlah_stent', data.stent_jumlah);
+                    setInputText('#jenis_stent', data.stent_jenis);
+                    setInputText('#lokasi_stent', data.stent_lokasi);
+                    setInputText('#pacing', data.pacing);
+                    setInputText('#iabp', data.iabp);
+                    setInputText('#kondisi_pasien', data.kondisi_pasien);
+                    setInputText('#pasien_pci', data.pasien_pci);
+                    setInputText('#obat_obatan', data.obat_obatan);
+                }
+            },
+        })
+    }
+
+    function getCatatanPraTindakanCathlab() {
+        $.ajax({
+            url: "{{ route('perawat.catatan-pra-tindakan-cathlab') }}",
+            method: 'GET',
+            data: {
+                reg_no: regno,
+            },
+            success: function(response) {
+                // console.log(response);
+                if (response.status) {
+                    let data = response.data;
+                    $('#pra_suhu').val(data.pra_suhu);
+                    $('#pra_nadi').val(data.pra_nadi);
+                    $('#pra_rr').val(data.pra_rr);
+                    $('#pra_td').val(data.pra_td);
+                    $('#pra_skor_nyeri').val(data.pra_skor_nyeri);
+                    $('#pra_bb').val(data.pra_bb);
+                    $('#pra_tb').val(data.pra_tb);
+                    $('#cath_signin_ureum').val(data.cath_signin_ureum);
+                    $('#cath_signin_creatinin').val(data.cath_signin_creatinin);
+                    $('#cath_signin_hbsag').val(data.cath_signin_hbsag);
+                    $('#cath_signin_gds').val(data.cath_signin_gds);
+                    $('#cath_signin_hb').val(data.cath_signin_hb);
+                    $('#cath_signin_trombosit').val(data.cath_signin_trombosit);
+                    $('#cath_signin_pt').val(data.cath_signin_pt);
+                    $('#cath_signin_aptt').val(data.cath_signin_aptt);
+                    setCustomCheckboxes('input[name="pra_status_mental[]"]', data.pra_status_mental);
+                    setCustomCheckboxes('input[name="pra_penyakit_dahulu[]"]', data.pra_penyakit_dahulu);
+                    $('#pra_pengobatan_saat_ini').val(data.pra_pengobatan_saat_ini);
+                    $('#pra_katerisasi').val(data.pra_katerisasi);
+                    setCustomCheckboxes('input[name="pra_stent[]"]', data.pra_stent);
+                    $('#pra_stent_di').val(data.pra_stent_di);
+                    $('#pra_jenis').val(data.pra_jenis);
+                    $('#pra_kapan').val(data.pra_kapan);
+                    $('#pra_di').val(data.pra_di);
+                    setRadioButton2('pra_alergi', data.pra_alergi);
+                    $('#pra_alergi_text').val(data.pra_alergi_text);
+                    setRadioButton2('ceklist_kesiapan_ruang', data.ceklist_kesiapan_ruang);
+                    $('#persiapan_keterangan_1').val(data.persiapan_keterangan_1);
+                    
+                    // Verifikasi Pasien
+                    for (let i = 1; i <= 8; i++) {
+                        setRadioButton2('verif_ruangan_' + i, data['verif_ruangan_' + i]);
+                        setRadioButton2('verif_cathlab_' + i, data['verif_cathlab_' + i]);
+                        $('#verif_keterangan_' + i).val(data['verif_keterangan_' + i]);
+                    }
+                    
+                    // Persiapan Pasien
+                    for (let i = 1; i <= 12; i++) {
+                        setRadioButton2('persiapan_ruangan_' + i, data['persiapan_ruangan_' + i]);
+                        setRadioButton2('persiapan_cathlab_' + i, data['persiapan_cathlab_' + i]);
+                        $('#persiapan_keterangan_' + i).val(data['persiapan_keterangan_' + i]);
+                    }
+                    $('#tgl_jam_ruangan').val(data.tgl_jam_ruangan);
+                    $('#perawat_ruangan').val(data.perawat_ruangan);
+                    $('#tgl_jam_cathlab').val(data.tgl_jam_cathlab);
+                    $('#perawat_cathlab').val(data.perawat_cathlab);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Terjadi kesalahan: ', error);
+            }
+        })
+    }
+
     function loadDtRiwayatTiDiagnostik() {
         // Hapus DataTable jika sudah ada
         if ($.fn.DataTable.isDataTable('#dt_serah_terima_diagnostik')) {
@@ -509,7 +1105,7 @@
 
                     // Mengisi data ke dalam form
                     $('#informasi_nama_tindakan').val(informasi.informasi_nama_tindakan);
-                    $('#ParamedicCode').val(informasi.ParamedicName);
+                    $('#informasi_ParamedicCode').val(informasi.ParamedicName);
                     $('#informasi_pemberi_info').val(informasi.informasi_pemberi_info);
                     $('#informasi_penerima_info').val(informasi.informasi_penerima_info);
                     $('#informasi_diberikan_pada').val(informasi.informasi_diberikan_pada);
@@ -619,6 +1215,70 @@
             error: function(xhr, status, error) {
                 console.error('Error:', status, error);
             }
+        });
+    }
+
+    function loadDtDrugHistory() {
+        // Periksa apakah DataTable sudah diinisialisasi sebelumnya
+        if ($.fn.DataTable.isDataTable('#riwayat_drug')) {
+            // Jika sudah, hancurkan instance yang ada
+            $('#riwayat_drug').DataTable().destroy();
+        }
+
+        // Inisialisasi DataTable baru
+        let riwayat_drug = $('#riwayat_drug').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [10, 25, 50, 100, 200, 500],
+            scrollX: true,
+            ajax: {
+                url: "{{ route('perawat.dt-drug-history') }}",
+                data: function(d) {
+                    d.reg_no = "{{ $reg }}";
+                }
+            },
+            columns: [{
+                data: "tgl_pemberian",
+                name: "tgl_pemberian",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "nama_obat",
+                name: "nama_obat",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "dosis",
+                name: "dosis",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "frekuensi",
+                name: "frekuensi",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "cara_pemberian",
+                name: "cara_pemberian",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "antibiotik",
+                name: "antibiotik",
+                orderable: true,
+                searchable: true,
+            },
+            {
+                data: "created_by_name",
+                name: "created_by_name",
+                orderable: true,
+                searchable: true,
+            }]
         });
     }
         
@@ -1960,6 +2620,10 @@
             getRiwayatFluidBalance();
         });
 
+        $('#riwayat-drug-tab').on('click', function() {
+            loadDtDrugHistory();
+        });
+
         $('#riwayat-transfusi-darah-tab').on('click', function() {
             getMonitoringTransfusiDarah();
         });
@@ -1997,5 +2661,34 @@
         $('#serah_terima_tab').on('click', function() {
             loadDtRiwayatTiDiagnostik();
         });
+
+        $('#riwayat-cathlab-tab').on('click', function() {
+            getCatatanPraTindakanCathlab();
+            getCatatanIntraTindakanCathlab();
+            getPemantauanHemodinamik();
+            getCathlabSignIn();
+            getCathlabTimeOut();
+            getCathlabSignOut();
+            getPemantauanPaskaTindakanCathlab();
+            getObservasiPaskaTindakanCathlab();
+        });
+
+        $('#riwayat-physician-team-tab').on('click', function() {
+            getPhysicianTeam();
+        });
+
+        $('#riwayat-admin-nurse-tab').on('click', function() {
+            getRiwayatAdminNurse();
+        });
+
+        $('#riwayat-bayi-baru-lahir-tab').on('click', function() {
+            getBayiBaruLahirAnamnesa();
+            getBayiBaruLahirPemeriksaan();
+        });
+
+        $('#riwayat-checklist-kepulangan-tab').on('click', function() {
+            getChecklistPulang();
+        });
+
     }
 </script>
