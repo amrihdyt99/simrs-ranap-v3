@@ -630,6 +630,7 @@
                 iwl_muntah: $('#iwl_muntah').val(),
                 jumlah: $('#jumlah').val(),
                 tanggal_pemberian: $('#tanggal_waktu_pemberian').val(),
+                nama_perawat: "{{ auth()->user()->name }}",
                 user_shift: "{{ session('user_shift') }}",
             },
             success: function(data) {
@@ -1043,11 +1044,12 @@
     }
 
     function simpanMonitoringNews() {
+        var userShift = "{{ session('user_shift') }}";
         neko_proses();
         $.ajax({
             url: "{{route('add.monitoringnews')}}",
             type: "POST",
-            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec + "&user_id=" + "{{auth()->user()->id}}",
+            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec + "&user_id=" + "{{auth()->user()->id}}" + "&shift=" + userShift,
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
@@ -1055,7 +1057,7 @@
             error: function(data) {
                 neko_simpan_error_noreq();
             },
-        })
+        });
     }
 
     function simpanInformasiTindakanMedis() {
