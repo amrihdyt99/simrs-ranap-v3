@@ -217,11 +217,7 @@ $registrasi_data = DB::connection('mysql2')
                 </div>
                 @endif
 
-                <div class="row">
-                    <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
-                        Riwayat
-                    </div>
-                </div>
+                
 
                 <div class="row">
                     <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
@@ -424,6 +420,12 @@ $registrasi_data = DB::connection('mysql2')
                 <div class="row">
                     <div class="left-tab" id="tab-checklist_kepulangan" onclick="clickTab('checklist_kepulangan')">
                         Checklist Kepulangan
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
+                        Riwayat
                     </div>
                 </div>
 
