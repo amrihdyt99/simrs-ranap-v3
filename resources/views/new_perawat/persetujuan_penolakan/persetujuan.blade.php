@@ -158,7 +158,7 @@
                                     <button type="button" id="clear_btn_persetujuan_penerima" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
-                                    <input type="text" name="nama_persetujuan_penerima" class="form-control mt-2" placeholder="Nama Yang Menyatakan">
+                                    <input type="text" name="nama_persetujuan_penerima" value="{{$get_tindakan_medis_data_persetujuan->nama_persetujuan_penerima}}" class="form-control mt-2" placeholder="Nama Yang Menyatakan">
                                 </div>
                             </div>
                         </div>

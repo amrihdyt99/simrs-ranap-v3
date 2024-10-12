@@ -1126,8 +1126,20 @@ class AssesmentAwalDokterController extends Controller
                     ->where('reg_no', $request->reg_no)
                     ->latest()
                     ->first();
+
+                    $resiko_jatuh_morse = DB::connection('mysql')
+                    ->table('resiko_jatuh_skala_morse')
+                    ->select([
+                        'resiko_jatuh_morse_total_skor',
+                        'resiko_jatuh_morse_kategori',
+                    ])
+                    ->where('reg_no', $request->reg_no)
+                    ->latest()
+                    ->first();
+
                 $resiko_jatuh = [
-                    'dumpty' => $resiko_jatuh_dumpty
+                    'dumpty' => $resiko_jatuh_dumpty,
+                    'morse' => $resiko_jatuh_morse
                 ];
             } elseif ($request->kategori_pasien === "bayi") {
                 $resiko_jatuh = [
