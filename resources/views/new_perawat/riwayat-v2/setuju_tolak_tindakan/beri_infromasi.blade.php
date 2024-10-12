@@ -18,7 +18,7 @@
                     <label for="">Dokter Pelaksana Tindakan :</label>
                 </div>
                 <div class="col-sm-9">
-                    <input type="text" id="ParamedicCode" name="ParamedicCode" class="form-control" placeholder="Masukkan kode paramedis" disabled>
+                    <input type="text" id="informasi_ParamedicCode" name="ParamedicCode" class="form-control" placeholder="Masukkan kode paramedis" disabled>
                 </div>
             </div>
             <div class="row mt-2">
