@@ -501,13 +501,13 @@
         return $img;
     }
 
-    function clickTab(tabId) {
-        $('div[id*="panel-"]').hide();
-        $('div[id*="tab-"]').removeClass('active');
+    // function clickTab(tabId) {
+    //     $('div[id*="panel-"]').hide();
+    //     $('div[id*="tab-"]').removeClass('active');
         
-        $('#panel-' + tabId).show();
-        $('#tab-' + tabId).addClass('active');
-    }
+    //     $('#panel-' + tabId).show();
+    //     $('#tab-' + tabId).addClass('active');
+    // }
 </script>
 <script>
     function addpemulanganpasien() {
