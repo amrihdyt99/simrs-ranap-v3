@@ -11,6 +11,7 @@ use App\Models\PasienSoaper;
 use App\Models\RegistrationInap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class SummaryController extends Controller
 {
@@ -87,7 +88,16 @@ class SummaryController extends Controller
         $diagnosa = null;
         $prosedur = null;
         $subs = substr($reg, 6, 20);
-        return view('new_dokter.assesment', compact('data', 'reg', 'patient', 'dataPasien', 'icd9cm', 'icd10', 'diagnosa', 'prosedur', 'subs', 'id_cppt'));
+        $physician_team_role = DB::connection('mysql2')
+            ->table('m_physician_team')
+            ->where('reg_no', $patient->reg_no)
+            ->where('kode_dokter', Auth::user()->dokter_id)
+            ->pluck('kategori')
+            ->toArray(); 
+
+        $data['physician_team_role'] = $physician_team_role;
+
+        return view('new_dokter.assesment', compact('data', 'reg', 'patient', 'dataPasien', 'icd9cm', 'icd10', 'diagnosa', 'prosedur', 'subs', 'id_cppt', 'physician_team_role'));
     }
 
     function summaryteam(RegistrationInap $patient)

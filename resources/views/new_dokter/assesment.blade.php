@@ -17,6 +17,26 @@
         <li class="breadcrumb-item active" aria-current="page">Assesment</li>
     </ol>
 </nav>
+
+@if(isset($physician_team_role) && is_array($physician_team_role))
+    @php
+        $isKonsul = in_array('Konsul', $physician_team_role);
+    @endphp
+
+    @if ($isKonsul)
+    <div class="alert alert-warning mb-3 blink" role="alert" onclick="clickTab('physician-team-dokter')">
+        <i class="fa fa-exclamation-triangle mr-2"></i>Pasien memerlukan konsultasi, <span class="badge badge-info">Jawab Konsultasi</span> untuk menjawab permintaan konsultasi
+    </div>
+    @endif
+@endif
+
+@if (request()->has('tab') && request()->get('tab') == 'physician-team-dokter')
+<script>
+    $(document).ready(function() {
+        clickTab('physician-team-dokter');
+    });
+</script>
+@endif
 <!-- <div class="row">
         <div class="col">
             <div class="tab-resume float-right" id="tab-resume" onclick="clickTab('resume')">
@@ -480,6 +500,14 @@
 
         return $img;
     }
+
+    // function clickTab(tabId) {
+    //     $('div[id*="panel-"]').hide();
+    //     $('div[id*="tab-"]').removeClass('active');
+        
+    //     $('#panel-' + tabId).show();
+    //     $('#tab-' + tabId).addClass('active');
+    // }
 </script>
 <script>
     function addpemulanganpasien() {

@@ -24,8 +24,8 @@
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" id="btn-cetak-all-invoice" class="btn btn-primary">Print Semua</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" data-dismiss="modal">Close</button>
-        {{-- <button type="button" id="btn-confirm-review" class="btn btn-primary">Validasi</button> --}}
       </div>
     </div>
   </div>
