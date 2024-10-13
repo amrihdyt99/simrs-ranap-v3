@@ -288,6 +288,7 @@ Route::group(['prefix' => 'sphaira-rajal'], function () {
 	Route::get('dtd', [ApiMasterRajalController::class, 'dtd'])->name('sphaira-rajal.dtd');
 	Route::get('education', [ApiMasterRajalController::class, 'education'])->name('sphaira-rajal.education');
 	Route::get('m_item', [ApiMasterRajalController::class, 'm_item'])->name('sphaira-rajal.m_item');
+	Route::get('m_item_group', [ApiMasterRajalController::class, 'm_item_group'])->name('sphaira-rajal.m_item_group');
 	Route::get('check_table', [ApiMasterRajalController::class, 'check_table'])->name('sphaira-rajal.check_table');
 });
 

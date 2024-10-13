@@ -11,6 +11,7 @@ use App\Http\Controllers\Master\RoomClassController;
 use App\Http\Controllers\Master\MedicineController;
 use App\Http\Controllers\Master\IndicationController;
 use App\Http\Controllers\Master\InterventionController;
+use App\Http\Controllers\Master\ItemGroupController;
 use App\Http\Controllers\Master\LogActivityController;
 use App\Http\Controllers\Master\OrganizationController;
 use App\Http\Controllers\Master\OutcomeController;
@@ -70,6 +71,7 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::resource('draft', DraftController::class);
     Route::resource('dtd', DTDController::class);
     Route::resource('education', EducationController::class);
+    Route::resource('item-group', ItemGroupController::class);
 
     Route::prefix('aksesRuangan')->group(function () {
         Route::get('/', [AksesRuanganController::class, 'index']);

@@ -6,6 +6,7 @@ use App\Models\Master\DaftarMasalah;
 use App\Models\Master\Draft;
 use App\Models\Master\DTD;
 use App\Models\Master\Education;
+use App\Models\Master\ItemGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -85,6 +86,20 @@ class TarikDataRajalController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_education')->insert([$kue]);
+            }
+        }
+        echo 'Alhamdulillah';
+    }
+
+    public function m_item_group(Request $request)
+    {
+
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/m_item_group');
+        foreach ($data['data']  as $kue) {
+            $cek = ItemGroup::find($kue['ItemGroupCode']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_item_group')->insert([$kue]);
             }
         }
         echo 'Alhamdulillah';
