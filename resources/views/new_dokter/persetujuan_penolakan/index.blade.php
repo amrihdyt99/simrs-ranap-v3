@@ -1,8 +1,10 @@
-@empty($informasi)
-    @php
+
+    {{-- @php
         $informasi = optional((object)[]);
-    @endphp
-@endempty
+        $dataPasien = optional((object)[]);
+        $registrasi_pj = optional((object)[]);
+    @endphp --}}
+
 
 <h4><b>PERSETUJUAN / PENOLAKAN TINDAKAN MEDIS pp</b></h4>
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
@@ -23,13 +25,13 @@
 <div class="text-black" style="font-size: 14px">
     <div class="tab-content" id="tab-tindakan-medis">
         <div id="pemberi" class="tab-pane fade show active" role="tabpanel" aria-labelledby="pemberi_tab">
-            {{-- @include('new_perawat.persetujuan_penolakan.pemberian_informasi') --}}
+            @include('new_dokter.persetujuan_penolakan.pemberian_informasi')
         </div>
         <div id="persetujuan" class="tab-pane fade" role="tabpanel" aria-labelledby="persetujuan_tab">
-            {{-- @include('new_perawat.persetujuan_penolakan.persetujuan') --}}
+            @include('new_dokter.persetujuan_penolakan.persetujuan')
         </div>
         <div id="penolakan" class="tab-pane fade" role="tabpanel" aria-labelledby="penolakan_tab">
-            {{-- @include('new_perawat.persetujuan_penolakan.penolakan') --}}
+            @include('new_dokter.persetujuan_penolakan.penolakan')
         </div>
     </div>
 </div>

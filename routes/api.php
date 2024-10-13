@@ -342,6 +342,9 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/riwayat-ti-status', [RiwayatController::class, 'getDtRiwayatTiStatus'])->name('dt-riwayat-ti-status');
 	Route::get('/serah-terima-ti', [RiwayatController::class, 'getSerahTerimaTI'])->name('serah-terima-ti');
 	Route::get('/riwayat-ti-diagnostik', [RiwayatController::class, 'getDtRiwayatTiDiagnostik'])->name('dt-riwayat-ti-diagnostik');
+
+
+
 	Route::get('/catatan-pra-tindakan-cathlab', [RiwayatController::class, 'getCatatanPraTindakanCathlab'])->name('catatan-pra-tindakan-cathlab');
 	Route::get('/catatan-intra-tindakan-cathlab', [RiwayatController::class, 'getCatatanIntraTindakanCathlab'])->name('catatan-intra-tindakan-cathlab');
 	Route::get('/pemantauan-hemodinamik', [RiwayatController::class, 'getPemantauanHemodinamik'])->name('pemantauan-hemodinamik');
@@ -355,4 +358,7 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/bayi-baru-lahir-anamnesa', [RiwayatController::class, 'getBayiBaruLahirAnamnesa'])->name('bayi-baru-lahir-anamnesa');
 	Route::get('/bayi-baru-lahir-pemeriksaan', [RiwayatController::class, 'getBayiBaruLahirPemeriksaan'])->name('bayi-baru-lahir-pemeriksaan');
 	Route::get('/checklist-pulang', [RiwayatController::class, 'getChecklistPulang'])->name('checklist-pulang');
+
 });
+
+Route::get('/persetujuan-penolakan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan_dokter'])->name('dokter.persetujuan-penolakan');

@@ -1,4 +1,4 @@
-@php
+{{-- @php
     $get_tindakan_medis_data_persetujuan=DB::connection('mysql')
             ->table('rs_tindakan_medis_persetujuan')
             ->where('kode_tindakan_medis_setuju_tolak', $informasi->kode_tindakan_medis_setuju_tolak)
@@ -6,9 +6,9 @@
             if (!$get_tindakan_medis_data_persetujuan) {
                 $get_tindakan_medis_data_persetujuan=optional((object)[]);
             }
-@endphp
+@endphp --}}
 <form id="PersetujuanTindakanMedis">
-<input type="hidden" name="kode_tindakan_medis_setuju_tolak" value="{{$informasi->kode_tindakan_medis_setuju_tolak}}">
+<input type="hidden" name="kode_tindakan_medis_setuju_tolak" id="kode_tindakan_medis_setuju_tolak" value="">
     <div class="card">
         <div class="card-header">
             <h5><b>PERSETUJUAN TINDAKAN MEDIS</b></h5>
@@ -21,7 +21,7 @@
                         Nama
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_nama_1" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_nama_1}}">
+                        <input type="text" name="persetujuan_nama_1" id="persetujuan_nama_1" class="form-control" value="">
                     </td>
                 </tr>
                 <tr>
@@ -29,10 +29,10 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki" {{$get_tindakan_medis_data_persetujuan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki" >
                         <label for="persetujuan_jenis_kelamin_1_laki_laki">Laki-laki</label>
                     
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan" {{$get_tindakan_medis_data_persetujuan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan" >
                         <label for="persetujuan_jenis_kelamin_1_perempuan">Perempuan</label>
                     </td>
                     
@@ -42,7 +42,7 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        <input type="date" name="persetujuan_tanggal_lahir_1" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_tanggal_lahir_1}}">
+                        <input type="date" name="persetujuan_tanggal_lahir_1" id="persetujuan_tanggal_lahir_1" class="form-control" value="">
                     </td>
                 </tr>
                 <tr>
@@ -50,7 +50,7 @@
                         Alamat
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_alamat_1" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_alamat_1}}">
+                        <input type="text" name="persetujuan_alamat_1" id="persetujuan_alamat_1" class="form-control" value="">
                     </td>
                 </tr>
                 <tr>
@@ -58,7 +58,7 @@
                         Dengan ini menyatakan SETUJU untuk dilakukan tindakan.
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_pernyataan" id="" class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_pernyataan}}">
+                        <input type="text" name="persetujuan_pernyataan" id="persetujuan_pernyataan" class="form-control" value="">
                     </td>
                 </tr>
                 <tr>
@@ -66,15 +66,15 @@
                         Terhadap
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_1" value="Saya sendiri" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Saya sendiri' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_1" value="Saya sendiri" >
                         <label for="persetujuan_terhadap_1">Saya sendiri</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_2" value="Anak" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Anak' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_2" value="Anak" >
                         <label for="persetujuan_terhadap_2">Anak</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_3" value="Ayah" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Ayah' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_3" value="Ayah" >
                         <label for="persetujuan_terhadap_3">Ayah</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_4" value="Ibu" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Ibu' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_4" value="Ibu" >
                         <label for="persetujuan_terhadap_4">Ibu</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_5" value="Saudara" {{$get_tindakan_medis_data_persetujuan->persetujuan_terhadap=='Saudara' ? 'checked' : ''}}>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_5" value="Saudara" >
                         <label for="persetujuan_terhadap_5">Saudara</label>
                     </td>
                 </tr>
@@ -83,7 +83,7 @@
                         Nama
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_nama_2" id="" class="form-control" value="{{$dataPasien->PatientName}}">
+                        <input type="text" name="persetujuan_nama_2" id="persetujuan_nama_2" class="form-control" value="">
                     </td>
                 </tr>
                 <tr>
@@ -102,7 +102,7 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        <input type="date" name="persetujuan_tanggal_lahir_2" id="" class="form-control" value="{{$dataPasien->DateOfBirth}}">
+                        <input type="date" name="persetujuan_tanggal_lahir_2" id="persetujuan_tanggal_lahir_2" class="form-control" value="">
                     </td>
                 </tr>
                 <tr>
@@ -110,7 +110,7 @@
                         Alamat
                     </td>
                     <td>
-                        <input type="text" name="persetujuan_alamat_2" id="" class="form-control" value="{{$dataPasien->PatientAddress}}">
+                        <input type="text" name="persetujuan_alamat_2" id="persetujuan_alamat_2" class="form-control" value="">
                     </td>
                 </tr>
             </table>
@@ -132,8 +132,8 @@
                             </h5>
                         </td>
                         <td>
-                            <input type="datetime-local" name="persetujuan_tanggal_waktu_ttd" id=""
-                                class="form-control" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_tanggal_waktu_ttd}}">
+                            <input type="datetime-local" name="persetujuan_tanggal_waktu_ttd" id="persetujuan_tanggal_waktu_ttd"
+                                class="form-control" value="">
                         </td>
                     </tr>
                 </tbody>
@@ -154,11 +154,11 @@
                                         the HTML canvas tag.</canvas>
                                 </div>
                                 <div style="margin: 10px; text-align: center;">
-                                    <input type="hidden" id="signature_persetujuan_penerima" name="persetujuan_ttd_yg_menyatakan" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_yg_menyatakan}}">
+                                    <input type="hidden" id="signature_persetujuan_penerima" name="persetujuan_ttd_yg_menyatakan" value="">
                                     <button type="button" id="clear_btn_persetujuan_penerima" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
-                                    <input type="text" name="nama_persetujuan_penerima" class="form-control mt-2" placeholder="Nama Yang Menyatakan">
+                                    <input type="text" name="nama_persetujuan_penerima" id="nama_persetujuan_penerima" class="form-control mt-2" placeholder="Nama Yang Menyatakan">
                                 </div>
                             </div>
                         </div>
@@ -174,11 +174,11 @@
                                         the HTML canvas tag.</canvas>
                                 </div>
                                 <div style="margin: 10px; text-align: center;">
-                                    <input type="hidden" id="signature_persetujuan_dokter" name="persetujuan_ttd_dokter" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_dokter}}">
+                                    <input type="hidden" id="signature_persetujuan_dokter" name="persetujuan_ttd_dokter" value="">
                                     <button type="button" id="clear_btn_persetujuan_dokter" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
-                                    <input type="text" name="nama_persetujuan_dokter" class="form-control mt-2" placeholder="Nama Dokter" value="{{$get_tindakan_medis_data_persetujuan->nama_dokter ?? $dataPasien->ParamedicName}}">
+                                    <input type="text" name="nama_persetujuan_dokter" id="nama_persetujuan_dokter" class="form-control mt-2" placeholder="Nama Dokter" value="">
                                 </div>
                             </div>
                         </div>
@@ -199,19 +199,19 @@
                                         the HTML canvas tag.</canvas>
                                 </div>
                                 <div style="margin: 10px; text-align: center;">
-                                    <input type="hidden" id="signature_persetujuan_keluarga" name="persetujuan_ttd_keluarga" value="{{$get_tindakan_medis_data_persetujuan->persetujuan_ttd_keluarga}}">
+                                    <input type="hidden" id="signature_persetujuan_keluarga" name="persetujuan_ttd_keluarga" value="">
                                     <button type="button" id="clear_btn_persetujuan_keluarga" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
-                                    @if($registrasi_pj->isNotEmpty())
-                                        <select name="nama_persetujuan_keluarga" class="form-control mt-2">
+                                    @if(isset($registrasi_pj))
+                                        <select name="nama_persetujuan_keluarga" id="nama_persetujuan_keluarga" class="form-control mt-2">
                                             <option value="">Pilih Nama Keluarga</option>
                                             @foreach($registrasi_pj as $pj)
                                                 <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
                                             @endforeach
                                         </select>
                                     @else
-                                        <input type="text" name="nama_persetujuan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="{{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga ?? '' }}">
+                                        <input type="text" name="nama_persetujuan_keluarga" id="nama_persetujuan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="">
                                     @endif
                                 </div>
                             </div>
@@ -228,11 +228,11 @@
                                         the HTML canvas tag.</canvas>
                                 </div>
                                 <div style="margin: 10px; text-align: center;">
-                                    <input type="hidden" id="signature_persetujuan_perawat" name="persetujuan_ttd_perawat" value="{{$get_tindakan_medis_data_persetujuan->get_tindakan_medis_data_persetujuan ?? auth()->user()->signature}}">
+                                    <input type="hidden" id="signature_persetujuan_perawat" name="persetujuan_ttd_perawat" value="">
                                     <button type="button" id="clear_btn_persetujuan_perawat" class="btn btn-danger"
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
-                                    <input type="text" name="nama_persetujuan_perawat" class="form-control mt-2" placeholder="Nama Perawat" value="{{$get_tindakan_medis_data_persetujuan->nama_persetujuan_perawat ?? auth()->user()->name}}">
+                                    <input type="text" name="nama_persetujuan_perawat" id="nama_persetujuan_perawat" class="form-control mt-2" placeholder="Nama Perawat" value="">
                                 </div>
                             </div>
                         </div>
