@@ -225,11 +225,11 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-nyeri" onclick="clickTab('nyeri')">
                         Skrinning Nyeri
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="row">
                     <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
