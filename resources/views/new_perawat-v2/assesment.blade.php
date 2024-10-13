@@ -345,11 +345,11 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div> --}}
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-intra-hemodinamik" onclick="clickTab('intra-hemodinamik')">
                         Pemantauan Hemodinamik - Intra Tindakan
                     </div>
-                </div>
+                </div> --}}
 
 
                 {{-- <div class="row">
@@ -446,11 +446,11 @@ $registrasi_data = DB::connection('mysql2')
                 @endif
                 @endif
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
                         Riwayat
                     </div>
-                </div>
+                </div> --}}
             </div>
             @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
             <div class="col" style="max-width: 85%;">

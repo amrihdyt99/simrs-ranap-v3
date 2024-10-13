@@ -1026,7 +1026,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
-                            getPhysicianTeam();
+                            getPhysicianTeamPerawat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1045,7 +1045,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn_bedah')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            getPhysicianTeam();
+                            getPhysicianTeamPerawat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1375,7 +1375,7 @@
             url: "{{route('nyaa_universal.view_injector.perawat.show_qrcode')}}",
             success: function(data) {
                 inject_view_data(data);
-                getPhysicianTeam();
+                getPhysicianTeamPerawat();
             },
             error: function(data) {
                 clear_show_error();
@@ -1792,7 +1792,7 @@
     }
 
     // physician team
-    function getPhysicianTeam() {
+    function getPhysicianTeamPerawat() {
         var tablePhysicianTeam = $('#table-physician-team');
         $.ajax({
             url: "{{ route('get.physicianteam') }}",

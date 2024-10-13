@@ -1469,6 +1469,11 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_observasi_paska_tindakan')
             ->where('reg_no', $request->reg_no)
             ->first();
+        
+        $pemantauan_hemodinamik = DB::connection('mysql')
+            ->table('rs_pasien_intra_pemantuan')
+            ->where('no_reg', $request->reg_no)
+            ->first();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -1480,6 +1485,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'pra_tindakan' => optional($pra_tindakan),
             'paska_tindakan' => optional($paska_tindakan),
             'observasi_paska' => optional($observasi_paska),
+            'pemantauan_hemodinamik' => optional($pemantauan_hemodinamik),
         );
         return view('new_perawat.cath_lab_v2.index')
             ->with($context);
