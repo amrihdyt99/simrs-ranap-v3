@@ -85,13 +85,17 @@ class UserController extends Controller
 
     function create()
     {
-        /*
-        $dataparamedic=DB::connection('mysql2')
-            ->table("m_paramedis")
-            ->get();
-        */
 
-        return view('master.pages.user.create');
+        $paramedic = DB::connection('mysql2')
+            ->table("m_paramedis")
+            ->where([
+                ['IsActive', 1],
+                ['IsDeleted', 0],
+            ])
+            ->get();
+
+
+        return view('master.pages.user.create', compact('paramedic'));
     }
 
 
@@ -112,7 +116,7 @@ class UserController extends Controller
             'is_active' => 1,
             'is_deleted' => 0,
             'created_at' => Carbon::now(),
-            'signature' => $request->ttd_user, 
+            'signature' => $request->ttd_user,
         ];
 
         $simpan = DB::connection('mysql2')
@@ -126,7 +130,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $data['user'] = $user;
-        // dd( $user);
+        // dd($user);
         // $data['m_paramedis']= Paramedic::all();
         return view('master.pages.user.update', $data);
     }
@@ -171,7 +175,7 @@ class UserController extends Controller
         }
 
         if ($request->ttd_user) {
-            $params["signature"] = $request->ttd_user; 
+            $params["signature"] = $request->ttd_user;
         }
 
         $user->update($params);

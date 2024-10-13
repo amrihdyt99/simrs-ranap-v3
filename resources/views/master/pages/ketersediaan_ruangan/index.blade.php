@@ -45,6 +45,18 @@
             </select>
         </div>
     </div>
+
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="bed_status">Status</label>
+            <select id="bed_status" name="bed_status" class="form-control select2bs4" required>
+                <option value="">Semua</option>
+                <option value="0116^R">Ready</option>
+                <option value="0116^O">Sedang Dipakai</option>
+                <option value="0116^C">Cleaning</option>
+            </select>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -57,7 +69,6 @@
                     <th>Kelas</th>
                     <th>Bed Code</th>
                     <th>Status</th>
-                    <th>No Registrasi</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -80,6 +91,9 @@
         $('#class_code').change(function() {
             $('#ruangan_table').DataTable().draw();
         });
+        $('#bed_status').change(function() {
+            $('#ruangan_table').DataTable().draw();
+        });
 
         $('#ruangan_table').DataTable({
             processing: true,
@@ -97,6 +111,7 @@
                     d.service_unit_id = $('#service_unit_id').val();
                     d.room_id = $('#room_id').val();
                     d.class_code = $('#class_code').val();
+                    d.bed_status = $('#bed_status').val();
                 }
             },
             columns: [{
@@ -133,19 +148,6 @@
                             return `<span class="badge badge-danger">Sedang Dipakai</span>`;
                         } else if (columnData == "0116^C") {
                             return `<span class="badge badge-warning">Cleaning</span>`;
-                        }
-                    }
-                },
-                {
-                    data: "bed_history",
-                    name: "bed_history",
-                    orderable: true,
-                    searchable: true,
-                    render: function(columnData, type, rowData, meta) {
-                        if (columnData) {
-                            return columnData.RegNo;
-                        } else {
-                            return '-';
                         }
                     }
                 },

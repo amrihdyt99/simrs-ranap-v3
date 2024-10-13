@@ -27,16 +27,18 @@
               <a class="dropdown-item" href="{{ route('master.departement.index') }}">Departement</a>
               <a class="dropdown-item" href="{{ route('master.site-departement.index') }}">Site Departement</a>
               <a class="dropdown-item" href="{{ route('master.departement-service-unit.index') }}">Departement Service Unit</a>
-              <!-- <a class="dropdown-item" href="{{ route('master.unit.index') }}">Service Unit Room</a> -->
               <a class="dropdown-item" href="{{ route('master.serviceunit.index') }}">Service Unit</a>
-              <!-- <a class="dropdown-item" href="{{ route('master.location.index') }}">Location</a> -->
               <a class="dropdown-item" href="{{ route('master.class-category.index') }}">Class Category</a>
               <a class="dropdown-item" href="{{ route('master.class.index') }}">Class</a>
-              <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">Room</a>
-              <a class="dropdown-item" href="{{ route('master.bed.index') }}">Bed</a>
+              <a class="dropdown-item" href="{{ route('master.daftar-masalah.index') }}">Daftar Masalah</a>
+              <a class="dropdown-item" href="{{ route('master.draft.index') }}">Draft</a>
+              <a class="dropdown-item" href="{{ route('master.dtd.index') }}">DTD</a>
+              <a class="dropdown-item" href="{{ route('master.education.index') }}">Education</a>
             </div>
 
             <div class="col-6">
+              <a class="dropdown-item" href="{{ route('master.ruangan.index') }}">Room</a>
+              <a class="dropdown-item" href="{{ route('master.bed.index') }}">Bed</a>
               <a class="dropdown-item" href="{{ route('master.ketersediaanruangan.index') }}">Ketersediaan Ruangan</a>
               <a class="dropdown-item" href="{{ route('master.practitioner.index') }}">Practitioner</a>
               {{-- <a class="dropdown-item" href="{{ route('master.organization.index') }}">Organization</a> --}}
