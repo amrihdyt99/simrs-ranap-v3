@@ -8,7 +8,7 @@
     <li class="nav-item">
         <a class="nav-link" id="cek_form_tab_intra" data-toggle="tab" href="#akumulasi" role="tab"
             aria-controls="akumulasi" aria-selected="false">
-            Akumulasi</a>
+            Evaluasi</a>
     </li>
 </ul>
 
@@ -18,7 +18,7 @@
             @include('new_perawat\case_manager\tab\assesment')
         </div>
         <div id="akumulasi" class="tab-pane fade" role="tabpanel" aria-labelledby="cek_form_tab_intra">
-            @include('new_perawat\case_manager\tab\akumulasi')
+            @include('new_perawat\case_manager\tab\evaluasi')
         </div>
     </div>
 </div>

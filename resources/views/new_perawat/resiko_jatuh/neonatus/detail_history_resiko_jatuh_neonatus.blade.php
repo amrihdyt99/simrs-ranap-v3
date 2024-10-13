@@ -160,7 +160,7 @@
                                     <div style="margin: 10px;">
                                         <input type="hidden" id="resiko_jatuh_neonatus_ttd_signature_petugas"
                                             name="resiko_jatuh_neonatus_ttd_ttd_petugasdt"
-                                            value="{{ auth()->user()->signature }}">
+                                            value="">
                                     </div>
                                 </div>
                                 <input type="text"  id="nama_petugas_detail" class="form-control mt-2" disabled placeholder="Nama Petugas" style="width: 180px;">
