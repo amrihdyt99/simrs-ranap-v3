@@ -147,62 +147,89 @@
             <div class="card-body">
                 <div class="form-group">
                     <small>No Rekam Medis</small>
-                    <b><h6>{{$pasien->reg_medrec}}</b></h6>
+                    <b>
+                        <h6>{{$pasien->reg_medrec}}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Tanggal Kunjungan</small>
-                    <b><h6 id="bill_tgl_kunjungan">{{ Carbon\Carbon::parse($pasien->reg_tgl)->format('d/m/Y') }}</b></h6>
+                    <b>
+                        <h6 id="bill_tgl_kunjungan">{{ Carbon\Carbon::parse($pasien->reg_tgl)->format('d/m/Y') }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Nama Pasien</small>
-                    <b><h6 id="bill_nama">{{ $pasien->PatientName }}</b></h6>
+                    <b>
+                        <h6 id="bill_nama">{{ $pasien->PatientName }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Tanggal Lahir</small>
-                    <b><h6 id="bill_tgl_lahir">{{ $pasien->DateOfBirth }}</b></h6>
+                    <b>
+                        <h6 id="bill_tgl_lahir">{{ $pasien->DateOfBirth }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Jenis Kelamin</small>
-                    <b><h6 id="bill_jk">{{ $pasien->GCSex == "0001^F" ? "Perempuan" : "Laki-Laki" }}</b></h6>
+                    <b>
+                        <h6 id="bill_jk">{{ $pasien->GCSex == "0001^F" ? "Perempuan" : "Laki-Laki" }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>NIK</small>
-                    <b><h6 id="bill_tgl_lahir">{{ $pasien->SSN }}</b></h6>
+                    <b>
+                        <h6 id="bill_tgl_lahir">{{ $pasien->SSN }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>No. Telepon</small>
-                    <b><h6 id="bill_tgl_lahir">{{ $pasien->MobilePhoneNo1 }}</b></h6>
+                    <b>
+                        <h6 id="bill_tgl_lahir">{{ $pasien->MobilePhoneNo1 }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Alamat</small>
-                    <b><h6 id="bill_tgl_lahir">{{ $pasien->PatientAddress }}</b></h6>
+                    <b>
+                        <h6 id="bill_tgl_lahir">{{ $pasien->PatientAddress }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>DPJP Utama</small>
-                    <b><h6 id="bill_dpjp">{{ $pasien->ParamedicName }}</b></h6>
+                    <b>
+                        <h6 id="bill_dpjp">{{ $pasien->ParamedicName }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Ruang Rawat</small>
-                    <b><h6 id="bill_poli">
-                        {{ $pasien->ServiceUnitName ?? '-' }} - 
-                        {{ $pasien->RoomName ?? '-' }}
+                    <b>
+                        <h6 id="bill_poli">
+                            {{ $pasien->ServiceUnitName ?? '-' }} -
+                            {{ $pasien->RoomName ?? '-' }}
                     </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Diagnosa</small>
-                    <b><h6 id="bill_diagnosis">{{ $diagnosis->NM_ICD10 ?? '-' }}</b></h6>
+                    <b>
+                        <h6 id="bill_diagnosis">{{ $diagnosis->NM_ICD10 ?? '-' }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Jenis Kunjungan</small>
-                    <b><h6 id="bill_jenis_kunj">{{ $pasien->reg_status ?? '-' }}</b></h6>
+                    <b>
+                        <h6 id="bill_jenis_kunj">{{ $pasien->reg_status ?? '-' }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Payer</small>
-                    <b><h6 id="bill_payer">{{ $payer_name->BusinessPartnerName ?? '-' }}</b></h6>
+                    <b>
+                        <h6 id="bill_payer">{{ $payer_name->BusinessPartnerName ?? '-' }}
+                    </b></h6>
                 </div>
                 <div class="form-group">
                     <small>Kelas Perawatan</small>
-                    <b><h6 id="bill_payer">{{ $pasien->ChargeClassCodeName ?? '-' }}</b></h6>
+                    <b>
+                        <h6 id="bill_payer">{{ $pasien->ChargeClassCodeName ?? '-' }}
+                    </b></h6>
                 </div>
             </div>
         </div>
@@ -292,7 +319,7 @@
 <script>
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
-    var classcode = "{{$pasien->ChargeClassCode}}"
+    var classcode = "{{$pasien->ChargeClassCode ?? $pasien->charge_class_code}}"
     var payer_id = "{{$pasien->reg_cara_bayar}}"
     var $reg_no = $reg.replace(/\//g, '_')
     var modal = '#modalEntryOrder'
@@ -1300,6 +1327,33 @@
 
                 $('#table_body_billing').html(html);
                 $('#modalListBilling').modal('show');
+            },
+            error: function(error) {
+
+            }
+        });
+    });
+
+    $('#btn-cetak-all-invoice').click(function() {
+        $.ajax({
+            url: '{{ route("kasir.cetak.all-invoice") }}',
+            type: 'GET',
+            data: {
+                reg_no: "{{ $reg_no }}",
+            },
+            success: function(data) {
+                // Create a new window for printing
+                var printWindow = window.open('', '', 'height=800,width=1000');
+
+                // Add content to the new window
+                printWindow.document.write(data);
+
+                // Close the document to render the content
+                printWindow.document.close();
+
+                // Trigger the print dialog
+                printWindow.print();
+
             },
             error: function(error) {
 

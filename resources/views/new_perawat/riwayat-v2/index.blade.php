@@ -43,6 +43,18 @@
         <li class="nav-item" style="border: 1px solid;">
             <a class="nav-link" id="riwayat-cathlab-tab" data-toggle="tab" href="#riwayat-cathlab" role="tab" aria-controls="riwayat-cathlab" aria-selected="false">Cathlab</a>
         </li>
+        <li class="nav-item" style="border: 1px solid;">
+            <a class="nav-link" id="riwayat-physician-team-tab" data-toggle="tab" href="#riwayat-physician-team" role="tab" aria-controls="riwayat-physician-team" aria-selected="false">Physician Team</a>
+        </li>
+        <li class="nav-item" style="border: 1px solid;">
+            <a class="nav-link" id="riwayat-admin-nurse-tab" data-toggle="tab" href="#riwayat-admin-nurse" role="tab" aria-controls="riwayat-admin-nurse" aria-selected="false">Admin Nurse</a>
+        </li>
+        <li class="nav-item" style="border: 1px solid;">
+            <a class="nav-link" id="riwayat-bayi-baru-lahir-tab" data-toggle="tab" href="#riwayat-bayi-baru-lahir" role="tab" aria-controls="riwayat-bayi-baru-lahir" aria-selected="false">Bayi Baru Lahir</a>
+        </li>
+        <li class="nav-item" style="border: 1px solid;">
+            <a class="nav-link" id="riwayat-checklist-kepulangan-tab" data-toggle="tab" href="#riwayat-checklist-kepulangan" role="tab" aria-controls="riwayat-checklist-kepulangan" aria-selected="false">Checklist Kepulangan</a>
+        </li>
         {{-- <li class="nav-item"  style="border: 1px solid;">
             <a class="nav-link" id="riwayat-soapdok-tab" data-toggle="tab" href="#riwayat-soapdok" role="tab" aria-controls="riwayat-soapdok" aria-selected="false">Riwayat CPPT</a>
         </li>
@@ -99,6 +111,18 @@
         </div>
         <div class="tab-pane fade" id="riwayat-cathlab" role="tabpanel" aria-labelledby="riwayat-cathlab-tab">
             @include('new_perawat.riwayat-v2.cathlab.index_cathlab')
+        </div>
+        <div class="tab-pane fade" id="riwayat-physician-team" role="tabpanel" aria-labelledby="riwayat-physician-team-tab">
+            @include('new_perawat.riwayat-v2.physician_team.index_physician_team')
+        </div>
+        <div class="tab-pane fade" id="riwayat-admin-nurse" role="tabpanel" aria-labelledby="riwayat-admin-nurse-tab">
+            @include('new_perawat.riwayat-v2.admin_nurse.index_admin_nurse')
+        </div>
+        <div class="tab-pane fade" id="riwayat-bayi-baru-lahir" role="tabpanel" aria-labelledby="riwayat-bayi-baru-lahir-tab">
+            @include('new_perawat.riwayat-v2.bayi_baru_lahir.index_bayi_lahir')
+        </div>
+        <div class="tab-pane fade" id="riwayat-checklist-kepulangan" role="tabpanel" aria-labelledby="riwayat-checklist-kepulangan-tab">
+            @include('new_perawat.riwayat-v2.checklist_pulang.index')
         </div>
         {{-- <div class="tab-pane fade" id="riwayat-soapdok" role="tabpanel" aria-labelledby="riwayat-soapdok-tab">
             @include('new_perawat.riwayat-v2.riwayat_cppt')

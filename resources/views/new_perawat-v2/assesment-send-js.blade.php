@@ -771,7 +771,7 @@
             },
             success: function(data) {
                 neko_simpan_success();
-                getPhysicianTeam();
+                getPhysicianTeamPerawat();
             },
             error: function(data) {
                 neko_simpan_error_noreq();

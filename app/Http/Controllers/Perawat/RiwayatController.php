@@ -384,23 +384,18 @@ class RiwayatController extends Controller
     }
 
     
-    public function getDrugHistory(Request $request)
+    public function getDtDrugHistory(Request $request)
     {
-        $drug_history = DB::table('drug_history')
-            ->where('reg_no', $request->reg_no)
-            ->get();
-
-        if (!$drug_history) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        if ($request->ajax()) {
+            $drug_history = DB::connection('mysql')->table('nursing_drugs')
+                ->where([
+                    ['reg_no', $request->reg_no],
+                ])->get();
+            return DataTables()
+                ->of($drug_history)
+                ->escapeColumns([])
+                ->toJson();
         }
-
-        return response()->json(
-            [
-                'status' => true,
-                'data' => $drug_history
-            ],
-            200
-        );
     }
 
     public function getMonitoringTransfusiDarah(Request $request)
@@ -666,6 +661,287 @@ class RiwayatController extends Controller
                 ->toJson();
         }
     }
-    
+
+    public function getCatatanPratindakanCathlab(Request $request)
+    {
+        $catatan_pratindakan = DB::connection('mysql')
+            ->table('rs_catatan_keperawatan_pra_tindakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        if (!$catatan_pratindakan) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $catatan_pratindakan
+            ],
+            200
+        );
+    }
+
+    public function getCatatanIntraTindakanCathlab(Request $request)
+    {
+        $catatan_intra_tindakan = DB::connection('mysql')
+            ->table('rs_pasien_intra_tindakan')
+            ->where('no_reg', $request->reg_no)
+            ->first();
+        
+        if (!$catatan_intra_tindakan) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $catatan_intra_tindakan
+            ],
+            200
+        );
+    }
+
+    public function getPemantauanHemodinamik(Request $request)
+    {
+        $hemodinamik = DB::connection('mysql')
+            ->table('rs_pasien_intra_pemantuan')
+            ->where('no_reg', $request->reg_no)
+            ->first();
+        
+        if (!$hemodinamik) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $hemodinamik
+            ],
+            200
+        );
+    }
+
+    public function getCathlabSignIn(Request $request)
+    {
+        $cath_sign_in = DB::connection('mysql')
+            ->table('rs_cathlab_sign_in')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        if (!$cath_sign_in) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $cath_sign_in
+            ],
+            200
+        );
+    }
+
+    public function getCathlabTimeOut(Request $request)
+    {
+        $cath_time_out = DB::connection('mysql')
+            ->table('rs_cathlab_time_out')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        if (!$cath_time_out) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $cath_time_out
+            ],
+            200
+        );
+    }
+
+    public function getCathlabSignOut(Request $request)
+    {
+        $cath_sign_out = DB::connection('mysql')
+            ->table('rs_cathlab_sign_out')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        if (!$cath_sign_out) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $cath_sign_out
+            ],
+            200
+        );
+    }
+
+    public function getPemantauanPaskaTindakanCathlab(Request $request)
+    {
+        $pemantauan = DB::connection('mysql')
+            ->table('rs_paska_tindakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        if (!$pemantauan) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $pemantauan
+            ],
+            200
+        );
+    }
+
+    public function getObaservasiPaskaTindakanCathlab(Request $request)
+    {
+        $observasi = DB::connection('mysql')
+            ->table('rs_observasi_paska_tindakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        if (!$observasi) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $observasi
+            ],
+            200
+        );
+    }
+
+    public function getPhysicianTeam(Request $request)
+    {
+        $physician_team = DB::connection('mysql2')
+            ->table('m_physician_team')
+            ->leftJoin('m_paramedis', 'm_physician_team.kode_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where('m_physician_team.reg_no', $request->reg_no)
+            ->select('m_physician_team.*', 'm_paramedis.ParamedicName as nama_dokter')
+            ->get();
+        
+        
+
+        if (!$physician_team) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $physician_team
+            ],
+            200
+        );
+    }
+
+    public function getDtRiwayatAdminNurse(Request $request)
+    {
+        $riwayat_admin_nurse = DB::connection('mysql')
+            ->table('job_orders_dt')
+            ->leftJoin('job_orders', function ($join) {
+                $join->on('job_orders.order_no', '=', 'job_orders_dt.order_no');
+            })
+            ->where('job_orders_dt.reg_no', $request->reg_no)
+            ->where('job_orders_dt.jenis_order', 'lainnya')
+            ->select([
+                'job_orders_dt.*',
+                'job_orders.waktu_order',
+            ])
+            ->orderBy('job_orders.waktu_order', 'asc')
+            ->orderBy('job_orders_dt.item_name', 'asc')
+            ->get();
+        
+        $jumlah_rp_all = 0; // Inisialisasi jumlah_rp_all
+
+        foreach ($riwayat_admin_nurse as $item) {
+            $jumlah_rp_all += $item->harga_jual * $item->qty; // Menghitung total
+        }
+
+        if ($riwayat_admin_nurse->isEmpty()) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $riwayat_admin_nurse,
+                'total' => $jumlah_rp_all
+            ],
+            200
+        );
+    }
+
+    public function getBayiBaruLahirAnamnesa(Request $request)
+    {
+        $bayi_baru_lahir = DB::connection('mysql')
+            ->table('rs_assesment_bayi')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        if (!$bayi_baru_lahir) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $bayi_baru_lahir
+            ],
+            200
+        );
+    }
+
+    public function getBayiBaruLahirPemeriksaan(Request $request)
+    {
+        $pemeriksaan = DB::connection('mysql')
+            ->table('rs_pemeriksaan_bayi')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        if (!$pemeriksaan) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $pemeriksaan
+            ],
+            200
+        );
+    }
+
+    public function getChecklistPulang(Request $request)
+    {
+        $checklist_pulang = DB::connection('mysql')
+            ->table('rs_checklist_kepulangan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+        
+        if (!$checklist_pulang) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => $checklist_pulang
+            ],
+            200
+        );
+    }
+
 }
 
