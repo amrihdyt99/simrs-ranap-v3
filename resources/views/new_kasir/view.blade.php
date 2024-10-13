@@ -319,7 +319,7 @@
 <script>
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
-    var classcode = "{{$pasien->ChargeClassCode}}"
+    var classcode = "{{$pasien->ChargeClassCode ?? $pasien->charge_class_code}}"
     var payer_id = "{{$pasien->reg_cara_bayar}}"
     var $reg_no = $reg.replace(/\//g, '_')
     var modal = '#modalEntryOrder'

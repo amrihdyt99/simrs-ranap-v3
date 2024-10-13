@@ -160,7 +160,7 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
                 @else
-                @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab") 
+                @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
                 <div class="row">
                     <div class="left-tab active" id="tab-radiologi" onclick="clickTab('radiologi')">
                         Radiologi
@@ -177,15 +177,17 @@ $registrasi_data = DB::connection('mysql2')
                 @endif
                 @endif
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab active" id="tab-assesment" onclick="clickTab('assesment')">
                         Pengkajian Awal
                     </div>
-                </div>
+                </div> --}}
+
+
 
                 @if ($dataPasien->kategori_pasien == 'dewasa')
                 <div class="row">
-                    <div class="left-tab" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
+                    <div class="left-tab active" id="tab-assesment-dewasa" onclick="clickTab('assesment-dewasa')">
                         Pengkajian Awal Dewasa
                     </div>
                 </div>
@@ -193,7 +195,7 @@ $registrasi_data = DB::connection('mysql2')
 
                 @if ($dataPasien->kategori_pasien == 'anak')
                 <div class="row">
-                    <div class="left-tab" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
+                    <div class="left-tab active" id="tab-assesment-anak" onclick="clickTab('assesment-anak')">
                         Pengkajian Awal Anak
                     </div>
                 </div>
@@ -201,7 +203,7 @@ $registrasi_data = DB::connection('mysql2')
 
                 @if ($dataPasien->kategori_pasien == 'bayi')
                 <div class="row">
-                    <div class="left-tab" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
+                    <div class="left-tab active" id="tab-assesment-neonatus" onclick="clickTab('assesment-neonatus')">
                         Pengkajian Awal (Neonatus)
                     </div>
                 </div>
@@ -209,17 +211,25 @@ $registrasi_data = DB::connection('mysql2')
 
                 @if ($dataPasien->kategori_pasien == 'kebidanan')
                 <div class="row">
-                    <div class="left-tab" id="tab-obgyn" onclick="clickTab('obgyn')">
+                    <div class="left-tab active" id="tab-obgyn" onclick="clickTab('obgyn')">
                         Pengkajian Awal (Obstetri Ginekologi)
                     </div>
                 </div>
                 @endif
 
+                
+
                 <div class="row">
+                    <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
+                        Asuhan Gizi Dewasa
+                    </div>
+                </div>
+
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-nyeri" onclick="clickTab('nyeri')">
                         Skrinning Nyeri
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="row">
                     <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
@@ -284,16 +294,12 @@ $registrasi_data = DB::connection('mysql2')
                 </div>
 
                 <div class="row">
-                    <div class="left-tab" id="tab-case_manager" onclick="clickTab('case_manager')">
-                        Case Manager
+                    <div class="left-tab" id="tab-nursing-note" onclick="clickTab('nursing-note')">
+                        Nursing Note
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="left-tab" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
-                        Asuhan Gizi Dewasa
-                    </div>
-                </div>
+
 
                 <div class="row">
                     <div class="left-tab" id="tab-nursing" onclick="clickTab('nursing')">
@@ -303,19 +309,21 @@ $registrasi_data = DB::connection('mysql2')
 
                 <div class="row">
                     <div class="left-tab" id="tab-transfusi" onclick="clickTab('transfusi')">
-                        Transfusi Darah
+                        Monitoring Transfusi Darah
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="left-tab" id="tab-nursing-note" onclick="clickTab('nursing-note')">
-                        Nursing Note
-                    </div>
-                </div>
+
 
                 <div class="row">
                     <div class="left-tab" id="tab-persetujuan_penolakan" onclick="clickTab('persetujuan_penolakan')">
                         Persetujuan / Penolakan Tindakan Medis
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-case_manager" onclick="clickTab('case_manager')">
+                        Case Manager
                     </div>
                 </div>
 
@@ -337,11 +345,11 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div> --}}
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="left-tab" id="tab-intra-hemodinamik" onclick="clickTab('intra-hemodinamik')">
                         Pemantauan Hemodinamik - Intra Tindakan
                     </div>
-                </div>
+                </div> --}}
 
 
                 {{-- <div class="row">
@@ -415,26 +423,34 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
 
-                {{-- <div class="row">
-                    <div class="left-tab" id="tab-pemulangan" onclick="clickTab('pemulangan')">
-                        Discharge Planning
-                    </div>
-                </div> --}}
-                <div class="row">
-                    <div class="left-tab" id="tab-surat_rujukan" onclick="clickTab('surat_rujukan')">
-                        Surat Rujukan
-                    </div>
-                </div>
-
-                @endif
-                @endif
-                @endif
-
                 <div class="row">
                     <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
                         Riwayat
                     </div>
                 </div>
+
+                {{-- <div class="row">
+                    <div class="left-tab" id="tab-pemulangan" onclick="clickTab('pemulangan')">
+                        Discharge Planning
+                    </div>
+                </div> --}}
+                {{-- <div class="row">
+                    <div class="left-tab" id="tab-surat_rujukan" onclick="clickTab('surat_rujukan')">
+                        Surat Rujukan
+                    </div>
+                </div> --}}
+
+
+
+                @endif
+                @endif
+                @endif
+
+                {{-- <div class="row">
+                    <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
+                        Riwayat
+                    </div>
+                </div> --}}
             </div>
             @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
             <div class="col" style="max-width: 85%;">

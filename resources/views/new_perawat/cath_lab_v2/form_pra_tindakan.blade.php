@@ -1021,8 +1021,8 @@
                             </div>
                         </div>
                     </td>
-                    <td style="border-bottom: 1px solid black"> <input type="text"
-                            name="persiapan_keterangan_5" class="form-control"></td>
+                    <td style="border-bottom: 1px solid black"> <input type="text" name="persiapan_keterangan_5"
+                            value="{{ $pra_tindakan->persiapan_keterangan_5 }}" class="form-control"></td>
                 </tr>
                 <tr>
                     <td>6</td>

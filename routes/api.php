@@ -336,4 +336,44 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/assesment-neonatus', [RiwayatController::class, 'getAssesmentNeonatus'])->name('assesment-neonatus');
 	Route::get('/assesment-anak', [RiwayatController::class, 'getAssesmentAnak'])->name('assesment-anak');
 	Route::get('/assesment-obgyn', [RiwayatController::class, 'getAssesmentObgyn'])->name('assesment-obgyn');
+	Route::get('/edukasi-pasien', [RiwayatController::class, 'getEdukasiPasien'])->name('edukasi-pasien');
+	Route::get('/rekonsiliasi-obat', [RiwayatController::class, 'getRekonObat'])->name('rekonsiliasi-obat');
+	Route::get('/checklist-orientasi', [RiwayatController::class, 'getChecklistOrientasi'])->name('checklist-orientasi');
+	Route::get('/resiko-jatuh-morse', [RiwayatController::class, 'getResikoJatuhMorse'])->name('resiko-jatuh-morse');
+	Route::get('/resiko-jatuh-humpty', [RiwayatController::class, 'getResikoJatuhHumpty'])->name('resiko-jatuh-humpty');
+	Route::get('/resiko-jatuh-geriatri', [RiwayatController::class, 'getResikoJatuhGeriatri'])->name('resiko-jatuh-geriatri');
+	Route::get('/resiko-jatuh-neonatus', [RiwayatController::class, 'getResikoJatuhNeonatus'])->name('resiko-jatuh-neonatus');
+	Route::get('/nurse-note', [RiwayatController::class, 'getNurseNote'])->name('nurse-note');
+	Route::get('/monitoring-news', [RiwayatController::class, 'getDatatableMoniNews'])->name('dt-monitoring-news');
+	Route::get('/fluid-balance', [RiwayatController::class, 'getFluidBalance'])->name('fluid-balance');
+	Route::get('/drug-history', [RiwayatController::class, 'getDtDrugHistory'])->name('dt-drug-history');
+	Route::get('/monitoring-transfusi-darah', [RiwayatController::class, 'getMonitoringTransfusiDarah'])->name('monitoring-transfusi-darah');
+	Route::get('/persetujuan-tindakan-medis', [RiwayatController::class, 'getPersetujuanTindakanMedis'])->name('persetujuan-tindakan-medis');
+	Route::get('/case-manager', [RiwayatController::class, 'getCaseManager'])->name('case-manager');
+	Route::get('/riwayat-tf-internal', [RiwayatController::class, 'getDtRiwayatTfInternal'])->name('dt-riwayat-tf-internal');
+	Route::get('/persiapan-pasien-ti', [RiwayatController::class, 'getPersiapanPasienTI'])->name('persiapan-pasien-ti');
+	Route::get('/riwayat-ti-alat', [RiwayatController::class, 'getDtRiwayatTiAlat'])->name('dt-riwayat-ti-alat');
+	Route::get('/riwayat-ti-obat', [RiwayatController::class, 'getDtRiwayatTiObat'])->name('dt-riwayat-ti-obat');
+	Route::get('/riwayat-ti-status', [RiwayatController::class, 'getDtRiwayatTiStatus'])->name('dt-riwayat-ti-status');
+	Route::get('/serah-terima-ti', [RiwayatController::class, 'getSerahTerimaTI'])->name('serah-terima-ti');
+	Route::get('/riwayat-ti-diagnostik', [RiwayatController::class, 'getDtRiwayatTiDiagnostik'])->name('dt-riwayat-ti-diagnostik');
+
+
+
+	Route::get('/catatan-pra-tindakan-cathlab', [RiwayatController::class, 'getCatatanPraTindakanCathlab'])->name('catatan-pra-tindakan-cathlab');
+	Route::get('/catatan-intra-tindakan-cathlab', [RiwayatController::class, 'getCatatanIntraTindakanCathlab'])->name('catatan-intra-tindakan-cathlab');
+	Route::get('/pemantauan-hemodinamik', [RiwayatController::class, 'getPemantauanHemodinamik'])->name('pemantauan-hemodinamik');
+	Route::get('/cathlab-sign-in', [RiwayatController::class, 'getCathlabSignIn'])->name('cathlab-sign-in');
+	Route::get('/cathlab-time-out', [RiwayatController::class, 'getCathlabTimeOut'])->name('cathlab-time-out');
+	Route::get('/cathlab-sign-out', [RiwayatController::class, 'getCathlabSignOut'])->name('cathlab-sign-out');
+	Route::get('/pemantauan-paska-tindakan-cathlab', [RiwayatController::class, 'getPemantauanPaskaTindakanCathlab'])->name('pemantauan-paska-tindakan-cathlab');
+	Route::get('/observasi-paska-tindakan-cathlab', [RiwayatController::class, 'getObaservasiPaskaTindakanCathlab'])->name('observasi-paska-tindakan-cathlab');
+	Route::get('/physician-team', [RiwayatController::class, 'getPhysicianTeam'])->name('physician-team');
+	Route::get('/riwayat-admin-nurse', [RiwayatController::class, 'getDtRiwayatAdminNurse'])->name('admin-nurse');
+	Route::get('/bayi-baru-lahir-anamnesa', [RiwayatController::class, 'getBayiBaruLahirAnamnesa'])->name('bayi-baru-lahir-anamnesa');
+	Route::get('/bayi-baru-lahir-pemeriksaan', [RiwayatController::class, 'getBayiBaruLahirPemeriksaan'])->name('bayi-baru-lahir-pemeriksaan');
+	Route::get('/checklist-pulang', [RiwayatController::class, 'getChecklistPulang'])->name('checklist-pulang');
+
 });
+
+Route::get('/persetujuan-penolakan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan_dokter'])->name('dokter.persetujuan-penolakan');

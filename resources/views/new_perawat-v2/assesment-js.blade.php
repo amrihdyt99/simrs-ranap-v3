@@ -372,7 +372,7 @@
                 tgl_lahir_pasien: tgl_lahir_pasien,
             },
             success: function(resp) {
-                // console.log(resp);
+                // console.log('resp', resp);
 
                 if (resp.geriatri && resp.geriatri.kategori_geriatri) {
                     $('[id="alert_blink"]').show();
@@ -423,7 +423,7 @@
                 reg_no: _reg,
             },
             success: function(resp) {
-                console.log(resp);
+                // console.log(resp);
                 $('#ews_info').empty();
 
                 if (resp.news_total >= 7) {
@@ -509,8 +509,8 @@
                             $('div[id*="assesment_"]').hide();
                             $('#assesment_1').show();
 
-                            getAlertAlergi(regno)
-                            getAlertJatuh(regno)
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
                             getAlertEWS(regno);
                         },
                         error: function(data) {
@@ -727,6 +727,9 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadAllFunctionDewasa();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -745,6 +748,9 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_anak')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -763,6 +769,9 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_neonatus')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                             loadDatatableRekonObat();
                             loadSignature();
                         },
@@ -901,6 +910,9 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadAllFunctionObgyn();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1014,7 +1026,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
-                            getPhysicianTeam();
+                            getPhysicianTeamPerawat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1033,7 +1045,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn_bedah')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            getPhysicianTeam();
+                            getPhysicianTeamPerawat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1363,7 +1375,7 @@
             url: "{{route('nyaa_universal.view_injector.perawat.show_qrcode')}}",
             success: function(data) {
                 inject_view_data(data);
-                getPhysicianTeam();
+                getPhysicianTeamPerawat();
             },
             error: function(data) {
                 clear_show_error();
@@ -1780,7 +1792,7 @@
     }
 
     // physician team
-    function getPhysicianTeam() {
+    function getPhysicianTeamPerawat() {
         var tablePhysicianTeam = $('#table-physician-team');
         $.ajax({
             url: "{{ route('get.physicianteam') }}",

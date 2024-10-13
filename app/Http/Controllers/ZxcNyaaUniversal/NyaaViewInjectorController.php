@@ -44,6 +44,22 @@ class NyaaViewInjectorController extends AaaBaseController
         $medrec = $request->medrec;
         $cek = DB::table('rm3')->where('MedicalNo', $medrec);
         $hitung = $cek->count();
+        $tgl_assesment = DB::table('pengkajian_neonatus_fisik')
+            ->where('reg_no', $regno)
+            ->select('created_at')
+            ->unionAll(
+                DB::table('pengkajian_dewasa_awal')
+                    ->where('reg_no', $regno)
+                    ->select('created_at'),
+                DB::table('pengkajian_obgyn_alergi_dan_keadaan_umum')
+                    ->where('reg_no', $regno)
+                    ->select('created_at'),
+                DB::table('pengkajian_awal_anak_perawat')
+                    ->where('reg_no', $regno)
+                    ->select('created_at')
+            )
+            ->first();
+        
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -58,7 +74,13 @@ class NyaaViewInjectorController extends AaaBaseController
         }
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
 
-        return view('new_perawat.checklist.checklist_index', ['datapasien' => $datamypatient, 'hitung' => $hitung, 'data' => $datacek, 'registrasi_pj' => $registrasi_pj]);
+        return view('new_perawat.checklist.checklist_index', [
+            'datapasien' => $datamypatient,
+            'hitung' => $hitung,
+            'data' => $datacek,
+            'registrasi_pj' => $registrasi_pj,
+            'tgl_assesment' => $tgl_assesment,
+        ]);
         // if($hitung==0){
         //     return view('new_perawat.checklist.checklist',['datapasien'=>$datamypatient,'hitung'=>$hitung]);
         // }else{
@@ -1447,6 +1469,11 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_observasi_paska_tindakan')
             ->where('reg_no', $request->reg_no)
             ->first();
+        
+        $pemantauan_hemodinamik = DB::connection('mysql')
+            ->table('rs_pasien_intra_pemantuan')
+            ->where('no_reg', $request->reg_no)
+            ->first();
 
         $context = array(
             'reg' => $request->reg_no,
@@ -1458,6 +1485,7 @@ class NyaaViewInjectorController extends AaaBaseController
             'pra_tindakan' => optional($pra_tindakan),
             'paska_tindakan' => optional($paska_tindakan),
             'observasi_paska' => optional($observasi_paska),
+            'pemantauan_hemodinamik' => optional($pemantauan_hemodinamik),
         );
         return view('new_perawat.cath_lab_v2.index')
             ->with($context);
@@ -1546,6 +1574,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
             ->first();
 
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
@@ -1710,4 +1739,54 @@ class NyaaViewInjectorController extends AaaBaseController
         return view('new_perawat.case_manager.index')
             ->with($context);
     }
+
+    function persetujuan_penolakan_dokter(Request $request)
+    {
+        $dataPasien = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
+            ->first();
+
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+
+        $informasi = DB::connection('mysql')
+            ->table('rs_tindakan_medis_informasi')
+            ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
+            ->select('rs_tindakan_medis_informasi.*', 'rs_m_paramedic.ParamedicName')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $persetujuan = DB::connection('mysql')
+            ->table('rs_tindakan_medis_persetujuan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $penolakan = DB::connection('mysql')
+            ->table('rs_tindakan_medis_penolakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        if (!$informasi) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => [
+                  
+                    'informasi' => $informasi,
+                    'persetujuan' => $persetujuan,
+                    'penolakan' => $penolakan,
+                    'dataPasien' => $dataPasien,
+                    'registrasi_pj' => $registrasi_pj,
+                ]
+            ],
+            200
+        );
+    }
+
 }

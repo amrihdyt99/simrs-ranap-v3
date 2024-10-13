@@ -13,41 +13,41 @@
     <div class="row">
         @if ($data_pasien->kategori_pasien == 'dewasa')
             <div class="col-lg-6">
-                @include('new_perawat.riwayat-v2.dewasa.table-awal')
+                @include('new_perawat.riwayat-v2.assesment_awal.dewasa.table-awal')
             </div>
             <div class="col-lg-6">
-                @include('new_perawat.riwayat-v2.dewasa.table-nyeri')
-                @include('new_perawat.riwayat-v2.dewasa.table-gizi')
+                @include('new_perawat.riwayat-v2.assesment_awal.dewasa.table-nyeri')
+                @include('new_perawat.riwayat-v2.assesment_awal.dewasa.table-gizi')
             </div>
         @endif
 
         @if ($data_pasien->kategori_pasien == 'kebidanan')
             <div class="col-lg-6">
-                @include('new_perawat.riwayat-v2.obgyn.table-awal')
-                @include('new_perawat.riwayat-v2.obgyn.table-kehamilan')
-                @include('new_perawat.riwayat-v2.obgyn.table-gizi')
-                @include('new_perawat.riwayat-v2.obgyn.table-nyeri')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-awal')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-kehamilan')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-gizi')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-nyeri')
             </div>
             <div class="col-lg-6">
-                @include('new_perawat.riwayat-v2.obgyn.table-fungsional')
-                @include('new_perawat.riwayat-v2.obgyn.table-kulit-kebutuhan')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-fungsional')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-kulit-kebutuhan')
             </div>
         @endif
 
         @if ($data_pasien->kategori_pasien == 'anak')
         <div class="col-lg-6">
-            @include('new_perawat.riwayat-v2.anak.table-awal')
+            @include('new_perawat.riwayat-v2.assesment_awal.anak.table-awal')
         </div>
         <div class="col-lg-6">
-            @include('new_perawat.riwayat-v2.anak.table-gizi')
-            @include('new_perawat.riwayat-v2.anak.table-nyeri')
+            @include('new_perawat.riwayat-v2.assesment_awal.anak.table-gizi')
+            @include('new_perawat.riwayat-v2.assesment_awal.anak.table-nyeri')
         </div>
         @endif
 
         @if ($data_pasien->kategori_pasien == 'bayi')
         <div class="col-lg-6">
-            @include('new_perawat.riwayat-v2.neonatus.table-awal')
-            @include('new_perawat.riwayat-v2.neonatus.table-nyeri-eliminasi')
+            @include('new_perawat.riwayat-v2.assesment_awal.neonatus.table-awal')
+            @include('new_perawat.riwayat-v2.assesment_awal.neonatus.table-nyeri-eliminasi')
         </div>
         <div class="col-lg-6">
         </div>

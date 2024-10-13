@@ -3,6 +3,18 @@
         $datapasien = optional((object) []);
     @endphp
 @endempty
+@php
+    $ruang = DB::connection('mysql2')->table('m_bed')
+    ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+    ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+    ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+    ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+    ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+    ->where('bed_id',$datapasien->bed)->first();
+    if(!$ruang){
+    $ruang = optional((object)[]);
+    }
+@endphp
 <div class="container">
     <form id="entry-checklist">
         @csrf
@@ -41,17 +53,22 @@
                     </tr>
                     <tr>
                         <td>Ruang rawat</td>
-                        <td>: {{ $datapasien->room_class }}</td>
+                        <td>: {{$ruang->kelompok}} [{{$ruang->bed_code}}]</td>
                     </tr>
                     <tr>
                         <td>Tgl Masuk Rawat Inap </td>
-                        <td>:{{ app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->carbon_format_day_date_id($datapasien->reg_tgl) }}
+                        <td>: {{ $datapasien->reg_tgl }}
                         </td>
+                        {{-- <td>: {{ app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->carbon_format_day_date_id($datapasien->reg_tgl) }}
+                        </td> --}}
                     </tr>
-                    <tr>
-                        <td>Tgl Assesment</td>
-                        <td>:</td>
-                    </tr>
+                    <t>
+                        <td>Tgl Assesment </td>
+                        
+                        <td>: 
+                            <input type="text" name="tgl_assesment_awal" id="tgl_assesment" style="border: none" value="{{ $tgl_assesment->created_at ?? $data->tgl_assesment }}" readonly>
+                        </td>
+                  </tr>
                     @php
                         $data_kepada = json_decode($data->kepada) ?? [];
                         $data_satu = json_decode($data->satu) ?? [];
@@ -66,17 +83,8 @@
                                 {{ in_array('pasien', $data_kepada) ? 'checked' : '' }}>Pasien
                             <input type="checkbox" name="kepada[]" id="disampaikan_oleh_2" value="saudara"
                                 {{ in_array('saudara', $data_kepada) ? 'checked' : '' }}>Saudara , lainnya
-                            <input type="text" class="form-control" style="width: 100px; display: inline-block;" name="kepada[]" id=""
-                                value="@php
-                                    $kepada_text = [];
-                                    foreach($data_kepada as $data_kepada_x){
-                                        if (!(
-                                            $data_kepada_x=='pasien' || $data_kepada_x=='saudara'
-                                        )) {
-                                            $kepada_text[]=$data_kepada_x;
-                                        }
-                                    }
-                                    echo e(implode(",", $kepada_text)); @endphp">
+                            <input type="text" class="form-control" style="width: 100px; display: inline-block;" name="kepada_lain" id=""
+                                value="{{$data->kepada_lain}}">
                         </td>
                     </tr>
                     <tr>
@@ -376,7 +384,7 @@
                         <div id="signature-pad-perawat" style="display: inline-block; margin: 0 auto;">
                             <div
                                 style="border: solid 1px teal; width: 260px; height: 160px; padding: 3px; position: relative;">
-                                <canvas id="the_canvas_perawat" width="350px" height="160px">Your browser does not
+                                <canvas id="the_canvas_perawat" width="260px" height="160px">Your browser does not
                                     support the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px;">
@@ -390,6 +398,7 @@
                         </div>
                     </td>
                     <td style="vertical-align: middle;">
+                        <input type="datetime-local" class="form-control float-end" style="width: 200px; display: inline-block; margin: 0 auto;" name="tgl_ttd" value="{{$data->tgl_ttd}}">
                         <p>Tanda Tangan Pasien/Keluarga</p>
                         <div id="signature-pad-pasien" style="display: inline-block; margin: 0 auto;">
                             <div
@@ -405,7 +414,7 @@
                                     Hapus</button>
                             </div>
                         </div>
-                        @if ($registrasi_pj)
+                        @if (count($registrasi_pj) > 0)
                             <select name="nama_keluarga_pasien" class="form-control mt-2" style="width: 180px; margin: 0 auto;">
                                 <option value="">Pilih Keluarga</option>
                                 @foreach($registrasi_pj as $pj)
