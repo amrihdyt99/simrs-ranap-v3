@@ -1733,4 +1733,54 @@ class NyaaViewInjectorController extends AaaBaseController
         return view('new_perawat.case_manager.index')
             ->with($context);
     }
+
+    function persetujuan_penolakan_dokter(Request $request)
+    {
+        $dataPasien = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
+            ->first();
+
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+
+        $informasi = DB::connection('mysql')
+            ->table('rs_tindakan_medis_informasi')
+            ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
+            ->select('rs_tindakan_medis_informasi.*', 'rs_m_paramedic.ParamedicName')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $persetujuan = DB::connection('mysql')
+            ->table('rs_tindakan_medis_persetujuan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $penolakan = DB::connection('mysql')
+            ->table('rs_tindakan_medis_penolakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        if (!$informasi) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => [
+                  
+                    'informasi' => $informasi,
+                    'persetujuan' => $persetujuan,
+                    'penolakan' => $penolakan,
+                    'dataPasien' => $dataPasien,
+                    'registrasi_pj' => $registrasi_pj,
+                ]
+            ],
+            200
+        );
+    }
+
 }

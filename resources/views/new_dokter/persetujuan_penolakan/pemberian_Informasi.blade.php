@@ -1,11 +1,11 @@
 <form id="InformasiTindakanMedis">
-    <input type="hidden" name="kode_tindakan_medis_setuju_tolak" value="">
+    <input type="hidden" name="kode_tindakan_medis_setuju_tolak" id="kode_tindakan_medis_setuju_tolak" value="">
     <div class="row">
         <div class="col-sm-3 ml-2">
-            <label for="">Nama tindakan :</label>
+            <label for="informasi_nama_tindakan">Nama tindakan :</label>
         </div>
         <div class="col-sm-5">
-            <select name="informasi_nama_tindakan" id="" class="form-control">
+            <select name="informasi_nama_tindakan" id="informasi_nama_tindakan" class="form-control">
                 <option value=""></option>
                 <option value="tes">tes</option>
             </select>
@@ -19,40 +19,40 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-3">
-                    <label for="">Dokter Pelaksana Tindakan :</label>
+                    <label for="ParamedicCode">Dokter Pelaksana Tindakan :</label>
                 </div>
                 <div class="col-sm-9">
                     <select name="ParamedicCode" id="ParamedicCode" class="form-control">
-                        <option value="{{ $informasi->ParamedicCode }}" selected>
+                        <option value="">
                         </option>
                     </select>
                 </div>
             </div>
             <div class="row mt-2">
                 <div class="col-sm-3">
-                    <label for="">Pemberi Informasi :</label>
+                    <label for="informasi_pemberi_info">Pemberi Informasi :</label>
                 </div>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" name="informasi_pemberi_info"
-                        value="{{ $informasi->informasi_pemberi_info }}">
+                    <input type="text" class="form-control" name="informasi_pemberi_info" id="informasi_pemberi_info"
+                        value="">
                 </div>
             </div>
             <div class="row mt-2">
                 <div class="col-sm-3">
-                    <label for="">Penerima Informasi / Pemberi Persetujuann :</label>
+                    <label for="informasi_penerima_info">Penerima Informasi / Pemberi Persetujuann :</label>
                 </div>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" name="informasi_penerima_info"
-                        value="{{ $informasi->informasi_penerima_info }}">
+                    <input type="text" class="form-control" name="informasi_penerima_info" id="informasi_penerima_info"
+                        value="">
                 </div>
             </div>
             <div class="row mt-2">
                 <div class="col-sm-3">
-                    <label for="">Diberikan pada tanggal / jam :</label>
+                    <label for="informasi_diberikan_pada">Diberikan pada tanggal / jam :</label>
                 </div>
                 <div class="col-sm-9">
-                    <input type="datetime-local" class="form-control" name="informasi_diberikan_pada"
-                        value="{{ $informasi->informasi_diberikan_pada }}">
+                    <input type="datetime-local" class="form-control" name="informasi_diberikan_pada" id="informasi_diberikan_pada"
+                        value="">
                 </div>
             </div>
 
@@ -82,8 +82,8 @@
                             Diagnosis (Diagnosis Kerja & Diagnosis Banding)
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_diagnosis_text"
-                                value="{{ $informasi->informasi_diagnosis_text }}">
+                            <input type="text" class="form-control" name="informasi_diagnosis_text" id="informasi_diagnosis_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -97,8 +97,8 @@
                             Dasar Diagnosis
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_dasar_diagnosis_text"
-                                value="{{ $informasi->informasi_dasar_diagnosis_text }}">
+                            <input type="text" class="form-control" name="informasi_dasar_diagnosis_text" id="informasi_dasar_diagnosis_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -112,8 +112,8 @@
                             Tindakan Kedokteran
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_tindakan_kedokteran_text"
-                                value="{{ $informasi->informasi_tindakan_kedokteran_text }}">
+                            <input type="text" class="form-control" name="informasi_tindakan_kedokteran_text" id="informasi_tindakan_kedokteran_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -127,8 +127,8 @@
                             Indikasi Tindakan
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_indikasi_tindakan_text"
-                                value="{{ $informasi->informasi_indikasi_tindakan_text }}">
+                            <input type="text" class="form-control" name="informasi_indikasi_tindakan_text" id="informasi_indikasi_tindakan_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -142,8 +142,8 @@
                             Tata cara
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_tata_cara_text"
-                                value="{{ $informasi->informasi_tata_cara_text }}">
+                            <input type="text" class="form-control" name="informasi_tata_cara_text" id="informasi_tata_cara_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -157,8 +157,8 @@
                             Tujuan
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_tujuan_text"
-                                value="{{ $informasi->informasi_tujuan_text }}">
+                            <input type="text" class="form-control" name="informasi_tujuan_text" id="informasi_tujuan_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -172,8 +172,8 @@
                             Risiko
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_risiko_text"
-                                value="{{ $informasi->informasi_risiko_text }}">
+                            <input type="text" class="form-control" name="informasi_risiko_text" id="informasi_risiko_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -187,8 +187,8 @@
                             Komplikasi
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_komplikasi_text"
-                                value="{{ $informasi->informasi_komplikasi_text }}">
+                            <input type="text" class="form-control" name="informasi_komplikasi_text" id="informasi_komplikasi_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -202,8 +202,8 @@
                             Prognosis
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_prognosis_text"
-                                value="{{ $informasi->informasi_prognosis_text }}">
+                            <input type="text" class="form-control" name="informasi_prognosis_text" id="informasi_prognosis_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -217,8 +217,8 @@
                             Alternatif & Risiko
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_alternatif_text"
-                                value="{{ $informasi->informasi_alternatif_text }}">
+                            <input type="text" class="form-control" name="informasi_alternatif_text" id="informasi_alternatif_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -232,8 +232,8 @@
                             Lain-lain
                         </td>
                         <td>
-                            <input type="text" class="form-control" name="informasi_lain_lain_text"
-                                value="{{ $informasi->informasi_lain_lain_text }}">
+                            <input type="text" class="form-control" name="informasi_lain_lain_text" id="informasi_lain_lain_text"
+                                value="">
                         </td>
                         <td>
                             {{-- <input type="checkbox" class="form-control"> --}}
@@ -256,10 +256,10 @@
                                     the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px; text-align: center;">
-                                <input type="hidden" id="signature_dokter" name="informasi_ttd_dokter" value="{{$informasi->informasi_ttd_dokter}}">
+                                <input type="hidden" id="signature_dokter" name="informasi_ttd_dokter" value="">
                                 <button type="button" id="clear_btn_dokter" class="btn btn-danger"
                                     data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
-                                <input type="text" name="nama_dokter" class="form-control mb-2 mt-2" value="{{$informasi->nama_dokter ?? $dataPasien->ParamedicName}}" placeholder="Nama Dokter">
+                                <input type="text" name="nama_dokter" id="nama_dokter" class="form-control mb-2 mt-2" value="" placeholder="Nama Dokter">
                             </div>
                         </div>
                     </div>
@@ -280,10 +280,10 @@
                                     the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px; text-align: center;">
-                                <input type="hidden" id="signature_penerima" name="informasi_ttd_penerima_informasi" value="{{$informasi->informasi_ttd_penerima_informasi}}">
+                                <input type="hidden" id="signature_penerima" name="informasi_ttd_penerima_informasi" value="">
                                 <button type="button" id="clear_btn_penerima" class="btn btn-danger"
                                     data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
-                                <input type="text" name="nama_penerima_informasi" class="form-control mb-2 mt-2" value="{{$informasi->nama_penerima_informasi}}" placeholder="Nama Penerima Informasi">
+                                <input type="text" name="nama_penerima_informasi" id="nama_penerima_informasi" class="form-control mb-2 mt-2" value="" placeholder="Nama Penerima Informasi">
                             </div>
                         </div>
                     </div>
@@ -308,19 +308,19 @@
         <table style="width: 100%;">
             <tr>
                 <td style="width: {{ $width_data }}%">Dokter Pelaksana Tindakan </td>
-                <td>: {{ $informasi->ParamedicName }}</td>
+                <td>: </td>
             </tr>
             <tr>
                 <td style="width: {{ $width_data }}%">Pemberi Informasi </td>
-                <td>: {{ $informasi->informasi_pemberi_info }}</td>
+                <td>: </td>
             </tr>
             <tr>
                 <td style="width: {{ $width_data }}%">Penerima Informasi / Pemberi Persetujuann </td>
-                <td>: {{ $informasi->informasi_penerima_info }}</td>
+                <td>: </td>
             </tr>
             <tr>
                 <td style="width: {{ $width_data }}%">Diberikan pada tanggal / jam</td>
-                <td>: {{ $informasi->informasi_diberikan_pada }}</td>
+                <td>: </td>
             </tr>
         </table>
 
@@ -350,7 +350,7 @@
                         Diagnosis (Diagnosis Kerja & Diagnosis Banding)
                     </td>
                     <td>
-                        {{ $informasi->informasi_diagnosis_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -364,7 +364,7 @@
                         Dasar Diagnosis
                     </td>
                     <td>
-                        {{ $informasi->informasi_dasar_diagnosis_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -378,7 +378,7 @@
                         Tindakan Kedokteran
                     </td>
                     <td>
-                        {{ $informasi->informasi_tindakan_kedokteran_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -392,7 +392,7 @@
                         Indikasi Tindakan
                     </td>
                     <td>
-                        {{ $informasi->informasi_indikasi_tindakan_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -406,7 +406,7 @@
                         Tata cara
                     </td>
                     <td>
-                        {{ $informasi->informasi_tata_cara_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -420,7 +420,7 @@
                         Tujuan
                     </td>
                     <td>
-                        {{ $informasi->informasi_tujuan_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -434,7 +434,7 @@
                         Risiko
                     </td>
                     <td>
-                        {{ $informasi->informasi_risiko_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -448,7 +448,7 @@
                         Komplikasi
                     </td>
                     <td>
-                        {{ $informasi->informasi_komplikasi_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -462,7 +462,7 @@
                         Prognosis
                     </td>
                     <td>
-                        {{ $informasi->informasi_prognosis_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -476,7 +476,7 @@
                         Alternatif & Risiko
                     </td>
                     <td>
-                        {{ $informasi->informasi_alternatif_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -490,7 +490,7 @@
                         Lain-lain
                     </td>
                     <td>
-                        {{ $informasi->informasi_lain_lain_text }}
+                        
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -924,6 +924,43 @@
         </div>
     </div>
     <script>
+        $(document).ready(function() {
+            // Assuming you have the data in a variable called `informasi`
+            var informasi = {
+                informasi_ttd_dokter: "data:image/png;base64,...", // Example data
+                informasi_ttd_penerima_informasi: "data:image/png;base64,..."
+            };
+
+            console.log("Dokter Signature Data:", informasi.informasi_ttd_dokter);
+            console.log("Penerima Signature Data:", informasi.informasi_ttd_penerima_informasi);
+
+            // Set the value of the hidden input fields
+            $('#signature_dokter').val(informasi.informasi_ttd_dokter);
+            $('#signature_penerima').val(informasi.informasi_ttd_penerima_informasi);
+
+            // Display the signature on a canvas
+            var canvasDokter = document.getElementById('canvas_dokter');
+            var contextDokter = canvasDokter.getContext('2d');
+            var imageDokter = new Image();
+            imageDokter.src = informasi.informasi_ttd_dokter;
+            imageDokter.onload = function() {
+                contextDokter.drawImage(imageDokter, 0, 0);
+            };
+            imageDokter.onerror = function() {
+                console.error("Failed to load dokter signature image.");
+            };
+
+            var canvasPenerima = document.getElementById('canvas_penerima');
+            var contextPenerima = canvasPenerima.getContext('2d');
+            var imagePenerima = new Image();
+            imagePenerima.src = informasi.informasi_ttd_penerima_informasi;
+            imagePenerima.onload = function() {
+                contextPenerima.drawImage(imagePenerima, 0, 0);
+            };
+            imagePenerima.onerror = function() {
+                console.error("Failed to load penerima signature image.");
+            };
+        });
         function printSectionPenolakan() {
             var printContents = document.getElementById('print-section-penolakan').innerHTML;
             var originalContents = document.body.innerHTML;
@@ -937,9 +974,9 @@
 
 
 {{-- @push('nyaa_scripts') --}}
-<script>
+{{-- <script>
     $(function() {
         neko_select2_init(`{{ route('nyaa_universal.select2.m_paramedic') }}`, 'ParamedicCode');
     });
-</script>
+</script> --}}
 {{-- @endpush --}}

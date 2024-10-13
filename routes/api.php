@@ -342,4 +342,7 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/riwayat-ti-status', [RiwayatController::class, 'getDtRiwayatTiStatus'])->name('dt-riwayat-ti-status');
 	Route::get('/serah-terima-ti', [RiwayatController::class, 'getSerahTerimaTI'])->name('serah-terima-ti');
 	Route::get('/riwayat-ti-diagnostik', [RiwayatController::class, 'getDtRiwayatTiDiagnostik'])->name('dt-riwayat-ti-diagnostik');
+
 });
+
+Route::get('/persetujuan-penolakan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan_dokter'])->name('dokter.persetujuan-penolakan');
