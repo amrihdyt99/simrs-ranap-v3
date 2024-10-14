@@ -1922,7 +1922,7 @@
 
     function nyaa_suratrujukan_load_datatable(id_dttb) {
         var url = $(id_dttb).attr('nyaa-urldatatable');
-        console.log(url);
+        // console.log(url);
         $(id_dttb).DataTable({
             processing: true,
             serverSide: true,
