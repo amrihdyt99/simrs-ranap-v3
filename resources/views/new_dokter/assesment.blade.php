@@ -604,7 +604,7 @@
 <script src="{{asset('new_assets/js/discharge/diagnosa.js')}}"></script>
 <script src="{{asset('new_assets/js/discharge/prosedur.js')}}"></script>
 <script src="{{asset('new_assets/js/discharge/billing.js')}}"></script>
-<script src="{{asset('new_assets/js/discharge/discharges.js')}}"></script>
+<script src="{{asset('new_assets/js/discharge/discharge.js')}}"></script>
 <script src="{{asset('new_assets/js/physician_team.js')}}"></script>
 <script src="{{asset('new_assets/js/persetujuan_penolakan.js')}}"></script>
 @endsection
