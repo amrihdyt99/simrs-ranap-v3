@@ -1085,7 +1085,7 @@ class BillingController extends AaaBaseController
 
     public function cetakInvoiceSummary(Request $request)
     {
-        $billing_detail = DB::connection('mysql')->table('rs_pasien_billing_validation')
+        $all_bills = DB::connection('mysql')->table('rs_pasien_billing_validation')
             ->where([
                 ['pvalidation_reg', $request->reg_no],
                 ['pvalidation_status', 1],
@@ -1099,39 +1099,61 @@ class BillingController extends AaaBaseController
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->get()->first();
 
-        $all_item = json_decode($billing_detail->pvalidation_selected, true);
-        $payer_detail = json_decode($billing_detail->pvalidation_detail, true);
+        foreach ($all_bills as $item) {
+            $item_detail_by_code[] = json_decode($item->pvalidation_selected, true);
+        }
 
-        $billing_ri_item = array_filter($all_item, function ($item) {
+        $all_items = [];
+        foreach ($item_detail_by_code as $items_detail) {
+            foreach ($items_detail as $item) {
+                array_push($all_items, $item);
+            }
+        }
+
+        $billing_ri_item = array_filter($all_items, function ($item) {
             return $item['ItemSource'] == 'Rawat Inap';
         });
-        $billing_rj_item = array_filter($all_item, function ($item) {
+        $billing_rj_item = array_filter($all_items, function ($item) {
             return $item['ItemSource'] == 'Rawat Jalan';
         });
-        $billing_igd_item = array_filter($all_item, function ($item) {
+        $billing_igd_item = array_filter($all_items, function ($item) {
             return $item['ItemSource'] == 'IGD';
         });
 
+        $ri_item_by_type = [];
         $ri_sub_tot = 0;
+        $rj_item_by_type = [];
         $rj_sub_tot = 0;
+        $igd_item_by_type = [];
         $igd_sub_tot = 0;
 
         foreach ($billing_ri_item as $item) {
+            if ($item['ItemTindakan'] == 'Radiologi') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'lainnya') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Medication') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            }
             $ri_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
         }
+        $ri_item_by_type['subtotal'] = $ri_sub_tot;
 
         foreach ($billing_rj_item as $item) {
             $rj_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
         }
+        $rj_item_by_type['subtotal'] = $rj_sub_tot;
 
         foreach ($billing_igd_item as $item) {
             $igd_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
         }
-
-        foreach ($payer_detail as $item) {
-            $type = $item['method'];
-            $payer_by_method[$type] = $item;
-        }
+        $igd_item_by_type['subtotal'] = $igd_sub_tot;
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
 
@@ -1159,7 +1181,7 @@ class BillingController extends AaaBaseController
             'user'          => $user,
             'patient'       => $datamypatient,
             'ruangan'       => $ruangan,
-            'billing'       => $billing_detail,
+            'bill_detail'       => $all_bills,
         ]);
     }
 

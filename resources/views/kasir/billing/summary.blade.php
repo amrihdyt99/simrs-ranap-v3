@@ -153,7 +153,13 @@ header("Content-type: text/css; charset: UTF-8");
             <tr>
               <td>Document Contract</td>
               <td>:</td>
-              <td>{{ $billing->pvalidation_code }}</td>
+              <td>
+                <ol>
+                  @foreach ($bill_detail as $bill)
+                  <li>{{ $bill->pvalidation_code }}</li>
+                  @endforeach
+                </ol>
+              </td>
             </tr>
           </tbody>
         </table>
