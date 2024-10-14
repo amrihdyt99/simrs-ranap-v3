@@ -455,21 +455,53 @@ trait RanapRegistrationTrait
 
     public function getDataSuratRawatIntensif($reg_no)
     {
-        $reg_no = str_replace("_", "/", $reg_no);
-        $data_registration = RegistrationInap::where('reg_no', $reg_no)->first();
-        $data_pasien = [
-            'nama_lengkap' => $data_registration->pasien->PatientName,
-            'medical_no' => $data_registration->reg_medrec,
-            'tgl_lahir' => $data_registration->pasien->DateOfBirth,
-            'jenis_kelamin' => $data_registration->pasien->GCSex,
-            'usia' => $this->formatUsia($data_registration->pasien->DateOfBirth),
-            'alamat' => $data_registration->pasien->PatientAddress,
-            'tgl_registrasi' => Carbon::parse($data_registration->reg_tgl)->format('d F Y'),
-        ];
+        $data_pasien = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($reg_no))
+            ->select(
+                'm_pasien.PatientName as nama',
+                'm_pasien.DateOfBirth as tanggal_lahir',
+                'm_pasien.GCSex as jenis_kelamin',
+                'm_pasien.PatientAddress as alamat',
+                'm_pasien.MedicalNo as nomor_rm',
+                'm_registrasi.reg_no as reg_no'
+            )
+            ->first();
+
+        $penanggungJawab = DB::connection('mysql2')
+            ->table('m_registrasi_pj')
+            ->where('reg_no', $this->parseRegNoByUnderScore($reg_no))
+            ->select(
+                'reg_pjawab_nama as familyname',
+                'jenis_kelamin as jenis_kelamin',
+                'reg_pjawab_alamat as keluarga_alamat',
+                'tanggal_lahir as tanggal_lahir_pj'
+            )
+            ->get();
+
+        foreach ($penanggungJawab as $pj) {
+            if ($pj->tanggal_lahir_pj) {
+                $pj->umur_pj = Carbon::parse($pj->tanggal_lahir_pj)->age;
+            }
+        }
+
+        $penanggungJawabList = $penanggungJawab->pluck('familyname')->toArray();
+
+        if (empty($penanggungJawabList)) {
+            $penanggungJawabList[] = $data_pasien->nama;
+        } elseif (!in_array($data_pasien->nama, $penanggungJawabList)) {
+            $penanggungJawabList[] = $data_pasien->nama;
+        }
+
+        $data_pasien->penanggung_jawab_list = $penanggungJawabList;
+        $data_pasien->penanggung_jawab = $penanggungJawab;
         $url = route('agreement.rawat-intensif', $reg_no);
-        $data_pasien['qrcode'] = QrCode::size(150)->generate($url);
+        $data_pasien->qrcode = QrCode::size(150)->generate($url);
+
         return $data_pasien;
     }
+
     private function formatUsia($dateOfBirth)
     {
         $date1 = new \DateTime($dateOfBirth);
