@@ -92,11 +92,34 @@ class TarikDataController extends Controller
     public function departement_service_unit()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/departemen_service_unit');
+
         foreach ($data['data']  as $kue) {
+            $data = [
+                'GcDefaultOrderType' => $kue['GcDefaultOrderType'],
+                'IsLockedLocation' => $kue['IsLockedLocation'],
+                'IsActive' => $kue['IsActive'],
+                'LastUpdatedBy' => $kue['LastUpdatedBy'],
+                'LastUpdatedDateTime' => $kue['LastUpdatedDateTime'],
+                'ServiceUnitID' => $kue['ServiceUnitID'],
+                'SiteDepartmentID' => $kue['SiteDepartmentID'],
+                'ServiceUnitCode' => $kue['ServiceUnitCode'],
+                'ContactPerson1' => $kue['ContactPerson1'],
+                'ContactPerson2' => $kue['ContactPerson2'],
+                'LocationID' => $kue['LocationID'],
+            ];
+
             $cek = DepartmentServiceUnit::find($kue['ServiceUnitID']);
             if (!$cek) {
                 DB::connection('mysql2')
-                    ->table('m_unit_departemen')->insert([$kue]);
+                    ->table('m_unit_departemen')->insert($data);
+            } else {
+                DB::connection('mysql2')
+                    ->table('m_unit_departemen')
+                    ->where([
+                        'ServiceUnitID' => $kue['ServiceUnitID']
+                    ])
+                    ->update($data)
+                    ;
             }
         }
         echo 'Alhamdulillah';
