@@ -107,7 +107,12 @@ class PatientController extends Controller
                 'm_registrasi.reg_jam',
                 'm_registrasi.service_unit',
                 'm_unit_departemen.ServiceUnitCode',
-                DB::raw('MAX(COALESCE(m_bed_history.ToUnitServiceID, CAST(m_registrasi.service_unit AS UNSIGNED))) as room_id'),
+                DB::raw("
+                    (select ".getLimit()[0]." ToUnitServiceID from m_bed_history where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ToUnitServiceID,
+                    (select ".getLimit()[0]." ServiceUnitCode from m_bed_history join m_unit_departemen on ServiceUnitID = ToUnitServiceID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ServiceUnitCodeNext,
+                    (select ".getLimit()[0]." room_id from m_bed_history join m_bed on bed_id = ToBedID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as room_id
+                "),
+                // DB::raw('MAX(COALESCE(m_bed_history.ToUnitServiceID, CAST(m_registrasi.service_unit AS UNSIGNED))) as room_id'),
                 DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
                 DB::raw("
                     (
@@ -126,16 +131,17 @@ class PatientController extends Controller
                 'businesspartner.BusinessPartnerName',
                 'm_registrasi.reg_tgl',
                 'm_registrasi.reg_jam',
-                'm_registrasi.service_unit',
+                // 'm_registrasi.service_unit',
                 'm_unit_departemen.ServiceUnitCode',
             ])
             ->orderByDesc('m_registrasi.reg_tgl')
             ->get();
 
         foreach ($data as $key => $value) {
-            $serviceUnit = DB::select("(select ServiceUnitName from ".getDatabase('master').".m_unit where ServiceUnitCode = '".$value->service_unit."')");
-            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".$value->room_id.")");
+            $serviceUnit = DB::select("(select ServiceUnitName from ".getDatabase('master').".m_unit where ServiceUnitCode = '".($value->ServiceUnitCodeNext ?? $value->ServiceUnitCode)."')");
+            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".($value->room_id).")");
 
+            $data[$key]->service_unit = $value->ToUnitServiceID ?? $value->service_unit;
             $data[$key]->ServiceUnitName = count($serviceUnit) > 0 ? $serviceUnit[0]->ServiceUnitName : '';
             $data[$key]->RoomName = count($room) > 0 ? $room[0]->RoomName : '';
         }
