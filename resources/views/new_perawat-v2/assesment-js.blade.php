@@ -2013,6 +2013,7 @@
             success: function(data) {
                 $('[id="panel-edukasi"] div').html(data)
                 resetEdukasi(_elm, _type)
+                loadSignatureAnastesi();
 
             },
             error: function(data) {
@@ -2374,3 +2375,4 @@
 @include('new_perawat.nursing.v2.js.nursing_js')
 @include('new_perawat.soap.js.soap_perawat_js')
 @include('new_perawat.riwayat-v2.js.riwayat_js')
+@include('new_perawat.edukasi.js.edukasi_js')

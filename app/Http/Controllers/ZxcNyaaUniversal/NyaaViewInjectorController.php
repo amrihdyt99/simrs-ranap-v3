@@ -172,10 +172,20 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_edukasi_pasien_rehab')
             ->where('reg_no', $request->reg_no)
             ->first();
+        
+        $edukasi_pasien_anastesi = DB::connection('mysql')
+            ->table('rs_edukasi_pasien_anastesi')
+            ->where('reg_no', $request->reg_no)
+            ->first();
 
-        $datamypatient = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        $dbMaster = DB::connection('mysql2')->getDatabaseName();
+        $dbInap = DB::connection('mysql')->getDatabaseName();
+
+        $datamypatient = DB::table($dbMaster . '.m_registrasi')
+            ->leftJoin($dbMaster . '.m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin($dbMaster . '.m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin($dbInap . '.icd10_bpjs', 'm_registrasi.reg_diagnosis', '=', 'icd10_bpjs.ID_ICD10')
+            ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'icd10_bpjs.NM_ICD10')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->first();
 
@@ -188,7 +198,8 @@ class NyaaViewInjectorController extends AaaBaseController
             'edukasi_pasien_gizi' => optional($edukasi_pasien_gizi),
             'edukasi_pasien_farmasi' => optional($edukasi_pasien_farmasi),
             'edukasi_pasien_rehab' => optional($edukasi_pasien_rehab),
-            'datamypatient' => optional($datamypatient),
+            'datamypatient' => optional($datamypatient) ?? (object) null,
+            'edukasi_pasien_anastesi' => optional($edukasi_pasien_anastesi) ?? (object) null,
         );
 
         if (isset($request->type)) {
@@ -1739,58 +1750,4 @@ class NyaaViewInjectorController extends AaaBaseController
         return view('new_perawat.case_manager.index')
             ->with($context);
     }
-
-    function persetujuan_penolakan_dokter(Request $request)
-    {
-        $dataPasien = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->where(['m_registrasi.reg_no' => $request->reg_no])
-            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
-            ->first();
-
-        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
-
-        $informasi = DB::connection('mysql')
-            ->table('rs_tindakan_medis_informasi')
-            ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
-            ->select('rs_tindakan_medis_informasi.*', 'rs_m_paramedic.ParamedicName')
-            ->where('reg_no', $request->reg_no)
-            ->first();
-
-        $persetujuan = DB::connection('mysql')
-            ->table('rs_tindakan_medis_persetujuan')
-            ->where('reg_no', $request->reg_no)
-            ->first();
-
-        $penolakan = DB::connection('mysql')
-            ->table('rs_tindakan_medis_penolakan')
-            ->where('reg_no', $request->reg_no)
-            ->first();
-
-        if (!$informasi) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
-        }
-
-        return response()->json(
-            [
-                'status' => true,
-                'data' => [
-                  
-                    'informasi' => $informasi,
-                    'persetujuan' => $persetujuan,
-                    'penolakan' => $penolakan,
-                    'dataPasien' => $dataPasien,
-                    'registrasi_pj' => $registrasi_pj,
-                ]
-            ],
-            200
-        );
-    }
-
-    public function pemeriksaan_penunjang(Request $request){
-        return view('new_dokter.pemeriksaan_penunjang.index');
-    }
-
 }
