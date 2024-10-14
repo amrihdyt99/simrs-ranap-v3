@@ -6,7 +6,7 @@
     @endphp --}}
 
 
-<h4><b>PERSETUJUAN / PENOLAKAN TINDAKAN MEDIS pp</b></h4>
+<h4><b>PERSETUJUAN / PENOLAKAN TINDAKAN MEDIS</b></h4>
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item">
         <a class="nav-link active" id="pemberi_tab" data-toggle="tab" href="#pemberi" role="tab" aria-controls="pemberi" aria-selected="true">
