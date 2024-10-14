@@ -24,25 +24,6 @@
                             <form action="{{ route('master.user.store') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="ParamedicCode">Pilih Paramedis</label>
-                                    <select id="ParamedicCode" name="ParamedicCode" class="form-control">
-                                        <option value="">-- Pilih Paramedis --</option>
-                                        @foreach ($paramedic as $data)
-                                        <option value="{{ $data->ParamedicCode }}">
-                                            {{ $data->ParamedicName }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">Username</label>
-                                    <input id="username" name="username" class="form-control" type="text" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="">Password</label>
-                                    <input id="password" name="password" class="form-control" type="password" />
-                                </div>
-                                <div class="form-group">
                                     <label for="">User Level</label>
                                     <select name="userlevel" id="userlevel" class="form-control" required>
                                         <option value="">-- Pilih User Level --</option>
@@ -50,6 +31,15 @@
                                         <option value="{{ $sr_key }}">{{ $sr_value }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                                <div id="userName"></div>
+                                <div class="form-group">
+                                    <label for="">Username</label>
+                                    <input id="username" name="username" class="form-control" type="text" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Password</label>
+                                    <input id="password" name="password" class="form-control" type="password" />
                                 </div>
                                 <div class="form-group">
                                     <label for="signature-pad-user">Tanda Tangan :</label>
@@ -125,6 +115,37 @@
 
         // Inisialisasi Select2 jika digunakan
         neko_select2_init(`{{ route('nyaa_universal.select2.m_paramedic') }}`, 'ParamedicCode');
+
+        $('[name="userlevel"]').change(function(){
+            if (this.value == 'dokter' || this.value == 'perawat') {
+                $userName = `
+                    <div class="form-group">
+                        <label for="ParamedicCode">Pilih Paramedis</label>
+                        <select id="ParamedicCode" name="ParamedicCode" class="form-control">
+                            <option value="">-- Pilih Paramedis --</option>
+                            @foreach ($paramedic as $data)
+                            <option value="{{ $data->ParamedicCode }}">
+                                {{ $data->ParamedicName }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                `
+
+                $('[id="userName"]').html($userName)
+
+                $('[name="ParamedicCode"]').select2()
+            } else {
+                $userName = `
+                    <div class="form-group">
+                        <label>Nama Pengguna</label>  
+                        <input type="text" name="name" class="form-control">  
+                    </div>
+                `
+
+                $('[id="userName"]').html($userName)
+            }
+        })
     });
 </script>
 @endpush
