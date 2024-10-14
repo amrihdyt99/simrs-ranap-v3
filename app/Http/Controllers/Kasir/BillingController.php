@@ -1089,7 +1089,8 @@ class BillingController extends AaaBaseController
             ->where([
                 ['pvalidation_reg', $request->reg_no],
                 ['pvalidation_status', 1],
-            ])->first();
+            ])->get();
+
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
