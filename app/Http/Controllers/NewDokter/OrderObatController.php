@@ -822,20 +822,43 @@ class OrderObatController extends Controller
     {
         $regno = $request->reg_no;
         $joborderdetail = DB::connection('mysql')
-            ->table('job_orders_dt')
+            ->table('job_orders as a')
             //            ->leftJoin('job_orders','job_orders_dt.order_no','=','job_orders.order_no')
             //            ->leftJoin('rs_m_paramedic','job_orders.kode_dokter','=','rs_m_paramedic.ParamedicCode')
-            ->where([
-                ['job_orders_dt.reg_no', '=', $regno],
-                ['job_orders_dt.jenis_order', '!=', 'obat']
-            ])
+            ->where('a.reg_no', '=', $regno)
             ->get();
 
-        if (count($joborderdetail) > 0) {
+        foreach($joborderdetail as $key => $value){
+            $jenis = '';
+
+            if (str_contains($value->order_no, 'RLAB') || str_contains($value->order_no, 'LAB')) {
+                $jenis = 'lab';
+            } else if (str_contains($value->order_no, 'RIMG') || str_contains($value->order_no, 'RAD')) {
+                $jenis = 'radiologi';
+            } else if (str_contains($value->order_no, 'FARM')) {
+                $jenis = 'obat';
+            } else {
+                $jenis = 'lainnya';
+            }
+
+            $joborderdetail[$key]->jenis_order = $jenis;
+            $joborderdetail[$key]->details = DB::table('job_orders_dt')
+                ->where('order_no', $value->order_no)
+                ->whereRaw("(deleted is null or deleted = 0)")
+                ->get();
+        }
+
+        $filteredData = array_filter($joborderdetail->toArray(), function($item) {
+            return count($item->details) > 0;
+        });
+
+        $filteredData = array_values($filteredData);
+
+        if (count($filteredData) > 0) {
             return response()->json([
                 'success' => true,
                 'message' => 'ada data tindakan',
-                'data' => $joborderdetail
+                'data' => $filteredData
             ]);
         } else {
             return response()->json([
@@ -990,10 +1013,11 @@ class OrderObatController extends Controller
         }
     }
 
-    function getHasilLab()
+    function getHasilLab(Request $request)
     {
         //use curl
-        $url = 'http://rsud.sumselprov.go.id/labor/api/result-lab?ono=QLAB/202303160000136';
+        // QLAB/202303160000136
+        $url = 'http://rsud.sumselprov.go.id/labor/api/result-lab?ono='.$request->orderNo;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 0);
@@ -1002,13 +1026,18 @@ class OrderObatController extends Controller
         $response = curl_exec($ch);
         $err = curl_error($ch);  //if you need
         curl_close($ch);
+
+        if (json_decode($response)->data == null) {
+            return 'Belum ada hasil pemeriksaan';
+        }
 
         return view('new_dokter.pemeriksaan_penunjang.hasil_lab', compact('response'));
     }
 
-    function getHasilRadiologi()
+    function getHasilRadiologi(Request $request)
     {
-        $url = 'http://rsud.sumselprov.go.id/labor/api/report-ris?ono=QIMG/202201190000025';
+        // QIMG/202201190000025
+        $url = 'http://rsud.sumselprov.go.id/labor/api/report-ris?ono='.$request->orderNo;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 0);
@@ -1017,6 +1046,10 @@ class OrderObatController extends Controller
         $response = curl_exec($ch);
         $err = curl_error($ch);  //if you need
         curl_close($ch);
+        
+        if (json_decode($response)->data == null) {
+            return 'Belum ada hasil pemeriksaan';
+        }
 
         return view('new_dokter.pemeriksaan_penunjang.hasil_radiologi', compact('response'));
     }

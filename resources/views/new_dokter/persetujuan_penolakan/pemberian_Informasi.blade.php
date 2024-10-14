@@ -295,7 +295,6 @@
     </div>
 
 </form>
-
 <div class="card mt-5" id="print-section">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5><b>PEMBERIAN INFORMASI</b></h5>
@@ -308,19 +307,19 @@
         <table style="width: 100%;">
             <tr>
                 <td style="width: {{ $width_data }}%">Dokter Pelaksana Tindakan </td>
-                <td>: </td>
+                <td>: <span id="ParamedicName" name="ParamedicName"></span></td>
             </tr>
             <tr>
                 <td style="width: {{ $width_data }}%">Pemberi Informasi </td>
-                <td>: </td>
+                <td>: <span id="informasi_pemberi_info_" name="informasi_pemberi_info"></span></td>
             </tr>
             <tr>
                 <td style="width: {{ $width_data }}%">Penerima Informasi / Pemberi Persetujuann </td>
-                <td>: </td>
+                <td>: <span id="informasi_penerima_info_" name="informasi_penerima_info"></span></td>
             </tr>
             <tr>
                 <td style="width: {{ $width_data }}%">Diberikan pada tanggal / jam</td>
-                <td>: </td>
+                <td>: <span id="informasi_diberikan_pada_" name="informasi_diberikan_pada"></span></td>
             </tr>
         </table>
 
@@ -350,7 +349,7 @@
                         Diagnosis (Diagnosis Kerja & Diagnosis Banding)
                     </td>
                     <td>
-                        
+                        <span id="informasi_diagnosis_text_" name="informasi_diagnosis_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -364,7 +363,7 @@
                         Dasar Diagnosis
                     </td>
                     <td>
-                        
+                        <span id="informasi_dasar_diagnosis_text_" name="informasi_dasar_diagnosis_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -378,7 +377,7 @@
                         Tindakan Kedokteran
                     </td>
                     <td>
-                        
+                        <span id="informasi_tindakan_kedokteran_text_" name="informasi_tindakan_kedokteran_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -392,7 +391,7 @@
                         Indikasi Tindakan
                     </td>
                     <td>
-                        
+                        <span id="informasi_indikasi_tindakan_text_" name="informasi_indikasi_tindakan_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -406,7 +405,7 @@
                         Tata cara
                     </td>
                     <td>
-                        
+                        <span id="informasi_tata_cara_text_" name="informasi_tata_cara_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -420,7 +419,7 @@
                         Tujuan
                     </td>
                     <td>
-                        
+                        <span id="informasi_tujuan_text_" name="informasi_tujuan_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -434,7 +433,7 @@
                         Risiko
                     </td>
                     <td>
-                        
+                        <span id="informasi_risiko_text_" name="informasi_risiko_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -448,7 +447,7 @@
                         Komplikasi
                     </td>
                     <td>
-                        
+                        <span id="informasi_komplikasi_text_" name="informasi_komplikasi_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -462,7 +461,7 @@
                         Prognosis
                     </td>
                     <td>
-                        
+                        <span id="informasi_prognosis_text_" name="informasi_prognosis_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -476,7 +475,7 @@
                         Alternatif & Risiko
                     </td>
                     <td>
-                        
+                        <span id="informasi_alternatif_text_" name="informasi_alternatif_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -490,7 +489,7 @@
                         Lain-lain
                     </td>
                     <td>
-                        
+                        <span id="informasi_lain_lain_text_" name="informasi_lain_lain_text"></span>
                     </td>
                     <td>
                         {{-- <input type="checkbox" class="form-control"> --}}
@@ -539,18 +538,20 @@
     </div>
 </div>
 <script>
+
     function printSection() {
-        var printContents = document.getElementById('print-section').innerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        location.reload();
+        var printContents = document.getElementById('print-section').cloneNode(true);
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = "";
+            document.body.appendChild(printContents);
+            window.print();
+            document.body.innerHTML = originalContents;
+            
     }
 </script>
 
 {{-- persetujuan tindakan medis --}}
-@if (isset($persetujuan))
+{{-- @if (isset($persetujuan)) --}}
     <div class="card mt-5" id="print-section-persetujuan">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5><b>PERSETUJUAN TINDAKAN MEDIS</b></h5>
@@ -559,131 +560,77 @@
         <div class="card-body">
             <table style="width: 100%;">
                 <tr>
-                    <td>
-                        Nama
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_nama_1 }}
+                    <td style="width: 50%;">Nama</td>
+                    <td>: <span id="persetujuan_nama_1_" name="persetujuan_nama_1"></span></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Jenis Kelamin</td>
+                    <td>: 
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_" value="Laki-laki">
+                        <label for="persetujuan_jenis_kelamin_1_laki">Laki-laki</label>
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan_" value="Perempuan">
+                        <label for="persetujuan_jenis_kelamin_1_perempuan">Perempuan</label>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        Jenis Kelamin
-                    </td>
-                    <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="laki" value="Laki-laki"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : '' }}>
-                        <label for="laki">Laki-laki</label>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="perempuan" value="Perempuan"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : '' }}>
-                        <label for="perempuan">Perempuan</label>
+                    <td style="width: 50%;">Tanggal Lahir</td>
+                    <td>: <span id="persetujuan_tanggal_lahir_1_" name="persetujuan_tanggal_lahir_1"></span></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Alamat</td>
+                    <td>: <span id="persetujuan_alamat_1_" name="persetujuan_alamat_1"></span></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Dengan ini menyatakan SETUJU untuk dilakukan tindakan.</td>
+                    <td>: <span id="persetujuan_pernyataan_" name="persetujuan_pernyataan"></span></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Terhadap</td>
+                    <td>: 
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_saya_" value="Saya sendiri">
+                        <label for="persetujuan_terhadap_saya">Saya sendiri</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_anak_" value="Anak">
+                        <label for="persetujuan_terhadap_anak">Anak</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_ayah_" value="Ayah">
+                        <label for="persetujuan_terhadap_ayah">Ayah</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_ibu_" value="Ibu">
+                        <label for="persetujuan_terhadap_ibu">Ibu</label>
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_saudara_" value="Saudara">
+                        <label for="persetujuan_terhadap_saudara">Saudara</label>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        Tanggal Lahir
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_tanggal_lahir_1 }}
+                    <td style="width: 50%;">Nama</td>
+                    <td>: <span id="persetujuan_nama_2_" name="persetujuan_nama_2"></span></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">Jenis Kelamin</td>
+                    <td>: 
+                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_laki_" value="Laki-laki">
+                        <label for="persetujuan_jenis_kelamin_2_laki">Laki-laki</label>
+                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="persetujuan_jenis_kelamin_2_perempuan_" value="Perempuan">
+                        <label for="persetujuan_jenis_kelamin_2_perempuan">Perempuan</label>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        Alamat
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_alamat_1 }}
-                    </td>
+                    <td style="width: 50%;">Tanggal Lahir</td>
+                    <td>: <span id="persetujuan_tanggal_lahir_2_" name="persetujuan_tanggal_lahir_2"></span></td>
                 </tr>
                 <tr>
-                    <td>
-                        Dengan ini menyatakan SETUJU untuk dilakukan tindakan.
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_pernyataan }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Terhadap
-                    </td>
-                    <td>
-                        <input type="radio" name="persetujuan_terhadap" id="saya" value="Saya sendiri"
-                            {{ $persetujuan->persetujuan_terhadap == 'Saya sendiri' ? 'checked' : '' }}>
-                        <label for="saya">Saya sendiri</label>
-                        <input type="radio" name="persetujuan_terhadap" id="anak" value="Anak"
-                            {{ $persetujuan->persetujuan_terhadap == 'Anak' ? 'checked' : '' }}>
-                        <label for="anak">Anak</label>
-                        <input type="radio" name="persetujuan_terhadap" id="ayah" value="Ayah"
-                            {{ $persetujuan->persetujuan_terhadap == 'Ayah' ? 'checked' : '' }}>
-                        <label for="ayah">Ayah</label>
-                        <input type="radio" name="persetujuan_terhadap" id="ibu" value="Ibu"
-                            {{ $persetujuan->persetujuan_terhadap == 'Ibu' ? 'checked' : '' }}>
-                        <label for="ibu">Ibu</label>
-                        <input type="radio" name="persetujuan_terhadap" id="saudara" value="Saudara"
-                            {{ $persetujuan->persetujuan_terhadap == 'Saudara' ? 'checked' : '' }}>
-                        <label for="saudara">Saudara</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 300px;">
-                        Nama
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_nama_2 }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Jenis Kelamin
-                    </td>
-                    <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="laki2" value="Laki-laki"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_2 == 'Laki-laki' ? 'checked' : '' }}>
-                        <label for="laki2">Laki-laki</label>
-                        <input type="radio" name="persetujuan_jenis_kelamin_2" id="perempuan2" value="Perempuan"
-                            {{ $persetujuan->persetujuan_jenis_kelamin_2 == 'Perempuan' ? 'checked' : '' }}>
-                        <label for="perempuan2">Perempuan</label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Tanggal Lahir
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_tanggal_lahir_2 }} </td>
-                </tr>
-                <tr>
-                    <td>
-                        Alamat
-                    </td>
-                    <td>
-                        {{ $persetujuan->persetujuan_alamat_2 }}
-                    </td>
+                    <td style="width: 50%;">Alamat</td>
+                    <td>: <span id="persetujuan_alamat_2_" name="persetujuan_alamat_2"></span></td>
                 </tr>
             </table>
-            <p>Saya memahami perlunya dan manfaat tindakan tersebut sebagaimana telah dijelaskan seperti di atas
-                kepada
-                saya, termasuk
-                risiko dan komplikasi yang mungkin timbul.</p>
-            <p>
-                Saya juga menyadari bahwa oleh karena ilmu kedokteran bukanlah ilmu pasti, maka keberhasilan
-                tindakan
-                medis bukanlah
-                keniscayaan, melainkan sangat bergantung kepada Tuhan Yang Maha Esa.
-            </p>
+            <p>Saya memahami perlunya dan manfaat tindakan tersebut sebagaimana telah dijelaskan seperti di atas kepada saya, termasuk risiko dan komplikasi yang mungkin timbul.</p>
+            <p>Saya juga menyadari bahwa oleh karena ilmu kedokteran bukanlah ilmu pasti, maka keberhasilan tindakan medis bukanlah keniscayaan, melainkan sangat bergantung kepada Tuhan Yang Maha Esa.</p>
 
             <table style="width: 40%; float: right; border: none; margin-top: 30px">
                 <tbody>
                     <tr>
                         <td>
-                            <h6>
-                                Palembang, tanggal
-                            </h6>
+                            <h6>Palembang, tanggal</h6>
                         </td>
-                        <td>
-                            {{ $persetujuan->persetujuan_tanggal_waktu_ttd }}
-                        </td>
+                        <td>: <span id="persetujuan_tanggal_waktu_ttd" name="persetujuan_tanggal_waktu_ttd"></span></td>
                     </tr>
                 </tbody>
             </table>
@@ -697,9 +644,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <h6>
-                                Yang menyatakan
-                            </h6>
+                            <h6>Yang menyatakan</h6>
                         </td>
                         <td>
                             <h6>Dokter</h6>
@@ -712,18 +657,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
-                        <td>
-                            (..................)
-                        </td>
+                        <td>(..................)</td>
+                        <td>(..................)</td>
+                        <td>(..................)</td>
+                        <td>(..................)</td>
                     </tr>
                 </tbody>
             </table>
@@ -731,16 +668,17 @@
     </div>
     <script>
         function printSectionPersetujuan() {
-            var printContents = document.getElementById('print-section-persetujuan').innerHTML;
+            var printContents = document.getElementById('print-section-persetujuan').cloneNode(true);
             var originalContents = document.body.innerHTML;
-            document.body.innerHTML = printContents;
+            document.body.innerHTML = "";
+            document.body.appendChild(printContents);
             window.print();
             document.body.innerHTML = originalContents;
-            location.reload();
+            
         }
     </script>
-@endif
-@if (isset($penolakan))
+{{-- @endif --}}
+{{-- @if (isset($penolakan)) --}}
     <div class="card mt-5" id="print-section-penolakan">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5><b>PENOLAKAN TINDAKAN MEDIS</b></h5>
@@ -755,7 +693,7 @@
                         Nama
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_nama_1 }}
+                        <span id="penolakan_nama_1_" name="penolakan_nama_1"></span>
                     </td>
                 </tr>
                 <tr>
@@ -763,11 +701,9 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_jenis_kelamin_1" id="laki3" value="Laki-laki"
-                            {{ $penolakan->penolakan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_jenis_kelamin_1" id="laki3" value="Laki-laki">
                         <label for="laki3">Laki-laki</label>
-                        <input type="radio" name="penolakan_jenis_kelamin_1" id="perempuan3" value="Perempuan"
-                            {{ $penolakan->penolakan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_jenis_kelamin_1" id="perempuan3" value="Perempuan">
                         <label for="perempuan3">Perempuan</label>
                     </td>
                 </tr>
@@ -776,7 +712,7 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_tanggal_lahir_1 }}
+                        <span id="penolakan_tanggal_lahir_1_" name="penolakan_tanggal_lahir_1"></span>
                     </td>
                 </tr>
                 <tr>
@@ -784,7 +720,7 @@
                         Alamat
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_alamat_1 }}
+                        <span id="penolakan_alamat_1_" name="penolakan_alamat_1"></span>
                     </td>
                 </tr>
                 <tr>
@@ -792,7 +728,7 @@
                         Dengan ini menyatakan TIDAK SETUJU untuk dilakukan tindakan.
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_pernyataan }}
+                        <span id="penolakan_pernyataan_" name="penolakan_pernyataan"></span>
                     </td>
                 </tr>
                 <tr>
@@ -800,20 +736,15 @@
                         Terhadap
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_terhadap" id="saya3" value="Saya sendiri"
-                            {{ $penolakan->penolakan_terhadap == 'Saya sendiri' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_terhadap" id="saya3" value="Saya sendiri">
                         <label for="saya3">Saya sendiri</label>
-                        <input type="radio" name="penolakan_terhadap" id="anak3" value="Anak"
-                            {{ $penolakan->penolakan_terhadap == 'Anak' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_terhadap" id="anak3" value="Anak">
                         <label for="anak3">Anak</label>
-                        <input type="radio" name="penolakan_terhadap" id="ayah3" value="Ayah"
-                            {{ $penolakan->penolakan_terhadap == 'Ayah' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_terhadap" id="ayah3" value="Ayah">
                         <label for="ayah3">Ayah</label>
-                        <input type="radio" name="penolakan_terhadap" id="ibu3" value="Ibu"
-                            {{ $penolakan->penolakan_terhadap == 'Ibu' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_terhadap" id="ibu3" value="Ibu">
                         <label for="ibu3">Ibu</label>
-                        <input type="radio" name="penolakan_terhadap" id="saudara3" value="Saudara"
-                            {{ $penolakan->penolakan_terhadap == 'Saudara' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_terhadap" id="saudara3" value="Saudara">
                         <label for="saudara3">Saudara</label>
                     </td>
                 </tr>
@@ -822,7 +753,7 @@
                         Nama
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_nama_2 }}
+                        <span id="penolakan_nama_2_" name="penolakan_nama_2"></span>
                     </td>
                 </tr>
                 <tr>
@@ -830,11 +761,9 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="penolakan_jenis_kelamin_2" id="laki4" value="Laki-laki"
-                            {{ $penolakan->penolakan_jenis_kelamin_2 == 'Laki-laki' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_jenis_kelamin_2" id="laki4" value="Laki-laki">
                         <label for="laki4">Laki-laki</label>
-                        <input type="radio" name="penolakan_jenis_kelamin_2" id="perempuan4" value="Perempuan"
-                            {{ $penolakan->penolakan_jenis_kelamin_2 == 'Perempuan' ? 'checked' : '' }}>
+                        <input type="radio" name="penolakan_jenis_kelamin_2" id="perempuan4" value="Perempuan">
                         <label for="perempuan4">Perempuan</label>
                     </td>
                 </tr>
@@ -843,7 +772,7 @@
                         Tanggal Lahir
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_nama_2 }}
+                        <span id="penolakan_tanggal_lahir_2_" name="penolakan_tanggal_lahir_2"></span>
                     </td>
                 </tr>
                 <tr>
@@ -851,7 +780,7 @@
                         Alamat
                     </td>
                     <td>
-                        {{ $penolakan->penolakan_alamat_2 }}
+                        <span id="penolakan_alamat_2_" name="penolakan_alamat_2"></span>
                     </td>
                 </tr>
             </table>
@@ -875,8 +804,8 @@
                             </h5>
                         </td>
                         <td>
-                            <input type="datetime-local" name="penolakan_tanggal_ttd" id=""
-                                class="form-control" value="{{ $penolakan->penolakan_tanggal_ttd }}">
+                            <input type="datetime-local" name="penolakan_tanggal_ttd" id="penolakan_tanggal_ttd"
+                                class="form-control">
                         </td>
                     </tr>
                 </tbody>
@@ -924,53 +853,17 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
-            // Assuming you have the data in a variable called `informasi`
-            var informasi = {
-                informasi_ttd_dokter: "data:image/png;base64,...", // Example data
-                informasi_ttd_penerima_informasi: "data:image/png;base64,..."
-            };
-
-            console.log("Dokter Signature Data:", informasi.informasi_ttd_dokter);
-            console.log("Penerima Signature Data:", informasi.informasi_ttd_penerima_informasi);
-
-            // Set the value of the hidden input fields
-            $('#signature_dokter').val(informasi.informasi_ttd_dokter);
-            $('#signature_penerima').val(informasi.informasi_ttd_penerima_informasi);
-
-            // Display the signature on a canvas
-            var canvasDokter = document.getElementById('canvas_dokter');
-            var contextDokter = canvasDokter.getContext('2d');
-            var imageDokter = new Image();
-            imageDokter.src = informasi.informasi_ttd_dokter;
-            imageDokter.onload = function() {
-                contextDokter.drawImage(imageDokter, 0, 0);
-            };
-            imageDokter.onerror = function() {
-                console.error("Failed to load dokter signature image.");
-            };
-
-            var canvasPenerima = document.getElementById('canvas_penerima');
-            var contextPenerima = canvasPenerima.getContext('2d');
-            var imagePenerima = new Image();
-            imagePenerima.src = informasi.informasi_ttd_penerima_informasi;
-            imagePenerima.onload = function() {
-                contextPenerima.drawImage(imagePenerima, 0, 0);
-            };
-            imagePenerima.onerror = function() {
-                console.error("Failed to load penerima signature image.");
-            };
-        });
         function printSectionPenolakan() {
-            var printContents = document.getElementById('print-section-penolakan').innerHTML;
+            var printContents = document.getElementById('print-section-penolakan').cloneNode(true);
             var originalContents = document.body.innerHTML;
-            document.body.innerHTML = printContents;
+            document.body.innerHTML = "";
+            document.body.appendChild(printContents);
             window.print();
             document.body.innerHTML = originalContents;
-            location.reload();
+            
         }
     </script>
-@endif
+{{-- @endif --}}
 
 
 {{-- @push('nyaa_scripts') --}}

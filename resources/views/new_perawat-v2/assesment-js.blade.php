@@ -47,6 +47,7 @@
     var classcode = "{{$dataPasien->reg_class}}";
     var ddxutama = '#ddx-utama'
     var ddxutamalen = $(ddxutama).length
+    $hosted = '{{url("")}}'
 
     // =================================================================================================================================
     // init
@@ -1310,6 +1311,25 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadAllFunctionCaseManager();
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'pemeriksaan-penunjang': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.pemeriksaan_penunjang')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            getPemeriksaanDokter()
                         },
                         error: function(data) {
                             clear_show_error();

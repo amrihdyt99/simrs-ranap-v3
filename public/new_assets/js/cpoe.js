@@ -74,3 +74,53 @@ $('body').on('click', '.remove_ordercpoe', function (event) {
         });
     }
 });
+
+function getPemeriksaanDokter() {
+    $.ajax({
+        url: $hosted+"/api/getPemeriksaanDokter",
+        type: "POST",
+        data: {
+            reg_no: regno, // Gantilah `regno` dengan variabel yang sesuai
+        },
+        success: function(data) {
+            if (data.success == true) {
+                var tablePemeriksaanDokter = $('#table-pemeriksaan-dokter');
+                tablePemeriksaanDokter.empty();
+                data.data.forEach(function(item) {
+                    let itemName = ''
+
+                    $.each(item.details, function(sub_i, sub_item){
+                        itemName += (sub_i + 1)+'. '+sub_item.item_name+'<br>'
+                    })
+
+                    var tr = $('<tr></tr>');
+                    tr.append('<td class="text-center">' + item.waktu_order + '</td>');
+                    tr.append('<td class="text-center">' + item.order_no + '</td>');
+                    tr.append('<td>' + itemName + '</td>');
+                    tr.append('<td class="text-center">' + item.jenis_order + '</td>');
+                    var button = $('<button class="btn btn-primary">Hasil</button>');
+
+                    // Menyimpan URL di data button
+                    var url = item.jenis_order == "lab" ? $hosted+"/dokter/getHasillab?orderNo="+item.order_no : $hosted+"/dokter/getHasilRad?orderNo="+item.order_no;
+                    button.data('url', url);
+
+                    button.on('click', function() {
+                        var iframeUrl = $(this).data('url');
+                        // Mengubah src iframe dengan URL yang sesuai
+                        $('#resultModal iframe').attr('src', iframeUrl);
+                        // Menampilkan modal
+                        $('#resultModal').modal('show');
+                    });
+
+                    tr.append($('<td></td>').append(button));
+                    
+                    if (item.jenis_order == 'lab' || item.jenis_order == 'radiologi') {
+                        tablePemeriksaanDokter.append(tr);
+                    }
+                });
+            } else {
+                $('#table-pemeriksaan-dokter').html('<tr><td colspan="5" class="text-center">' + data.message.toUpperCase() + '</td></tr>');
+            }
+        }
+    });
+    }

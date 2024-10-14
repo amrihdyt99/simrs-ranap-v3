@@ -132,21 +132,26 @@ $registrasi_data = DB::connection('mysql2')
 
             <div class="col" style="max-width: 15%;">
                 @if (Auth::user()->level_user == 'farmasi')
-                <div class="row">
-                    <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
-                        Edukasi
+                    <div class="row">
+                        <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
+                            Edukasi
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="left-tab" id="tab-soap" onclick="clickTab('soap')">
-                        CPPT
+                    <div class="row">
+                        <div class="left-tab" id="tab-soap" onclick="clickTab('soap')">
+                            CPPT
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
-                        Rekonsiliasi
+                    <div class="row">
+                        <div class="left-tab" id="tab-rekonsiliasi-obat" onclick="clickTab('rekonsiliasi-obat')">
+                            Rekonsiliasi
+                        </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="left-tab" id="tab-pemeriksaan-penunjang" onclick="clickTab('pemeriksaan-penunjang')">
+                            Hasil Pemeriksaan Penunjang
+                        </div>
+                    </div>  
                 @else
                 @if (Auth::user()->level_user == 'dietitian')
                 <div class="row">
@@ -168,13 +173,13 @@ $registrasi_data = DB::connection('mysql2')
                 </div>
                 @else
                 @if (Auth::user()->room != null)
-                @if (Str::contains(Auth::user()->room->RoomName, 'ICU'))
-                <div class="row">
-                    <div class="left-tab" id="tab-intruksi-harian-icupanel" onclick="clickTab('intruksi-harian-icupanel')">
-                        Intruksi Harian
+                    @if (Str::contains(Auth::user()->room->RoomName, 'ICU'))
+                    <div class="row">
+                        <div class="left-tab" id="tab-intruksi-harian-icupanel" onclick="clickTab('intruksi-harian-icupanel')">
+                            Intruksi Harian
+                        </div>
                     </div>
-                </div>
-                @endif
+                    @endif
                 @endif
 
                 {{-- <div class="row">
@@ -492,6 +497,8 @@ $registrasi_data = DB::connection('mysql2')
         </div>
     </div>
 </div>
+
+@include('new_dokter.modal.hasil')
 @endsection
 
 @section('nyaa_scripts')
@@ -499,4 +506,5 @@ $registrasi_data = DB::connection('mysql2')
 @include('new_perawat-v2.assesment-send-js')
 @include('new_perawat-v2.assesment-js')
 @include('new_perawat-v2.intruksi-harian.js')
+<script src="{{asset('new_assets/js/cpoe.js')}}"></script>
 @endsection
