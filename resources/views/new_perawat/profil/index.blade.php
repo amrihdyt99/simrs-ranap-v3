@@ -49,13 +49,21 @@ $dokter = optional((object)[]);
 <div class="form-group-left">
     <h6>Ruang Rawat</h6>
     @php
+    $latest = DB::connection('mysql2')->table('m_bed_history')
+    ->where('m_bed_history.RegNo', $dataPasien->reg_no)
+    ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
+    ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+    ->first();
+
     $ruang = DB::connection('mysql2')->table('m_bed')
     ->join('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
     ->join('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
     ->join('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
     ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
     ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
-    ->where('bed_id',$dataPasien->bed)->first();
+    ->where('bed_id',$latest->ToBedID)
+    ->orWhere('bed_id', $latest->FromBedID)
+    ->first();
     if(!$ruang){
     $ruang = optional((object)[]);
     }
