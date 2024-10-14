@@ -1,4 +1,5 @@
 <form id="formEdukasiAnastesi" class="form-group">
+    <input type="hidden" name="username" value="{{auth()->user()->username}}">
     <div class="table-responsive">
         <table class="table1">
             <tr>
@@ -104,29 +105,43 @@
                 </td>
             </tr>
             <tr>
-                <td style=" text-align: center;">
-                    <p>Dokter yang menyatakan</p>
-                    <div class="signature-pad mx-auto"
-                        style="border: 1px solid #000; width: 450px; height: 210px;">
-                        <canvas id="signature-pad-dokter_anastesi" width="450" height="200"></canvas>
+                <td style="width: 500px; text-align: center; vertical-align: middle; padding: 10px;">
+                    <div style="margin-bottom: 10px; font-weight: bold;">Dokter yang menyatakan</div>
+                    <div id="signature-pad-dokter-anastesi" style="display: inline-block; margin: 0 auto;">
+                        <div
+                            style="border: solid 1px teal; width: 450px; height: 210px; position: relative;">
+                            <canvas id="canvas_dokter_anastesi" width="450" height="200">Your browser does not support the
+                                HTML canvas tag.</canvas>
+                        </div>
+                        <div style="margin: 10px;">
+                            <input type="hidden" id="signature_dokter_anastesi" name="ttd_dokter" value="{{$edukasi_pasien_anastesi->ttd_dokter ?? ''}}">
+                            <button type="button" id="clear_btn_dokter_anastesi" class="btn btn-danger"
+                                data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                            <input type="text" class="form-control mt-2" name="nama_pihak_pasien" value="{{$datamypatient->PatientName ?? ''}}" placeholder="Nama Edukator">
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-sm btn-secondary clear-btn mt-2"
-                        data-pad="dokter_anastesi">Hapus</button>
-                    <input type="hidden" name="ttd_dokter" id="ttd_dokter_anastesi" value="">
                 </td>
-    
-                <td style=" text-align: center;">
-                    <p>Pihak yang dijelaskan</p>
-                    <div class="signature-pad mx-auto"
-                        style="border: 1px solid #000; width: 450px; height: 210px;">
-                        <canvas id="signature-pad-pasien_anastesi" width="450" height="200"></canvas>
+
+                <td style="width: 500px; text-align: center; vertical-align: middle; padding: 10px;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="margin-bottom: 10px; font-weight: bold;">Pihak yang dijelaskan</div>
+                        <div id="signature-pad-pasien-anastesi" style="display: inline-block;">
+                            <div
+                                style="border: solid 1px teal; width: 450px; height: 210px; position: relative;">
+                                <canvas id="canvas_pasien_anastesi" width="450" height="200">Your browser does not support
+                                    the HTML canvas tag.</canvas>
+                            </div>
+                            <div style="margin: 10px; text-align: center;">
+                                <input type="hidden" id="signature_pasien_anastesi" name="ttd_pihak_pasien" value="{{$edukasi_pasien_anastesi->ttd_pihak_pasien ?? ''}}">
+                                <button type="button" id="clear_btn_pasien_anastesi" class="btn btn-danger"
+                                    data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
+                                <input type="text" class="form-control mt-2" name="nama_dokter" value="{{$datamypatient->ParamedicName ?? ''}}" placeholder="Nama Sasaran">
+                            </div>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-sm btn-secondary clear-btn mt-2"
-                        data-pad="pasien_anastesi">Hapus</button>
-                    <input type="hidden" name="ttd_pihak_pasien" id="ttd_pasien_anastesi" value="">
                 </td>
             </tr>
         </table>
-        <button type="button" class="btn btn-primary mt-3 float-right" onclick="storeEdukasiAnastesi()">Simpan</button>
+        <button type="button" class="btn btn-primary mt-3 float-right" onclick="addedukasipasienperawat('#formEdukasiAnastesi', 'anastesi')">Simpan</button>
     </div>
 </form>
