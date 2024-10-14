@@ -1789,4 +1789,8 @@ class NyaaViewInjectorController extends AaaBaseController
         );
     }
 
+    public function pemeriksaan_penunjang(Request $request){
+        return view('new_dokter.pemeriksaan_penunjang.index');
+    }
+
 }
