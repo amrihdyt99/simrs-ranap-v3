@@ -35,6 +35,7 @@
               <a class="dropdown-item" href="{{ route('master.dtd.index') }}">DTD</a>
               <a class="dropdown-item" href="{{ route('master.education.index') }}">Education</a>
               <a class="dropdown-item" href="{{ route('master.item-group.index') }}">Item Group</a>
+              <a class="dropdown-item" href="{{ route('master.item.index') }}">Item</a>
             </div>
 
             <div class="col-6">

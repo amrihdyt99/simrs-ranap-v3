@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Master;
+namespace App\Http\Controllers\Master\v2;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\Item;
 use App\Models\Master\ItemGroup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ItemGroupController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,15 +19,18 @@ class ItemGroupController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $serviceunit = DB::connection('mysql2')->table("m_item_group")->where('IsDeleted', 0)->get();
+            $item = DB::connection('mysql2')->table("m_item")
+                ->select('m_item.*', 'm_item_group.ItemGroupName1')
+                ->leftJoin('m_item_group', 'm_item_group.ItemGroupCode', '=', 'm_item.ItemGroupCode')
+                ->where('m_item.IsDeleted', 0)->get();
             return DataTables()
-                ->of($serviceunit)
+                ->of($item)
                 ->addColumn('action', function ($row) {
-                    $editUrl = route('master.item-group.edit', [$row->ItemGroupCode]);
+                    $editUrl = route('master.item.edit', [$row->ItemID]);
 
                     $actionBtn = '<div class="btn-group" role="group">';
                     $actionBtn .= "<button type='button' class='btn btn-warning'><a href='$editUrl'><i class='fas fa-edit'></i> Edit</a></button>";
-                    $actionBtn .= "<button type='button' class='btn btn-danger' onclick='confirmDelete(this)' data-id='$row->ItemGroupCode'><i class='fas fa-trash'></i> Hapus</button>";
+                    $actionBtn .= "<button type='button' class='btn btn-danger' onclick='confirmDelete(this)' data-id='$row->ItemID'><i class='fas fa-trash'></i> Hapus</button>";
                     $actionBtn .= '</div>';
 
                     return $actionBtn;
@@ -34,7 +38,7 @@ class ItemGroupController extends Controller
                 ->escapeColumns([])
                 ->toJson();
         }
-        return view('master.pages.item_group.index');
+        return view('master.pages.item.index');
     }
 
     /**
@@ -44,7 +48,12 @@ class ItemGroupController extends Controller
      */
     public function create()
     {
-        return view('master.pages.item_group.create');
+        $itemGroup = ItemGroup::where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+
+        return view('master.pages.item.create', compact('itemGroup'));
     }
 
     /**
@@ -56,25 +65,27 @@ class ItemGroupController extends Controller
     public function store(Request $request)
     {
         $validation = $request->validate([
-            'ItemGroupCode' => ['required', 'string'],
+            'ItemCode' => ['required', 'string'],
             'GCItemType' => ['required', 'string'],
-            'ItemGroupName1' => ['required', 'string'],
-            'ItemGroupName2' => ['nullable', 'string'],
+            'ItemGroupCode' => ['required', 'string'],
+            'ItemName1' => ['required', 'string'],
+            'ItemName2' => ['nullable', 'string'],
             'IsActive'  => ['numeric'],
         ]);
 
-        $cek = ItemGroup::find($request->ItemGroupCode);
+        $cek = Item::find($request->ItemGroupCode);
         if ($cek) {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Kode Item Group sudah digunakan !',
+                'message' => 'Kode Item sudah digunakan !',
             ]);
         }
 
+        $validation['IsDeleted'] = '0';
         $validation['LastUpdatedBy'] = auth()->user()->username;
         $validation['LastUpdatedDateTime'] = Carbon::now()->toDateTimeString();
 
-        ItemGroup::create($validation);
+        Item::create($validation);
         return response()->json([
             'status' => 'success',
             'message' => 'Data berhasil disimpan !',
@@ -101,8 +112,14 @@ class ItemGroupController extends Controller
     public function edit($id)
     {
 
-        $itemGroup = ItemGroup::find($id);
-        return view('master.pages.item_group.update', compact('itemGroup'));
+        $item = Item::find($id);
+
+        $itemGroup = ItemGroup::where([
+            ['IsActive', 1],
+            ['IsDeleted', 0],
+        ])->get();
+
+        return view('master.pages.item.update', compact('item', 'itemGroup'));
     }
 
     /**
@@ -114,17 +131,19 @@ class ItemGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $itemGroup = ItemGroup::find($id);
+        $item = Item::find($id);
         $validation = $request->validate([
+            'ItemCode' => ['required', 'string'],
             'GCItemType' => ['required', 'string'],
-            'ItemGroupName1' => ['required', 'string'],
-            'ItemGroupName2' => ['nullable', 'string'],
+            'ItemGroupCode' => ['required', 'string'],
+            'ItemName1' => ['required', 'string'],
+            'ItemName2' => ['nullable', 'string'],
             'IsActive'  => ['numeric'],
         ]);
 
         $validation['LastUpdatedBy'] = auth()->user()->username;
         $validation['LastUpdatedDateTime'] = Carbon::now()->toDateTimeString();
-        $itemGroup->update($validation);
+        $item->update($validation);
 
         return response()->json([
             'status' => 'success',
@@ -140,20 +159,20 @@ class ItemGroupController extends Controller
      */
     public function destroy($id)
     {
-        $itemGroup = DB::connection('mysql2')
-            ->table('m_item_group')
-            ->where('ItemGroupCode', $id)
+        $item = DB::connection('mysql2')
+            ->table('m_item')
+            ->where('ItemID', $id)
             ->first();
 
-        if (!$itemGroup) {
+        if (!$item) {
             return response()->json(['error' => 'Data tidak ditemukan'], 404);
         }
 
         DB::connection('mysql2')
-            ->table('m_item_group')
-            ->where('ItemGroupCode', $id)
+            ->table('m_item')
+            ->where('ItemID', $id)
             ->update([
-                'IsDeleted' => 1,
+                'IsDeleted' => '1',
                 'LastUpdatedBy' => auth()->user()->username,
                 'LastUpdatedDateTime' => Carbon::now()->toDateTimeString(),
             ]);
