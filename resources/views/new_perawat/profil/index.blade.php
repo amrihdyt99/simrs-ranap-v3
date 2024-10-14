@@ -62,7 +62,6 @@ $dokter = optional((object)[]);
     ->join('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
     ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
     ->where('bed_id',$latest->ToBedID)
-    ->orWhere('bed_id', $latest->FromBedID)
     ->first();
     if(!$ruang){
     $ruang = optional((object)[]);
