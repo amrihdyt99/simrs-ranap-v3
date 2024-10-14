@@ -219,14 +219,17 @@ function checkPaymentStatus($reg){
     return $data;
 }
 
-function getLimit(){
-    $limit = 'limit 1';
+function getLimit($local = true){
+    $top = '';
+    $limit = '';
 
     if (str_contains(env('DB_HOST'), '192.168.80.114')) {
-        $limit = 'top 1';
+        $top = 'top 1';
+    } else {
+        $limit = 'limit 1';
     }
 
-    return $limit;
+    return [$top, $limit];
 }
 
 function getCurrentLocation($reg){

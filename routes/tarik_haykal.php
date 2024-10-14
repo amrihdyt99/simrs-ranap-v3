@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NewDokter\AssesmentAwalDokterController;
 use App\Http\Controllers\TarikDataController;
+use App\Http\Controllers\TarikDataRajalController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('tarik')->group(function () {
@@ -22,5 +23,16 @@ Route::prefix('tarik')->group(function () {
     Route::get('nomed/{no}', [TarikDataController::class, 'nomed']);
     Route::get('user_rajal', [TarikDataController::class, 'user_rajal']);
 });
+
+
+Route::prefix('tarik-rajal')->group(function () {
+    Route::get('daftar-masalah', [TarikDataRajalController::class, 'daftar_masalah']);
+    Route::get('draft', [TarikDataRajalController::class, 'draft']);
+    Route::get('dtd', [TarikDataRajalController::class, 'dtd']);
+    Route::get('education', [TarikDataRajalController::class, 'education']);
+    Route::get('item-group', [TarikDataRajalController::class, 'm_item_group']);
+});
+
+
 
 Route::get('kirim_rad/{no}', [AssesmentAwalDokterController::class, 'kirim_rad']);

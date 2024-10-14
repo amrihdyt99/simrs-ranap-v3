@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
+use App\Http\Controllers\ApiMasterRajalController;
 use App\Http\Controllers\Master\BedController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
@@ -278,6 +279,20 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('class-category', [ApiMasterController::class, 'classCategory'])->name('sphaira.classCategory');
 	Route::get('check-table', [ApiMasterController::class, 'checkTable'])->name('sphaira.check-table');
 });
+
+
+// api data master RAJAL
+Route::group(['prefix' => 'sphaira-rajal'], function () {
+	Route::get('daftarmasalah', [ApiMasterRajalController::class, 'daftar_masalah'])->name('sphaira-rajal.daftarmasalah');
+	Route::get('draft', [ApiMasterRajalController::class, 'draft'])->name('sphaira-rajal.draft');
+	Route::get('dtd', [ApiMasterRajalController::class, 'dtd'])->name('sphaira-rajal.dtd');
+	Route::get('education', [ApiMasterRajalController::class, 'education'])->name('sphaira-rajal.education');
+	Route::get('m_item', [ApiMasterRajalController::class, 'm_item'])->name('sphaira-rajal.m_item');
+	Route::get('m_item_group', [ApiMasterRajalController::class, 'm_item_group'])->name('sphaira-rajal.m_item_group');
+	Route::get('check_table', [ApiMasterRajalController::class, 'check_table'])->name('sphaira-rajal.check_table');
+});
+
+// api data master
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');

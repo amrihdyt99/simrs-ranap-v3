@@ -63,6 +63,9 @@ class KetersediaanRuanganController extends Controller
         if ($request->has('class_code') && $request->class_code != '') {
             $bedQuery->where('class_code', $request->class_code);
         }
+        if ($request->has('bed_status') && $request->bed_status != '') {
+            $bedQuery->where('bed_status', $request->bed_status);
+        }
 
         $bedQuery->get();
         // dd($bedQuery);
@@ -156,19 +159,18 @@ class KetersediaanRuanganController extends Controller
             ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
             ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
+
+
         // dd($latest);
 
         // dd($bed->bed_history);
 
         $pasien = null;
-        if (isset($bed->bed_history)) {
+        if ($latest->Description !== "Pasien Pulang") {
             $pasien = DB::connection('mysql2')->table('m_registrasi')
                 ->select('m_pasien.*', 'm_registrasi.reg_no')
                 ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-                ->leftjoin('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
-                ->where('m_registrasi.reg_no', $bed->bed_history->RegNo)
-                ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
-                ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
+                ->where('m_registrasi.reg_no', $latest->RegNo)
                 ->first();
         }
 
@@ -203,13 +205,12 @@ class KetersediaanRuanganController extends Controller
 
         try {
             if ($request->has('bed_history_id')) {
-
-
-
                 $bed = Bed::find($id);
                 $bed->update([
                     'bed_status' => $request->bed_status,
-                    'registration_no' => '-',
+                    'registration_no' => '',
+                    'last_updated_by' => auth()->user()->username,
+                    'last_updated_datetime' => Carbon::now()->toDateTimeString(),
                 ]);
 
                 $historyBed = BedHistory::find($request->bed_history_id);
@@ -233,10 +234,12 @@ class KetersediaanRuanganController extends Controller
 
                 DB::connection('mysql2')->table('m_bed_history')->insert($history);
             } else {
-
+                $bed = Bed::find($id);
                 $bed->update([
                     'bed_status' => $request->bed_status,
-                    'registration_no' => '-',
+                    'registration_no' => '',
+                    'last_updated_by' => auth()->user()->username,
+                    'last_updated_datetime' => Carbon::now()->toDateTimeString(),
                 ]);
             }
 

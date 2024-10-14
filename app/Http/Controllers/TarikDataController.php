@@ -7,8 +7,10 @@ use App\Models\Master\ClassCategory;
 use App\Models\Master\DepartmentServiceUnit;
 use App\Models\Master\Room;
 use App\Models\Master\SiteDepartment;
+use App\Models\Paramedic;
 use App\Models\RoomClass;
 use App\Models\ServiceUnit;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,17 +41,18 @@ class TarikDataController extends Controller
     public function paramedic()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs-rajal/data_paramedic');
-        DB::connection('mysql2')->table('m_paramedis')->delete();
         foreach ($data as $kue) {
-            DB::connection('mysql2')
-                ->table('m_paramedis')->insert([$kue]);
+            $cek = Paramedic::find($kue['ParamedicID']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_paramedis')->insert([$kue]);
+            }
         }
         echo 'Alhamdulillah';
     }
     public function departement()
     {
         $response = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/department');
-        DB::connection('mysql2')->table('m_departemen')->delete();
         foreach ($response['data'] as $kue) {
             unset($kue['LastUpdatedDateTime']);
             $cek = Department::find($kue['DepartmentCode']);
@@ -102,7 +105,7 @@ class TarikDataController extends Controller
     public function classCategory()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/class-category');
-        DB::connection('mysql2')->table('m_class_category')->delete();
+        // DB::connection('mysql2')->table('m_class_category')->delete();
         foreach ($data['data']  as $kue) {
             unset($kue['LastUpdatedDateTime']);
             $cek = ClassCategory::find($kue['ClassCategoryCode']);
@@ -160,7 +163,7 @@ class TarikDataController extends Controller
     public function room()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/room');
-        DB::connection('mysql2')->table('m_ruangan')->delete();
+        // DB::connection('mysql2')->table('m_ruangan')->delete();
         foreach ($data['data'] as $kue) {
             $cek = Room::find($kue['RoomID']);
             if (!$cek) {
@@ -173,7 +176,7 @@ class TarikDataController extends Controller
     public function unit()
     {
         $data = $this->curl_nih('http://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/unit');
-        DB::connection('mysql2')->table('m_unit')->delete();
+        // DB::connection('mysql2')->table('m_unit')->delete();
         foreach ($data['data'] as $kue) {
             $cek = ServiceUnit::find($kue['ServiceUnitCode']);
             if (!$cek) {
@@ -365,26 +368,34 @@ class TarikDataController extends Controller
         // DB::connection('mysql2')->table('users')->whereYear('created_at', 2024)->delete();
 
         foreach ($data as $kue) {
-            DB::connection('mysql2')->table('users')->updateOrInsert(
-                ['name' => $kue['name']],
-                [
-                    'level_user' => $kue['level_user'],
-                    'username' => $kue['username'],
-                    'email_verified_at' => $kue['email_verified_at'],
-                    'password' => $kue['password'],
-                    'dokter_id' => $kue['dokter_id'],
-                    'perawat_id' => $kue['perawat_id'],
-                    'signature' => $kue['signature'],
-                    'is_active' => $kue['is_active'],
-                    'remember_token' => $kue['remember_token'],
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                    'user_active_by' => $kue['updated_at'],
-                    'user_active_at' => Carbon::now(),
-                    'is_deleted' => 0,
-                ]
-            );
+            $cek = User::find($kue['id']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('users')->insert([$kue]);
+            }
         }
+
+        // foreach ($data as $kue) {
+        //     DB::connection('mysql2')->table('users')->updateOrInsert(
+        //         ['name' => $kue['name']],
+        //         [
+        //             'level_user' => $kue['level_user'],
+        //             'username' => $kue['username'],
+        //             'email_verified_at' => $kue['email_verified_at'],
+        //             'password' => $kue['password'],
+        //             'dokter_id' => $kue['dokter_id'],
+        //             'perawat_id' => $kue['perawat_id'],
+        //             'signature' => $kue['signature'],
+        //             'is_active' => $kue['is_active'],
+        //             'remember_token' => $kue['remember_token'],
+        //             'created_at' => Carbon::now(),
+        //             'updated_at' => Carbon::now(),
+        //             'user_active_by' => $kue['updated_at'],
+        //             'user_active_at' => Carbon::now(),
+        //             'is_deleted' => 0,
+        //         ]
+        //     );
+        // }
 
         echo 'Alhamdulillah';
     }

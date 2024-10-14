@@ -6,10 +6,12 @@ use App\Http\Controllers\Master\PatientController;
 use App\Http\Controllers\Master\BedController;
 use App\Http\Controllers\Master\ClinicalPathwayController;
 use App\Http\Controllers\Master\DiagnosisController;
+use App\Http\Controllers\Master\EducationController;
 use App\Http\Controllers\Master\RoomClassController;
 use App\Http\Controllers\Master\MedicineController;
 use App\Http\Controllers\Master\IndicationController;
 use App\Http\Controllers\Master\InterventionController;
+use App\Http\Controllers\Master\ItemGroupController;
 use App\Http\Controllers\Master\LogActivityController;
 use App\Http\Controllers\Master\OrganizationController;
 use App\Http\Controllers\Master\OutcomeController;
@@ -19,8 +21,11 @@ use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\PractitionerController;
 use App\Http\Controllers\Master\v2\ClassCategoryController;
+use App\Http\Controllers\Master\v2\DaftarMasalahController;
 use App\Http\Controllers\Master\v2\DepartmentServiceUnitController;
 use App\Http\Controllers\Master\v2\DepartmentV2Controller;
+use App\Http\Controllers\Master\v2\DraftController;
+use App\Http\Controllers\Master\v2\DTDController;
 use App\Http\Controllers\Master\v2\NewServiceUnitController;
 use App\Http\Controllers\Master\v2\SiteDepartmentController;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +67,11 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::patch('practitioner/change-status-active/{id}', [PractitionerController::class, 'changeStatusActive'])->name('practitioner.changeStatusActive');
     Route::resource('organization', OrganizationController::class);
     Route::patch('organization/change-status-active/{id}', [OrganizationController::class, 'changeStatusActive'])->name('organization.changeStatusActive');
+    Route::resource('daftar-masalah', DaftarMasalahController::class);
+    Route::resource('draft', DraftController::class);
+    Route::resource('dtd', DTDController::class);
+    Route::resource('education', EducationController::class);
+    Route::resource('item-group', ItemGroupController::class);
 
     Route::prefix('aksesRuangan')->group(function () {
         Route::get('/', [AksesRuanganController::class, 'index']);
