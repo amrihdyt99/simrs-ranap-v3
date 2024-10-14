@@ -110,7 +110,8 @@ class PatientController extends Controller
                 DB::raw("
                     (select ".getLimit()[0]." ToUnitServiceID from m_bed_history where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ToUnitServiceID,
                     (select ".getLimit()[0]." ServiceUnitCode from m_bed_history join m_unit_departemen on ServiceUnitID = ToUnitServiceID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ServiceUnitCodeNext,
-                    (select ".getLimit()[0]." room_id from m_bed_history join m_bed on bed_id = ToBedID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as room_id
+                    (select ".getLimit()[0]." room_id from m_bed where bed_id = bed ".getLimit()[1].") as room_id,
+                    (select ".getLimit()[0]." room_id from m_bed_history join m_bed on bed_id = ToBedID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as room_id_next
                 "),
                 // DB::raw('MAX(COALESCE(m_bed_history.ToUnitServiceID, CAST(m_registrasi.service_unit AS UNSIGNED))) as room_id'),
                 DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
@@ -139,11 +140,12 @@ class PatientController extends Controller
 
         foreach ($data as $key => $value) {
             $serviceUnit = DB::select("(select ServiceUnitName from ".getDatabase('master').".m_unit where ServiceUnitCode = '".($value->ServiceUnitCodeNext ?? $value->ServiceUnitCode)."')");
-            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".($value->room_id).")");
+            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".($value->room_id_next ?? $value->room_id).")");
 
             $data[$key]->service_unit = $value->ToUnitServiceID ?? $value->service_unit;
             $data[$key]->ServiceUnitName = count($serviceUnit) > 0 ? $serviceUnit[0]->ServiceUnitName : '';
             $data[$key]->RoomName = count($room) > 0 ? $room[0]->RoomName : '';
+            $data[$key]->room_id = $value->room_id_next ?? $value->room_id;
         }
 
         if (isset($request->no_ajax)) {
