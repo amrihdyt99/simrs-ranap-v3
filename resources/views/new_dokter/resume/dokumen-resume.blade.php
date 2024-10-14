@@ -446,37 +446,29 @@
     </table>
 
     <table>
+        <thead>
+            <tr>
+                <th>OBAT YANG DIBAWA PULANG (tidak diisi bila pasien meninggal)</th>
+                <th>Jumlah</th>
+                <th>Aturan Pakai / Minum</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
         <tbody>
-            <tr>
-                <td>OBAT YANG DIBAWA PULANG (tidak diisi bila pasien meninggal)</td>
-                <td>Jumlah</td>
-                <td>Aturan Pakai / Minum</td>
-                <td>Keterangan</td>
-            </tr>
-            <tr>
-                <td>1. ____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
-            <tr>
-                <td>2. ____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
-            <tr>
-                <td>3. ____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
-            <tr>
-                <td>4. ____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
+            @if (isset($data->terapi) && $data->terapi)
+                @foreach (json_decode($data->terapi) as $item_terapi)
+                    <tr>
+                        <td>{{$loop->iteration}}. {{$item_terapi->nama}}</td>
+                        <td>{{$item_terapi->dosis}} {{$item_terapi->satuan}}</td>
+                        <td>{{$item_terapi->dosis}}; {{$item_terapi->hari}} setiap {{$item_terapi->spesial_instruksi}} sekali</td>
+                        <td>selama {{$item_terapi->durasi_hari}} hari</td>
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="4" class="text-center">Tidak ada data obat</td>
+                </tr>
+            @endif
         </tbody>
     </table>
 
