@@ -17,7 +17,7 @@
     </div>
     <div class="col-sm-2">
         <button id="tarikDataClass" class="btn btn-primary">
-            Tarik Data Class Management
+            Tarik Data Class
         </button>
     </div>
 </div>

@@ -22,7 +22,7 @@ class RoomClassController extends Controller
 
     public function ajax_index(Request $request)
     {
-        $ruangan = DB::connection('mysql2')->table('m_room_class')
+        $ruangan = DB::connection('mysql2')->table('m_room_class')->select('m_room_class.*', 'm_class_category.ClassCategoryName')
             ->leftJoin('m_class_category', 'm_class_category.ClassCategoryCode', '=', 'm_room_class.ClassCategoryCode')->get();
 
         return DataTables()
