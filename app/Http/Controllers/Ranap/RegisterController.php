@@ -14,6 +14,7 @@ use App\Models\PasienVClaim;
 use App\Models\RegistrasiPJawab;
 use App\Models\RegistrationInap;
 use App\Models\SuratPersetujuanMedis;
+use App\Models\SuratRawatIntensif;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
@@ -191,15 +192,6 @@ class RegisterController extends Controller
         $diff = $date1->diff($date2);
         return "{$diff->y} Y {$diff->m} m {$diff->d} d";
     }
-
-    public function rawatIntensif($reg_no)
-    {
-        $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
-        return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
-    }
-
-
-
 
     public function batal_ranap($no)
     {
@@ -649,6 +641,55 @@ class RegisterController extends Controller
         $data_pasien = $this->getDataPersetujuanMedis($reg_no);
         return view('register.pages.ranap.persetujuan-medis', compact('data_pasien'));
     }
+
+    
+
+    public function storeSuratRawatIntensif(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'reg_no' => 'required|string',
+                'penanggung_jawab' => 'required|string',
+                'umur_penanggung_jawab' => 'required|integer',
+                'jenis_kelamin' => 'required|string',
+                'alamat_penanggung_jawab' => 'required|string',
+                'keluarga_signature' => 'nullable|string',
+                'keluarga_signature_2' => 'nullable|string',
+                'penanggung_jawab_2' => 'nullable|string',
+            ]);
+    
+            // Check if data already exists
+            $existingData = SuratRawatIntensif::where('reg_no', $validatedData['reg_no'])->first();
+            if ($existingData) {
+                // Update existing data
+                $existingData->update($validatedData);
+                $message = 'Data rawat intensif berhasil diupdate.';
+            } else {
+                // Create new data
+                $newData = SuratRawatIntensif::create($validatedData);
+                $message = 'Data rawat intensif berhasil disimpan.';
+            }
+    
+            return response()->json([
+                'success' => true, 
+                'message' => $message,
+                'redirect' => route('register.ranap.rawat-intensif', ['reg_no' => $validatedData['reg_no']])
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+public function rawatIntensif($reg_no)
+{
+    $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
+    $savedData = SuratRawatIntensif::where('reg_no', $reg_no)->first();
+    return view('register.pages.ranap.rawat-intensif', compact('data_pasien', 'savedData'));
+}
+
+
     function uploadTtdAdmisi(Request $request)
     {
         $regno = $request->reg_no;
