@@ -84,7 +84,7 @@
                                     <div class="col-md-12">
 
                                         <div class="card">
-                                            <div class="card-header">Informasi Pasien</div>
+                                            <div class="card-header"><b>INFORMASI PASIEN</b></div>
                                             <div class="card-body">
                                                 <div class="row">
                                                     <input class="form-control" type="hidden" id="bed_history_id" name="bed_history_id" value="{{ $bed->bed_history->id }}" readonly />
@@ -148,9 +148,9 @@
 
                             <div class="card-footer">
                                 @if ($bed->bed_status === '0116^O')
-                                <button id="btnConfirmPulang" type="submit" class="btn btn-warning mt-3">Konfirmasi Pasien Pulang</button>
+                                <button id="btnConfirmPulang" type="submit" class="btn btn-submit btn-warning mt-3">Konfirmasi Pasien Pulang</button>
                                 @else
-                                <button type="submit" class="btn btn-primary mt-3">Simpan</button>
+                                <button id="btnConfirmChange" type="submit" class="btn btn-submit btn-primary mt-3">Simpan</button>
                                 @endif
                             </div>
                             <!-- /.card -->
@@ -177,11 +177,13 @@
         let form = $(this);
         let btnSubmit = form.find("[type='submit']");
         let btnSubmitHtml = btnSubmit.html();
+        let labelSweetAlert = (btnSubmitHtml == "Simpan") ? "Update status ruangan ?" : "Konfirmasi Pasien Pulang ?";
+        let textSweetAlert = (btnSubmitHtml == "Simpan") ? "" : "Pasien tidak bisa dikembalikan ke ruangan !";
         let url = form.attr("action");
         let data = new FormData(this);
         Swal.fire({
-            title: 'Konfirmasi Kepulangan Pasien ?',
-            text: "Pasien tidak bisa dikembalikan ke ruangan !",
+            title: labelSweetAlert,
+            text: textSweetAlert,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

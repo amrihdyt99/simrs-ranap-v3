@@ -100,7 +100,8 @@
     function addedukasipasienperawat(_elm = '#entry-edukasi-pasien-perawat', _type = '') {
         var ttdSasaran = signaturePadSasaran ? signaturePadSasaran.toDataURL() : $('[name="ttd_sasaran"]').val();
         var ttdEdukator = signaturePadEdukator ? signaturePadEdukator.toDataURL() : $('[name="ttd_edukator"]').val();
-
+        var ttdDokterAnastesi = signaturePadDokter ? signaturePadDokter.toDataURL() : $('[name="ttd_dokter_anastesi"]').val(); 
+        var ttdPihakPasienAnastesi = signaturePadPasien ? signaturePadPasien.toDataURL() : $('[name="ttd_pihak_pasien_anastesi"]').val(); 
         neko_proses();
 
         var formData = new FormData($(_elm)[0]);
@@ -108,12 +109,16 @@
         formData.append('medrec', medrec);
         formData.append('ttd_sasaran', ttdSasaran);
         formData.append('ttd_edukator', ttdEdukator);
+        formData.append('ttd_dokter_anastesi', ttdDokterAnastesi); 
+        formData.append('ttd_pihak_pasien_anastesi', ttdPihakPasienAnastesi);
         formData.append('user_id', "{{auth()->user()->id}}");
 
         let url = "{{route('add.edukasi_pasien_perawat')}}"
 
         if (_type == 'dokter') {
             url = '{{url("")}}/api/edukasi_dokter'
+        } else if (_type == 'anastesi') {
+            url = '{{url("")}}/api/add-edukasi-anastesi'; // Pastikan URL ini benar dan endpoint tersedia
         }
 
         $.ajax({
@@ -132,6 +137,7 @@
                 }
             },
             error: function(data) {
+                console.error('Error:', data); // Tambahkan log untuk membantu debugging
                 neko_simpan_error_noreq();
             },
         });
@@ -630,6 +636,7 @@
                 iwl_muntah: $('#iwl_muntah').val(),
                 jumlah: $('#jumlah').val(),
                 tanggal_pemberian: $('#tanggal_waktu_pemberian').val(),
+                nama_perawat: "{{ auth()->user()->name }}",
                 user_shift: "{{ session('user_shift') }}",
             },
             success: function(data) {
@@ -770,7 +777,7 @@
             },
             success: function(data) {
                 neko_simpan_success();
-                getPhysicianTeam();
+                getPhysicianTeamPerawat();
             },
             error: function(data) {
                 neko_simpan_error_noreq();
@@ -1043,11 +1050,12 @@
     }
 
     function simpanMonitoringNews() {
+        var userShift = "{{ session('user_shift') }}";
         neko_proses();
         $.ajax({
             url: "{{route('add.monitoringnews')}}",
             type: "POST",
-            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec + "&user_id=" + "{{auth()->user()->id}}",
+            data: $('#entry-news').serialize() + "&reg_no=" + regno + "&medrec=" + medrec + "&user_id=" + "{{auth()->user()->id}}" + "&shift=" + userShift,
             success: function(data) {
                 neko_simpan_success();
                 $('.left-tab.active').click();
@@ -1055,7 +1063,7 @@
             error: function(data) {
                 neko_simpan_error_noreq();
             },
-        })
+        });
     }
 
     function simpanInformasiTindakanMedis() {

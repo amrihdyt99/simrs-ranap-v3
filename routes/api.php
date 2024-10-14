@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Ranap\RegisterController;
 use App\Http\Controllers\ApiMasterController;
+use App\Http\Controllers\ApiMasterRajalController;
 use App\Http\Controllers\Master\BedController;
 use App\Http\Controllers\Master\PasienController;
 use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Master\LogActivityController;
+use App\Http\Controllers\NewDokter\EdukasiAnastesiController;
 use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
@@ -118,6 +120,11 @@ Route::post('addRujukanPersiapanPasien', [\App\Http\Controllers\NewPerawat\NewNu
 Route::post('addRujukanSerahTerima', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addRujukanSerahTerima'])->name('add.RujukanSerahTerima');
 
 //baru
+// Route::post('/saveDokterKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'saveDokterKonsul'])->name('save.dokter.konsul');
+
+Route::post('/addKonsulDokter', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'addKonsulDokter']);
+Route::post('/getKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getKonsul']);
+
 Route::post('addassesmetawalanak', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPengkajianPasienAnak'])->name('add.assesmentawalanak');
 Route::post('addmonitoringtransfusidarah', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addMonitoringTransfusiDarah'])->name('add.monitoringtransfusidarah');
 Route::post('addlaporanpersalinanobgyn', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addLaporanPersalinanObgyn'])->name('add.laporanpersalinanobgyn');
@@ -154,6 +161,8 @@ Route::post('addCathlabSignOut', [\App\Http\Controllers\NewPerawat\NewNursingCon
 Route::post('pemeriksaan_bayi', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'simpan_pemeriksaan_bayi'])->name('add.pemeriksaan_bayi');
 Route::get('getdokter', [App\Http\Controllers\NewPerawat\NewNursingController::class, 'getPhysician'])->name('get.dokter');
 Route::post('addphysicianteamDokter', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'addPhysicianTeamDokter'])->name('add.physicianteam.dokter');
+Route::post('/getKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getKonsul']);
+Route::post('/saveKonsul', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'saveKonsul']);
 Route::delete('/deletePhysicianTeamDokter/{id}', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'deletePhysicianTeamDokter'])->name('delete.physicianteam.dokter');
 Route::post('addphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'addPhysicianTeam'])->name('add.physicianteam');
 Route::post('getphysicianteam', [\App\Http\Controllers\NewPerawat\NewNursingController::class, 'getPhysicianTeam'])->name('get.physicianteam');
@@ -272,6 +281,20 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('check-table', [ApiMasterController::class, 'checkTable'])->name('sphaira.check-table');
 });
 
+
+// api data master RAJAL
+Route::group(['prefix' => 'sphaira-rajal'], function () {
+	Route::get('daftarmasalah', [ApiMasterRajalController::class, 'daftar_masalah'])->name('sphaira-rajal.daftarmasalah');
+	Route::get('draft', [ApiMasterRajalController::class, 'draft'])->name('sphaira-rajal.draft');
+	Route::get('dtd', [ApiMasterRajalController::class, 'dtd'])->name('sphaira-rajal.dtd');
+	Route::get('education', [ApiMasterRajalController::class, 'education'])->name('sphaira-rajal.education');
+	Route::get('m_item', [ApiMasterRajalController::class, 'm_item'])->name('sphaira-rajal.m_item');
+	Route::get('m_item_group', [ApiMasterRajalController::class, 'm_item_group'])->name('sphaira-rajal.m_item_group');
+	Route::get('check_table', [ApiMasterRajalController::class, 'check_table'])->name('sphaira-rajal.check_table');
+});
+
+// api data master
+
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
 	Route::get('visit-history/{medicalRecord}/ranap', [PasienController::class, 'visitHistoryRanap'])->name('visit.history.ranap');
@@ -314,4 +337,56 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/assesment-neonatus', [RiwayatController::class, 'getAssesmentNeonatus'])->name('assesment-neonatus');
 	Route::get('/assesment-anak', [RiwayatController::class, 'getAssesmentAnak'])->name('assesment-anak');
 	Route::get('/assesment-obgyn', [RiwayatController::class, 'getAssesmentObgyn'])->name('assesment-obgyn');
+	Route::get('/edukasi-pasien', [RiwayatController::class, 'getEdukasiPasien'])->name('edukasi-pasien');
+	Route::get('/rekonsiliasi-obat', [RiwayatController::class, 'getRekonObat'])->name('rekonsiliasi-obat');
+	Route::get('/checklist-orientasi', [RiwayatController::class, 'getChecklistOrientasi'])->name('checklist-orientasi');
+	Route::get('/resiko-jatuh-morse', [RiwayatController::class, 'getResikoJatuhMorse'])->name('resiko-jatuh-morse');
+	Route::get('/resiko-jatuh-humpty', [RiwayatController::class, 'getResikoJatuhHumpty'])->name('resiko-jatuh-humpty');
+	Route::get('/resiko-jatuh-geriatri', [RiwayatController::class, 'getResikoJatuhGeriatri'])->name('resiko-jatuh-geriatri');
+	Route::get('/resiko-jatuh-neonatus', [RiwayatController::class, 'getResikoJatuhNeonatus'])->name('resiko-jatuh-neonatus');
+	Route::get('/nurse-note', [RiwayatController::class, 'getNurseNote'])->name('nurse-note');
+	Route::get('/monitoring-news', [RiwayatController::class, 'getDatatableMoniNews'])->name('dt-monitoring-news');
+	Route::get('/fluid-balance', [RiwayatController::class, 'getFluidBalance'])->name('fluid-balance');
+	Route::get('/drug-history', [RiwayatController::class, 'getDtDrugHistory'])->name('dt-drug-history');
+	Route::get('/monitoring-transfusi-darah', [RiwayatController::class, 'getMonitoringTransfusiDarah'])->name('monitoring-transfusi-darah');
+	Route::get('/persetujuan-tindakan-medis', [RiwayatController::class, 'getPersetujuanTindakanMedis'])->name('persetujuan-tindakan-medis');
+	Route::get('/case-manager', [RiwayatController::class, 'getCaseManager'])->name('case-manager');
+	Route::get('/riwayat-tf-internal', [RiwayatController::class, 'getDtRiwayatTfInternal'])->name('dt-riwayat-tf-internal');
+	Route::get('/persiapan-pasien-ti', [RiwayatController::class, 'getPersiapanPasienTI'])->name('persiapan-pasien-ti');
+	Route::get('/riwayat-ti-alat', [RiwayatController::class, 'getDtRiwayatTiAlat'])->name('dt-riwayat-ti-alat');
+	Route::get('/riwayat-ti-obat', [RiwayatController::class, 'getDtRiwayatTiObat'])->name('dt-riwayat-ti-obat');
+	Route::get('/riwayat-ti-status', [RiwayatController::class, 'getDtRiwayatTiStatus'])->name('dt-riwayat-ti-status');
+	Route::get('/serah-terima-ti', [RiwayatController::class, 'getSerahTerimaTI'])->name('serah-terima-ti');
+	Route::get('/riwayat-ti-diagnostik', [RiwayatController::class, 'getDtRiwayatTiDiagnostik'])->name('dt-riwayat-ti-diagnostik');
+
+
+
+	Route::get('/catatan-pra-tindakan-cathlab', [RiwayatController::class, 'getCatatanPraTindakanCathlab'])->name('catatan-pra-tindakan-cathlab');
+	Route::get('/catatan-intra-tindakan-cathlab', [RiwayatController::class, 'getCatatanIntraTindakanCathlab'])->name('catatan-intra-tindakan-cathlab');
+	Route::get('/pemantauan-hemodinamik', [RiwayatController::class, 'getPemantauanHemodinamik'])->name('pemantauan-hemodinamik');
+	Route::get('/cathlab-sign-in', [RiwayatController::class, 'getCathlabSignIn'])->name('cathlab-sign-in');
+	Route::get('/cathlab-time-out', [RiwayatController::class, 'getCathlabTimeOut'])->name('cathlab-time-out');
+	Route::get('/cathlab-sign-out', [RiwayatController::class, 'getCathlabSignOut'])->name('cathlab-sign-out');
+	Route::get('/pemantauan-paska-tindakan-cathlab', [RiwayatController::class, 'getPemantauanPaskaTindakanCathlab'])->name('pemantauan-paska-tindakan-cathlab');
+	Route::get('/observasi-paska-tindakan-cathlab', [RiwayatController::class, 'getObaservasiPaskaTindakanCathlab'])->name('observasi-paska-tindakan-cathlab');
+	Route::get('/physician-team', [RiwayatController::class, 'getPhysicianTeam'])->name('physician-team');
+	Route::get('/riwayat-admin-nurse', [RiwayatController::class, 'getDtRiwayatAdminNurse'])->name('admin-nurse');
+	Route::get('/bayi-baru-lahir-anamnesa', [RiwayatController::class, 'getBayiBaruLahirAnamnesa'])->name('bayi-baru-lahir-anamnesa');
+	Route::get('/bayi-baru-lahir-pemeriksaan', [RiwayatController::class, 'getBayiBaruLahirPemeriksaan'])->name('bayi-baru-lahir-pemeriksaan');
+	Route::get('/checklist-pulang', [RiwayatController::class, 'getChecklistPulang'])->name('checklist-pulang');
+
 });
+
+Route::get('/persetujuan-penolakan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan_dokter'])->name('dokter.persetujuan-penolakan');
+
+// Route::get('surat-rujukan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
+Route::prefix('dokter')->name('dokter.')->group(function () {
+    Route::get('/surat-rujukan-dokter', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
+    Route::post('/simpan-prosedur-operasi', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanProsedurOperasi'])->name('simpan.prosedur.operasi');
+    Route::post('/simpan-alat-terpasang', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanAlatTerpasang'])->name('simpan.alat.terpasang');
+    Route::post('/simpan-obat-diterima', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatDiterima'])->name('simpan.obat.diterima');
+    Route::post('/simpan-obat-dibawa', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatCairanDibawa'])->name('simpan.obat.dibawa');
+    Route::post('/simpan-status-pasien', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanStatusPasien'])->name('simpan.status.pasien');
+});
+
+Route::post('/add-edukasi-anastesi', [EdukasiAnastesiController::class, 'addEdukasiAnastesi'])->name('add.edukasi.anastesi');

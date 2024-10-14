@@ -32,15 +32,27 @@ class PatientController extends Controller
     {
         $dokter_code = auth()->user()->dokter_id;
 
-
         $datamypatient = DB::connection('mysql2')
             ->table("m_registrasi")
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('m_bed', 'm_registrasi.reg_no', '=', 'm_bed.registration_no')
-            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
-            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
-            ->leftJoin('m_unit_departemen', 'm_unit_departemen.ServiceUnitID', '=', 'm_bed.service_unit_id')
+            ->leftJoin(DB::raw('(SELECT RegNo, ToUnitServiceID, ToClassCode
+                                FROM m_bed_history
+                                WHERE id = (SELECT MAX(id) FROM m_bed_history bh WHERE bh.RegNo = m_bed_history.RegNo))
+                                as m_bed_history'), 
+                   'm_registrasi.reg_no', '=', 'm_bed_history.RegNo')
+            ->leftJoin('m_ruangan', function($join) {
+                $join->on('m_ruangan.RoomID', '=', 'm_bed_history.ToUnitServiceID')
+                     ->orOn('m_ruangan.RoomID', '=', DB::raw('CAST(m_registrasi.service_unit AS UNSIGNED)'));
+            })
+            ->leftJoin('m_room_class', function($join) {
+                $join->on('m_room_class.ClassCode', '=', 'm_bed_history.ToClassCode')
+                     ->orOn('m_room_class.ClassCode', '=', 'm_registrasi.bed');
+            })
+            ->leftJoin('m_unit_departemen', function($join) {
+                $join->on('m_unit_departemen.ServiceUnitID', '=', 'm_bed_history.ToUnitServiceID')
+                     ->orOn('m_unit_departemen.ServiceUnitID', '=', DB::raw('CAST(m_registrasi.service_unit AS UNSIGNED)'));
+            })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
@@ -50,10 +62,10 @@ class PatientController extends Controller
             $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
                 ->whereRaw("
                     (reg_dokter_care is null or reg_dokter_care not like ?) 
-                    and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
+                    and (m_bed_history.ToUnitServiceID = ? or m_unit.ServiceUnitCode = ?)
                 ", ['%' . $dokter_code . '%', $ruang, $ruang])
                 ->where(function ($query) {
-                    $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id) // Dokter utama
+                    $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
                         ->orWhereExists(function ($subQuery) {
                             $subQuery->select(DB::raw(1))
                                     ->from('m_physician_team')
@@ -71,7 +83,7 @@ class PatientController extends Controller
             $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
                 ->whereRaw("
                     (reg_dokter_care = '' or reg_dokter_care like ?) 
-                    and (m_bed.service_unit_id = ? or m_unit.ServiceUnitCode = ?)
+                    and (m_bed_history.ToUnitServiceID = ? or m_unit.ServiceUnitCode = ?)
                 ", ['%' . $dokter_code . '%', $ruang, $ruang])
                 ->where(function ($query) {
                     $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
@@ -95,7 +107,13 @@ class PatientController extends Controller
                 'm_registrasi.reg_jam',
                 'm_registrasi.service_unit',
                 'm_unit_departemen.ServiceUnitCode',
-                'm_bed.room_id',
+                DB::raw("
+                    (select ".getLimit()[0]." ToUnitServiceID from m_bed_history where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ToUnitServiceID,
+                    (select ".getLimit()[0]." ServiceUnitCode from m_bed_history join m_unit_departemen on ServiceUnitID = ToUnitServiceID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ServiceUnitCodeNext,
+                    (select ".getLimit()[0]." room_id from m_bed where bed_id = bed ".getLimit()[1].") as room_id,
+                    (select ".getLimit()[0]." room_id from m_bed_history join m_bed on bed_id = ToBedID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as room_id_next
+                "),
+                // DB::raw('MAX(COALESCE(m_bed_history.ToUnitServiceID, CAST(m_registrasi.service_unit AS UNSIGNED))) as room_id'),
                 DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
                 DB::raw("
                     (
@@ -114,18 +132,20 @@ class PatientController extends Controller
                 'businesspartner.BusinessPartnerName',
                 'm_registrasi.reg_tgl',
                 'm_registrasi.reg_jam',
-                'm_bed.room_id',
+                // 'm_registrasi.service_unit',
                 'm_unit_departemen.ServiceUnitCode',
             ])
             ->orderByDesc('m_registrasi.reg_tgl')
             ->get();
 
         foreach ($data as $key => $value) {
-            $serviceUnit = DB::select("(select ServiceUnitName from ".getDatabase('master').".m_unit where ServiceUnitCode = '".$value->service_unit."')");
-            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".$value->room_id.")");
+            $serviceUnit = DB::select("(select ServiceUnitName from ".getDatabase('master').".m_unit where ServiceUnitCode = '".($value->ServiceUnitCodeNext ?? $value->ServiceUnitCode)."')");
+            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".($value->room_id_next ?? $value->room_id).")");
 
+            $data[$key]->service_unit = $value->ToUnitServiceID ?? $value->service_unit;
             $data[$key]->ServiceUnitName = count($serviceUnit) > 0 ? $serviceUnit[0]->ServiceUnitName : '';
             $data[$key]->RoomName = count($room) > 0 ? $room[0]->RoomName : '';
+            $data[$key]->room_id = $value->room_id_next ?? $value->room_id;
         }
 
         if (isset($request->no_ajax)) {

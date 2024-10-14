@@ -49,17 +49,17 @@ class PractitionerController extends Controller
                                 onclick="confirmDelete(this)" 
                                 data-id="' . $query->ParamedicID . '">Hapus</button>';
 
-                    $activateButton = $query->IsActive == 0
-                        ? '<button type="button" class="protecc btn btn-sm btn-success mr-2 mb-2" 
+                $activateButton = $query->IsActive == 0
+                    ? '<button type="button" class="protecc btn btn-sm btn-success mr-2 mb-2" 
                                 onclick="changeStatus(this)"
                                 data-id="' . $query->ParamedicID . '">Aktifkan</button>'
-                        : '';
+                    : '';
 
-                    $deactivateButton = $query->IsActive == 1
-                        ? '<button type="button" class="protecc btn btn-sm btn-warning mr-2 mb-2" 
+                $deactivateButton = $query->IsActive == 1
+                    ? '<button type="button" class="protecc btn btn-sm btn-warning mr-2 mb-2" 
                                 onclick="changeStatus(this)"
                                 data-id="' . $query->ParamedicID . '">Nonaktifkan</button>'
-                        : '';
+                    : '';
 
                 return $editButton . $deleteButton . $deactivateButton . $activateButton;
             })
@@ -69,7 +69,7 @@ class PractitionerController extends Controller
 
     public function create()
     {
-        $sites = DB::connection('mysql2')->table("m_site")->get();
+        $sites = DB::connection('mysql2')->table("m_site")->where([['IsActive', 1], ['IsDeleted', 0]])->get();
         return view('master.pages.practitioner.create', compact('sites'));
     }
 

@@ -135,6 +135,19 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'sqlsrv_rajal' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_THIRD_HOST', 'localhost'),
+            'port' => env('DB_THIRD_PORT', '1433'),
+            'database' => 'rs_rajal',
+            'username' => env('DB_THIRD_USERNAME', 'forge'),
+            'password' => env('DB_THIRD_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
+
         /*
 
         // SQLSERVER

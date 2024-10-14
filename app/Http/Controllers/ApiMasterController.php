@@ -456,8 +456,8 @@ class ApiMasterController extends Controller
 				->whereRaw(
 					"
 					GCParamedicType = ? 
-					and (lower(FirstName) like ? or lower(LastName) like ? or ParamedicCode like ?)",
-					[$request->paramedic_type, '%' . $request->params . '%', '%' . $request->params . '%', '%' . $request->params . '%']
+					and (lower(FirstName) like ? or lower(LastName) like ? or lower(ParamedicName) like ? or ParamedicCode like ?)",
+					[$request->paramedic_type, '%' . $request->params . '%', '%' . $request->params . '%', '%' . $request->params . '%', '%' . $request->params . '%']
 				);
 		}
 

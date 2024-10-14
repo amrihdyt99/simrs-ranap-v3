@@ -47,6 +47,7 @@
     var classcode = "{{$dataPasien->reg_class}}";
     var ddxutama = '#ddx-utama'
     var ddxutamalen = $(ddxutama).length
+    $hosted = '{{url("")}}'
 
     // =================================================================================================================================
     // init
@@ -372,7 +373,7 @@
                 tgl_lahir_pasien: tgl_lahir_pasien,
             },
             success: function(resp) {
-                // console.log(resp);
+                // console.log('resp', resp);
 
                 if (resp.geriatri && resp.geriatri.kategori_geriatri) {
                     $('[id="alert_blink"]').show();
@@ -423,7 +424,7 @@
                 reg_no: _reg,
             },
             success: function(resp) {
-                console.log(resp);
+                // console.log(resp);
                 $('#ews_info').empty();
 
                 if (resp.news_total >= 7) {
@@ -509,8 +510,8 @@
                             $('div[id*="assesment_"]').hide();
                             $('#assesment_1').show();
 
-                            getAlertAlergi(regno)
-                            getAlertJatuh(regno)
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
                             getAlertEWS(regno);
                         },
                         error: function(data) {
@@ -727,6 +728,9 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadAllFunctionDewasa();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -745,6 +749,9 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_anak')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -763,6 +770,9 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.assesment_awal_neonatus')}}",
                         success: function(data) {
                             inject_view_data(data);
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                             loadDatatableRekonObat();
                             loadSignature();
                         },
@@ -901,6 +911,9 @@
                         success: function(data) {
                             inject_view_data(data);
                             loadAllFunctionObgyn();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1014,7 +1027,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
-                            getPhysicianTeam();
+                            getPhysicianTeamPerawat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1033,7 +1046,7 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_obgyn_bedah')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            getPhysicianTeam();
+                            getPhysicianTeamPerawat();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1305,6 +1318,25 @@
                     });
                 },
 
+                'pemeriksaan-penunjang': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.pemeriksaan_penunjang')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            getPemeriksaanDokter()
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
             }
         }();
     }
@@ -1363,7 +1395,7 @@
             url: "{{route('nyaa_universal.view_injector.perawat.show_qrcode')}}",
             success: function(data) {
                 inject_view_data(data);
-                getPhysicianTeam();
+                getPhysicianTeamPerawat();
             },
             error: function(data) {
                 clear_show_error();
@@ -1780,7 +1812,7 @@
     }
 
     // physician team
-    function getPhysicianTeam() {
+    function getPhysicianTeamPerawat() {
         var tablePhysicianTeam = $('#table-physician-team');
         $.ajax({
             url: "{{ route('get.physicianteam') }}",
@@ -1890,7 +1922,7 @@
 
     function nyaa_suratrujukan_load_datatable(id_dttb) {
         var url = $(id_dttb).attr('nyaa-urldatatable');
-        console.log(url);
+        // console.log(url);
         $(id_dttb).DataTable({
             processing: true,
             serverSide: true,
@@ -2038,6 +2070,44 @@
                 signaturePadEdukator.clear();
                 let userSignature = "{{ auth()->user()->signature }}";
                 signaturePadEdukator.fromDataURL(userSignature);
+            });
+        }
+
+        // DOKTER YANG MENYATAKAN
+        let $wrapperDokter = $('[id*="signature-pad-dokter-anastesi"]');
+        let $clearButtonDokter = $wrapperDokter.find("#clear_btn_dokter_anastesi");
+        let $canvasDokter = $wrapperDokter.find("canvas")[0];
+
+        if ($canvasDokter != undefined) {
+            signaturePadDokter = new SignaturePad($canvasDokter);
+
+            // Load signature if available
+            let signatureDokterDataURL = $("#signature_dokter_anastesi").val();
+            if (signatureDokterDataURL) {
+                signaturePadDokter.fromDataURL(signatureDokterDataURL);
+            }
+
+            $clearButtonDokter.on("click", function(event) {
+                signaturePadDokter.clear();
+            });
+        }
+
+        // PIHAK YANG DIJELASKAN
+        let $wrapperPasien = $('[id*="signature-pad-pasien-anastesi"]');
+        let $clearButtonPasien = $wrapperPasien.find("#clear_btn_pasien_anastesi");
+        let $canvasPasien = $wrapperPasien.find("canvas")[0];
+
+        if ($canvasPasien != undefined) {
+            signaturePadPasien = new SignaturePad($canvasPasien);
+
+            // Load signature if available
+            let signaturePasienDataURL = $("#signature_pasien_anastesi").val();
+            if (signaturePasienDataURL) {
+                signaturePadPasien.fromDataURL(signaturePasienDataURL);
+            }
+
+            $clearButtonPasien.on("click", function(event) {
+                signaturePadPasien.clear();
             });
         }
 

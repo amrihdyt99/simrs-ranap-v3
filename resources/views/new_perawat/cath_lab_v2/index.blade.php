@@ -11,6 +11,12 @@
             Catatan Keperawatan - Intra Tindakan</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" id="pemantauan_hemodinamik" data-toggle="tab" href="#form_pemantauan_hemodinamik" role="tab"
+            aria-controls="form_pemantauan_hemodinamik" aria-selected="false">
+            Pemantauan Hemodinamik - Intra Tindakan
+        </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" id="cek_form_tab_signin" data-toggle="tab" href="#form_signin" role="tab"
             aria-controls="form_signin" aria-selected="false">
            CATH LAB  SIGN IN</a>
@@ -45,6 +51,9 @@
         </div>
         <div id="form_intra" class="tab-pane fade" role="tabpanel" aria-labelledby="cek_form_tab_intra">
             @include('new_perawat.cath_lab_v2.form_intra_tindakan')
+        </div>
+        <div id="form_pemantauan_hemodinamik" class="tab-pane fade" role="tabpanel" aria-labelledby="pemantauan_hemodinamik">
+            @include('new_perawat.cath_lab_v2.form_pemantauan_hemodinamik')
         </div>
         <div id="form_signin" class="tab-pane fade" role="tabpanel" aria-labelledby="cek_form_tab_signin">
             @include('new_perawat.cath_lab_v2.entry_sign_in')

@@ -416,7 +416,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
                         `)
         }
 
-        //alert(id)
+        // alert(id)
         if (id == 'lab') {
             //disini yang SOAP
             $('#row_tindakan').remove();

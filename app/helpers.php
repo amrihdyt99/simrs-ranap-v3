@@ -219,12 +219,78 @@ function checkPaymentStatus($reg){
     return $data;
 }
 
-function getLimit(){
-    $limit = 'limit 1';
+function getLimit($local = true){
+    $top = '';
+    $limit = '';
 
     if (str_contains(env('DB_HOST'), '192.168.80.114')) {
-        $limit = 'top 1';
+        $top = 'top 1';
+    } else {
+        $limit = 'limit 1';
     }
 
-    return $limit;
+    return [$top, $limit];
+}
+
+function getCurrentLocation($reg){
+    $data = [];
+
+    $getLatestBedHistory = DB::connection('mysql2')
+            ->table('m_bed_history as a')
+            ->join('m_bed as b', 'ToBedID', 'bed_id')
+            ->where('RegNo', $reg)
+            ->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'desc')
+            ->select([
+                'a.*',
+                'b.room_id',
+                'b.bed_code',
+                DB::raw("
+                    (select ServiceUnitCode 
+                        from m_unit_departemen
+                        where ServiceUnitID = service_unit_id
+                    ) as ServiceUnitCode"
+                )
+            ])
+            ->first();
+
+    if ($getLatestBedHistory) {
+        if (isset($getLatestBedHistory->ServiceUnitCode)) {
+            $data['ServiceUnitName'] = DB::connection('mysql2')
+                ->table('m_unit')
+                ->where('ServiceUnitCode', $getLatestBedHistory->ServiceUnitCode)
+                ->first()->ServiceUnitName ?? '-';
+        }
+
+        if (isset($getLatestBedHistory->room_id)) {
+            $data['RoomName'] = DB::connection('mysql2')
+                ->table('m_ruangan')
+                ->where('RoomID', $getLatestBedHistory->room_id)
+                ->first()->RoomName ?? '-';
+        }
+        
+        if (isset($getLatestBedHistory->ToChargeClassCode)) {
+            $data['ChargeClassCodeName'] = DB::connection('mysql2')
+                ->table('m_room_class')
+                ->where('ClassCode', $getLatestBedHistory->ToChargeClassCode)
+                ->first()->ClassName ?? '-';
+        }
+
+        $data['ClassCode'] = $getLatestBedHistory->ToClassCode;
+        $data['ChargeClassCode'] = $getLatestBedHistory->ToChargeClassCode;
+        $data['BedID'] = $getLatestBedHistory->ToBedID;
+        $data['BedCode'] = $getLatestBedHistory->bed_code;
+    }
+
+    return $data;
+}
+
+function mergeObject($first, $second){
+    $firstArray = (array) $first;
+    $secondArray = (array) $second;
+
+    $mergedData = array_merge($firstArray, $secondArray);
+
+    $mergedDataObject = (object) $mergedData;
+
+    return $mergedDataObject;
 }
