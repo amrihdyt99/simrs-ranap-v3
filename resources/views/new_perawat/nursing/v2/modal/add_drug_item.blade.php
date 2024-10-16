@@ -23,6 +23,28 @@
               </select>
             </div>
             <div class="form-group">
+              <label for="" class="text-sm">Cara Pemberian</label>
+              <select class="custom-select custom-select-sm" name="cara_pemberian">
+                <option value="" selected>-- Pilih --</option>
+                <option value="IV">IV</option>
+                <option value="IM">IM</option>
+                <option value="IC">IC</option>
+                <option value="SC">SC</option>
+                <option value="PO">PO</option>
+                <option value="Topical">Topical</option>
+                <option value="Suppos">Suppos</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="" class="text-sm">Anti Biotik</label>
+              <select class="custom-select custom-select-sm" name="antibiotik">
+                <option value="" selected>-- Pilih --</option>
+                <option value="P">P</option>
+                <option value="E">E</option>
+                <option value="D">D</option>
+              </select>
+            </div>
+            <div class="form-group">
               <table class="table table-bordered table-hover treatment table-sm">
                 <thead>
                   <tr>

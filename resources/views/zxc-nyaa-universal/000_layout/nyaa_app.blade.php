@@ -91,111 +91,112 @@
       </div>
     </div>
   </div>
-    <script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
-    <script src="{{asset('')}}new_assets/vendors/base/vendor.bundle.base.js"></script>
-    <script src="{{asset('')}}new_assets/js/jquery-ui.js"></script>
-    <script src="{{asset('')}}new_assets/js/template.js"></script>
-    <script src="{{asset('')}}new_assets/vendors/chart.js/Chart.min.js"></script>
-    <script src="{{asset('')}}new_assets/vendors/progressbar.js/progressbar.min.js"></script>
-    <script src="{{asset('')}}new_assets/vendors/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js"></script>
-    <script src="{{asset('')}}new_assets/vendors/justgage/raphael-2.1.4.min.js"></script>
-    <script src="{{asset('')}}new_assets/vendors/justgage/justgage.js"></script>
-    <script src="{{asset('')}}new_assets/js/dashboard.js"></script>
-    <script src="{{asset('')}}new_assets/js/moment.min.js"></script>
-    <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js') }}"></script>
-    <script src="{{ asset('assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('neko/plugins/select2/js/i18n/id.js') }}"></script>
-    <script src="{{ asset('neko/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('neko/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js') }}"></script>
-    <script src="{{ asset('neko/custom/nyaa.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
-    @stack('nyaa_parent_scripts')
-    <script src="{{ asset('neko/custom/nyaa-bottom.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
+  <script type="text/javascript" src="{{asset('new_assets/signature/signature.js')}}"></script>
+  <script src="{{asset('')}}new_assets/vendors/base/vendor.bundle.base.js"></script>
+  <script src="{{asset('')}}new_assets/js/jquery-ui.js"></script>
+  <script src="{{asset('')}}new_assets/js/template.js"></script>
+  <script src="{{asset('')}}new_assets/vendors/chart.js/Chart.min.js"></script>
+  <script src="{{asset('')}}new_assets/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="{{asset('')}}new_assets/vendors/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js"></script>
+  <script src="{{asset('')}}new_assets/vendors/justgage/raphael-2.1.4.min.js"></script>
+  <script src="{{asset('')}}new_assets/vendors/justgage/justgage.js"></script>
+  <script src="{{asset('')}}new_assets/js/dashboard.js"></script>
+  <script src="{{asset('')}}new_assets/js/moment.min.js"></script>
+  <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js') }}"></script>
+  <script src="{{ asset('assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/jszip/jszip.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/pdfmake/pdfmake.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/pdfmake/vfs_fonts.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/autoNumeric/autoNumeric.min.js') }}"></script>
+  <script src="{{ asset('neko/plugins/select2/js/i18n/id.js') }}"></script>
+  <script src="{{ asset('neko/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
+  <script src="{{ asset('neko/plugins/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
+  <script src="{{ asset('assets/plugins/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js') }}"></script>
+  <script src="{{ asset('neko/custom/nyaa.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
+  @stack('nyaa_parent_scripts')
+  <script src="{{ asset('neko/custom/nyaa-bottom.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
 
-    <script>
-      $level_ = "{{auth()->user()->level_user}}";
-      $user_dokter_ = "{{auth()->user()->dokter_id}}";
-      $user_ = "{{auth()->user()->id}}";
-      $user_perawat_ = "{{auth()->user()->perawat_id}}";
+  <script>
+    $level_ = "{{auth()->user()->level_user}}";
+    $user_dokter_ = "{{auth()->user()->dokter_id}}";
+    $user_ = "{{auth()->user()->id}}";
+    $user_perawat_ = "{{auth()->user()->perawat_id}}";
 
-      $host = location.hostname
+    $host = location.hostname
 
-      if ($host == '127.0.0.1' || $host == 'rj.id') {
-        $dom = ''
-      } else {
-        $dom = '/simrs_ranap'
-      }
-
-      function addOption(elm, value, text) {
-        var newOption = new Option(text, value, false, false);
-        $(elm).append(newOption).trigger('change');
-      }
-    </script>
-
-@if (auth()->user()->level_user == 'perawat' || auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
-<script>
-  $(document).ready(function() {
-    // Inisialisasi Select2 untuk modal shift
-    $('#pilih_shift').select2({
-      dropdownParent: $('#modal_shift')
-    });
-
-    // Show the modal if shift is not selected
-    if (!@json(session('user_shift'))) {
-      $('#modal_shift').modal('show');
+    if ($host == '127.0.0.1' || $host == 'rj.id') {
+      $dom = ''
     } else {
-      $('#trigger_shift_modal').text('SHIFT ' + @json(session('user_shift')).toUpperCase());
+      $dom = '/simrs_ranap'
     }
 
-    // Save shift selection
-    $('#save_shift').on('click', function() {
-      var selectedShift = $('#pilih_shift').val();
-      if (selectedShift) {
-        $.ajax({
-          url: `{{ route('save.shift') }}`,
-          type: 'POST',
-          data: {
-            _token: '{{ csrf_token() }}',
-            shift: selectedShift
-          },
-          success: function(response) {
-            $('.left-tab.active').click();
-            neko_notify('success', 'Shift berhasil disimpan.')
-            $('#modal_shift').modal('hide');
-            $('#trigger_shift_modal').text('SHIFT ' + selectedShift.toUpperCase());
-          },
-          error: function(xhr) {
-            neko_d_custom_error('Terjadi kesalahan! Mohon untuk me-refresh halaman ini.')
-          }
-        });
+    function addOption(elm, value, text) {
+      var newOption = new Option(text, value, false, false);
+      $(elm).append(newOption).trigger('change');
+    }
+  </script>
+
+  @if (auth()->user()->level_user == 'perawat' || auth()->user()->level_user == 'dietitian' || auth()->user()->level_user == 'farmasi')
+  <script>
+    $(document).ready(function() {
+      // Inisialisasi Select2 untuk modal shift
+      $('#pilih_shift').select2({
+        dropdownParent: $('#modal_shift')
+      });
+
+      // Show the modal if shift is not selected
+      if (!@json(session('user_shift'))) {
+        $('#modal_shift').modal('show');
+      } else {
+        $('#trigger_shift_modal').text('SHIFT ' + @json(session('user_shift')).toUpperCase());
       }
+
+      // Save shift selection
+      $('#save_shift').on('click', function() {
+        var selectedShift = $('#pilih_shift').val();
+        if (selectedShift) {
+          $.ajax({
+            url: `{{ route('save.shift') }}`,
+            type: 'POST',
+            data: {
+              _token: '{{ csrf_token() }}',
+              shift: selectedShift
+            },
+            success: function(response) {
+              $('.left-tab.active').click();
+              neko_notify('success', 'Shift berhasil disimpan.')
+              $('#modal_shift').modal('hide');
+              $('#trigger_shift_modal').text('SHIFT ' + selectedShift.toUpperCase());
+            },
+            error: function(xhr) {
+              neko_d_custom_error('Terjadi kesalahan! Mohon untuk me-refresh halaman ini.')
+            }
+          });
+        }
+      });
+
+      // Show modal on trigger click
+      $('#trigger_shift_modal').on('click', function() {
+        $('#modal_pil').modal('hide');
+        $('#modal_shift').modal('show');
+      });
+
     });
+  </script>
+  @endif
 
-    // Show modal on trigger click
-    $('#trigger_shift_modal').on('click', function() {
-      $('#modal_pil').modal('hide');
-      $('#modal_shift').modal('show');
-    });
-
-  });
-</script>
-@endif
-
-@stack('blade-scripts')
+  @stack('blade-scripts')
 
 </body>
 

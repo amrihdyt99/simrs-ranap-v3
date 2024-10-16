@@ -28,7 +28,8 @@ Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gi
 
 
     Route::prefix('/perawat/menu')->name('perawat.menu.')->group(function () {
-        Route::resource('/ketersediaanruangan', \App\Http\Controllers\Master\KetersediaanRuanganPerawatController::class);
+        Route::resource('/ketersediaanruangan', \App\Http\Controllers\Master\KetersediaanRuanganController::class);
+        // Route::resource('/ketersediaanruangan', \App\Http\Controllers\Master\KetersediaanRuanganPerawatController::class);
     });
 
     Route::prefix('perawat/patient')->group(function () {
