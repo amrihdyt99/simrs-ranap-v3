@@ -608,7 +608,7 @@
                                     <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarifAwal).toFixed(2)) + `</td>     
                                     <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarif).toFixed(2)) + `</td>     
                                     <td>` + sub_item.ItemDokter + `</td>     
-                                    <td>` + sub_item.ItemTanggal + `</td>     
+                                    <td>` + moment(sub_item.ItemTanggal).format('DD-MM-YY') + `</td>     
                                     <td class="p-3">
                                         ` + $btn + `    
                                     </td>
@@ -644,6 +644,7 @@
                                         <td>Rp. ` + formatNumber(parseFloat(item_non_bpjs.ItemTarifAwal).toFixed(2)) + `</td>     
                                         <td>Rp. ` + formatNumber(parseFloat(item_non_bpjs.ItemTarif).toFixed(2)) + `</td>     
                                         <td>` + item_non_bpjs.ItemDokter + `</td>     
+                                        <td>` + moment(item_non_bpjs.ItemTanggal).format('DD-MM-YY') + `</td>    
                                         <td class="p-3">
                                             ` + $btn + `    
                                         </td>

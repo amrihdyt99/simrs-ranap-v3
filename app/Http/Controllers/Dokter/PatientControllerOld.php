@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
-class PatientController extends Controller
+class PatientControllerOLD extends Controller
 {
     public function index(Request $request)
     {

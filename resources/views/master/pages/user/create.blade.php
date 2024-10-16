@@ -116,36 +116,38 @@
         // Inisialisasi Select2 jika digunakan
         neko_select2_init(`{{ route('nyaa_universal.select2.m_paramedic') }}`, 'ParamedicCode');
 
-        $('[name="userlevel"]').change(function(){
-            if (this.value == 'dokter' || this.value == 'perawat') {
-                $userName = `
-                    <div class="form-group">
-                        <label for="ParamedicCode">Pilih Paramedis</label>
-                        <select id="ParamedicCode" name="ParamedicCode" class="form-control">
-                            <option value="">-- Pilih Paramedis --</option>
-                            @foreach ($paramedic as $data)
-                            <option value="{{ $data->ParamedicCode }}">
-                                {{ $data->ParamedicName }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                `
+        $userName = `
+            <div class="form-group">
+                <label for="ParamedicCode">Pilih Paramedis</label>
+                <select id="ParamedicCode" name="ParamedicCode" class="form-control">
+                    <option value="">-- Pilih Paramedis --</option>
+                    @foreach ($paramedic as $data)
+                    <option value="{{ $data->ParamedicCode }}">
+                        {{ $data->ParamedicName }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+        `
 
-                $('[id="userName"]').html($userName)
+        $('[id="userName"]').html($userName)
 
-                $('[name="ParamedicCode"]').select2()
-            } else {
-                $userName = `
-                    <div class="form-group">
-                        <label>Nama Pengguna</label>  
-                        <input type="text" name="name" class="form-control">  
-                    </div>
-                `
+        $('[name="ParamedicCode"]').select2()
 
-                $('[id="userName"]').html($userName)
-            }
-        })
+        // $('[name="userlevel"]').change(function(){
+        //     if (this.value == 'dokter' || this.value == 'perawat') {
+                
+        //     } else {
+        //         $userName = `
+        //             <div class="form-group">
+        //                 <label>Nama Pengguna</label>  
+        //                 <input type="text" name="name" class="form-control">  
+        //             </div>
+        //         `
+
+        //         $('[id="userName"]').html($userName)
+        //     }
+        // })
     });
 </script>
 @endpush
