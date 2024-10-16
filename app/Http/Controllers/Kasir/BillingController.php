@@ -107,7 +107,7 @@ class BillingController extends AaaBaseController
 
         foreach ($lainnya as $key => $value) {
             $tarif = getItemTindakan($value->reg_no, 1, $value->item_code);
-            
+
             $item['ItemUId'] = Str::random(5);
             $item['ItemReg'] = $value->reg_no;
             $item['ItemCode'] = $value->item_code;
@@ -1032,6 +1032,7 @@ class BillingController extends AaaBaseController
             'Debit'     => 0,
             'Virtual Account' => 0,
             'Transfer'      => 0,
+            'QRIS'          => 0,
             'Cash'      => 0,
         ];
 
@@ -1052,6 +1053,8 @@ class BillingController extends AaaBaseController
                     $pay_by_method['Virtual Account'] += $method['nominal'];
                 } else if ($method['method'] == "Transfer") {
                     $pay_by_method['Transfer'] += $method['nominal'];
+                } else if ($method['method'] == "QRIS") {
+                    $pay_by_method['QRIS'] += $method['nominal'];
                 } else if ($method['method'] == "Cash") {
                     $pay_by_method['Cash'] += ($method['amount_cash'] - $method['amount_changes']);
                 }
