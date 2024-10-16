@@ -166,7 +166,7 @@ class KetersediaanRuanganController extends Controller
         // dd($bed->bed_history);
 
         $pasien = null;
-        if ($latest->Description !== "Pasien Pulang") {
+        if ($latest !== null && $latest->Description !== "Pasien Pulang") {
             $pasien = DB::connection('mysql2')->table('m_registrasi')
                 ->select('m_pasien.*', 'm_registrasi.reg_no')
                 ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')

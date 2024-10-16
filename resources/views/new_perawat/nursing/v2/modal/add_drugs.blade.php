@@ -19,6 +19,8 @@
                   <tr class="bg-warning text-black">
                     <th><b>Kode Obat</b></th>
                     <th><b>Nama Obat</b></th>
+                    <th><b>Cara Pemberian</b></th>
+                    <th><b>Antibiotik</b></th>
                     <th><b>Dosis</b></th>
                     <th><b>Frekuensi</b></th>
                     <th><b>Aksi</b></th>
@@ -34,7 +36,7 @@
               <input class="form-control" id="nama_dokter" name="nama_dokter"
                 value="{{ $datamypatient[0]->ParamedicName }}" readonly />
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="" class="text-sm">Cara Pemberian</label>
               <select class="custom-select custom-select-sm" name="cara_pemberian">
                 <option value="" selected>-- Pilih --</option>
@@ -55,7 +57,7 @@
                 <option value="E">E</option>
                 <option value="D">D</option>
               </select>
-            </div>
+            </div> -->
             <div class="form-group">
               <label for="" class="text-sm">Tanggal Pemberian</label>
               <input type="date" class="form-control" name="tgl_pemberian"

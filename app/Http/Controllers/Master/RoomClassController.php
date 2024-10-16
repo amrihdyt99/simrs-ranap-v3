@@ -43,8 +43,7 @@ class RoomClassController extends Controller
 
     public function create()
     {
-
-        $classCategory = ClassCategory::where('IsActive', 1)->get();
+        $classCategory = ClassCategory::where([['IsActive', 1], ['IsDeleted', 0]])->get();
 
         return view('master.pages.class.create', compact('classCategory'));
     }
@@ -70,7 +69,7 @@ class RoomClassController extends Controller
 
     public function edit(RoomClass $class)
     {
-        $classCategory = ClassCategory::where('IsActive', 1)->get();
+        $classCategory = ClassCategory::where([['IsActive', 1], ['IsDeleted', 0]])->get();
         return view('master.pages.class.update', ['room_class' => $class, 'classCategory' => $classCategory]);
     }
 

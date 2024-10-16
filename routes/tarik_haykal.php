@@ -32,6 +32,7 @@ Route::prefix('tarik-rajal')->group(function () {
     Route::get('education', [TarikDataRajalController::class, 'education']);
     Route::get('item-group', [TarikDataRajalController::class, 'm_item_group']);
     Route::get('item', [TarikDataRajalController::class, 'm_item']);
+    Route::get('item-tarif', [TarikDataRajalController::class, 'm_item_tarif']);
 });
 
 

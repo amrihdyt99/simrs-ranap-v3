@@ -179,4 +179,35 @@ class ItemController extends Controller
 
         return response()->json(['success' => 'Data berhasil dihapus']);
     }
+
+    public function select2Item(Request $request)
+    {
+        $page = $request->page;
+        $resultCount = 10;
+        $offset = ($page - 1) * $resultCount;
+        $data = DB::connection('mysql2')->table("m_item")
+            ->select('m_item.*', 'm_item_group.ItemGroupName1')
+            ->leftJoin('m_item_group', 'm_item_group.ItemGroupCode', '=', 'm_item.ItemGroupCode')
+            ->where([['m_item.IsActive', 1], ['m_item.IsDeleted', 0]])
+            ->where(DB::raw("CONCAT(m_item.ItemName1,' [',m_item_group.ItemGroupName1, ']')"), 'LIKE', '%' . $request->q . '%')
+            ->skip($offset)
+            ->take($resultCount)
+            ->get();
+
+        $count = Item::where('ItemName1', 'LIKE', '%' . $request->q . '%')
+            ->get()
+            ->count();
+
+        $endCount = $offset + $resultCount;
+        $morePages = $count > $endCount;
+
+        $results = array(
+            "results" => $data,
+            "pagination" => array(
+                "more" => $morePages
+            )
+        );
+
+        return response()->json($results);
+    }
 }

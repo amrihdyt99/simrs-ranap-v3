@@ -123,4 +123,18 @@ class TarikDataRajalController extends Controller
         }
         echo 'Alhamdulillah';
     }
+
+    public function m_item_tarif(Request $request)
+    {
+
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/m_item_tarif');
+        foreach ($data['data']  as $kue) {
+            $cek = Item::find($kue['tarif_id']);
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_item_tarif')->insert([$kue]);
+            }
+        }
+        echo 'Alhamdulillah';
+    }
 }
