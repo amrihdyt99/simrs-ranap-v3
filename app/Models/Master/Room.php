@@ -11,6 +11,7 @@ class Room extends Model
     protected $table = 'm_ruangan';
     protected $primaryKey = 'RoomID';
     protected $connection = 'mysql2';
-    protected $guarded = [];
     public $timestamps = false;
+
+    protected $guarded = [];
 }

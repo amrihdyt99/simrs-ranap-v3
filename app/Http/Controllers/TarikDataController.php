@@ -52,13 +52,12 @@ class TarikDataController extends Controller
     }
     public function departement()
     {
-        $response = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/department');
+        $response = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/departement');
         foreach ($response['data'] as $kue) {
             unset($kue['LastUpdatedDateTime']);
             $cek = Department::find($kue['DepartmentCode']);
             if (!$cek) {
-                DB::connection('mysql2')
-                    ->table('m_departemen')->insert([$kue]);
+                DB::connection('mysql2')->table('m_departemen')->insert([$kue]);
             }
         }
         return response()->json(['status' => 'success', 'message' => 'Data Departemen berhasil ditarik']);
@@ -77,7 +76,7 @@ class TarikDataController extends Controller
 
     public function site_departement()
     {
-        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/site_departemen');
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/site_departement');
         foreach ($data['data']  as $kue) {
             unset($kue['LastUpdatedDateTime']);
             $cek = SiteDepartment::find($kue['SiteDepartmentID']);
@@ -119,7 +118,7 @@ class TarikDataController extends Controller
                         'ServiceUnitID' => $kue['ServiceUnitID']
                     ])
                     ->update($data)
-                    ;
+                ;
             }
         }
         echo 'Alhamdulillah';
