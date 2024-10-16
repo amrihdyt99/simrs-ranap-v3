@@ -307,8 +307,32 @@ function sortData($data, $field, $arrange = true){
     return $data;
 }
 
-function getItemTindakan($reg, $class, $params){
-    $data = getService('https://rsud.sumselprov.go.id/simrs-rajal/api/emr/cpoe/data_all_item/LAB/'.str_replace('/', '_', $reg).'?classParams='.$reg.'&searchParams='.$params);
+function getItemTindakan($reg, $class, $type, $params){
+    $data = getService(urlSimrs().'api/emr/cpoe/data_all_item/'.$type.'/'.str_replace('/', '_', $reg).'?classParams='.$class.'&searchParams='.$params);
 
-    return $data;
+    return json_decode($data);
+}
+
+function getCurrentBPJSPrice($currentData = []){
+    if (is_array($currentData) && !isset($currentData['regNo'])) {
+        $tarif = $currentData['currentPrice'];
+    } else {
+        $convertChargeClass = DB::connection('mysql2')
+            ->table('m_room_class')
+            ->where('ClassCode', $currentData['ChargeClassCode'])
+            ->select([
+                'ClassCategoryCode as ChargeClassCode'
+            ])
+            ->first();
+            
+        if ($currentData['payer'] == 2 && $convertChargeClass->ChargeClassCode != '005') {
+            $tarif = getItemTindakan($currentData['regNo'], $convertChargeClass->ChargeClassCode, $currentData['itemType'], $currentData['itemCode']);
+        
+            $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
+        } else {
+            $tarif = $currentData['currentPrice'];
+        }
+    }
+
+    return (float) $tarif;
 }

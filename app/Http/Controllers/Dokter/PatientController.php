@@ -165,8 +165,28 @@ class PatientController extends Controller
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
             ->leftJoin('m_kelas_ruangan_baru', 'm_registrasi.bed', '=', 'm_kelas_ruangan_baru.id')
-            ->where('m_registrasi.reg_discharge', '!=', '3')
-            ->select([
+            ->join('businesspartner', 'reg_cara_bayar', 'businesspartner.id');
+
+        if (isset($request->params)) {
+            foreach($request->params as $value){
+				if(isset($value['method'])){
+					if(isset($value['range'])){
+						$datamypatient = $datamypatient->{$value['method']}($value['key'], $value['range'], $value['value']);
+					} else {
+						$datamypatient = $datamypatient->{$value['method']}($value['key'], $value['value']);
+					}
+				} else if(isset($value['like']) && $value['like']){
+					$datamypatient = $datamypatient->where($value['key'], 'like', '%'.$value['value'].'%');
+				} else {
+					$datamypatient = $datamypatient->where($value['key'], $value['value']);
+				}
+			}
+        } else {
+            $datamypatient = $datamypatient
+                ->where('m_registrasi.reg_discharge', '!=', '3');
+        }
+
+        $datamypatient = $datamypatient->select([
                 'm_pasien.PatientName',
                 'm_registrasi.reg_medrec',
                 'm_registrasi.reg_no',
@@ -175,23 +195,26 @@ class PatientController extends Controller
                 'm_registrasi.reg_cara_bayar',
                 'm_registrasi.reg_tgl',
                 'm_registrasi.reg_jam',
+                'BusinessPartnerName'
             ])
             ->orderByDesc('m_registrasi.reg_tgl');
 
-
-
-        return DataTables()
-            ->of($datamypatient)
-            ->editColumn('aksi_data', function ($query) use ($request) {
-                return ('<a href="'
-                    . route('dokter.patient.summary', ['patient' => $query->reg_no])
-                    . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-clipboard-check"></i>Periksa</a>');
-            })
-            // ->editColumn('PatientName', function ($query) use ($request) {
-            //     return $query->registration ? ($query->registration->pasien ? $query->registration->pasien->PatientName :'') : '';
-            // })
-            ->escapeColumns([])
-            ->toJson();
+            if (isset($request->no_ajax)) {
+                return $datamypatient->get();
+            } else {
+                return DataTables()
+                    ->of($datamypatient)
+                    ->editColumn('aksi_data', function ($query) use ($request) {
+                        return ('<a href="'
+                            . route('dokter.patient.summary', ['patient' => $query->reg_no])
+                            . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-clipboard-check"></i>Periksa</a>');
+                    })
+                    // ->editColumn('PatientName', function ($query) use ($request) {
+                    //     return $query->registration ? ($query->registration->pasien ? $query->registration->pasien->PatientName :'') : '';
+                    // })
+                    ->escapeColumns([])
+                    ->toJson();
+            }
     }
 
     public function ajax_index2($request)
