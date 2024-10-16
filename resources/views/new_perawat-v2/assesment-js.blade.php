@@ -47,6 +47,7 @@
     var classcode = "{{$dataPasien->reg_class}}";
     var ddxutama = '#ddx-utama'
     var ddxutamalen = $(ddxutama).length
+    $hosted = '{{url("")}}'
 
     // =================================================================================================================================
     // init
@@ -1317,6 +1318,25 @@
                     });
                 },
 
+                'pemeriksaan-penunjang': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.pemeriksaan_penunjang')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            getPemeriksaanDokter()
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
             }
         }();
     }
@@ -1902,7 +1922,7 @@
 
     function nyaa_suratrujukan_load_datatable(id_dttb) {
         var url = $(id_dttb).attr('nyaa-urldatatable');
-        console.log(url);
+        // console.log(url);
         $(id_dttb).DataTable({
             processing: true,
             serverSide: true,
@@ -2050,6 +2070,44 @@
                 signaturePadEdukator.clear();
                 let userSignature = "{{ auth()->user()->signature }}";
                 signaturePadEdukator.fromDataURL(userSignature);
+            });
+        }
+
+        // DOKTER YANG MENYATAKAN
+        let $wrapperDokter = $('[id*="signature-pad-dokter-anastesi"]');
+        let $clearButtonDokter = $wrapperDokter.find("#clear_btn_dokter_anastesi");
+        let $canvasDokter = $wrapperDokter.find("canvas")[0];
+
+        if ($canvasDokter != undefined) {
+            signaturePadDokter = new SignaturePad($canvasDokter);
+
+            // Load signature if available
+            let signatureDokterDataURL = $("#signature_dokter_anastesi").val();
+            if (signatureDokterDataURL) {
+                signaturePadDokter.fromDataURL(signatureDokterDataURL);
+            }
+
+            $clearButtonDokter.on("click", function(event) {
+                signaturePadDokter.clear();
+            });
+        }
+
+        // PIHAK YANG DIJELASKAN
+        let $wrapperPasien = $('[id*="signature-pad-pasien-anastesi"]');
+        let $clearButtonPasien = $wrapperPasien.find("#clear_btn_pasien_anastesi");
+        let $canvasPasien = $wrapperPasien.find("canvas")[0];
+
+        if ($canvasPasien != undefined) {
+            signaturePadPasien = new SignaturePad($canvasPasien);
+
+            // Load signature if available
+            let signaturePasienDataURL = $("#signature_pasien_anastesi").val();
+            if (signaturePasienDataURL) {
+                signaturePadPasien.fromDataURL(signaturePasienDataURL);
+            }
+
+            $clearButtonPasien.on("click", function(event) {
+                signaturePadPasien.clear();
             });
         }
 

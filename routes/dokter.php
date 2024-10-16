@@ -13,6 +13,13 @@ Route::get('/dokter/detail_pasien_register/{reg_no}', [DetailPasienController::c
 Route::get('/dokter/data/{type}/{ruang}', [\App\Http\Controllers\Dokter\PatientController::class, 'data_table'])->name('dokter.patient_data');
 
 
+// Route::post('/dokter/simpan-prosedur-operasi', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanProsedurOperasi'])->name('simpan.prosedur.operasi');
+// Route::post('/dokter/simpan-alat-terpasang', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanAlatTerpasang'])->name('simpan.alat.terpasang');
+// Route::post('/dokter/simpan-obat-diterima', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatDiterima'])->name('simpan.obat.diterima');
+// Route::post('/dokter/simpan-obat-dibawa', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatCairanDibawa'])->name('simpan.obat.dibawa');
+// Route::post('/dokter/simpan-status-pasien', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanStatusPasien'])->name('simpan.status.pasien');
+// Route::get('/dokter/surat-rujukan-dokter', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
+
 Route::prefix('dokter')->group(function () {
     Route::prefix('takeOver')->group(function () {
         Route::post('/', [PatientController::class, 'takeOver']);

@@ -92,6 +92,7 @@ Route::prefix('nyx-sistem')
                 Route::post('show_qrcode', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'show_qrcode'])->name('show_qrcode');
                 Route::post('rekonsiliasi-obat', [RekonsiliasiObatController::class, 'index'])->name('rekonsiliasi_obat');
                 Route::post('case_manager', [NyaaViewInjectorController::class, 'form_Case_manager'])->name('case_manager');
+                Route::post('pemeriksaan_penunjang', [NyaaViewInjectorController::class, 'pemeriksaan_penunjang'])->name('pemeriksaan_penunjang');
             });
         });
 

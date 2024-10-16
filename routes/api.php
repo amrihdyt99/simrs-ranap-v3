@@ -9,6 +9,7 @@ use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Master\LogActivityController;
+use App\Http\Controllers\NewDokter\EdukasiAnastesiController;
 use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
 use App\Http\Controllers\Perawat\AssesmentDewasaController;
@@ -377,3 +378,15 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 });
 
 Route::get('/persetujuan-penolakan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan_dokter'])->name('dokter.persetujuan-penolakan');
+
+// Route::get('surat-rujukan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
+Route::prefix('dokter')->name('dokter.')->group(function () {
+    Route::get('/surat-rujukan-dokter', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
+    Route::post('/simpan-prosedur-operasi', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanProsedurOperasi'])->name('simpan.prosedur.operasi');
+    Route::post('/simpan-alat-terpasang', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanAlatTerpasang'])->name('simpan.alat.terpasang');
+    Route::post('/simpan-obat-diterima', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatDiterima'])->name('simpan.obat.diterima');
+    Route::post('/simpan-obat-dibawa', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatCairanDibawa'])->name('simpan.obat.dibawa');
+    Route::post('/simpan-status-pasien', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanStatusPasien'])->name('simpan.status.pasien');
+});
+
+Route::post('/add-edukasi-anastesi', [EdukasiAnastesiController::class, 'addEdukasiAnastesi'])->name('add.edukasi.anastesi');
