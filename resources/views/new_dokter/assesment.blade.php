@@ -117,7 +117,13 @@
                         Discharge
                     </div>
                 </div>
-                
+
+                <div class="row">
+                    <div class="left-tab" id="tab-surat-rujukan" onclick="clickTab('surat-rujukan')">
+                        Surat Rujukan
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
                         Riwayat
@@ -200,6 +206,13 @@
                                         @include('new_dokter.physician_team.index')
                                     </div>
                                 </div>
+
+                                <div id="panel-surat-rujukan">
+                                    <div class="text-black" style="font-size: 14px">
+                                        @include('new_dokter.surat_rujukan.index')
+                                    </div>
+                                </div>
+
                                 <div id="panel-riwayat">
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
@@ -604,7 +617,8 @@
 <script src="{{asset('new_assets/js/discharge/diagnosa.js')}}"></script>
 <script src="{{asset('new_assets/js/discharge/prosedur.js')}}"></script>
 <script src="{{asset('new_assets/js/discharge/billing.js')}}"></script>
-<script src="{{asset('new_assets/js/discharge/discharges.js')}}"></script>
+<script src="{{asset('new_assets/js/discharge/discharge.js')}}"></script>
 <script src="{{asset('new_assets/js/physician_team.js')}}"></script>
 <script src="{{asset('new_assets/js/persetujuan_penolakan.js')}}"></script>
+<script src="{{asset('new_assets/js/surat_rujukan.js')}}"></script>
 @endsection
