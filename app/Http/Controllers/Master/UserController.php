@@ -126,7 +126,7 @@ class UserController extends Controller
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'dokter_id' => $request->userlevel == 'dokter' ? $dataparamedis ? $dataparamedis->ParamedicCode : null : null,
-            'perawat_id' => $request->userlevel == 'perawat' ? $dataparamedis ? $dataparamedis->ParamedicCode : null : null,
+            'perawat_id' => $request->userlevel != 'dokter' ? $dataparamedis ? $dataparamedis->ParamedicCode : null : null,
             'level_user' => $request->userlevel,
             'is_active' => 1,
             'is_deleted' => 0,
