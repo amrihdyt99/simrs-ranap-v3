@@ -313,17 +313,25 @@ function getItemTindakan($reg, $class, $type, $params){
     return json_decode($data);
 }
 
-function getCurrentBPJSPrice($currentData){
-    if ($currentData['payer'] == 2 && $currentData['ChargeClassCode'] != '005') {
-        $tarif = getItemTindakan($currentData['regNo'], $currentData['ChargeClassCode'], $currentData['itemType'], $currentData['itemCode']);
-    
-        $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
+function getCurrentBPJSPrice($currentData = []){
+    if (is_array($currentData) && !isset($currentData['regNo'])) {
+        $tarif = $currentData['currentPrice'];
     } else {
-        $tarif = $currentData['currentPrice'];
-    }
-
-    if (!str_contains($currentData['regNo'], '/RI/')) {
-        $tarif = $currentData['currentPrice'];
+        $convertChargeClass = DB::connection('mysql2')
+            ->table('m_room_class')
+            ->where('ClassCode', $currentData['ChargeClassCode'])
+            ->select([
+                'ClassCategoryCode as ChargeClassCode'
+            ])
+            ->first();
+            
+        if ($currentData['payer'] == 2 && $convertChargeClass->ChargeClassCode != '005') {
+            $tarif = getItemTindakan($currentData['regNo'], $convertChargeClass->ChargeClassCode, $currentData['itemType'], $currentData['itemCode']);
+        
+            $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
+        } else {
+            $tarif = $currentData['currentPrice'];
+        }
     }
 
     return (float) $tarif;

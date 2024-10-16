@@ -348,8 +348,8 @@ class BillingController extends AaaBaseController
                     $item['ItemName1'] = $sub_value->ItemName1;
                     $item['ItemBundle'] = 0;
                     $item['ItemTindakan'] = $value->JobOrderType;
-                    $item['ItemTarif'] = (float) $sub_value->StandardPriceItem;
-                    $item['ItemTarifAwal'] = (float) (isset($sub_value->DispenseQty) ? $sub_value->DispenseQty : 1) * $sub_value->StandardPriceItem;
+                    $item['ItemTarifAwal'] = (float) $sub_value->StandardPriceItem;
+                    $item['ItemTarif'] = (float) (isset($sub_value->DispenseQty) ? $sub_value->DispenseQty : 1) * $sub_value->StandardPriceItem;
                     $item['ItemJumlah'] = (float) isset($sub_value->DispenseQty) ? $sub_value->DispenseQty : 1;
                     $item['ItemDokter'] = $dokter_order;
                     $item['ItemPoli'] = $value->ServiceUnitID;
@@ -740,7 +740,7 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $ri_item_by_type[$type][] = $item;
             }
-            $total_ri += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $total_ri += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $data_ri['total_all'] = $total_ri;
         unset($data_ri['data']);
@@ -768,7 +768,7 @@ class BillingController extends AaaBaseController
                         $type = $item['ItemTindakan'];
                         $data_luar_item[$type][] = $item;
                     }
-                    $total_luar += ($item['ItemTarif'] * $item['ItemJumlah']);
+                    $total_luar += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
                 }
             } else {
                 foreach ($data_luar['data'] as $item) {
@@ -785,7 +785,7 @@ class BillingController extends AaaBaseController
                         $type = $item['ItemTindakan'];
                         $data_luar_item[$type][] = $item;
                     }
-                    $total_luar += ($item['ItemTarif'] * $item['ItemJumlah']);
+                    $total_luar += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
                 }
             }
             $data_luar['total_all'] = $total_luar;
@@ -880,7 +880,7 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $ri_item_by_type[$type][] = $item;
             }
-            $ri_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $ri_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $ri_item_by_type['subtotal'] = $ri_sub_tot;
 
@@ -898,7 +898,7 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $rj_item_by_type[$type][] = $item;
             }
-            $rj_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $rj_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $rj_item_by_type['subtotal'] = $rj_sub_tot;
 
@@ -919,7 +919,7 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $igd_item_by_type[$type][] = $item;
             }
-            $igd_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $igd_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $igd_item_by_type['subtotal'] = $igd_sub_tot;
 
@@ -1020,7 +1020,7 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $ri_item_by_type[$type][] = $item;
             }
-            $ri_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $ri_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $ri_item_by_type['subtotal'] = $ri_sub_tot;
 
@@ -1038,7 +1038,7 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $rj_item_by_type[$type][] = $item;
             }
-            $rj_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $rj_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $rj_item_by_type['subtotal'] = $rj_sub_tot;
 
@@ -1059,7 +1059,7 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $igd_item_by_type[$type][] = $item;
             }
-            $igd_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $igd_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $igd_item_by_type['subtotal'] = $igd_sub_tot;
 
@@ -1186,17 +1186,17 @@ class BillingController extends AaaBaseController
                 $type = $item['ItemTindakan'];
                 $ri_item_by_type[$type][] = $item;
             }
-            $ri_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $ri_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $ri_item_by_type['subtotal'] = $ri_sub_tot;
 
         foreach ($billing_rj_item as $item) {
-            $rj_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $rj_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $rj_item_by_type['subtotal'] = $rj_sub_tot;
 
         foreach ($billing_igd_item as $item) {
-            $igd_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
+            $igd_sub_tot += ($item['ItemTarifAwal'] * $item['ItemJumlah']);
         }
         $igd_item_by_type['subtotal'] = $igd_sub_tot;
 
