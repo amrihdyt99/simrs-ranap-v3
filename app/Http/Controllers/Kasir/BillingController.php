@@ -106,6 +106,8 @@ class BillingController extends AaaBaseController
         // return $lainnya;
 
         foreach ($lainnya as $key => $value) {
+            $tarif = getItemTindakan($value->reg_no, 1, $value->item_code);
+            
             $item['ItemUId'] = Str::random(5);
             $item['ItemReg'] = $value->reg_no;
             $item['ItemCode'] = $value->item_code;
@@ -115,7 +117,7 @@ class BillingController extends AaaBaseController
             $item['ItemName1'] = $value->item_name;
             $item['ItemBundle'] = null;
             $item['ItemTindakan'] = $value->jenis_order;
-            $item['ItemTarif'] = $value->harga_jual;
+            $item['ItemTarif'] = $tarif;
             $item['ItemTarifAwal'] = $value->harga_jual;
             $item['ItemJumlah'] = $value->qty;
             $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
@@ -138,6 +140,8 @@ class BillingController extends AaaBaseController
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
         }
+
+        sortData($order_penunjang_prev, 'ItemTanggal', false);
 
         $recap_penunjang = [
             ['source' => 'Rawat Inap', 'data' => $order_penunjang],
@@ -191,6 +195,8 @@ class BillingController extends AaaBaseController
                     }
                 }
             }
+
+            sortData($order_penunjang, 'ItemTanggal', false);
         }
 
         return $order_penunjang;
@@ -227,6 +233,8 @@ class BillingController extends AaaBaseController
                     }
                 }
             }
+
+            sortData($order_penunjang, 'ItemTanggal', false);
         }
 
         return $order_penunjang;
@@ -267,6 +275,8 @@ class BillingController extends AaaBaseController
             }
         }
 
+        sortData($order_penunjang, 'ItemTanggal', false);
+
         return $order_penunjang;
     }
 
@@ -295,7 +305,7 @@ class BillingController extends AaaBaseController
                     $item['ItemCode'] = $sub_value->ItemCode;
                     $item['ItemOrderCode'] = $value->JobOrderNo;
                     $item['ItemOrder'] = $value->JobOrderNo;
-                    $item['ItemTanggal'] = $value->JobOrderDateTime;
+                    $item['ItemTanggal'] = date('Y-m-d H:i:s', strtotime($value->JobOrderDateTime));
                     $item['ItemName1'] = $sub_value->ItemName1;
                     $item['ItemBundle'] = 0;
                     $item['ItemTindakan'] = $value->JobOrderType;
@@ -312,10 +322,6 @@ class BillingController extends AaaBaseController
                     }
                 }
             }
-
-            usort($order_penunjang, function ($a, $b) {
-                return strcmp($a['ItemTindakan'], $b['ItemTindakan']);
-            });
         }
 
         return $order_penunjang;
