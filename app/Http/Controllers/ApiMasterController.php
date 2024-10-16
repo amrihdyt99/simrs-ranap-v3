@@ -456,8 +456,8 @@ class ApiMasterController extends Controller
 				->whereRaw(
 					"
 					GCParamedicType = ? 
-					and (lower(FirstName) like ? or lower(LastName) like ? or ParamedicCode like ?)",
-					[$request->paramedic_type, '%' . $request->params . '%', '%' . $request->params . '%', '%' . $request->params . '%']
+					and (lower(FirstName) like ? or lower(LastName) like ? or lower(ParamedicName) like ? or ParamedicCode like ?)",
+					[$request->paramedic_type, '%' . $request->params . '%', '%' . $request->params . '%', '%' . $request->params . '%', '%' . $request->params . '%']
 				);
 		}
 
@@ -508,6 +508,22 @@ class ApiMasterController extends Controller
 	public function classCategory()
 	{
 		$dat = DB::connection('sqlsrv_sphaira')->table('ClassCategory')->get();
+		if ($dat) {
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = $dat;
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
+	}
+
+	public function checkSysGenCode(Request $request)
+	{
+		$dat = DB::connection('sqlsrv_sphaira')->table('sysGeneralCode')
+			->where('GeneralCodeID', 'LIKE', "%$request->q%")->get();
 		if ($dat) {
 			$json['code'] = 200;
 			$json['msg'] = 'Ok';

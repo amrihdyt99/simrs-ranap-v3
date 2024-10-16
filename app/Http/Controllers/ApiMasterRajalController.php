@@ -67,21 +67,6 @@ class ApiMasterRajalController extends Controller
         return response()->json($json, $json['code']);
     }
 
-    public function m_item(Request $request)
-    {
-        $data = DB::connection('sqlsrv_rajal')->table('rs_m_item')->get();
-        if ($data) {
-            $json['code'] = 200;
-            $json['msg'] = 'Ok';
-            $json['data'] = $data;
-        } else {
-            $json['code'] = 201;
-            $json['msg'] = 'Tidak ada pasien';
-            $json['data'] = null;
-        }
-        return response()->json($json, $json['code']);
-    }
-
     public function check_table(Request $request)
     {
         $data = DB::connection('sqlsrv_rajal')->table($request->tables)->get();
@@ -100,6 +85,98 @@ class ApiMasterRajalController extends Controller
     public function m_item_group(Request $request)
     {
         $data = DB::connection('sqlsrv_rajal')->table('rs_m_item_group')->get();
+        if ($data) {
+            $json['code'] = 200;
+            $json['msg'] = 'Ok';
+            $json['data'] = $data;
+        } else {
+            $json['code'] = 201;
+            $json['msg'] = 'Tidak ada pasien';
+            $json['data'] = null;
+        }
+        return response()->json($json, $json['code']);
+    }
+
+    public function m_item(Request $request)
+    {
+        $data = DB::connection('sqlsrv_rajal')->table('rs_m_item')->get();
+        if ($data) {
+            $json['code'] = 200;
+            $json['msg'] = 'Ok';
+            $json['data'] = $data;
+        } else {
+            $json['code'] = 201;
+            $json['msg'] = 'Tidak ada pasien';
+            $json['data'] = null;
+        }
+        return response()->json($json, $json['code']);
+    }
+
+    public function m_item_tarif(Request $request)
+    {
+        $data = DB::connection('sqlsrv_rajal')->table('rs_m_item_tarif')->get();
+        if ($data) {
+            $json['code'] = 200;
+            $json['msg'] = 'Ok';
+            $json['data'] = $data;
+        } else {
+            $json['code'] = 201;
+            $json['msg'] = 'Tidak ada pasien';
+            $json['data'] = null;
+        }
+        return response()->json($json, $json['code']);
+    }
+
+
+
+    public function m_item_sub(Request $request)
+    {
+        $data = DB::connection('sqlsrv_rajal')->table('rs_m_item_sub')->get();
+        if ($data) {
+            $json['code'] = 200;
+            $json['msg'] = 'Ok';
+            $json['data'] = $data;
+        } else {
+            $json['code'] = 201;
+            $json['msg'] = 'Tidak ada pasien';
+            $json['data'] = null;
+        }
+        return response()->json($json, $json['code']);
+    }
+
+    public function m_item_tarif_mcu(Request $request)
+    {
+        $data = DB::connection('sqlsrv_rajal')->table('rs_m_item_tarif_mcu')->get();
+        if ($data) {
+            $json['code'] = 200;
+            $json['msg'] = 'Ok';
+            $json['data'] = $data;
+        } else {
+            $json['code'] = 201;
+            $json['msg'] = 'Tidak ada pasien';
+            $json['data'] = null;
+        }
+        return response()->json($json, $json['code']);
+    }
+
+    public function speciality(Request $request)
+    {
+        $data = DB::connection('sqlsrv_rajal')->table('rs_m_specialty')->get();
+        if ($data) {
+            $json['code'] = 200;
+            $json['msg'] = 'Ok';
+            $json['data'] = $data;
+        } else {
+            $json['code'] = 201;
+            $json['msg'] = 'Tidak ada pasien';
+            $json['data'] = null;
+        }
+        return response()->json($json, $json['code']);
+    }
+
+    public function infectious_desease(Request $request)
+    {
+        $data = DB::connection('sqlsrv_rajal')->table('rs_m_infectious_desease')->get();
         if ($data) {
             $json['code'] = 200;
             $json['msg'] = 'Ok';

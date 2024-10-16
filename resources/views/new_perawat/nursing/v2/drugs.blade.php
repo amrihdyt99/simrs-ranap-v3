@@ -16,8 +16,6 @@
           <tr class="bg-warning text-black">
             <th><b>Tanggal Pemberian</b></th>
             <th><b>List Obat</b></th>
-            <th><b>Cara Pemberian</b></th>
-            <th><b>Antibiotik</b></th>
             <th><b>Perawat</b></th>
             <th><b>Aksi</b></th>
           </tr>

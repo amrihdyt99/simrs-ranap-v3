@@ -117,7 +117,13 @@
                         Discharge
                     </div>
                 </div>
-                
+
+                <div class="row">
+                    <div class="left-tab" id="tab-surat-rujukan" onclick="clickTab('surat-rujukan')">
+                        Surat Rujukan
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="left-tab" id="tab-riwayat" onclick="clickTab('riwayat')">
                         Riwayat
@@ -200,6 +206,13 @@
                                         @include('new_dokter.physician_team.index')
                                     </div>
                                 </div>
+
+                                <div id="panel-surat-rujukan">
+                                    <div class="text-black" style="font-size: 14px">
+                                        @include('new_dokter.surat_rujukan.index')
+                                    </div>
+                                </div>
+
                                 <div id="panel-riwayat">
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
@@ -284,6 +297,7 @@
     $reg = "{{$reg}}";
     $medrec = "{{$patient->reg_medrec}}";
     $subs = "";
+    $hosted = '{{url("")}}'
     var $service_unit = '{{$dataPasien->service_unit}}'
     var $id_cppt = '{{$id_cppt}}'
     var selectedRoom = localStorage.getItem('pilihruang').split(',')
@@ -595,47 +609,6 @@
     $(document).ready(function() {
         getPemeriksaanDokter();
     });
-
-    function getPemeriksaanDokter() {
-        $.ajax({
-            url: "{{ route('get.pemeriksaan.dokter') }}",
-            type: "POST",
-            data: {
-                reg_no: regno, // Gantilah `regno` dengan variabel yang sesuai
-            },
-            success: function(data) {
-                if (data.success == true) {
-                    var tablePemeriksaanDokter = $('#table-pemeriksaan-dokter');
-                    tablePemeriksaanDokter.empty();
-                    data.data.forEach(function(item) {
-                        var tr = $('<tr></tr>');
-                        tr.append('<td class="text-center">' + item.created_at + '</td>');
-                        tr.append('<td class="text-center">' + item.item_code + '</td>');
-                        tr.append('<td>' + item.item_name + '</td>');
-                        tr.append('<td class="text-center">' + item.jenis_order + '</td>');
-                        var button = $('<button class="btn btn-primary">Hasil</button>');
-
-                        // Menyimpan URL di data button
-                        var url = item.jenis_order == "lab" ? "{{ route('get.hasil.lab') }}" : "{{ route('get.hasil.radiologi') }}";
-                        button.data('url', url);
-
-                        button.on('click', function() {
-                            var iframeUrl = $(this).data('url');
-                            // Mengubah src iframe dengan URL yang sesuai
-                            $('#resultModal iframe').attr('src', iframeUrl);
-                            // Menampilkan modal
-                            $('#resultModal').modal('show');
-                        });
-
-                        tr.append($('<td></td>').append(button));
-                        tablePemeriksaanDokter.append(tr);
-                    });
-                } else {
-                    $('#table-pemeriksaan-dokter').html('<tr><td colspan="5" class="text-center">' + data.message.toUpperCase() + '</td></tr>');
-                }
-            }
-        });
-    }
 </script>
 <script src="{{ asset('neko/custom/nyaa.js') }}?v={{ $nyaa_unv_function->neko()->versi->assets }}"></script>
 <script src="{{asset('new_assets/js/cpoe.js')}}"></script>
@@ -644,7 +617,8 @@
 <script src="{{asset('new_assets/js/discharge/diagnosa.js')}}"></script>
 <script src="{{asset('new_assets/js/discharge/prosedur.js')}}"></script>
 <script src="{{asset('new_assets/js/discharge/billing.js')}}"></script>
-<script src="{{asset('new_assets/js/discharge/discharges.js')}}"></script>
+<script src="{{asset('new_assets/js/discharge/discharge.js')}}"></script>
 <script src="{{asset('new_assets/js/physician_team.js')}}"></script>
 <script src="{{asset('new_assets/js/persetujuan_penolakan.js')}}"></script>
+<script src="{{asset('new_assets/js/surat_rujukan.js')}}"></script>
 @endsection

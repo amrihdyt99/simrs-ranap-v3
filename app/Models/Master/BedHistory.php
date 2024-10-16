@@ -10,6 +10,8 @@ class BedHistory extends Model
     use HasFactory;
     protected $table = 'm_bed_history';
     protected $connection = 'mysql2';
-    protected $guarded = [];
     public $timestamps = false;
+
+
+    protected $guarded = [];
 }

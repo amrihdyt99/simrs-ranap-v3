@@ -294,3 +294,37 @@ function mergeObject($first, $second){
 
     return $mergedDataObject;
 }
+
+function sortData($data, $field, $arrange = true){
+    usort($data, function ($a, $b) use ($field, $arrange) {
+        if ($arrange) {
+            return strcmp($a[$field], $b[$field]);
+        } else {
+            return strcmp($b[$field], $a[$field]);
+        }
+    });
+
+    return $data;
+}
+
+function getItemTindakan($reg, $class, $type, $params){
+    $data = getService(urlSimrs().'api/emr/cpoe/data_all_item/'.$type.'/'.str_replace('/', '_', $reg).'?classParams='.$class.'&searchParams='.$params);
+
+    return json_decode($data);
+}
+
+function getCurrentBPJSPrice($currentData){
+    if ($currentData['payer'] == 2 && $currentData['ChargeClassCode'] != '005') {
+        $tarif = getItemTindakan($currentData['regNo'], $currentData['ChargeClassCode'], $currentData['itemType'], $currentData['itemCode']);
+    
+        $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
+    } else {
+        $tarif = $currentData['currentPrice'];
+    }
+
+    if (!str_contains($currentData['regNo'], '/RI/')) {
+        $tarif = $currentData['currentPrice'];
+    }
+
+    return (float) $tarif;
+}

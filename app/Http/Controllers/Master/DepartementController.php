@@ -119,7 +119,7 @@ class DepartementController extends Controller
         if (isset($request->serviceCode)) {
             $data = $data->whereIn('ServiceUnitCode', [$request->serviceCode]);
         } else {
-            $data = $data->whereIn('ServiceUnitCode', ['P029', 'P066', 'RI06', 'RI07', 'lt09', 'pavvip']);
+            $data = $data->whereIn('ServiceUnitCode', ['P029', 'P066', 'RI06', 'RI07', 'lt09', 'pavvip','ICU','icucovid','NICU-PICU','nicucovigd','P034','P035','P036']);
         }
 
         $data = $data->distinct('m_unit.ServiceUnitCode')

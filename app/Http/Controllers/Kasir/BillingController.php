@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Dokter\PatientController;
 use App\Http\Controllers\NewDokter\OrderObatController;
 use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
 use App\Models\Pasien;
@@ -89,6 +90,22 @@ class BillingController extends AaaBaseController
         $order_penunjang = [];
         $order_penunjang_prev = [];
 
+        // GET PAYER
+        $callPatient = new PatientController;
+
+        $request->merge([
+            'no_ajax' => true,
+            'params' => [
+                ['key' => 'reg_no', 'value' => $request->reg_ri]
+            ]
+        ]);
+
+        $getPayer = $callPatient->ajax_index($request);
+        $payer = count($getPayer) > 0 ? $getPayer[0]->reg_cara_bayar : 1;
+
+        // GET CURRENT CHARGE CLASS
+        $currentData = getCurrentLocation($request->reg_ri);
+
         $lainnya = DB::table('job_orders_dt as a')
             ->where('a.reg_no', $request->reg_ri)
             ->where('jenis_order', 'lainnya')
@@ -103,9 +120,19 @@ class BillingController extends AaaBaseController
             ])
             ->get();
 
-        // return $lainnya;
+        $currentData = [
+            'payer' => $payer,
+            'regNo' => $request->reg_ri,
+            'ChargeClassCode' => $currentData['ChargeClassCode'],
+        ];
 
         foreach ($lainnya as $key => $value) {
+            $currentData['itemType'] = 'LAIN';
+            $currentData['itemCode'] = $value->item_code;
+            $currentData['currentPrice'] = $value->harga_jual;
+
+            $tarif = getCurrentBPJSPrice($currentData);
+            
             $item['ItemUId'] = Str::random(5);
             $item['ItemReg'] = $value->reg_no;
             $item['ItemCode'] = $value->item_code;
@@ -115,8 +142,8 @@ class BillingController extends AaaBaseController
             $item['ItemName1'] = $value->item_name;
             $item['ItemBundle'] = null;
             $item['ItemTindakan'] = $value->jenis_order;
-            $item['ItemTarif'] = $value->harga_jual;
-            $item['ItemTarifAwal'] = $value->harga_jual;
+            $item['ItemTarif'] = $tarif;
+            $item['ItemTarifAwal'] = $tarif;
             $item['ItemJumlah'] = $value->qty;
             $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
             $item['ItemPoli'] = '';
@@ -126,8 +153,8 @@ class BillingController extends AaaBaseController
             array_push($order_penunjang, $item);
         }
 
-        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromLab($request->reg_ri));
-        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri));
+        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromLab($request->reg_ri, $currentData));
+        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri, $currentData));
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromPharmacy($request->reg_ri));
 
         if (str_contains($request->reg_rj, '/ER/')) {
@@ -138,6 +165,8 @@ class BillingController extends AaaBaseController
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
         }
+
+        // sortData($order_penunjang_prev, 'ItemTanggal', false);
 
         $recap_penunjang = [
             ['source' => 'Rawat Inap', 'data' => $order_penunjang],
@@ -160,7 +189,7 @@ class BillingController extends AaaBaseController
         ];
     }
 
-    public function getOrderFromLab($reg_no)
+    public function getOrderFromLab($reg_no, $currentData = [])
     {
         $lab = json_decode(getService(urlLabRadiology() . '/api/status-order-v2?regno=' . $reg_no));
 
@@ -169,6 +198,13 @@ class BillingController extends AaaBaseController
         if (isset($lab->code) && $lab->code == 200) {
             foreach ($lab->data as $key => $value) {
                 foreach ($value->item_order as $sub_key => $sub_value) {
+
+                    $currentData['itemType'] = 'LAB';
+                    $currentData['itemCode'] = $sub_value->kode_tindakan;
+                    $currentData['currentPrice'] = $sub_value->tarif_personal;
+
+                    $tarif = getCurrentBPJSPrice($currentData);
+
                     $item['ItemUId'] = Str::random(5);
                     $item['ItemReg'] = $value->no_reg;
                     $item['ItemCode'] = $sub_value->kode_tindakan;
@@ -178,8 +214,8 @@ class BillingController extends AaaBaseController
                     $item['ItemName1'] = $sub_value->nama_tindakan;
                     $item['ItemBundle'] = 0;
                     $item['ItemTindakan'] = 'Laboratorium';
-                    $item['ItemTarif'] = $sub_value->tarif_personal;
-                    $item['ItemTarifAwal'] = $sub_value->tarif_personal;
+                    $item['ItemTarif'] = $tarif;
+                    $item['ItemTarifAwal'] = $tarif;
                     $item['ItemJumlah'] = 1;
                     $item['ItemDokter'] = $value->dokter_order;
                     $item['ItemPoli'] = $value->poli_order;
@@ -191,12 +227,14 @@ class BillingController extends AaaBaseController
                     }
                 }
             }
+
+            sortData($order_penunjang, 'ItemTanggal', false);
         }
 
         return $order_penunjang;
     }
 
-    public function getOrderFromRadiology($reg_no)
+    public function getOrderFromRadiology($reg_no, $currentData = [])
     {
         $rad = json_decode(getService(urlLabRadiology() . '/api/status-order-radiologi-v2?regno=' . $reg_no));
 
@@ -205,6 +243,13 @@ class BillingController extends AaaBaseController
         if (isset($rad->code) && $rad->code == 200) {
             foreach ($rad->data as $key => $value) {
                 foreach ($value->item_order as $sub_key => $sub_value) {
+
+                    $currentData['itemType'] = 'RAD';
+                    $currentData['itemCode'] = $sub_value->kode_tindakan;
+                    $currentData['currentPrice'] = $sub_value->tarif_personal;
+
+                    $tarif = getCurrentBPJSPrice($currentData);
+
                     $item['ItemUId'] = Str::random(5);
                     $item['ItemReg'] = $value->no_reg;
                     $item['ItemCode'] = $sub_value->kode_tindakan;
@@ -214,8 +259,8 @@ class BillingController extends AaaBaseController
                     $item['ItemName1'] = $sub_value->nama_tindakan;
                     $item['ItemBundle'] = 0;
                     $item['ItemTindakan'] = 'Radiologi';
-                    $item['ItemTarif'] = $sub_value->tarif_personal;
-                    $item['ItemTarifAwal'] = $sub_value->tarif_personal;
+                    $item['ItemTarif'] = $tarif;
+                    $item['ItemTarifAwal'] = $tarif;
                     $item['ItemJumlah'] = 1;
                     $item['ItemDokter'] = $value->dokter_order;
                     $item['ItemPoli'] = $value->poli_order;
@@ -227,6 +272,8 @@ class BillingController extends AaaBaseController
                     }
                 }
             }
+
+            sortData($order_penunjang, 'ItemTanggal', false);
         }
 
         return $order_penunjang;
@@ -255,8 +302,8 @@ class BillingController extends AaaBaseController
                 $item['ItemName1'] = $v->item->item_name;
                 $item['ItemBundle'] = 0;
                 $item['ItemTindakan'] = 'Obat';
-                $item['ItemTarif'] = $v->quantity * $v->harga_jual;
-                $item['ItemTarifAwal'] = $v->harga_jual;
+                $item['ItemTarif'] = (float) $v->quantity * $v->harga_jual;
+                $item['ItemTarifAwal'] = (float) $v->harga_jual;
                 $item['ItemJumlah'] = $v->quantity;
                 $item['ItemDokter'] = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode', $value->kode_dokter)->first()->ParamedicName;
                 $item['ItemPoli'] = $value->kode_poli;
@@ -266,6 +313,8 @@ class BillingController extends AaaBaseController
                 array_push($order_penunjang, $item);
             }
         }
+
+        sortData($order_penunjang, 'ItemTanggal', false);
 
         return $order_penunjang;
     }
@@ -295,7 +344,7 @@ class BillingController extends AaaBaseController
                     $item['ItemCode'] = $sub_value->ItemCode;
                     $item['ItemOrderCode'] = $value->JobOrderNo;
                     $item['ItemOrder'] = $value->JobOrderNo;
-                    $item['ItemTanggal'] = $value->JobOrderDateTime;
+                    $item['ItemTanggal'] = date('Y-m-d H:i:s', strtotime($value->JobOrderDateTime));
                     $item['ItemName1'] = $sub_value->ItemName1;
                     $item['ItemBundle'] = 0;
                     $item['ItemTindakan'] = $value->JobOrderType;
@@ -312,10 +361,6 @@ class BillingController extends AaaBaseController
                     }
                 }
             }
-
-            usort($order_penunjang, function ($a, $b) {
-                return strcmp($a['ItemTindakan'], $b['ItemTindakan']);
-            });
         }
 
         return $order_penunjang;
@@ -1085,11 +1130,12 @@ class BillingController extends AaaBaseController
 
     public function cetakInvoiceSummary(Request $request)
     {
-        $billing_detail = DB::connection('mysql')->table('rs_pasien_billing_validation')
+        $all_bills = DB::connection('mysql')->table('rs_pasien_billing_validation')
             ->where([
                 ['pvalidation_reg', $request->reg_no],
                 ['pvalidation_status', 1],
-            ])->first();
+            ])->get();
+
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -1098,39 +1144,61 @@ class BillingController extends AaaBaseController
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->get()->first();
 
-        $all_item = json_decode($billing_detail->pvalidation_selected, true);
-        $payer_detail = json_decode($billing_detail->pvalidation_detail, true);
+        foreach ($all_bills as $item) {
+            $item_detail_by_code[] = json_decode($item->pvalidation_selected, true);
+        }
 
-        $billing_ri_item = array_filter($all_item, function ($item) {
+        $all_items = [];
+        foreach ($item_detail_by_code as $items_detail) {
+            foreach ($items_detail as $item) {
+                array_push($all_items, $item);
+            }
+        }
+
+        $billing_ri_item = array_filter($all_items, function ($item) {
             return $item['ItemSource'] == 'Rawat Inap';
         });
-        $billing_rj_item = array_filter($all_item, function ($item) {
+        $billing_rj_item = array_filter($all_items, function ($item) {
             return $item['ItemSource'] == 'Rawat Jalan';
         });
-        $billing_igd_item = array_filter($all_item, function ($item) {
+        $billing_igd_item = array_filter($all_items, function ($item) {
             return $item['ItemSource'] == 'IGD';
         });
 
+        $ri_item_by_type = [];
         $ri_sub_tot = 0;
+        $rj_item_by_type = [];
         $rj_sub_tot = 0;
+        $igd_item_by_type = [];
         $igd_sub_tot = 0;
 
         foreach ($billing_ri_item as $item) {
+            if ($item['ItemTindakan'] == 'Radiologi') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Laboratorium') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'lainnya') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            } else if ($item['ItemTindakan'] == 'Medication') {
+                $type = $item['ItemTindakan'];
+                $ri_item_by_type[$type][] = $item;
+            }
             $ri_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
         }
+        $ri_item_by_type['subtotal'] = $ri_sub_tot;
 
         foreach ($billing_rj_item as $item) {
             $rj_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
         }
+        $rj_item_by_type['subtotal'] = $rj_sub_tot;
 
         foreach ($billing_igd_item as $item) {
             $igd_sub_tot += ($item['ItemTarif'] * $item['ItemJumlah']);
         }
-
-        foreach ($payer_detail as $item) {
-            $type = $item['method'];
-            $payer_by_method[$type] = $item;
-        }
+        $igd_item_by_type['subtotal'] = $igd_sub_tot;
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
 
@@ -1158,7 +1226,7 @@ class BillingController extends AaaBaseController
             'user'          => $user,
             'patient'       => $datamypatient,
             'ruangan'       => $ruangan,
-            'billing'       => $billing_detail,
+            'bill_detail'       => $all_bills,
         ]);
     }
 
