@@ -601,7 +601,7 @@
                                             <input type="checkbox" id="selecting_items" class="float-right" value="` + sub_item.ItemUId + `" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)">
                                         </span>
                                         ` + sub_item.ItemName1 + `
-                                        <small class="text-danger" style="font-size: 8px; vertical-align: top;">(* `+sub_item.ItemTindakan+`)</small>
+                                        <small class="text-danger" style="font-size: 8px; vertical-align: top;">(* ` + sub_item.ItemTindakan + `)</small>
                                         ` + (sub_item.NonBPJS == 1 ? `<span class="bg-success p-1 text-white" style="font-size: 12px; border-radius: 5px">Non BPJS</span>` : ``) + `
                                     </td>     
                                     <td>` + sub_item.ItemJumlah + `</td>     
@@ -1307,8 +1307,9 @@
     $('#btn-cetak-review').click(function() {
         $.ajax({
             url: '{{ route("kasir.cetak.review") }}',
-            type: 'GET',
+            type: 'POST',
             data: {
+                _token: "{{csrf_token()}}",
                 data: $('#billing_detail_json').val(),
                 reg_no: '{{ $reg_no }}',
             },

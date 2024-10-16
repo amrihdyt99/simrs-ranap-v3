@@ -519,4 +519,20 @@ class ApiMasterController extends Controller
 		}
 		return response()->json($json, $json['code']);
 	}
+
+	public function checkSysGenCode(Request $request)
+	{
+		$dat = DB::connection('sqlsrv_sphaira')->table('sysGeneralCode')
+			->where('GeneralCodeID', 'LIKE', "%$request->q%")->get();
+		if ($dat) {
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = $dat;
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
+	}
 }

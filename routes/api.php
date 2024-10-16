@@ -9,6 +9,7 @@ use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Master\LogActivityController;
+use App\Http\Controllers\Master\v2\ItemController;
 use App\Http\Controllers\NewDokter\EdukasiAnastesiController;
 use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
@@ -279,6 +280,7 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('departement', [ApiMasterController::class, 'department'])->name('sphaira.department');
 	Route::get('class-category', [ApiMasterController::class, 'classCategory'])->name('sphaira.classCategory');
 	Route::get('check-table', [ApiMasterController::class, 'checkTable'])->name('sphaira.check-table');
+	Route::get('check-sys-gen-code', [ApiMasterController::class, 'checkSysGenCode'])->name('sphaira.check-sys-code');
 });
 
 
@@ -291,9 +293,18 @@ Route::group(['prefix' => 'sphaira-rajal'], function () {
 	Route::get('m_item', [ApiMasterRajalController::class, 'm_item'])->name('sphaira-rajal.m_item');
 	Route::get('m_item_group', [ApiMasterRajalController::class, 'm_item_group'])->name('sphaira-rajal.m_item_group');
 	Route::get('check_table', [ApiMasterRajalController::class, 'check_table'])->name('sphaira-rajal.check_table');
+	Route::get('m_item_tarif', [ApiMasterRajalController::class, 'm_item_tarif'])->name('sphaira-rajal.m_item_tarif');
+	Route::get('m_item_sub', [ApiMasterRajalController::class, 'm_item_sub'])->name('sphaira-rajal.m_item_sub');
+	Route::get('m_item_tarif_mcu', [ApiMasterRajalController::class, 'm_item_tarif_mcu'])->name('sphaira-rajal.m_item_tarif_mcu');
+	Route::get('speciality', [ApiMasterRajalController::class, 'speciality'])->name('sphaira-rajal.speciality');
+	Route::get('infectious_desease', [ApiMasterRajalController::class, 'infectious_desease'])->name('sphaira-rajal.infectious_desease');
 });
 
 // api data master
+
+Route::prefix('master')->name('api-master.')->group(function () {
+	Route::get('select2Item', [ItemController::class, 'select2Item'])->name('item.select2');
+});
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
@@ -374,19 +385,18 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::get('/bayi-baru-lahir-anamnesa', [RiwayatController::class, 'getBayiBaruLahirAnamnesa'])->name('bayi-baru-lahir-anamnesa');
 	Route::get('/bayi-baru-lahir-pemeriksaan', [RiwayatController::class, 'getBayiBaruLahirPemeriksaan'])->name('bayi-baru-lahir-pemeriksaan');
 	Route::get('/checklist-pulang', [RiwayatController::class, 'getChecklistPulang'])->name('checklist-pulang');
-
 });
 
 Route::get('/persetujuan-penolakan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'persetujuan_penolakan_dokter'])->name('dokter.persetujuan-penolakan');
 
 // Route::get('surat-rujukan-dokter', [\App\Http\Controllers\ZxcNyaaUniversal\NyaaViewInjectorController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
 Route::prefix('dokter')->name('dokter.')->group(function () {
-    Route::get('/surat-rujukan-dokter', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
-    Route::post('/simpan-prosedur-operasi', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanProsedurOperasi'])->name('simpan.prosedur.operasi');
-    Route::post('/simpan-alat-terpasang', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanAlatTerpasang'])->name('simpan.alat.terpasang');
-    Route::post('/simpan-obat-diterima', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatDiterima'])->name('simpan.obat.diterima');
-    Route::post('/simpan-obat-dibawa', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatCairanDibawa'])->name('simpan.obat.dibawa');
-    Route::post('/simpan-status-pasien', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanStatusPasien'])->name('simpan.status.pasien');
+	Route::get('/surat-rujukan-dokter', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'surat_rujukan_dokter'])->name('surat.rujukan.dokter');
+	Route::post('/simpan-prosedur-operasi', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanProsedurOperasi'])->name('simpan.prosedur.operasi');
+	Route::post('/simpan-alat-terpasang', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanAlatTerpasang'])->name('simpan.alat.terpasang');
+	Route::post('/simpan-obat-diterima', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatDiterima'])->name('simpan.obat.diterima');
+	Route::post('/simpan-obat-dibawa', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanObatCairanDibawa'])->name('simpan.obat.dibawa');
+	Route::post('/simpan-status-pasien', [\App\Http\Controllers\Dokter\SuratRujukanController::class, 'simpanStatusPasien'])->name('simpan.status.pasien');
 });
 
 Route::post('/add-edukasi-anastesi', [EdukasiAnastesiController::class, 'addEdukasiAnastesi'])->name('add.edukasi.anastesi');

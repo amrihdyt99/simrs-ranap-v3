@@ -509,6 +509,13 @@ header("Content-type: text/css; charset: UTF-8");
                 <td class="text-right"><b>{{ number_format($payer['Transfer']['nominal'], 2) }}</b></td>
               </tr>
               @endisset
+              @isset($payer['QRIS'])
+              <tr>
+                <td>QRIS</td>
+                <td>:</td>
+                <td class="text-right"><b>{{ number_format($payer['QRIS']['nominal'], 2) }}</b></td>
+              </tr>
+              @endisset
               @isset($payer['Cash'])
               <tr>
                 <td>Cash</td>
