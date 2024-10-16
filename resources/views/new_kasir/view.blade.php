@@ -242,7 +242,7 @@
                         <div class="col">
                             <div class="text-header-panel">
                                 List Tagihan Pasien |
-                                No Registrasi : <strong>{{$reg_rj}}</strong> |
+                                No Registrasi : <strong>{{$reg_no}}</strong> |
                                 Status: <span class="font-weight-bold badge p-2 blink" id="status-tagihan">-</span> |
                                 Kunjungan: <u><span class="font-weight-bold" id="bill_jenis_kunj">-</span></u>
                             </div>
@@ -277,12 +277,13 @@
                                     <th>Tarif Awal</th>
                                     <th>Tarif</th>
                                     <th>User Order</th>
+                                    <th>Tanggal</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="7" class="text-center">Memuat data...</td>
+                                    <td colspan="8" class="text-center">Memuat data...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -525,7 +526,7 @@
             beforeSend: function() {
                 $('[id="panel-order"] tbody').html(`
                     <tr>
-                        <td colspan="7" class="text-center"><div class="lds-dual-ring"></div></td>    
+                        <td colspan="8" class="text-center"><div class="lds-dual-ring"></div></td>    
                     </tr>
                 `)
             },
@@ -538,7 +539,7 @@
                     $.each(resp.order, function(i, item) {
                         $('[id="panel-order"] tbody').append(`
                             <tr class="bg-warning">
-                                <td colspan="7"><b>` + item.source + `</b></td>    
+                                <td colspan="8"><b>` + item.source + `</b></td>    
                             </tr>
                         `)
 
@@ -562,7 +563,7 @@
                             $count_header = $(`[id="order_header_` + $tindakan + `"][data-source="` + item.source + `"]`).length
 
                             $row_header = `
-                                ` + (i != 0 ? `<tr><td colspan="7"><br></td></tr>` : ``) + `
+                                ` + (i != 0 ? `<tr><td colspan="8"><br></td></tr>` : ``) + `
                                 <tr id="order_header_` + $tindakan + `" data-source="` + item.source + `">
                                     <td class="text-capitalize"><b>` + sub_item.ItemTindakan + `</b></td> 
                                     <td>
@@ -600,12 +601,14 @@
                                             <input type="checkbox" id="selecting_items" class="float-right" value="` + sub_item.ItemUId + `" data-category="` + sub_item.ItemTindakan + `" data-source="` + item.source + `" style="transform: scale(1.2)">
                                         </span>
                                         ` + sub_item.ItemName1 + `
+                                        <small class="text-danger" style="font-size: 8px; vertical-align: top;">(* `+sub_item.ItemTindakan+`)</small>
                                         ` + (sub_item.NonBPJS == 1 ? `<span class="bg-success p-1 text-white" style="font-size: 12px; border-radius: 5px">Non BPJS</span>` : ``) + `
                                     </td>     
                                     <td>` + sub_item.ItemJumlah + `</td>     
                                     <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarifAwal).toFixed(2)) + `</td>     
                                     <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarif).toFixed(2)) + `</td>     
                                     <td>` + sub_item.ItemDokter + `</td>     
+                                    <td>` + sub_item.ItemTanggal + `</td>     
                                     <td class="p-3">
                                         ` + $btn + `    
                                     </td>
@@ -613,7 +616,7 @@
                             `
 
                             if (sub_item.ItemTindakan != 'Non BPJS' && sub_item.NonBPJS != 1) {
-                                $('[id="panel-order"] tbody').append($row_detail)
+                                $('[id="panel-order"] tbody tr[id="order_header_' + $tindakan + '"][data-source="' + item.source + '"]').after($row_detail)
                             }
                         })
 
@@ -702,7 +705,7 @@
                 } else {
                     $('[id="panel-order"] tbody').html(`
                         <tr>
-                            <td colspan="7" class="text-center">Tidak ada data order</td>    
+                            <td colspan="8" class="text-center">Tidak ada data order</td>    
                         </tr>
                     `)
                 }
@@ -1088,6 +1091,32 @@
 
             } else {
                 $('#Debit').remove();
+
+                removeFromArray($(this).val())
+            }
+        }
+
+        if (this.value == 'QRIS') {
+            if (this.value == 'QRIS' && this.checked) {
+                $row_method = `
+                    <div id="QRIS" class="row_method row_no_` + $count + `">
+                        <h5>Metode Pembayaran dipilih : QRIS <span id="formated_value" data-count="` + $count + `"></span></h5>
+                        <div class="form-group row">
+                            <div class="col-lg-4">
+                                <input type="text" name="pvalidation_qris_code" placeholder="Kode transaksi" class="form-control" data-count="` + $count + `" data-method="` + this.value + `">    
+                            </div>
+                            <div class="col-lg-4">
+                                <input type="number" name="pvalidation_qris" placeholder="Jumlah pembayaran qris" class="form-control amount" data-count="` + $count + `" data-method="` + this.value + `">    
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                `;
+
+                $('#pay-method').append($row_method);
+
+            } else {
+                $('#QRIS').remove();
 
                 removeFromArray($(this).val())
             }

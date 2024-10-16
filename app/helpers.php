@@ -294,3 +294,21 @@ function mergeObject($first, $second){
 
     return $mergedDataObject;
 }
+
+function sortData($data, $field, $arrange = true){
+    usort($data, function ($a, $b) use ($field, $arrange) {
+        if ($arrange) {
+            return strcmp($a[$field], $b[$field]);
+        } else {
+            return strcmp($b[$field], $a[$field]);
+        }
+    });
+
+    return $data;
+}
+
+function getItemTindakan($reg, $class, $params){
+    $data = getService('https://rsud.sumselprov.go.id/simrs-rajal/api/emr/cpoe/data_all_item/LAB/'.str_replace('/', '_', $reg).'?classParams='.$reg.'&searchParams='.$params);
+
+    return $data;
+}
