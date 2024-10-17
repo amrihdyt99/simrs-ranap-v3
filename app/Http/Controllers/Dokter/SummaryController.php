@@ -93,7 +93,7 @@ class SummaryController extends Controller
             ->where('reg_no', $patient->reg_no)
             ->where('kode_dokter', Auth::user()->dokter_id)
             ->pluck('kategori')
-            ->toArray(); 
+            ->toArray();
 
         $data['physician_team_role'] = $physician_team_role;
 

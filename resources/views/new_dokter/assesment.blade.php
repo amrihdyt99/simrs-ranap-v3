@@ -47,7 +47,7 @@
 <div class="row">
     <div class="col-lg-10 pr-0">
         <div class="row">
-            <div class="col-lg-1">
+            <div class="col-lg-2">
                 @if(isset($myarea))
                 <div class="row">
                     <div class="left-tab active" id="tab-soap" onclick="clickTab('soap')">
@@ -66,11 +66,7 @@
                         Edukasi
                     </div>
                 </div>
-                <div class="row">
-                    <div class="left-tab" id="tab-pemulangan" onclick="clickTab('pemulangan')">
-                        Discharge Planning
-                    </div>
-                </div>
+                
                 <div class="row">
                     <div class="left-tab" id="tab-soap" onclick="clickTab('soap')">
                         CPPT
@@ -81,12 +77,40 @@
                     <div class="left-tab" id="tab-pemeriksaan-penunjang" onclick="clickTab('pemeriksaan-penunjang')">
                         Hasil Pemeriksaan Penunjang
                     </div>
-                </div>  
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-physician-team-dokter" onclick="clickTab('physician-team-dokter')">
+                        Physician Team
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="left-tab" id="tab-persetujuan-penolakan" onclick="clickTab('persetujuan-penolakan')">
                         Persetujuan/Penolakan Tindakan Medis
                     </div>
-                </div>  
+                </div>
+                
+                <div class="row">
+                    <div class="left-tab" id="tab-laporan-operasi" onclick="clickTab('laporan-operasi')">
+                        Laporan Operasi
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-resume" onclick="clickTab('resume')">
+                        Resume Pasien
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="left-tab" id="tab-pemulangan" onclick="clickTab('pemulangan')">
+                        Discharge Planning
+                    </div>
+                </div>
+                
+                  
+                
                 {{-- <div class="row">--}}
                 {{-- <div class="left-tab" id="tab-konsultasi" onclick="clickTab('konsultasi')">--}}
                 {{-- Konsultasi--}}
@@ -100,17 +124,9 @@
                             </div>
                         </div>--}}
 
-                <div class="row">
-                    <div class="left-tab" id="tab-physician-team-dokter" onclick="clickTab('physician-team-dokter')">
-                        Physician Team
-                    </div>
-                </div>
+                
 
-                <div class="row">
-                    <div class="left-tab" id="tab-resume" onclick="clickTab('resume')">
-                        Resume Pasien
-                    </div>
-                </div>
+                
 
                 <div class="row">
                     <div class="left-tab" id="tab-discharge" onclick="clickTab('discharge')">
@@ -132,7 +148,7 @@
                 @endif
             </div>
 
-            <div class="col-lg-11">
+            <div class="col-lg-10">
                 <div class="row">
                     <div class="col-lg-12 pl-0 pr-1">
                         <div class="card">
@@ -256,6 +272,15 @@
                                     <h2 class="text-black">Data Lengkap Pasien</h2>
                                     <hr>
                                     @include('new_perawat.profil.view')
+                                </div>
+
+                                <div id="panel-laporan-operasi">
+                                    <div class="d-flex justify-content-between">
+                                        <h2>Laporan Operasi</h2>
+                                        <button class="btn btn-sm btn-primary">Cetak Laporan</button>
+                                    </div>
+                                    <hr>
+                                    @include('new_dokter.laporan-operasi.index')
                                 </div>
                             </div>
                         </div>
