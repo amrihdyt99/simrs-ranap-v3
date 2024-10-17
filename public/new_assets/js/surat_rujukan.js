@@ -11,6 +11,8 @@ $(document).ready(function () {
         placeholder: "Pilih Dokter",
     });
 
+    var currentUserName = "{{auth()->user()->id}}";
+
     init_SuratRujukan();
 
     function simpanRujukanPersiapanPasien() {
@@ -311,6 +313,7 @@ $(document).ready(function () {
                 data: {
                     reg_no: regno,
                     medrec: medrec
+
                 },
                 success: function (response) {
                     // console.log("Data prosedur operasi loaded:", response);
@@ -342,6 +345,7 @@ $(document).ready(function () {
             formData.append('dt_mode', 'add');
             formData.append('reg_no', regno);
             formData.append('med_rec', medrec);
+            formData.append('user_id', currentUserName);
 
             $.ajax({
                 url: $dom + '/api/dokter/simpan-prosedur-operasi',
@@ -370,26 +374,31 @@ $(document).ready(function () {
             let id = $(this).data('id');
             
             if (confirm('Apakah Anda yakin ingin menghapus data prosedur operasi ini?')) {
+                let formData = new FormData();
+                formData.append('dt_mode', 'hapus');
+                formData.append('dtid', id);
+                formData.append('reg_no', regno);
+                formData.append('med_rec', medrec);
+                formData.append('user_id', currentUserName);
+
                 $.ajax({
                     url: $dom + '/api/dokter/simpan-prosedur-operasi',
                     method: 'POST',
-                    data: {
-                        dt_mode: 'hapus',
-                        dtid: id,
-                        reg_no: regno,
-                        med_rec: medrec
-                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
                         if (response.status === 'success') {
                             loadProsedurOperasiData(); 
                             alert(response.message);
                         } else {
-                            alert('Gagal menghapus data prosedur operasi: ' + response.message);
+                            console.error('Gagal menghapus data prosedur operasi:', response);
+                            alert('Gagal menghapus data prosedur operasi. Silakan coba lagi.');
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error("Terjadi kesalahan saat menghapus data prosedur operasi: ", error);
-                        alert('Terjadi kesalahan saat menghapus data prosedur operasi: ' + xhr.responseText);
+                        console.error("Terjadi kesalahan saat menghapus data prosedur operasi:", xhr.responseText);
+                        alert('Terjadi kesalahan saat menghapus data prosedur operasi. Silakan coba lagi.');
                     }
                 });
             }
@@ -448,6 +457,7 @@ $(document).ready(function () {
             formData.append('dt_mode', 'add');
             formData.append('reg_no', regno);
             formData.append('med_rec', medrec);
+            formData.append('user_id', currentUserName);
 
             $.ajax({
                 url: $dom + '/api/dokter/simpan-alat-terpasang',
@@ -559,6 +569,7 @@ $(document).ready(function () {
             formData.append('dt_mode', 'add');
             formData.append('reg_no', regno);
             formData.append('med_rec', medrec);
+            formData.append('user_id', currentUserName);
 
             $.ajax({
                 url: $dom + '/api/dokter/simpan-obat-diterima',
@@ -669,6 +680,7 @@ $(document).ready(function () {
             formData.append('dt_mode', 'add');
             formData.append('reg_no', regno);
             formData.append('med_rec', medrec);
+            formData.append('user_id', currentUserName);
 
             $.ajax({
                 url: $dom + '/api/dokter/simpan-obat-dibawa',
@@ -781,6 +793,7 @@ $(document).ready(function () {
             formData.append('dt_mode', 'add');
             formData.append('reg_no', regno);
             formData.append('med_rec', medrec);
+            formData.append('user_id', currentUserName);
 
             $.ajax({
                 url: $dom + '/api/dokter/simpan-status-pasien',

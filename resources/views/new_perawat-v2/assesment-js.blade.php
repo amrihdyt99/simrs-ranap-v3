@@ -1901,7 +1901,7 @@
 
     // surat_rujukan
     function init_SuratRujukan() {
-        nyaa_dttb_suratrujukan_load_all();
+        // nyaa_dttb_suratrujukan_load_all();
         $('.btn_surat_rujukan').on('click', function() {
             simpanSuratRujukan();
         });
