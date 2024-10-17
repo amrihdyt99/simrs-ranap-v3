@@ -49,9 +49,7 @@ return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
     $poli_ = "{{session()->get('poli_kode')}}";
     var regno = "{{$reg}}"
     var medrec = "{{$dataPasien->MedicalNo}}"
-    var classcode = "{{$dataPasien->charge_class_code}}"
-
-
+    var classcode = "{{$dataPasien->currentLocation['ChargeClassCode']}}"
 
     $host = location.hostname
 

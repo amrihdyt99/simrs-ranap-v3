@@ -142,7 +142,7 @@ class RegisterController extends Controller
                             <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                             <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
                             <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
-                            <a class="dropdown-item" href="' . $url_ringkasan_masuk_keluar . '" target="_blank">Ringkasan Masuk & Keluar</a>
+                            <button class="dropdown-item print-ringkasan-pasien" data-reg_no="' . $query->reg_no . '">Ringkasan Masuk & Keluar</button>
                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
                             <button class="dropdown-item print-persetujuan-medis" data-reg_no="' . $query->reg_no . '">Persetujuan Medis</button> 
                         </div>' .
