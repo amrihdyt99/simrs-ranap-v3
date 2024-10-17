@@ -103,23 +103,30 @@ class UserController extends Controller
     {
         $dataparamedis = null;
 
-        if ($request->userlevel == 'dokter' || $request->userlevel == 'perawat') {
-            $dataparamedis = DB::connection('mysql2')
-                ->table("m_paramedis")
-                ->where(['ParamedicCode' => $request->ParamedicCode])
-                ->first();
+        // if ($request->userlevel == 'dokter' || $request->userlevel == 'perawat') {
+        //     $dataparamedis = DB::connection('mysql2')
+        //         ->table("m_paramedis")
+        //         ->where(['ParamedicCode' => $request->ParamedicCode])
+        //         ->first();
 
-            $name = $dataparamedis->ParamedicName;
-        } else {
-            $name = $request->name;
-        }
+        //     $name = $dataparamedis->ParamedicName;
+        // } else {
+        //     $name = $request->name;
+        // }
+
+        $dataparamedis = DB::connection('mysql2')
+            ->table("m_paramedis")
+            ->where(['ParamedicCode' => $request->ParamedicCode])
+            ->first();
+
+        $name = $dataparamedis->ParamedicName;
 
         $params = [
             'name' => $name,
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'dokter_id' => $request->userlevel == 'dokter' ? $dataparamedis ? $dataparamedis->ParamedicCode : null : null,
-            'perawat_id' => $request->userlevel == 'perawat' ? $dataparamedis ? $dataparamedis->ParamedicCode : null : null,
+            'perawat_id' => $request->userlevel != 'dokter' ? $dataparamedis ? $dataparamedis->ParamedicCode : null : null,
             'level_user' => $request->userlevel,
             'is_active' => 1,
             'is_deleted' => 0,
