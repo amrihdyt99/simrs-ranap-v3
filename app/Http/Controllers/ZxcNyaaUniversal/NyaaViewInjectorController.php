@@ -1750,4 +1750,10 @@ class NyaaViewInjectorController extends AaaBaseController
         return view('new_perawat.case_manager.index')
             ->with($context);
     }
+
+    public function pemeriksaan_penunjang(Request $request){
+        return view('new_dokter.pemeriksaan_penunjang.index');
+    }
 }
+
+

@@ -4,10 +4,10 @@
     <div class="text-black" style="font-size: 14px">
         <div class="form-group mt-3">
             <label for="" class="d-flex">
-                <h4><b>Pilih Dokter</b></h4>
+                <h4><b>Pilih PPA</b></h4>
             </label>
             <select id="physician_kode_dokter" name="physician_kode_dokter" class="form-control">
-                <option value="">-----Pilih Dokter-----</option>
+                <option value="">-----Pilih PPA-----</option>
                 <option value="1">Dokter 1</option>
                 <option value="2">Dokter 2</option>
                 <option value="3">Dokter 3</option>
@@ -16,7 +16,19 @@
 
         <div class="form-group mt-3">
             <label for="" class="d-flex">
-                <h4><b>Pilih Kategori</b></h4>
+                <h4><b>Pilih PPA Lainnya</b></h4>
+            </label>
+            <select id="physician_kode_lainnya" name="physician_kode_lainnya" class="form-control">
+                <option value="">-----Pilih PPA Lainnya-----</option>
+                <option value="1">PPA Lain 1</option>
+                <option value="2">PPA Lain 2</option>
+                <option value="3">PPA Lain 3</option>
+            </select>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="" class="d-flex">
+                <h4><b>Pilih Kategori PPA</b></h4>
             </label>
             <select id="physician_kategori" name="physician_kategori" class="form-control">
                 <option value="Dokter Jaga">Dokter Jaga</option>
@@ -24,6 +36,18 @@
                 <option value="Konsul">Konsul</option>
             </select>
         </div>
+
+
+        <!-- <div class="form-group mt-3">
+            <label for="" class="d-flex">
+                <h4><b>Pilih Kategori PPA Lainnya</b></h4>
+            </label>
+            <select id="physician_kategori_lainnya" name="physician_kategori_lainnya" class="form-control">
+                <option value="Laboratorium">Laboratorium</option>
+                <option value="Radiologi">Radiologi</option>
+                <option value="Gizi">Gizi</option>
+            </select>
+        </div> -->
         <div class="form-group mt-3">
             <button type="button" class="btn btn-primary" id="btn_tambah_team">Tambah</button>
         </div>
@@ -52,27 +76,26 @@
 <h2 class="text-black mt-5">Konsul</h2>
 <hr>
 @php
-$dokterKategori = DB::connection('mysql2')->table('m_physician_team')
-    ->where('kode_dokter', auth()->user()->dokter_id)
+$currentDokter = auth()->user()->dokter_id;
+$registrasi = DB::connection('mysql2')->table('m_registrasi')
     ->where('reg_no', $reg)
-    ->pluck('kategori')
-    ->toArray();
-$isKonsul = in_array('Konsul', $dokterKategori);
-@endphp
+    ->first();
+$isDPJP = $currentDokter == $registrasi->reg_dokter;
 
-@if(!$isKonsul)
-<div id="konsul-message" class="alert alert-info">
-    Anda hanya dapat melihat data konsul. Untuk melakukan perubahan, silakan hubungi dokter konsul.
-</div>
-@endif
+$isKonsulDokter = DB::connection('mysql2')->table('m_physician_team')
+    ->where('kode_dokter', $currentDokter)
+    ->where('reg_no', $reg)
+    ->where('kategori', 'Konsul')
+    ->exists();
+@endphp
 
 <table class="table table-bordered">
     <tr>
         <td><h4><b>Tanggal dan Isi Konsul</b></h4></td>
         <td>
-            <input type="date" id="tanggal_konsul" name="tanggal_konsul" class="form-control mb-2" required {{ !$isKonsul ? 'readonly' : '' }}>
-            <textarea id="isi_konsul" name="isi_konsul" class="form-control" rows="3" required {{ !$isKonsul ? 'readonly' : '' }}></textarea>
-            @if($isKonsul)
+            <input type="date" id="tanggal_konsul" name="tanggal_konsul" class="form-control mb-2" required {{ !$isDPJP ? 'readonly' : '' }}>
+            <textarea id="isi_konsul" name="isi_konsul" class="form-control" rows="3" required {{ !$isDPJP ? 'readonly' : '' }}></textarea>
+            @if($isDPJP)
             <button type="button" class="btn btn-primary mt-2" id="btn_simpan_isi_konsul">Simpan Konsul</button>
             @endif
         </td>
@@ -80,9 +103,9 @@ $isKonsul = in_array('Konsul', $dokterKategori);
     <tr>
         <td><h4><b>Tanggal dan Jawaban Konsul</b></h4></td>
         <td>
-            <input type="date" id="tanggal_jawaban_konsul" name="tanggal_jawaban_konsul" class="form-control mb-2" {{ !$isKonsul ? 'readonly' : '' }}>
-            <textarea id="jawaban_konsul" name="jawaban_konsul" class="form-control" rows="3" {{ !$isKonsul ? 'readonly' : '' }}></textarea>
-            @if($isKonsul)
+            <input type="date" id="tanggal_jawaban_konsul" name="tanggal_jawaban_konsul" class="form-control mb-2" {{ !$isKonsulDokter ? 'readonly' : '' }}>
+            <textarea id="jawaban_konsul" name="jawaban_konsul" class="form-control" rows="3" {{ !$isKonsulDokter ? 'readonly' : '' }}></textarea>
+            @if($isKonsulDokter)
             <button type="button" class="btn btn-primary mt-2" id="btn_simpan_jawaban_konsul">Simpan Jawaban Konsul</button>
             @endif
         </td>
