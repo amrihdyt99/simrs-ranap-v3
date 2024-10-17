@@ -63,12 +63,34 @@ class SummaryController extends Controller
             ->leftJoin('m_pasien as b', 'a.reg_medrec', '=', 'b.MedicalNo')
             ->where(['a.reg_no' => $reg])
             ->select([
-                'a.*',
-                'b.*',
+                // 'a.*',
+                // 'b.*',
+                'MedicalNo',
+                'GCSex',
+                'PatientName',
+                'DateOfBirth',
+
+                'service_unit',
+                'reg_no',
+                'reg_medrec',
+                'reg_tgl',
+                'reg_dokter',
+                'reg_discharge',
+                'bed',
+                'kategori_pasien',
+                'reg_class',
             ])
             ->first();
 
         $dataPasien->discharge = DB::table('rs_pasien_discharge_open')->where('reg_no', $reg)->latest()->first();
+        $dataPasien->currentLocation = getCurrentLocation($reg);
+        $dataPasien->dpjpName = DB::connection('mysql2')
+            ->table('m_paramedis')
+            ->where('ParamedicCode', $dataPasien->reg_dokter)
+            ->first()
+            ->ParamedicName ?? '-';
+
+        // return $dataPasien;
 
         $id_cppt = $this->get_id_cppt($dataPasien->reg_no, auth()->user()->dokter_id, $dataPasien->reg_medrec, auth()->user()->name, $dataPasien->bed, $dataPasien->reg_dokter);
 
