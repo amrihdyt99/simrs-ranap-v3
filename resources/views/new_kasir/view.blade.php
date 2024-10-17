@@ -608,7 +608,7 @@
                                     <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarifAwal).toFixed(2)) + `</td>     
                                     <td>Rp. ` + formatNumber(parseFloat(sub_item.ItemTarif).toFixed(2)) + `</td>     
                                     <td>` + sub_item.ItemDokter + `</td>     
-                                    <td>` + moment(sub_item.ItemTanggal).format('DD-MM-YY') + `</td>     
+                                    <td>` + moment(sub_item.ItemTanggal).format('DD-MM-YYYY HH:mm:ss') + `</td>     
                                     <td class="p-3">
                                         ` + $btn + `    
                                     </td>
@@ -644,7 +644,7 @@
                                         <td>Rp. ` + formatNumber(parseFloat(item_non_bpjs.ItemTarifAwal).toFixed(2)) + `</td>     
                                         <td>Rp. ` + formatNumber(parseFloat(item_non_bpjs.ItemTarif).toFixed(2)) + `</td>     
                                         <td>` + item_non_bpjs.ItemDokter + `</td>     
-                                        <td>` + moment(item_non_bpjs.ItemTanggal).format('DD-MM-YY') + `</td>    
+                                        <td>` + moment(item_non_bpjs.ItemTanggal).format('DD-MM-YYYY HH:mm:ss') + `</td>    
                                         <td class="p-3">
                                             ` + $btn + `    
                                         </td>
@@ -827,7 +827,7 @@
             $('[id="btn-validasi-billing"]').hide()
         }
 
-        total = selected_orders.reduce((acc, o) => acc + (parseFloat(o.ItemTarif) * parseFloat(o.ItemJumlah)), 0)
+        total = selected_orders.reduce((acc, o) => acc + (parseFloat(o.ItemTarifAwal) * parseFloat(o.ItemJumlah)), 0)
 
         $('[id="validasi-tagihan"]').html('Rp. ' + formatNumber(formatNumber(parseFloat(total).toFixed(2))))
     })
