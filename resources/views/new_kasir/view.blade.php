@@ -203,8 +203,9 @@
                     <small>Ruang Rawat</small>
                     <b>
                         <h6 id="bill_poli">
-                            {{ $pasien->ServiceUnitName ?? '-' }} -
-                            {{ $pasien->RoomName ?? '-' }}
+                            {{ $pasien->ServiceUnitName ?? '-' }} <br>
+                            {{ $pasien->RoomName ?? '-' }} <br> 
+                            {{ $pasien->BedCode ?? '-' }}
                     </b></h6>
                 </div>
                 <div class="form-group">
@@ -341,6 +342,10 @@
     $(document).ready(function() {
         getPayer()
     });
+
+    if ('{{$inpatient_days["success"]}}' == false) {
+        alert('{{$inpatient_days["msg"]}}')
+    }
 
     $('body').on('click', '#btn-validasi-billing', function() {
         $('#modalValidasiBayar').modal('show');
