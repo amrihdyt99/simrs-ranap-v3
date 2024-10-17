@@ -658,7 +658,6 @@ class NursingController extends Controller
     public function store_transfer_internal(Request $request)
     {
         try {
-
             // $validatedData = $request->validate([
             //     'transfer_gcs_e' => 'required|integer|min:1|max:4',
             //     'transfer_gcs_m' => 'required|integer|min:1|max:6',
@@ -680,7 +679,7 @@ class NursingController extends Controller
                     'transfer_unit_asal' => $request->transfer_unit_asal,
                     'transfer_unit_tujuan' => $request->transfer_unit_tujuan,
                     'class' => $request->transfer_class,
-                    'charge_class' => $request->transfer_charge_class,
+                    'charge_class' => isset($request->transfer_charge_class) ? $request->transfer_charge_class : $request->transfer_charge_class_temp,
                     'transfer_waktu_hubungi' => $request->transfer_waktu_hubungi,
                     'transfer_kategori' => $request->transfer_kategori,
                     'transfer_alasan_masuk' => $request->transfer_alasan_masuk,
@@ -738,7 +737,7 @@ class NursingController extends Controller
                     'transfer_unit_asal' => $request->transfer_unit_asal,
                     'transfer_unit_tujuan' => $request->transfer_unit_tujuan,
                     'class' => $request->transfer_class,
-                    'charge_class' => $request->transfer_charge_class,
+                    'charge_class' => isset($request->transfer_charge_class) ? $request->transfer_charge_class : $request->transfer_charge_class_temp,
                     'transfer_waktu_hubungi' => $request->transfer_waktu_hubungi,
                     'transfer_kategori' => $request->transfer_kategori,
                     'transfer_alasan_masuk' => $request->transfer_alasan_masuk,
