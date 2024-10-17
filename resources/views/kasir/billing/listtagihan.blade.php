@@ -44,7 +44,10 @@
                         <td>{{$row->Payer}}</td>
                         <td>
                             @if ($row->CurrentLocation)
-                                {{$row->CurrentLocation['RoomName'] ?? '-'}} <br> {{$row->CurrentLocation['ServiceUnitName'] ?? '-'}} <br> {{$row->CurrentLocation['ChargeClassCode'] ? 'Kelas '.$row->CurrentLocation['ChargeClassCode'] : '-'}}
+                                {{$row->CurrentLocation['RoomName'] ?? '-'}} <br> 
+                                {{$row->CurrentLocation['ServiceUnitName'] ?? '-'}} <br> 
+                                {{$row->CurrentLocation['ChargeClassCode'] ? 'Kelas '.$row->CurrentLocation['ChargeClassCode'] : '-'}} <br>
+                                {{$row->CurrentLocation['BedCode'] ? 'Bed '.$row->CurrentLocation['BedCode'] : '-'}} <br>
                             @else
                                 {{$row->RoomName ?? '-'}} <br> {{$row->ServiceUnitName ?? '-'}} <br> {{$row->charge_class_code ? 'Kelas '.$row->charge_class_code : '-'}}
                             @endif

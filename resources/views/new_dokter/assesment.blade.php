@@ -314,6 +314,63 @@
 
     getEdukasi('#formEdukasiDokter', 'dokter')
 
+    $('#edukasi_anastesi_tab').on('click', function() {
+        getEdukasiAnastesi();
+    });
+
+    function getEdukasiAnastesi(){
+        $.ajax({
+            url: $hosted + '/api/get-edukasi-anastesi',
+            method: 'GET',
+            data: {
+                reg_no: $reg,
+            },
+            success: function(response) {
+                // console.log(response);
+                let edukasi = response.data_edukasi;
+                let pasien = response.data_pasien;
+                let ttd_dokter = ''; 
+                let doktername = '{{auth()->user()->name}}';
+                
+                if (edukasi) { 
+                    $('input[name="dilakukan_ke"][value="' + edukasi.dilakukan_ke + '"]').prop('checked', true);
+                    $('input[name="tindakan"]').val(edukasi.tindakan);
+                    $('input[name="jenis_anastesi"]').val(edukasi.jenis_anastesi);
+                    $('input[name="tgl_ttd"]').val(edukasi.tgl_ttd);
+                    $('input[name="nama_pihak_pasien"]').val(edukasi.nama_pihak_pasien);
+                    $('input[name="nama_dokter"]').val(edukasi.nama_dokter);
+
+                    let signaturePasienDataURL = edukasi.ttd_pihak_pasien;
+                    $('#signature_pasien_anastesi').val(signaturePasienDataURL);
+                    let $canvasPasien = $('[id*="signature-pad-pasien-anastesi"] canvas')[0];
+                    if ($canvasPasien && signaturePasienDataURL) {
+                        let signaturePadPasien = new SignaturePad($canvasPasien);
+                        signaturePadPasien.fromDataURL(signaturePasienDataURL);
+                    }
+
+                    ttd_dokter = edukasi.ttd_dokter;
+
+                }
+
+                $('input[name="nama"]').val(pasien.PatientName);
+                $('input[name="umur"]').val(pasien.DateOfBirth);
+                $('input[name="jenis_kelamin"][value="' + pasien.GCSex + '"]').prop('checked', true);
+                $('input[name="no_telp"]').val(pasien.MobilePhoneNo1);
+                $('input[name="no_rekam_medis"]').val(pasien.reg_medrec);
+                $('input[name="diagonsa"]').val(pasien.NM_ICD10);
+                $('input[name="nama_dokter"]').val(doktername);
+
+
+                let signatureDokterDataURL = ttd_dokter || "{{ auth()->user()->signature }}";
+                $('#signature_dokter_anastesi').val(signatureDokterDataURL);
+                let $canvasDokter = $('[id*="signature-pad-dokter-anastesi"] canvas')[0];
+                if ($canvasDokter) {
+                    let signaturePadDokter = new SignaturePad($canvasDokter);
+                    signaturePadDokter.fromDataURL(signatureDokterDataURL);
+                }
+            },
+        })
+    }
 
     $('div[id*="panel-"]').hide();
     $('#panel-assesment').show();

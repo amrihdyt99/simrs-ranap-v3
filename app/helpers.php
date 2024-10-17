@@ -232,7 +232,7 @@ function getLimit($local = true){
     return [$top, $limit];
 }
 
-function getCurrentLocation($reg){
+function getCurrentLocation($reg, $skipLast = false){
     $data = [];
 
     $getLatestBedHistory = DB::connection('mysql2')
@@ -250,8 +250,13 @@ function getCurrentLocation($reg){
                         where ServiceUnitID = service_unit_id
                     ) as ServiceUnitCode"
                 )
-            ])
-            ->first();
+            ]);
+
+        if ($skipLast) {
+            $getLatestBedHistory = $getLatestBedHistory->skip(1);
+        }
+
+        $getLatestBedHistory = $getLatestBedHistory->first();
 
     if ($getLatestBedHistory) {
         if (isset($getLatestBedHistory->ServiceUnitCode)) {
@@ -326,13 +331,74 @@ function getCurrentBPJSPrice($currentData = []){
             ->first();
             
         if ($currentData['payer'] == 2 && $convertChargeClass->ChargeClassCode != '005') {
-            $tarif = getItemTindakan($currentData['regNo'], $convertChargeClass->ChargeClassCode, $currentData['itemType'], $currentData['itemCode']);
-        
-            $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
+            // COMPARE PREVIOUS AND CURRENT CHARGE CLASS TO DECIDE IF GET NEW PRICE OR NOT
+            if (isset($currentData['PreviousChargeClassCode']) && $currentData['PreviousChargeClassCode'] != $currentData['ChargeClassCode']) {
+                $tarif = getItemTindakan($currentData['regNo'], $convertChargeClass->ChargeClassCode, $currentData['itemType'], $currentData['itemCode']);
+                
+                $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
+            } else {
+                $tarif = $currentData['currentPrice'];
+            }
         } else {
             $tarif = $currentData['currentPrice'];
         }
     }
 
     return (float) $tarif;
+}
+
+function countInpatientDays($reg){
+    $data = DB::connection('mysql2')
+        ->table('m_bed_history')
+        ->where('regNo', $reg);
+        
+    $first = $data->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'asc')
+        ->select([
+            DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) as validateDate")
+        ])
+        ->first();
+
+    $last = $data->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'desc')
+        ->where('Description', 'Pasien Pulang')
+        ->select([
+            DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) as validateDate")
+        ])
+        ->first();
+
+    if (!$last) {
+        return [
+            'success' => false,
+            'data' => [
+                'duration' => ['days' => 0]
+            ], 
+            'msg' => 'Total perhitungan tarif kamar belum bisa dilakukan, dikarenakan pasien belum pulang. Mohon koordinasikan dengan perawat untuk penutupan bed dan pemulangan pasien ini.'
+        ];
+    }
+
+    return [
+        'success' => true,
+        'data' => [
+            'duration' => countDurationBetweenDates($first->validateDate, $last->validateDate, true)
+        ], 
+        'msg' => 'Durasi rawat inap pasien berhasil ditentukan'
+    ];
+}
+
+function countDurationBetweenDates($start, $end, $countFirstDay = false){
+    $datetime1 = Carbon::parse($start);
+    $datetime2 = Carbon::parse($end);
+
+    if ($countFirstDay) {
+        $datetime1 = $datetime1->copy()->subDay(2);
+    }
+
+    $diff = $datetime1->diff($datetime2);
+
+    return [
+        'months' => $diff->m,
+        'days' => $diff->d,
+        'hours' => $diff->h,
+        'minutes' => $diff->i,
+        'seconds' => $diff->s, 
+    ];
 }
