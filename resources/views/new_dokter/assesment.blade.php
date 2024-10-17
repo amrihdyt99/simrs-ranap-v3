@@ -298,7 +298,7 @@
     $medrec = "{{$patient->reg_medrec}}";
     $subs = "";
     $hosted = '{{url("")}}'
-    var $service_unit = '{{$dataPasien->service_unit}}'
+    var $service_unit = '{{$dataPasien->currentLocation["ServiceUnitID"]}}'
     var $id_cppt = '{{$id_cppt}}'
     var selectedRoom = localStorage.getItem('pilihruang').split(',')
     var $id_dpjp = "{{$patient->reg_dokter}}"
@@ -419,8 +419,8 @@
     function add_soap() {
         const reg = '{{$dataPasien->reg_no}}';
         const rm = '{{$dataPasien->reg_medrec}}';
-        const bed = '{{$dataPasien->bed}}';
-        const utama = '{{$dataPasien->reg_dokter}}';
+        const bed = '{{$dataPasien->currentLocation["BedID"]}}';
+        const utama = '{{$dataPasien->dpjpName}}';
         const soapdok_dokter = '{{ auth()->user()->dokter_id}}';
         const nama_ppa = '{{auth()->user()->name}}';
 
