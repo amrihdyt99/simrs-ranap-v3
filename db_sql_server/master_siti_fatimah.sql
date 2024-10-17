@@ -774,9 +774,6 @@ CREATE TABLE m_keluarga_pasien (
     Sex varchar(255) DEFAULT NULL,
     created_at datetime2 (0) NULL DEFAULT NULL,
     updated_at datetime2 (0) NULL DEFAULT NULL,
-    CONSTRAINT m_keluarga_pasien_chk_1 CHECK (
-        dbo.json_valid (FamilyMedicalNo)
-    )
 );
 /* SQLINES DEMO *** er_set_client = @saved_cs_client */
 ;
@@ -834,8 +831,8 @@ CREATE TABLE m_log_activity (
     log_desc_revision varchar(max),
     created_at datetime2 (0) NULL DEFAULT NULL,
     updated_at datetime2 (0) NULL DEFAULT NULL,
-    raw_data json DEFAULT NULL,
-    raw_previous_data json DEFAULT NULL,
+    raw_data NVARCHAR (MAX) DEFAULT NULL,
+    raw_previous_data NVARCHAR (MAX) DEFAULT NULL,
     PRIMARY KEY (id)
 );
 /* SQLINES DEMO *** er_set_client = @saved_cs_client */
@@ -852,7 +849,7 @@ DROP TABLE IF EXISTS m_medicine;
 ;
 
 CREATE TABLE m_medicine (
-    id int check (id > 0) NOT NULL IDENTITY,
+    id int IDENTITY (1, 1) NOT NULL CHECK (id > 0),
     item_id varchar(50) NOT NULL,
     item_name varchar(250) NOT NULL,
     harga_jual int NOT NULL,
@@ -864,8 +861,7 @@ CREATE TABLE m_medicine (
     dosis varchar(255) DEFAULT NULL,
     expired_date varchar(255) DEFAULT NULL,
     komposisi varchar(max),
-    PRIMARY KEY (id),
-    CONSTRAINT kode_UNIQUE UNIQUE (item_id)
+    PRIMARY KEY (id)
 );
 /* SQLINES DEMO *** er_set_client = @saved_cs_client */
 ;

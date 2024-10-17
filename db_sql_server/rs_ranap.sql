@@ -4272,7 +4272,7 @@ CREATE TABLE rs_pasien_cppt (
     soap_waktu time(0) DEFAULT NULL,
     med_rec varchar(150) NOT NULL,
     soapdok_deleted int DEFAULT NULL,
-    status_review varchar(255) NOT NULL COMMENT '0=baru kirim;1=diterima;2=ditolak',
+    status_review varchar(255) NOT NULL,
     created_at datetime2 (0) NULL DEFAULT NULL,
     updated_at datetime2 (0) NULL DEFAULT NULL,
     tanggal_verifikasi date DEFAULT NULL,
@@ -5230,8 +5230,7 @@ CREATE TABLE rs_pemulangan_pasien (
     ppsb_tujuan varchar(255) DEFAULT NULL,
     ppsb_tempat varchar(255) DEFAULT NULL,
     kebutuhan_lainnya_check varchar(255) DEFAULT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT rs_pemulangan_pasien_user_id_foreign FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+    PRIMARY KEY (id)
 );
 
 CREATE INDEX rs_pemulangan_pasien_user_id_foreign ON rs_pemulangan_pasien (user_id);
