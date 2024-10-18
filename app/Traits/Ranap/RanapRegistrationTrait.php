@@ -218,18 +218,18 @@ trait RanapRegistrationTrait
         $order_no = genKode(DB::table('job_orders_dt')->where('jenis_order', 'lainnya'), null, null, null, 'ANY');
         $current_location = getCurrentLocation($reg_no);
 
-        if (in_array($data['charge_class'], ['001', '002', '003', '004'])) {
+        if (in_array($data['charge_class_code'], ['001', '002', '003', '004'])) {
             $kode = 'AKM1';
             $nama = 'Tarif akomodasi kamar';
-        } else if ($data['charge_class'] == 'hcu') {
+        } else if ($data['charge_class_code'] == 'hcu') {
             $kode = 'AKM2';
             $nama = 'Tarif akomodasi kamar HCU';
-        } else if ($data['charge_class'] == 'icu01') {
+        } else if ($data['charge_class_code'] == 'icu01') {
             $kode = 'AKM3';
             $nama = 'Tarif akomodasi kamar ICU / ICCU';
         }
 
-        $tarif = getItemTindakan($reg_no, $data['charge_class'], 'LAIN', $kode);
+        $tarif = getItemTindakan($reg_no, $data['charge_class_code'], 'LAIN', $kode);
         $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
 
         $dataTarifKamarHD = [
@@ -247,20 +247,28 @@ trait RanapRegistrationTrait
             'jenis_order' => 'lainnya',
             'qty' => 1,
             'harga_jual' => $tarif,
-            'created_at' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s'),
+            'deleted' => 0,
+            'created_by_id' => auth()->user()->id
         ];
 
         $check_ = DB::table('job_orders_dt')
             ->where('reg_no', $reg_no)
             ->where('item_code', $kode)
+            ->where('deleted', 0)
+            ->whereDate('created_at', date('Y-m-d'))
             ->first();
 
-        if (!isset($check)) {
+        if (!isset($check_)) {
             $jobOrders = DB::table('job_orders')->insert($dataTarifKamarHD);
 
             if ($jobOrders) {
                 $jobOrdersDt = DB::table('job_orders_dt')->insert($dataTarifKamarDt);
             }
+        } else {
+            $jobOrdersDt = DB::table('job_orders_dt')
+                    ->where('id', $check_->id)
+                    ->update($dataTarifKamarDt);
         }
     }
 

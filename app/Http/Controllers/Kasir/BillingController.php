@@ -122,6 +122,7 @@ class BillingController extends AaaBaseController
                 'a.*',
                 'a.id as id_dt',
                 'b.*',
+                'a.created_at as waktu_order',
                 DB::raw("(select ParamedicName from " . getDatabase('master') . ".m_paramedis where ParamedicCode = kode_dokter) as ParamedicName"),
                 DB::raw("(select name from " . getDatabase('master') . ".users where id = created_by_id) as UserName"),
             ])
