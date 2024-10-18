@@ -422,3 +422,18 @@ function countDurationBetweenDates($start, $end, $countFirstDay = false)
         'seconds' => $diff->s,
     ];
 }
+
+function paymentMethod()
+{
+    $data_method = [
+        'Cash',
+        'Transfer',
+        'Discount Global',
+        'Debit',
+        'Kredit',
+        'QRIS',
+        'Multipayer'
+    ];
+
+    return $data_method;
+}

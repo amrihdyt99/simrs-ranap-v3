@@ -36,4 +36,10 @@ Route::prefix('kasir')->middleware(['auth', 'role:kasir'])->group(function () {
     Route::get('/get-bills', [\App\Http\Controllers\Kasir\BillingController::class, 'getListBilling'])->name('kasir.billing-list.get');
     Route::post('/cetak-review', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakReview'])->name('kasir.cetak.review');
     Route::get('/cetak-all-invoice', [\App\Http\Controllers\Kasir\BillingController::class, 'cetakAllInvoice'])->name('kasir.cetak.all-invoice');
+
+    Route::prefix('report')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Kasir\HomeController::class, 'indexReport']);
+        Route::get('/print', [\App\Http\Controllers\Kasir\HomeController::class, 'indexReportPrint']);
+        Route::get('/data', [\App\Http\Controllers\Kasir\BillingController::class, 'dataReport']);
+    });
 });
