@@ -80,6 +80,10 @@ class BillingController extends AaaBaseController
             ->table('businesspartner')
             ->where('id', $datamypatient->reg_cara_bayar)
             ->first();
+        
+        $data['inpatient_days'] = countInpatientDays($reg_no);
+
+        // return $data;
 
         return view('new_kasir.view', $data);
         // return view('kasir/billing/daftar_tagihan',$data);
@@ -103,6 +107,9 @@ class BillingController extends AaaBaseController
         $getPayer = $callPatient->ajax_index($request);
         $payer = count($getPayer) > 0 ? $getPayer[0]->reg_cara_bayar : 1;
 
+        // GET PREVIOUS CHARGE CLASS
+        $previousData = getCurrentLocation($request->reg_ri, true);
+
         // GET CURRENT CHARGE CLASS
         $currentData = getCurrentLocation($request->reg_ri);
 
@@ -125,6 +132,10 @@ class BillingController extends AaaBaseController
             'regNo' => $request->reg_ri,
             'ChargeClassCode' => $currentData['ChargeClassCode'],
         ];
+
+        if (!empty($previousData)) {
+            $currentData['PreviousChargeClassCode'] = $previousData['ChargeClassCode'];
+        }
 
         foreach ($lainnya as $key => $value) {
             $currentData['itemType'] = 'LAIN';
@@ -165,8 +176,6 @@ class BillingController extends AaaBaseController
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromRadiology($request->reg_rj));
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromPharmacy($request->reg_rj));
         }
-
-        // sortData($order_penunjang_prev, 'ItemTanggal', false);
 
         $recap_penunjang = [
             ['source' => 'Rawat Inap', 'data' => $order_penunjang],

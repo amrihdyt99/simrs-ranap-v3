@@ -143,7 +143,7 @@ class OrderObatController extends Controller
                     ->join('m_unit_departemen as b', 'a.ServiceUnitCode', 'b.ServiceUnitCode'),
                 'b.ServiceUnitID',
                 $request->service_unit,
-                ['a.*', DB::raw("(select ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode limit 1) as ServiceUnitID")]
+                ['a.*', DB::raw("(select ".getLimit()[0]." ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode ".getLimit()[1].") as ServiceUnitID")]
             );
 
             $service_room = [

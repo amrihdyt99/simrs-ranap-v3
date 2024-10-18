@@ -42,6 +42,7 @@
                     <input type="hidden" id="reg_no" name="reg_no" value="{{ $reg ?? '' }}">
                     <input type="hidden" id="med_rec" name="med_rec" value="{{ $med_rec ?? '' }}">
                     <input type="hidden" id="kode_surat_rujukan" name="kode_surat_rujukan" value="{{ $kode_surat_rujukan ?? '' }}">
+                    <input type="hidden" name="username" value="{{auth()->user()->username}}">
                     <div class="form-group">
                         <label for="nama_alat_terpasang">Nama Alat Terpasang</label>
                         <input type="text" class="form-control" id="nama_alat_terpasang" name="nama_alat_terpasang" required>

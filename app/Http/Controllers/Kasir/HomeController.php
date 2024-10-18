@@ -29,9 +29,9 @@ class HomeController extends Controller
             ->select([
                 'a.*',
                 DB::raw("CONCAT(a.reg_tgl, ' ', a.reg_jam) as reg_datetime"),
-                DB::raw("(select PatientName from m_pasien where MedicalNo = a.reg_medrec limit 1) as PatientName"),
-                DB::raw("(select pvalidation_code from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no limit 1) as pvalidation_code"),
-                DB::raw("(select pvalidation_status from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no order by created_at desc limit 1) as pvalidation_status"),
+                DB::raw("(select ".getLimit()[0]." PatientName from m_pasien where MedicalNo = a.reg_medrec ".getLimit()[1].") as PatientName"),
+                DB::raw("(select ".getLimit()[0]." pvalidation_code from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no ".getLimit()[1].") as pvalidation_code"),
+                DB::raw("(select ".getLimit()[0]." pvalidation_status from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no order by created_at desc ".getLimit()[1].") as pvalidation_status"),
             ])
             ->orderBy('reg_datetime', 'desc')
             ->get();
@@ -52,7 +52,7 @@ class HomeController extends Controller
                 ->table('m_bed')
                 ->where('bed_id', $value->bed)
                 ->select([
-                    DB::raw("(select RoomName from m_ruangan where RoomID = room_id limit 1) as RoomName")
+                    DB::raw("(select ".getLimit()[0]." RoomName from m_ruangan where RoomID = room_id ".getLimit()[1].") as RoomName")
                 ])
                 ->first();
 

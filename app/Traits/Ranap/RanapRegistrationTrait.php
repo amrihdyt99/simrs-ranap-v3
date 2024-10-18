@@ -2,6 +2,7 @@
 
 namespace App\Traits\Ranap;
 
+use App\Http\Services\TarifKamarService;
 use App\Models\Bed;
 use App\Models\ICD10;
 use App\Models\KelasKategori;
@@ -21,11 +22,12 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 trait RanapRegistrationTrait
 {
 
+    protected $tarifKamarService;
     public function getDataFormRegistration()
     {
         $data['service_unit'] = ServiceUnit::all();
         $data['service_room'] = ServiceRoom::all();
-        $data['room_class'] = RoomClass::where('isActive', 1)->select('ClassCode', 'ClassName', 'ClassCategoryCode')->get();
+        // $data['room_class'] = RoomClass::where('isActive', 1)->select('ClassCode', 'ClassName', 'ClassCategoryCode')->get();
         $data['ruangan_baru'] = DB::connection('mysql2')
             ->table('m_ruangan_baru')
             ->get();
@@ -35,7 +37,7 @@ trait RanapRegistrationTrait
         $data['physician'] = DB::connection('mysql2')->table("m_paramedis")->where(['GCParamedicType' => "X0055^001"])->where('IsActive', 1)->get();
         $data['bed'] = Bed::all();
         $data['icd10'] = ICD10::all();
-        $data['cover_class'] = KelasKategori::all();
+        $data['cover_class'] = DB::connection('mysql2')->table('m_room_class')->where('IsDeleted', 0)->get();
 
         return $data;
     }

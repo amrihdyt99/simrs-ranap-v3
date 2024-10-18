@@ -84,7 +84,7 @@ class NewDischargeController extends Controller
             $data = $data
                 ->select([
                     'a.*',
-                    DB::raw("(select reg_medrec from ".getDatabase('master').".m_registrasi where reg_no = reg_no limit 1) as reg_medrec"),
+                    DB::raw("(select ".getLimit()[0]." reg_medrec from ".getDatabase('master').".m_registrasi where reg_no = reg_no ".getLimit()[1].") as reg_medrec"),
                 ])
                 ->get();
 
