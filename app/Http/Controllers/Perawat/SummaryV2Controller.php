@@ -21,11 +21,17 @@ class SummaryV2Controller extends Controller
         $dataPasien = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->where(['m_registrasi.reg_no' => $reg])
+            ->leftJoin('m_bed_history', 'm_registrasi.reg_no', '=', 'm_bed_history.RegNo')
+            ->where('m_registrasi.reg_no', $reg)
+            ->orderByDesc('m_bed_history.ReceiveTransferDate')
+            ->orderByDesc('m_bed_history.ReceiveTransferTime')
+            ->select('m_registrasi.*', 'm_pasien.*', 'm_bed_history.ToChargeClassCode')
             ->first();
+
         if (!$dataPasien) {
             $dataPasien = optional((object)[]);
         }
+        
 
         if ($dataPasien->reg_dokter) {
             $paracode = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode', $dataPasien->reg_dokter)->first();

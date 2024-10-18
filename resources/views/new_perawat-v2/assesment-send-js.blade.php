@@ -355,7 +355,7 @@
             };
             data.push(item);
         }
-        var perawat_id = "{{auth()->user()->perawat_id}}";
+        var perawat_id = "{{auth()->user()->id}}";
         $.ajax({
             type: "POST",
             url: "{{ route('add.ordertindakanperawat') }}",
