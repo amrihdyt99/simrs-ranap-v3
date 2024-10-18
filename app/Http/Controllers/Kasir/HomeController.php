@@ -74,4 +74,34 @@ class HomeController extends Controller
         // return $data;
         return view('kasir.billing.listtagihan', $data);
     }
+
+    public function indexReport(Request $request){
+        return view('new_kasir.report.index');
+    }
+
+    public function indexReportPrint(Request $request){
+        try {
+            $start = date('Y-m-d H:i:s', strtotime($request->start));
+            $end = date('Y-m-d H:i:s', strtotime($request->end));
+
+            $request->merge([
+                'start' => $start,
+                'end' => $end,
+            ]);
+
+            $data['item'] = (new BillingController)->dataReport($request);
+            $data['total'] = array_sum(array_column($data['item'],'total'));
+            $data['cash'] = array_sum(array_column($data['item'],'cash'));
+            $data['kredit'] = array_sum(array_column($data['item'],'kredit'));
+            $data['debit'] = array_sum(array_column($data['item'],'debit'));
+            $data['transfer'] = array_sum(array_column($data['item'],'transfer'));
+            $data['discount'] = array_sum(array_column($data['item'],'discount'));
+            $data['qris'] = array_sum(array_column($data['item'],'qris'));
+
+            return view('new_kasir.report.print', compact('data', 'start', 'end'));
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

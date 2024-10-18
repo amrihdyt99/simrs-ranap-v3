@@ -1340,4 +1340,127 @@ class BillingController extends AaaBaseController
             throw $th;
         }
     }
+
+    // REPORT
+    public function dataReport(Request $request){
+        if ($request->start && $request->end) {
+            $data = DB::table('rs_pasien_billing_validation as a')
+                ->join(getDatabase('master').'.m_registrasi as b', 'pvalidation_reg', 'reg_no')
+                ->join(getDatabase('master').'.users', 'pvalidation_user', 'users.id')
+                ->join(getDatabase('master').'.m_pasien', 'reg_medrec', 'MedicalNo')
+                ->where('pvalidation_user', auth()->user()->id)
+                ->whereDate('a.created_at', '>=', date('Y-m-d H:i:s', strtotime($request->start)))
+                ->whereDate('a.created_at', '<=', date('Y-m-d H:i:s', strtotime($request->end)))
+                ->whereNotIn('pvalidation_status', [0])
+                // ->whereNotIn('reg_cara_bayar', [2])
+                ->select([
+                    'a.created_at as date',
+                    'pvalidation_code as code',
+
+                    'reg_no as reg',
+
+                    // new
+                    'MedicalNo as medrec',
+                    'PatientName as name',
+                    'SSN as nik',
+                    'DateOfBirth as tgl_lahir',
+                    'reg_medrec as medrec',
+                    'reg_tgl as tgl_kunjungan',
+                    'reg_discharge as discharge',
+                    DB::raw("('-') as tgl_discharge"),
+                    'reg_deleted as status',
+                    'PatientAddress as alamat',
+                    "reg_tgl as tgl_kedatangan",
+                    DB::raw("(select ".getLimit()[0]." ClassCategoryName from ".getDatabase('master').".m_class_category where ClassCategoryCode = charge_class_code ".getLimit()[1].") as kelas"),
+                    DB::raw("(select ".getLimit()[0]." name from ".getDatabase('master').".users where dokter_id = reg_dokter ".getLimit()[1].") as dokter"),
+                    DB::raw("(select ".getLimit()[0]." NM_ICD10 from rs_pasien_diagnosa join icd10_bpjs on ID_ICD10 = pdiag_diagnosa where pdiag_reg = reg_no ".getLimit()[1].") as diagnosa"),
+                    DB::raw("(select ".getLimit()[0]." BusinessPartnerName from ".getDatabase('master').".businesspartner where id = reg_cara_bayar ".getLimit()[1].") as payer"),
+
+                    'pvalidation_total as total',
+                    'pvalidation_detail as detail',
+                    'pvalidation_selected as selected',
+                    'reg_cara_bayar',
+                    'service_unit',
+                ])
+                ->orderBy('date', 'desc')
+                ->get();
+
+            $res = [];
+
+            foreach ($data as $value) {
+                $dt['medrec'] = $value->medrec;
+                $dt['reg'] = $value->reg;
+                $dt['name'] = $value->name;
+                $dt['poli'] = $value->service_unit;
+                $dt['corporate'] = $value->reg_cara_bayar;
+                $dt['nik'] = $value->nik;
+                $dt['tgl_lahir'] = $value->tgl_lahir;
+                $dt['medrec'] = $value->medrec;
+                $dt['tgl_kunjungan'] = $value->tgl_kunjungan;
+                $dt['discharge'] = $value->discharge == 1 ? 'sudah discharge' : 'belum discharge';
+                $dt['tgl_discharge'] = $value->tgl_discharge;
+                $dt['status'] = $value->status == 1 ? 'batal registrasi' : '';
+                $dt['alamat'] = $value->alamat;
+                $dt['tgl_kedatangan'] = $value->tgl_kedatangan;
+                $dt['diagnosa'] = $value->diagnosa;
+                $dt['kelas'] = $value->kelas;
+                $dt['payer'] = $value->payer;
+                $dt['date'] = $value->date;
+                $dt['code'] = $value->code;
+                $dt['dokter'] = $value->dokter;
+                $dt['total'] = (float) $value->total;
+                $dt['currentLocation'] = getCurrentLocation($value->reg);
+
+                $dt['tindakan'] = $value->selected ?? '';
+
+                $dt['detail'] = [];
+
+                $data_method = paymentMethod();
+
+                if (isset($value->detail)) {
+                    foreach (json_decode(json_encode($data_method)) as $key => $v) {
+                        $search_value = (string) array_search($v, array_column(json_decode($value->detail), "method"));
+
+                        if ($search_value != '') {
+                            $nominal = array_column(json_decode($value->detail), null, 'method')[$v];
+
+                            if (isset($nominal->nominal_difference)){
+                                $nominal = $dt['total'] - $nominal->nominal_difference;
+                            } else if (isset($nominal->amount_cash)) {
+                                if($nominal->amount_changes < 1) {
+                                    $nominal = abs(abs($nominal->amount_cash - abs($nominal->amount_changes)) + $nominal->amount_changes);
+                                } else {
+                                    $nominal = abs($nominal->amount_cash - abs($nominal->amount_changes));
+                                }
+                            } else {
+                                $nominal = $nominal->nominal;
+                            }
+                        } else {
+                            $nominal = 0;
+                        }
+
+                        $item['method'] = $v;
+                        $item['nominal'] = $nominal;
+                        $item['check'] = $search_value;
+
+                        array_push($dt['detail'], $item);
+                    }
+
+                    $check_multi = (string) array_search('Multipayer', array_column(json_decode($value->detail), "method"));
+
+                    $dt['check_multi'] = $check_multi;
+
+                    if ($value->reg_cara_bayar == 1) {
+                        array_push($res, $dt);
+                    } else if ($check_multi != '') {
+                        array_push($res, $dt);
+                    }
+                }
+            }
+        } else {
+            $res = [];
+        }
+
+        return $res;
+    }
 }
