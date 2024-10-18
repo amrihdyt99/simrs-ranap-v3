@@ -280,6 +280,8 @@ function getCurrentLocation($reg, $skipLast = false){
                 ->first()->ClassName ?? '-';
         }
 
+        $data['ServiceUnitID'] = $getLatestBedHistory->ToUnitServiceID;
+        $data['ServiceUnitCode'] = $getLatestBedHistory->ServiceUnitCode;
         $data['ClassCode'] = $getLatestBedHistory->ToClassCode;
         $data['ChargeClassCode'] = $getLatestBedHistory->ToChargeClassCode;
         $data['BedID'] = $getLatestBedHistory->ToBedID;
