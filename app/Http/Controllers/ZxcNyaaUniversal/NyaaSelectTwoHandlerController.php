@@ -160,4 +160,36 @@ class NyaaSelectTwoHandlerController extends Controller
         }
         return ['results' => $cxy];
     }
+
+    public function data_tindakan_baru_v2(Request $request)
+    {
+        $type = $request->type;
+        $class = $request->class;
+        $reg = $request->reg;
+        $search = $request->input('searchParams', '');
+
+        $reg = preg_replace('/\//', '_', $reg);
+        
+        if ($type == 'X0001^04') {
+            $type = 'LAB';
+        } else if ($type == 'X0001^05') {
+            $type = 'RAD';
+        } else if ($type == 'X0001^08') {
+            $type = 'FISIO';
+        } else {
+            $type = 'LAIN';
+        }
+        
+        $url = urlSimrs().'api/emr/cpoe/data_all_item/'.$type.'/'.$reg.'?classParams='.$class;
+        
+        if (!empty($search)) {
+            $url .= '&searchParams='.$search;
+        }
+        
+        $data = getService($url);
+
+        return response()->json([
+            'data' => json_decode($data)
+        ]);
+    }
 }

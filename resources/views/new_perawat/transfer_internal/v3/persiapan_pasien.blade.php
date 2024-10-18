@@ -55,7 +55,7 @@
 
             <div class="form-group">
                 <label>Charge Class</label>
-                <input type="hidden" class="form-control" id="temp_charge_class_bed" value="{{ $transfer_internal->charge_class ?? '' }}">
+                <input type="hidden" class="form-control" name="transfer_charge_class_temp" id="temp_charge_class_bed" value="{{ $transfer_internal->charge_class ?? '' }}">
                 <select name="transfer_charge_class" id="select-charge-class-bed" class="form-control">
                     @foreach ($class_bed as $row)
                     <option value="{{ $row->ClassCode }}">

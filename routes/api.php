@@ -331,6 +331,7 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('store-case-manager', [CaseManagerController::class, 'store_case_manager'])->name('case-manager.store');
 	Route::get('get-nursing-durgs', [NewNursingController::class, 'getDrugsDatatable'])->name('nursing-drugs.get');
 	Route::post('store-case-manager-akumulasi', [CaseManagerController::class, 'store_case_manager_akumulasi'])->name('case-manager-akumulasi.store');
+	Route::get('get-kamar-ready', [TransferInternalController::class, 'getKetersediaanKamar'])->name('transfer-internal.getKamar');
 });
 
 Route::prefix('bed')->name('bed.')->group(function () {

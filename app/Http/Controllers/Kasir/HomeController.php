@@ -14,15 +14,28 @@ class HomeController extends Controller
         $dbInap = DB::connection('mysql')->getDatabaseName();
 
         $data['pasien'] = DB::connection('mysql2')
-            ->table('m_registrasi as a');
+            ->table('m_registrasi as a')
+            ->leftjoin($dbInap.'.rs_pasien_billing_validation as b', 'pvalidation_reg', 'reg_no');
 
-        if ($request->start && $request->end) {
-            $data['pasien'] = $data['pasien']
-                ->whereRaw("CONCAT(a.reg_tgl, ' ', a.reg_jam) >= ?", [$request->start])
-                ->whereRaw("CONCAT(a.reg_tgl, ' ', a.reg_jam) <= ?", [$request->end]);
-        } else {
-            // $data['pasien'] = $data['pasien']
-            //     ->whereDate('reg_tgl', date('Y-m-d'));
+        if (isset($request->statusPayment) && $request->statusPayment != 'all') {
+            if ($request->statusPayment == 'validated') {
+                $data['pasien'] = $data['pasien']
+                    ->whereRaw("(pvalidation_reg is not null and pvalidation_status = 1)")
+                    ;
+            } else if ($request->statusPayment == 'unvalidated'){
+                $data['pasien'] = $data['pasien']
+                    ->whereRaw("(pvalidation_reg is null or (pvalidation_status = 0 and pvalidation_reg is not null))")
+                    ;
+            }
+
+            if ($request->start && $request->end) {
+                $data['pasien'] = $data['pasien']
+                    ->whereDate('a.reg_tgl', '>=', $request->start)
+                    ->whereDate('a.reg_tgl', '<=', $request->end);
+            } else {
+                // $data['pasien'] = $data['pasien']
+                //     ->whereDate('reg_tgl', date('Y-m-d'));
+            }
         }
 
         $data['pasien'] = $data['pasien']
@@ -72,6 +85,43 @@ class HomeController extends Controller
 
         // dd($data);
         // return $data;
+        $data = [
+            'pasien' => $data['pasien'],
+            'status' => $request->statusPayment,
+            'start' => $request->start,
+            'end' => $request->end,
+        ];
+
         return view('kasir.billing.listtagihan', $data);
+    }
+
+    public function indexReport(Request $request){
+        return view('new_kasir.report.index');
+    }
+
+    public function indexReportPrint(Request $request){
+        try {
+            $start = date('Y-m-d H:i:s', strtotime($request->start));
+            $end = date('Y-m-d H:i:s', strtotime($request->end));
+
+            $request->merge([
+                'start' => $start,
+                'end' => $end,
+            ]);
+
+            $data['item'] = (new BillingController)->dataReport($request);
+            $data['total'] = array_sum(array_column($data['item'],'total'));
+            $data['cash'] = array_sum(array_column($data['item'],'cash'));
+            $data['kredit'] = array_sum(array_column($data['item'],'kredit'));
+            $data['debit'] = array_sum(array_column($data['item'],'debit'));
+            $data['transfer'] = array_sum(array_column($data['item'],'transfer'));
+            $data['discount'] = array_sum(array_column($data['item'],'discount'));
+            $data['qris'] = array_sum(array_column($data['item'],'qris'));
+
+            return view('new_kasir.report.print', compact('data', 'start', 'end'));
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
