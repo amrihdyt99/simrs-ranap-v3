@@ -121,3 +121,13 @@ function getReportTransaction(start = '', end = '', print = 0){
         });
     }
 }
+
+function filterData(){
+    let params = {}
+
+    params.statusPayment = $('[name="statusPayment"]:checked').val() ?? ''
+    params.start = $('[name="start"]').val() ?? ''
+    params.end = $('[name="end"]').val() ?? ''
+
+    location.href = baseUrl+'/kasir?statusPayment='+params.statusPayment+'&start='+params.start+'&end='+params.end
+}
