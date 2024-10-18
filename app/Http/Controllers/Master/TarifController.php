@@ -239,7 +239,7 @@ class TarifController extends Controller
             )
             ->count();
         $newDateFormat = str_replace('-', '', now()->toDateString());
-        $orderNumberFormat = 'ANY/RI/' . $newDateFormat . $countorder;
+        $orderNumberFormat = genKode(DB::table('job_orders_dt')->where('jenis_order', 'lainnya'), null, null, null, 'ANY');
         $jobOrder['reg_no'] = $regno;
         $jobOrder['kode_dokter'] = $userid;
         $jobOrder['waktu_order'] = now()->toDateTimeString();
@@ -267,6 +267,7 @@ class TarifController extends Controller
             $jobOrderDetail['harga_jual'] = $price;
             $jobOrderDetail['order_no'] = $orderNumberFormat;
             $jobOrderDetail['flag'] = 0;
+            $jobOrderDetail['created_by_id'] = $userid;
             array_push($detailBatch, $jobOrderDetail);
         }
 

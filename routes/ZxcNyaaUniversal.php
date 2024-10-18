@@ -23,6 +23,7 @@ Route::prefix('nyx-sistem')
             Route::get('/m-ruangan-baru', [NyaaSelectTwoHandlerController::class, 'm_ruangan_baru'])->name('m_ruangan_baru');
             Route::get('/m-ruangan-baru-all', [NyaaSelectTwoHandlerController::class, 'm_ruangan_baru_all'])->name('m_ruangan_baru_all');
             Route::get('/data-tindakan-baru', [NyaaSelectTwoHandlerController::class, 'data_tindakan_baru'])->name('data_tindakan_baru');
+            Route::post('/data-tindakan-baru-v2', [NyaaSelectTwoHandlerController::class, 'data_tindakan_baru_v2'])->name('data_tindakan_baru_v2');
         });
 
         Route::prefix('data-master')->middleware(['role:adminmaster'])->name('data_master.')->group(function () {
