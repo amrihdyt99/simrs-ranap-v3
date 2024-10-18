@@ -505,8 +505,8 @@
         let exists = nonClass.includes(d.id);
 
         if (exists) {
-          $('#temp_charge_class_bed').val('005');
-          $('#select-charge-class-bed').val('005').trigger('change');
+          $('#temp_charge_class_bed').val(d.id);
+          $('#select-charge-class-bed').val(d.id).trigger('change');
           $('#select-charge-class-bed').prop('disabled', true);
         } else {
           $('#select-charge-class-bed').prop('disabled', false);

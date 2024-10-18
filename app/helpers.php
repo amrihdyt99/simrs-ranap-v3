@@ -6,11 +6,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-function keyPharmacy(){
+function keyPharmacy()
+{
     return '229470a5-fe98-479e-ba3f-5c5b8eec7c88';
 }
 
-function domain($path = 1) {
+function domain($path = 1)
+{
     if ($path == 1) {
         $domain = 'https://rsud.sumselprov.go.id/';
     } else {
@@ -18,26 +20,30 @@ function domain($path = 1) {
     }
 
     return $domain;
-    
 }
 
-function urlPharmacy($path, $location = ''){
-    return domain(1).'farmasi/web-apis/'.$path.'?akseskunci='.keyPharmacy().''.$location;
+function urlPharmacy($path, $location = '')
+{
+    return domain(1) . 'farmasi/web-apis/' . $path . '?akseskunci=' . keyPharmacy() . '' . $location;
 }
 
-function urlLabRadiology() {
-    return domain(1).'labor';
+function urlLabRadiology()
+{
+    return domain(1) . 'labor';
 }
 
-function urlSimrsRanap() {
-    return domain(1).'simrs_ranap/';
+function urlSimrsRanap()
+{
+    return domain(1) . 'simrs_ranap/';
 }
 
-function urlSimrs() {
-    return domain(1).'simrs-rajal/';
+function urlSimrs()
+{
+    return domain(1) . 'simrs-rajal/';
 }
 
-function getService($url, $array = false) {
+function getService($url, $array = false)
+{
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
@@ -57,7 +63,7 @@ function getService($url, $array = false) {
     $response = curl_exec($curl);
 
     curl_close($curl);
-    
+
     if ($array == true) {
         return json_decode($response, 1);
     } else {
@@ -65,7 +71,8 @@ function getService($url, $array = false) {
     }
 }
 
-function postService($url, $data, $header = '') {
+function postService($url, $data, $header = '')
+{
     $curl = curl_init();
 
     if ($header != '') {
@@ -95,7 +102,8 @@ function postService($url, $data, $header = '') {
     return $response;
 }
 
-function getDataKeyValue($table, $field, $id, $column = ['*']) {
+function getDataKeyValue($table, $field, $id, $column = ['*'])
+{
     $data = $table->where($field, $id)->select($column)->get();
 
     foreach ($data as $key => $value) {
@@ -108,11 +116,12 @@ function getDataKeyValue($table, $field, $id, $column = ['*']) {
         return [];
     }
 }
-function genKode($table = null, $field = null, $condition = null, $data = null, $kode = null){
+function genKode($table = null, $field = null, $condition = null, $data = null, $kode = null)
+{
     try {
         $where = [];
         if ($data != null) {
-            $where[$condition] = $data; 
+            $where[$condition] = $data;
         }
 
         // $kode = 'RLAB';
@@ -120,18 +129,18 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
         // $field = 'created_at';
 
         if ($kode == 'RLAB') {
-            $gen_kode = json_decode(getService(urlLabRadiology().'/api/last-order-v2'));
+            $gen_kode = json_decode(getService(urlLabRadiology() . '/api/last-order-v2'));
 
             if ($gen_kode->success == true) {
                 $gen_kode = $gen_kode->data->NextNoOrder;
             } else {
                 $gen_kode = '-';
             }
-            
+
             return $gen_kode;
         } else {
             if ($kode == 'RIMG') {
-                $gen_kode = json_decode(getService(urlLabRadiology().'/api/last-order-radiologi-v2'));
+                $gen_kode = json_decode(getService(urlLabRadiology() . '/api/last-order-radiologi-v2'));
 
                 if ($gen_kode->success == true) {
                     $gen_kode = $gen_kode->data->NextNoOrder;
@@ -140,29 +149,27 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
                 }
 
                 return $gen_kode;
-                
-                
             } else {
                 if ($kode == 'FARM') {
                     $gen_kode = json_decode(getService(urlPharmacy('get-no-order-insertable', '&location=ranap')));
-    
+
                     if ($gen_kode->status_kode == 200) {
                         $gen_kode = $gen_kode->data->order_no;
 
                         return $gen_kode;
                     }
                 } else if ($kode == 'K.U') {
-                    $kode_ = 'kontrol_nomor'; 
+                    $kode_ = 'kontrol_nomor';
                 } else if ($kode == 'I.R.I') {
-                    $kode_ = 'ranap_nomor'; 
+                    $kode_ = 'ranap_nomor';
                 } else if ($kode == 'QARP') {
-                    $kode_ = 'pvalidation_code'; 
+                    $kode_ = 'pvalidation_code';
                 } else {
                     $kode_ = 'order_no';
                 }
-                
+
                 $check = $table->whereDate('created_at', Carbon::today())
-                                    ->max($kode_);
+                    ->max($kode_);
 
                 $subs = 0;
 
@@ -172,31 +179,32 @@ function genKode($table = null, $field = null, $condition = null, $data = null, 
 
                 $prefix = 'RI/';
             }
-            
+
             if ($subs == null || $subs < 1) {
                 $count = 1;
             } else {
-                $count = $subs+1;
+                $count = $subs + 1;
             }
-            
+
             // $number = str_pad($count, 7, '0', STR_PAD_LEFT);
-            $number = mt_rand(0000000,9999999);
-            $gen_kode = $kode.'/'.$prefix.''.str_replace('-', '', date('Y-m-d')).$number;
+            $number = mt_rand(0000000, 9999999);
+            $gen_kode = $kode . '/' . $prefix . '' . str_replace('-', '', date('Y-m-d')) . $number;
         }
 
         return $gen_kode;
-        
     } catch (\Throwable $th) {
         throw $th;
     }
 }
 
-function getUni(){
+function getUni()
+{
     $uni = new UniversalFunctionController;
     return $uni;
 }
 
-function getDatabase($name){
+function getDatabase($name)
+{
     $db = [
         'master' => DB::connection('mysql2')->getDatabaseName(),
         'inap' => DB::connection('mysql')->getDatabaseName(),
@@ -205,7 +213,8 @@ function getDatabase($name){
     return $db[$name];
 }
 
-function checkPaymentStatus($reg){
+function checkPaymentStatus($reg)
+{
     $callBill = new BillingController;
 
     $request = new Request;
@@ -219,7 +228,8 @@ function checkPaymentStatus($reg){
     return $data;
 }
 
-function getLimit($local = true){
+function getLimit($local = true)
+{
     $top = '';
     $limit = '';
 
@@ -232,31 +242,33 @@ function getLimit($local = true){
     return [$top, $limit];
 }
 
-function getCurrentLocation($reg, $skipLast = false){
+function getCurrentLocation($reg, $skipLast = false)
+{
     $data = [];
 
     $getLatestBedHistory = DB::connection('mysql2')
-            ->table('m_bed_history as a')
-            ->join('m_bed as b', 'ToBedID', 'bed_id')
-            ->where('RegNo', $reg)
-            ->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'desc')
-            ->select([
-                'a.*',
-                'b.room_id',
-                'b.bed_code',
-                DB::raw("
+        ->table('m_bed_history as a')
+        ->join('m_bed as b', 'ToBedID', 'bed_id')
+        ->where('RegNo', $reg)
+        ->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'desc')
+        ->select([
+            'a.*',
+            'b.room_id',
+            'b.bed_code',
+            DB::raw(
+                "
                     (select ServiceUnitCode 
                         from m_unit_departemen
                         where ServiceUnitID = service_unit_id
                     ) as ServiceUnitCode"
-                )
-            ]);
+            )
+        ]);
 
-        if ($skipLast) {
-            $getLatestBedHistory = $getLatestBedHistory->skip(1);
-        }
+    if ($skipLast) {
+        $getLatestBedHistory = $getLatestBedHistory->skip(1);
+    }
 
-        $getLatestBedHistory = $getLatestBedHistory->first();
+    $getLatestBedHistory = $getLatestBedHistory->first();
 
     if ($getLatestBedHistory) {
         if (isset($getLatestBedHistory->ServiceUnitCode)) {
@@ -272,7 +284,7 @@ function getCurrentLocation($reg, $skipLast = false){
                 ->where('RoomID', $getLatestBedHistory->room_id)
                 ->first()->RoomName ?? '-';
         }
-        
+
         if (isset($getLatestBedHistory->ToChargeClassCode)) {
             $data['ChargeClassCodeName'] = DB::connection('mysql2')
                 ->table('m_room_class')
@@ -291,7 +303,8 @@ function getCurrentLocation($reg, $skipLast = false){
     return $data;
 }
 
-function mergeObject($first, $second){
+function mergeObject($first, $second)
+{
     $firstArray = (array) $first;
     $secondArray = (array) $second;
 
@@ -302,7 +315,8 @@ function mergeObject($first, $second){
     return $mergedDataObject;
 }
 
-function sortData($data, $field, $arrange = true){
+function sortData($data, $field, $arrange = true)
+{
     usort($data, function ($a, $b) use ($field, $arrange) {
         if ($arrange) {
             return strcmp($a[$field], $b[$field]);
@@ -314,13 +328,15 @@ function sortData($data, $field, $arrange = true){
     return $data;
 }
 
-function getItemTindakan($reg, $class, $type, $params){
-    $data = getService(urlSimrs().'api/emr/cpoe/data_all_item/'.$type.'/'.str_replace('/', '_', $reg).'?classParams='.$class.'&searchParams='.$params);
+function getItemTindakan($reg, $class, $type, $params)
+{
+    $data = getService(urlSimrs() . 'api/emr/cpoe/data_all_item/' . $type . '/' . str_replace('/', '_', $reg) . '?classParams=' . $class . '&searchParams=' . $params);
 
     return json_decode($data);
 }
 
-function getCurrentBPJSPrice($currentData = []){
+function getCurrentBPJSPrice($currentData = [])
+{
     if (is_array($currentData) && !isset($currentData['regNo'])) {
         $tarif = $currentData['currentPrice'];
     } else {
@@ -331,12 +347,12 @@ function getCurrentBPJSPrice($currentData = []){
                 'ClassCategoryCode as ChargeClassCode'
             ])
             ->first();
-            
+
         if ($currentData['payer'] == 2 && $convertChargeClass->ChargeClassCode != '005') {
             // COMPARE PREVIOUS AND CURRENT CHARGE CLASS TO DECIDE IF GET NEW PRICE OR NOT
             if (isset($currentData['PreviousChargeClassCode']) && $currentData['PreviousChargeClassCode'] != $currentData['ChargeClassCode']) {
                 $tarif = getItemTindakan($currentData['regNo'], $convertChargeClass->ChargeClassCode, $currentData['itemType'], $currentData['itemCode']);
-                
+
                 $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
             } else {
                 $tarif = $currentData['currentPrice'];
@@ -349,11 +365,12 @@ function getCurrentBPJSPrice($currentData = []){
     return (float) $tarif;
 }
 
-function countInpatientDays($reg){
+function countInpatientDays($reg)
+{
     $data = DB::connection('mysql2')
         ->table('m_bed_history')
         ->where('regNo', $reg);
-        
+
     $first = $data->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'asc')
         ->select([
             DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) as validateDate")
@@ -372,7 +389,7 @@ function countInpatientDays($reg){
             'success' => false,
             'data' => [
                 'duration' => ['days' => 0]
-            ], 
+            ],
             'msg' => 'Total perhitungan tarif kamar belum bisa dilakukan, dikarenakan pasien belum pulang. Mohon koordinasikan dengan perawat untuk penutupan bed dan pemulangan pasien ini.'
         ];
     }
@@ -381,12 +398,13 @@ function countInpatientDays($reg){
         'success' => true,
         'data' => [
             'duration' => countDurationBetweenDates($first->validateDate, $last->validateDate, true)
-        ], 
+        ],
         'msg' => 'Durasi rawat inap pasien berhasil ditentukan'
     ];
 }
 
-function countDurationBetweenDates($start, $end, $countFirstDay = false){
+function countDurationBetweenDates($start, $end, $countFirstDay = false)
+{
     $datetime1 = Carbon::parse($start);
     $datetime2 = Carbon::parse($end);
 
@@ -401,6 +419,6 @@ function countDurationBetweenDates($start, $end, $countFirstDay = false){
         'days' => $diff->d,
         'hours' => $diff->h,
         'minutes' => $diff->i,
-        'seconds' => $diff->s, 
+        'seconds' => $diff->s,
     ];
 }
