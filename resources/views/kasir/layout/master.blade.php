@@ -54,7 +54,7 @@
             <div class="topnav d-flex justify-content-between">
                 <a href="{{ url('kasir') }}" class="{{ request()->is('kasir*') ? 'active' : '' }}"
                     class="col-2"><i class="bi bi-boxes"></i> <br> Biling</a>
-                <a href="{{ url('report') }}" class="{{ request()->is('report*') ? 'active' : '' }}"><i
+                <a href="{{ url('kasir/report') }}" class="{{ request()->is('report*') ? 'active' : '' }}"><i
                         class="bi
                     bi-archive"></i> <br> Report</a>
                 <a href="#contact"><i class="bi bi-file-earmark-text"></i> <br> Dokumentasi</a>
@@ -179,7 +179,6 @@
                 $('body '+id).html(text)
             }
         }
-
     </script>
     @yield('scripts')
 </body>
