@@ -163,7 +163,8 @@ class RegistrationRanapService
             $this->createBedHistoryFirstTime($registerNumber);
             $this->tarifKamarService->storeTarifKamar([
                 'reg_no' => $registerNumber,
-                'charge_class' => $registrasi['charge_class_code']
+                'charge_class' => $registrasi['charge_class_code'],
+                'qty' => 1
             ]);
 
             return redirect()->route('register.ranap.index');

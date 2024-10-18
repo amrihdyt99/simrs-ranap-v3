@@ -13,7 +13,6 @@ class Bed extends Model
 
     protected $table = 'm_bed';
     protected $primaryKey = 'bed_id';
-    public $incrementing = false;
     public $timestamps = false;
     protected $connection = 'mysql2';
 

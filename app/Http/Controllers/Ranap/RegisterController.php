@@ -835,6 +835,7 @@ class RegisterController extends Controller
             $this->tarifKamarService->storeTarifKamar([
                 'reg_no' => request()->reg_no,
                 'charge_class' => request()->charge_class_code,
+                'qty' => 1,
             ]);
 
             // dd($param_pasien);
