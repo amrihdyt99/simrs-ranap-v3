@@ -45,7 +45,7 @@
     var kategori_pasien = "{{$dataPasien->kategori_pasien}}";
     var tgl_lahir_pasien = "{{$dataPasien->DateOfBirth}}";
     var classcode = "{{$dataPasien->reg_class}}";
-    var bed_history_class = "{{$dataPasien->ToChargeClassCode}}";
+    var bed_history_class = "{{$dataPasien->ToChargeClassCode ?? ''}}";
     var ddxutama = '#ddx-utama'
     var ddxutamalen = $(ddxutama).length
     $hosted = '{{url("")}}'
