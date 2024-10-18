@@ -10,26 +10,41 @@ $(document).ready(function() {
     triggerGetPhysicianTeamDokter();
 
     $('#btn_tambah_team').on('click', function() {
-        let kode_dokter = $('#physician_kode_dokter').val();
+        let kodeDokter = $('#physician_kode_dokter').val();
+        let kodeLainnya = $('#physician_kode_lainnya').val();
         let kategori = $('#physician_kategori').val();
 
+        let data = {
+            regno: regno,
+            kategori: kategori,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        };
+
+        if (kodeDokter) {
+            data.kode_dokter = kodeDokter;
+        } else if (kodeLainnya) {
+            data.kode_dokter = kodeLainnya;
+        } else {
+            alert('Pilih PPA atau PPA Lainnya');
+            return;
+        }
+
         $.ajax({
-            url: $dom+'/api/addphysicianteamDokter', 
+            url: $dom + '/api/addphysicianteamDokter', 
             type: "POST",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'), 
-                kode_dokter: kode_dokter,
-                kategori: kategori,
-                regno: $reg  
-            },
+            data: data,
             success: function(response) {
-                // console.log('Respon sukses:', response);
-                neko_simpan_success();
-                getPhysicianTeamDokter();
+                if (response.success) {
+                    alert(response.message);
+                    getPhysicianTeamDokter();
+                    $('#physician_team_dokter')[0].reset();
+                } else {
+                    alert('Gagal menambahkan tim dokter: ' + response.message);
+                }
             },
             error: function(xhr, status, error) {
-                // console.log('Respon error:', xhr.responseText);
-                neko_simpan_error_noreq();
+                console.error(xhr.responseText);
+                alert('Terjadi kesalahan saat menambahkan tim dokter');
             }
         });
     });
@@ -37,6 +52,10 @@ $(document).ready(function() {
     neko_select2_init_data(domUrl, 'physician_kode_dokter', {
         placeholder: 'Pilih Dokter'
     });
+
+    neko_select2_init_data($dom + '/api/getPPALainnya', 'physician_kode_lainnya', {
+        placeholder: 'Pilih PPA Lainnya'
+    });;
 
     function getPhysicianTeamDokter() {
         var tablePhysicianTeam = $('#table-physician-team-dokter');
@@ -52,16 +71,10 @@ $(document).ready(function() {
                 tablePhysicianTeam.empty();
                 $.each(data.data, function(key, value) {
                     let actionButtons = `<button type="button" class="btn btn-sm btn-danger" onclick="deletePhysicianTeamDokter(${value.id})">Hapus</button>`;
-                    if (value.kategori === 'Konsul') {
-                        actionButtons += `<button type="button" class="btn btn-sm btn-primary ml-2" onclick="showKonsulModal(${value.id})">Konsul</button>`;
-                    }
-                    if (value.catatan) {
-                        actionButtons += `<button type="button" class="btn btn-sm btn-info ml-2" onclick="showCatatanModal('${value.catatan}', '${value.ParamedicName}')">Lihat Catatan</button>`;
-                    }
                     $('#table-physician-team-dokter').append(
                         '<tr>' +
-                        '<td>' + value.kode_dokter + '</td>' +
-                        '<td>' + value.ParamedicName + '</td>' +
+                        '<td>' + (value.kode_dokter || 'N/A') + '</td>' +
+                        '<td>' + (value.ParamedicName || 'N/A') + '</td>' +
                         '<td>' + value.kategori + '</td>' +
                         '<td>' + actionButtons + '</td>' +
                         '</tr>'
@@ -142,7 +155,7 @@ $(document).ready(function() {
         $('#tab-physician-team-dokter').on('click', function() {
             getPhysicianTeamDokter();
             getKonsulData();
-            
+            getPPALainnya();
         });
     }
     $('#btn_simpan_isi_konsul').on('click', function() {
@@ -174,15 +187,19 @@ $(document).ready(function() {
                 if (response.success) {
                     neko_notify('success', response.message);
                 } else {
-                    neko_notify('error', response.message);
+                    if (response.message.includes('Tidak ada Dokter Konsul yang terdaftar')) {
+                        neko_notify('warning', 'Belum ada dokter physician team konsul yang terdaftar untuk registrasi ini.');
+                    } else {
+                        neko_notify('error', response.message);
+                    }
                 }
             },
             error: function(xhr, status, error) {
-                let errorMessage = 'Terjadi kesalahan saat menyimpan data konsul';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
+                if (xhr.responseJSON && xhr.responseJSON.message && xhr.responseJSON.message.includes('Tidak ada Dokter Konsul yang terdaftar')) {
+                    neko_notify('warning', 'Belum ada PPA Dokter Konsul yang terdaftar pada physician team ini.');
+                } else {
+                    neko_notify('error', 'Terjadi kesalahan saat menyimpan data konsul');
                 }
-                neko_notify('error', errorMessage);
             }
         });
     }
@@ -228,4 +245,29 @@ $(document).ready(function() {
         $('#catatanModalBody').text(catatan);
         $('#catatanModalTitle').text('Catatan untuk Dokter ' + ParamedicName);
     }
+
+    // Fungsi untuk mengambil dan mengisi data PPA Lainnya
+    // function getPPALainnya() {
+    //     $.ajax({
+    //         url: $dom + '/api/getPPALainnya',
+    //         type: 'GET',
+    //         success: function(response) {
+    //             if (response.success) {
+    //                 let select = $('#physician_kode_lainnya');
+    //                 select.empty();
+    //                 select.append('<option value="">-----Pilih PPA Lainnya-----</option>');
+    //                 $.each(response.data, function(key, value) {
+    //                     let id = value.dokter_id || value.perawat_id;
+    //                     select.append(`<option value="${id}">${value.name} (${value.level_user})</option>`);
+    //                 });
+    //             } else {
+    //                 console.error('Gagal mengambil data PPA Lainnya');
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.error('Terjadi kesalahan saat mengambil data PPA Lainnya:', error);
+    //         }
+    //     });
+    // }
+
 });

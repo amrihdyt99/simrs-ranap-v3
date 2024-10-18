@@ -150,11 +150,7 @@ class SuratRujukanController extends AaaBaseController
                     ], 422);
                 }
 
-                // Mengambil nama user yang sedang login
-                $userName = Auth::check() ? Auth::user()->name : 'Unknown User';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
-
-                Log::info('Current user:', ['name' => $userName, 'auth_check' => Auth::check()]);
 
                 $id = DB::connection('mysql')->table('rs_rujukan_prosedur_operasi')->insertGetId([
                     'reg_no' => $request->reg_no,
@@ -164,11 +160,11 @@ class SuratRujukanController extends AaaBaseController
                     'waktu_prosedur_operasi' => $request->waktuProsedurOperasi,
                     'aktif' => 1,
                     'aktif_at' => $currentDateTime,
-                    'aktif_by_user_name' => $userName,
+                    'aktif_by_user_name' => $request->username,
                     'created_at' => $currentDateTime,
-                    'created_by_user_name' => $userName,
+                    'created_by_user_name' => $request->username,
                     'updated_at' => $currentDateTime,
-                    'updated_by_user_name' => $userName,
+                    'updated_by_user_name' => $request->username,
                 ]);
 
                 return response()->json([
@@ -182,13 +178,11 @@ class SuratRujukanController extends AaaBaseController
             }
         } elseif ($request->dt_mode === 'hapus') {
             try {
-                $currentUser = Auth::user();
-                $userName = $currentUser ? $currentUser->name : 'System';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
 
                 // Validasi ID
                 $id = $request->input('dtid');
-                Log::info('Received ID for deletion: ' . $id); // Tambahkan log ini
+                Log::info('Received ID for deletion: ' . $id);
 
                 if (!$id || $id === 'undefined' || !is_numeric($id)) {
                     return response()->json(['status' => 'error', 'message' => 'ID tidak valid'], 400);
@@ -198,11 +192,11 @@ class SuratRujukanController extends AaaBaseController
                     ->where('id', $id)
                     ->update([
                         'aktif' => 0,
-                        'aktif_at' => $currentDateTime,
-                        'aktif_by_user_name' => $userName,
+                        // 'aktif_at' => $currentDateTime,
+                        // 'aktif_by_user_name' => $request->username,
                         'hapus' => 1,
                         'hapus_at' => $currentDateTime,
-                        'hapus_by_user_name' => $userName,
+                        'hapus_by_user_name' => $request->username,
                     ]);
 
                 if ($affected === 0) {
@@ -243,11 +237,7 @@ class SuratRujukanController extends AaaBaseController
                     ], 422);
                 }
 
-                // Mengambil nama user yang sedang login
-                $userName = Auth::check() ? Auth::user()->name : 'Unknown User';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
-
-                Log::info('Current user:', ['name' => $userName, 'auth_check' => Auth::check()]);
 
                 $id = DB::connection('mysql')->table('rs_rujukan_alat_terpasang')->insertGetId([
                     'reg_no' => $request->reg_no,
@@ -257,11 +247,11 @@ class SuratRujukanController extends AaaBaseController
                     'waktu_alat_terpasang' => $request->waktu_alat_terpasang,
                     'aktif' => 1,
                     'aktif_at' => $currentDateTime,
-                    'aktif_by_user_name' => $userName,
+                    'aktif_by_user_name' => $request->username,
                     'created_at' => $currentDateTime,
-                    'created_by_user_name' => $userName,
+                    'created_by_user_name' => $request->username,
                     'updated_at' => $currentDateTime,
-                    'updated_by_user_name' => $userName,
+                    'updated_by_user_name' => $request->username,
                 ]);
 
                 return response()->json([
@@ -275,8 +265,6 @@ class SuratRujukanController extends AaaBaseController
             }
         } elseif ($request->dt_mode === 'hapus') {
             try {
-                $currentUser = Auth::user();
-                $userName = $currentUser ? $currentUser->name : 'System';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
 
                 // Validasi ID
@@ -291,11 +279,11 @@ class SuratRujukanController extends AaaBaseController
                     ->where('id', $id)
                     ->update([
                         'aktif' => 0,
-                        'aktif_at' => $currentDateTime,
-                        'aktif_by_user_name' => $userName,
+                        // 'aktif_at' => $currentDateTime,
+                        // 'aktif_by_user_name' => $request->username,
                         'hapus' => 1,
                         'hapus_at' => $currentDateTime,
-                        'hapus_by_user_name' => $userName,
+                        'hapus_by_user_name' => $request->username,
                     ]);
 
                 if ($affected === 0) {
@@ -337,11 +325,7 @@ class SuratRujukanController extends AaaBaseController
                     ], 422);
                 }
 
-                // Mengambil nama user yang sedang login
-                $userName = Auth::check() ? Auth::user()->name : 'Unknown User';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
-
-                Log::info('Current user:', ['name' => $userName, 'auth_check' => Auth::check()]);
 
                 $id = DB::connection('mysql')->table('rs_rujukan_obat_diterima')->insertGetId([
                     'reg_no' => $request->reg_no,
@@ -352,11 +336,11 @@ class SuratRujukanController extends AaaBaseController
                     'item_unit_code_terima' => $request->item_unit_code_terima,
                     'aktif' => 1,
                     'aktif_at' => $currentDateTime,
-                    'aktif_by_user_name' => $userName,
+                    'aktif_by_user_name' => $request->username,
                     'created_at' => $currentDateTime,
-                    'created_by_user_name' => $userName,
+                    'created_by_user_name' => $request->username,
                     'updated_at' => $currentDateTime,
-                    'updated_by_user_name' => $userName,
+                    'updated_by_user_name' => $request->username,
                 ]);
 
                 return response()->json([
@@ -370,11 +354,8 @@ class SuratRujukanController extends AaaBaseController
             }
         } elseif ($request->dt_mode === 'hapus') {
             try {
-                $currentUser = Auth::user();
-                $userName = $currentUser ? $currentUser->name : 'System';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
 
-                // Validasi ID
                 $id = $request->input('dtid');
                 Log::info('Received ID for deletion: ' . $id);
 
@@ -386,11 +367,11 @@ class SuratRujukanController extends AaaBaseController
                     ->where('id', $id)
                     ->update([
                         'aktif' => 0,
-                        'aktif_at' => $currentDateTime,
-                        'aktif_by_user_name' => $userName,
+                        // 'aktif_at' => $currentDateTime,
+                        // 'aktif_by_user_name' => $request->username,
                         'hapus' => 1,
                         'hapus_at' => $currentDateTime,
-                        'hapus_by_user_name' => $userName,
+                        'hapus_by_user_name' => $request->username,
                     ]);
 
                 if ($affected === 0) {
@@ -432,11 +413,9 @@ class SuratRujukanController extends AaaBaseController
                     ], 422);
                 }
 
-                // Mengambil nama user yang sedang login
-                $userName = Auth::check() ? Auth::user()->name : 'Unknown User';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
 
-                Log::info('Current user:', ['name' => $userName, 'auth_check' => Auth::check()]);
+                Log::info('Current user:', ['name' => $request->username, 'auth_check' => Auth::check()]);
 
                 $id = DB::connection('mysql')->table('rs_rujukan_obat_cairan_dibawa')->insertGetId([
                     'reg_no' => $request->reg_no,
@@ -447,11 +426,11 @@ class SuratRujukanController extends AaaBaseController
                     'item_unit_code' => $request->item_unit_code,
                     'aktif' => 1,
                     'aktif_at' => $currentDateTime,
-                    'aktif_by_user_name' => $userName,
+                    'aktif_by_user_name' => $request->username,
                     'created_at' => $currentDateTime,
-                    'created_by_user_name' => $userName,
+                    'created_by_user_name' => $request->username,
                     'updated_at' => $currentDateTime,
-                    'updated_by_user_name' => $userName,
+                    'updated_by_user_name' => $request->username,
                 ]);
 
                 return response()->json([
@@ -465,8 +444,6 @@ class SuratRujukanController extends AaaBaseController
             }
         } elseif ($request->dt_mode === 'hapus') {
             try {
-                $currentUser = Auth::user();
-                $userName = $currentUser ? $currentUser->name : 'System';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
 
                 // Validasi ID
@@ -481,11 +458,11 @@ class SuratRujukanController extends AaaBaseController
                     ->where('id', $id)
                     ->update([
                         'aktif' => 0,
-                        'aktif_at' => $currentDateTime,
-                        'aktif_by_user_name' => $userName,
+                        // 'aktif_at' => $currentDateTime,
+                        // 'aktif_by_user_name' => $request->username,
                         'hapus' => 1,
                         'hapus_at' => $currentDateTime,
-                        'hapus_by_user_name' => $userName,
+                        'hapus_by_user_name' => $request->username,
                     ]);
 
                 if ($affected === 0) {
@@ -529,11 +506,9 @@ class SuratRujukanController extends AaaBaseController
                     ], 422);
                 }
 
-                // Mengambil nama user yang sedang login
-                $userName = Auth::check() ? Auth::user()->name : 'Unknown User';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
 
-                Log::info('Current user:', ['name' => $userName, 'auth_check' => Auth::check()]);
+                Log::info('Current user:', ['name' => $request->username, 'auth_check' => Auth::check()]);
 
                 $id = DB::connection('mysql')->table('rs_rujukan_status_pasien')->insertGetId([
                     'reg_no' => $request->reg_no,
@@ -546,11 +521,11 @@ class SuratRujukanController extends AaaBaseController
                     'rr' => $request->rr,
                     'aktif' => 1,
                     'aktif_at' => $currentDateTime,
-                    'aktif_by_user_name' => $userName,
+                    'aktif_by_user_name' => $request->username,
                     'created_at' => $currentDateTime,
-                    'created_by_user_name' => $userName,
+                    'created_by_user_name' => $request->username,
                     'updated_at' => $currentDateTime,
-                    'updated_by_user_name' => $userName,
+                    'updated_by_user_name' => $request->username,
                 ]);
 
                 return response()->json([
@@ -564,8 +539,6 @@ class SuratRujukanController extends AaaBaseController
             }
         } elseif ($request->dt_mode === 'hapus') {
             try {
-                $currentUser = Auth::user();
-                $userName = $currentUser ? $currentUser->name : 'System';
                 $currentDateTime = $this->universal_function()->carbon_generate_datetime_now();
 
                 // Validasi ID
@@ -580,11 +553,11 @@ class SuratRujukanController extends AaaBaseController
                     ->where('id', $id)
                     ->update([
                         'aktif' => 0,
-                        'aktif_at' => $currentDateTime,
-                        'aktif_by_user_name' => $userName,
+                        // 'aktif_at' => $currentDateTime,
+                        // 'aktif_by_user_name' => $request->username,
                         'hapus' => 1,
                         'hapus_at' => $currentDateTime,
-                        'hapus_by_user_name' => $userName,
+                        'hapus_by_user_name' => $request->username,
                     ]);
 
                 if ($affected === 0) {
