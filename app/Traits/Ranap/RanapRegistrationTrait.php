@@ -2,6 +2,7 @@
 
 namespace App\Traits\Ranap;
 
+use App\Http\Services\TarifKamarService;
 use App\Models\Bed;
 use App\Models\ICD10;
 use App\Models\KelasKategori;
@@ -21,11 +22,12 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 trait RanapRegistrationTrait
 {
 
+    protected $tarifKamarService;
     public function getDataFormRegistration()
     {
         $data['service_unit'] = ServiceUnit::all();
         $data['service_room'] = ServiceRoom::all();
-        $data['room_class'] = RoomClass::where('isActive', 1)->select('ClassCode', 'ClassName', 'ClassCategoryCode')->get();
+        // $data['room_class'] = RoomClass::where('isActive', 1)->select('ClassCode', 'ClassName', 'ClassCategoryCode')->get();
         $data['ruangan_baru'] = DB::connection('mysql2')
             ->table('m_ruangan_baru')
             ->get();
@@ -35,7 +37,7 @@ trait RanapRegistrationTrait
         $data['physician'] = DB::connection('mysql2')->table("m_paramedis")->where(['GCParamedicType' => "X0055^001"])->where('IsActive', 1)->get();
         $data['bed'] = Bed::all();
         $data['icd10'] = ICD10::all();
-        $data['cover_class'] = KelasKategori::all();
+        $data['cover_class'] = DB::connection('mysql2')->table('m_room_class')->where('IsDeleted', 0)->get();
 
         return $data;
     }
@@ -214,54 +216,6 @@ trait RanapRegistrationTrait
         RegistrationInap::where('reg_no', $reg_no)->update($data);
         $this->updateRuangan($reg_no);
         $this->updatePasien();
-
-        $order_no = genKode(DB::table('job_orders_dt')->where('jenis_order', 'lainnya'), null, null, null, 'ANY');
-        $current_location = getCurrentLocation($reg_no);
-
-        if (in_array($data['charge_class'], ['001', '002', '003', '004'])) {
-            $kode = 'AKM1';
-            $nama = 'Tarif akomodasi kamar';
-        } else if ($data['charge_class'] == 'hcu') {
-            $kode = 'AKM2';
-            $nama = 'Tarif akomodasi kamar HCU';
-        } else if ($data['charge_class'] == 'icu01') {
-            $kode = 'AKM3';
-            $nama = 'Tarif akomodasi kamar ICU / ICCU';
-        }
-
-        $tarif = getItemTindakan($reg_no, $data['charge_class'], 'LAIN', $kode);
-        $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
-
-        $dataTarifKamarHD = [
-            'reg_no' => $reg_no,
-            'order_no' => $order_no,
-            'waktu_order' => date('Y-m-d H:i:s'),
-            'service_unit' => $current_location['ServiceUnitID'],
-        ];
-
-        $dataTarifKamarDt = [
-            'reg_no' => $reg_no,
-            'order_no' => $order_no,
-            'item_code' => $kode,
-            'item_name' => $nama,
-            'jenis_order' => 'lainnya',
-            'qty' => 1,
-            'harga_jual' => $tarif,
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-
-        $check_ = DB::table('job_orders_dt')
-            ->where('reg_no', $reg_no)
-            ->where('item_code', $kode)
-            ->first();
-
-        if (!isset($check)) {
-            $jobOrders = DB::table('job_orders')->insert($dataTarifKamarHD);
-
-            if ($jobOrders) {
-                $jobOrdersDt = DB::table('job_orders_dt')->insert($dataTarifKamarDt);
-            }
-        }
     }
 
     /**
