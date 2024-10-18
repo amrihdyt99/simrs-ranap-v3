@@ -102,13 +102,17 @@ class TarifKamarService
             }
         } catch (\Throwable $th) {
             DB::rollBack();
-
             throw $th;
         }
     }
 
     private function checkTarifKamarRegistrationExist($reg_no, $kode)
     {
-        return DB::table('job_orders_dt')->where('reg_no', $reg_no)->where('item_code', $kode)->exists();
+        return DB::table('job_orders_dt')
+            ->where('reg_no', $reg_no)
+            ->where('item_code', $kode)
+            ->where('deleted', 0)
+            ->whereDate('created_at', date('Y-m-d'))
+            ->exists();
     }
 }
