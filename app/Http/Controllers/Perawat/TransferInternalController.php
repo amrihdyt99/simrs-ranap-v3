@@ -247,10 +247,7 @@ class TransferInternalController extends Controller
                     ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
                     ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
                     // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                    ->leftJoin('m_unit_departemen', function ($join) {
-                        $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                            ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
-                    })
+                    ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
                     ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
                     ->select('m_bed_history.ToBedID as bed_id', 'm_bed_history.ToClassCode as class', 'm_bed_history.ToChargeClassCode as charge_class', 'm_bed.service_unit_id')
                     ->where('m_registrasi.reg_no', $tf_internal->transfer_reg)
@@ -310,6 +307,7 @@ class TransferInternalController extends Controller
                         'created_at' => Carbon::now(),
                     );
                 }
+
                 DB::connection('mysql2')->table('m_bed_history')->insert($history);
 
                 // Create Order
@@ -447,6 +445,26 @@ class TransferInternalController extends Controller
 
         return response()->json([
             'data' => $perawat
+        ]);
+    }
+
+    public function getKetersediaanKamar(Request $request)
+    {
+        $ruangan = DB::connection('mysql2')
+            ->table('m_bed')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+            ->whereNull('registration_no')
+            ->where('m_bed.is_active', 1)
+            ->where('m_bed.bed_status', '0116^R')
+            ->get();
+        // dd($ruangan[1]);
+        return response()->json([
+            'data' => $ruangan
         ]);
     }
 }
