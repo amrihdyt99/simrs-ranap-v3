@@ -91,6 +91,7 @@ class TarifKamarService
             'created_at' => date('Y-m-d H:i:s'),
             'created_by_id' => auth()->user()->id,
             'created_by_name' => auth()->user()->name,
+            'deleted' => 0,
         ];
 
         try {
