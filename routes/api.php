@@ -403,3 +403,10 @@ Route::prefix('dokter')->name('dokter.')->group(function () {
 Route::post('/add-edukasi-anastesi', [EdukasiAnastesiController::class, 'addEdukasiAnastesi'])->name('add.edukasi.anastesi');
 Route::get('/get-edukasi-anastesi', [EdukasiAnastesiController::class, 'getEdukasiAnastesi'])->name('get.edukasi.anastesi');
 Route::get('getPPALainnya', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getPPALainnya']);
+
+// Riwayat Dokter
+Route::get('/getRiwayatPenunjang', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatPenunjang']);
+// Route::get('/getRiwayatSOAP', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatSOAP']);
+
+Route::get('/getRiwayatSoap', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatSoap']);
+Route::get('/getRiwayatObat', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatObat']);
