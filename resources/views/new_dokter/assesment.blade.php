@@ -221,16 +221,18 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="riwayat-soapdok-tab" data-toggle="tab" href="#riwayat-soapdok" role="tab" aria-controls="riwayat-soapdok" aria-selected="false">Riwayat CPPT</a>
                                         </li>
-                                        <li class="nav-item">
+                                        <!-- <li class="nav-item">
                                             <a class="nav-link" id="riwayat-asdok-tab" data-toggle="tab" href="#riwayat-asdok" role="tab" aria-controls="riwayat-asdok" aria-selected="false">Riwayat Asesmen Klinik</a>
-                                        </li>
+                                        </li> -->
                                         <li class="nav-item">
                                             <a class="nav-link" id="riwayat-penunjang-tab" data-toggle="tab" href="#riwayat-penunjang" role="tab" aria-controls="riwayat-penunjang" aria-selected="false">Riwayat Penunjang</a>
                                         </li>
-
                                         <li class="nav-item">
-                                            <a class="nav-link" id="riwayat-resume-tab" data-toggle="tab" href="#riwayat-resume" role="tab" aria-controls="riwayat-resume" aria-selected="false">Riwayat Resume</a>
+                                            <a class="nav-link" id="riwayat-obat-tab" data-toggle="tab" href="#riwayat-obat" role="tab" aria-controls="riwayat-obat" aria-selected="false">Riwayat Obat</a>
                                         </li>
+                                        <!-- <li class="nav-item">
+                                            <a class="nav-link" id="riwayat-resume-tab" data-toggle="tab" href="#riwayat-resume" role="tab" aria-controls="riwayat-resume" aria-selected="false">Riwayat Resume</a>
+                                        </li> -->
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="baru-asper" role="tabpanel" aria-labelledby="baru-asper-tab">
@@ -244,6 +246,9 @@
                                         </div>
                                         <div class="tab-pane fade" id="riwayat-penunjang" role="tabpanel" aria-labelledby="riwayat-penunjang-tab">
                                             @include('new_dokter.penunjang.index')
+                                        </div>
+                                        <div class="tab-pane fade" id="riwayat-obat" role="tabpanel" aria-labelledby="riwayat-obat-tab">
+                                            @include('new_dokter.riwayat_dokter.riwayat_obat')
                                         </div>
                                         <div class="tab-pane fade" id="riwayat-resume" role="tabpanel" aria-labelledby="riwayat-resume-tab">
                                             @include('new_dokter.resume.riwayat')
@@ -678,4 +683,5 @@
 <script src="{{asset('new_assets/js/physician_team.js')}}"></script>
 <script src="{{asset('new_assets/js/persetujuan_penolakan.js')}}"></script>
 <script src="{{asset('new_assets/js/surat_rujukan.js')}}"></script>
+<script src="{{asset('new_assets/js/riwayat_dokter.js')}}"></script>
 @endsection
