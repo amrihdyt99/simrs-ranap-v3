@@ -12,6 +12,8 @@
                     })
                     ->where('job_orders_dt.reg_no', $reg)
                     ->where('job_orders_dt.jenis_order', 'lainnya')
+                    ->where('job_orders_dt.deleted', 0)
+                    ->where('job_orders_dt.flag_billing_perawat', 1)
                     ->select([
                         'job_orders_dt.*',
                         'job_orders.waktu_order',

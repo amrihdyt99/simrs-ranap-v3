@@ -367,27 +367,33 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-admisi">Cover Class</label>
-                                            <select id="reg_class" name="reg_class" class="form-control select2bs4" onchange="handleChangeCoverClass()">
+                                            <select id="reg_class" name="reg_class" class="form-control select2bs4" onchange="handleChangeCoverClass()" {{ $registration->reg_class ? 'disabled' : '' }}>
                                                 <option value="">-</option>
                                                 @foreach ($room_class as $row)
-                                                <option value={{ $row->ClassCode }}>
+                                                <option value={{ $row->ClassCode }} {{ $row->ClassCode == $registration->reg_class ? 'selected' : '' }}>
                                                     {{ $row->ClassName ?? '-' }}
                                                 </option>
                                                 @endforeach
                                             </select>
+                                            @if($registration->reg_class)
+                                                <input type="hidden" name="reg_class" value="{{ $registration->reg_class }}">
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-admisi">Charge Class</label>
-                                            <select id="charge_class_code" name="charge_class_code" class="form-control select2bs4">
+                                            <select id="charge_class_code" name="charge_class_code" class="form-control select2bs4" {{ $registration->charge_class_code ? 'disabled' : '' }}>
                                                 <option value="">-</option>
                                                 @foreach ($room_class as $row)
-                                                <option value={{ $row->ClassCode }}>
+                                                <option value={{ $row->ClassCode }} {{ $row->ClassCode == $registration->charge_class_code ? 'selected' : '' }}>
                                                     {{ $row->ClassName ?? '-' }}
                                                 </option>
                                                 @endforeach
                                             </select>
+                                            @if($registration->charge_class_code)
+                                                <input type="hidden" name="charge_class_code" value="{{ $registration->charge_class_code }}">
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-lg-4">

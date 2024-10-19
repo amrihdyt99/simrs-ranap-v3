@@ -355,14 +355,16 @@
             };
             data.push(item);
         }
-        var perawat_id = "{{auth()->user()->perawat_id}}";
+        let perawat_id = "{{auth()->user()->id}}";
+        let perawat_name = "{{auth()->user()->name}}";
         $.ajax({
             type: "POST",
             url: "{{ route('add.ordertindakanperawat') }}",
             data: {
                 "datajson": data,
                 "regno": regno,
-                "userid": perawat_id
+                "userid": perawat_id,
+                "perawat_name": perawat_name
             },
             success: function(data) {
                 neko_simpan_success();

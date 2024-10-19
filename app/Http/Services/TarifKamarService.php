@@ -75,7 +75,7 @@ class TarifKamarService
             'status_kirim' => $data['status_kirim'] ?? null,
             'catatan_dokter' => $data['catatan_dokter'] ?? null,
             'bentuk_obat' => $data['bentuk_obat'] ?? null,
-            'rute_obat' => $data['rute_obat'] ?? null,
+            'rute' => $data['rute'] ?? null,
             'obat_pulang' => $data['obat_pulang'] ?? null,
             'created_at' => date('Y-m-d H:i:s')
         ];
@@ -91,6 +91,7 @@ class TarifKamarService
             'created_at' => date('Y-m-d H:i:s'),
             'created_by_id' => auth()->user()->id,
             'created_by_name' => auth()->user()->name,
+            'deleted' => 0,
         ];
 
         try {

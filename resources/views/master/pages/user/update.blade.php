@@ -30,8 +30,8 @@
                                     <select type="text"
                                         class="form-control @error('ParamedicCode') is-invalid @enderror"
                                         id="ParamedicCode" name="ParamedicCode" required>
-                                        <option value="{{ $user->dokter_id }}" selected>
-                                            {{ app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->get_paraedic_name($user->dokter_id) }}
+                                        <option value="{{ $user->dokter_id ?? $user->perawat_id }}" selected>
+                                            {{ app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->get_paraedic_name($user->dokter_id ?? $user->perawat_id) }}
                                         </option>
                                     </select>
                                 </div>

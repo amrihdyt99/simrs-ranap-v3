@@ -449,7 +449,7 @@
     $(async function() {
       $.ajax({
         type: "get",
-        url: "{{url('api/cekketersediaanruangan')}}",
+        url: "{{url('api/perawat/get-kamar-ready')}}",
         dataType: "json",
         success: function(r) {
           var opt = '<option value="" disabled>Pilih Tujuan Ruangan dan Bed</option>';
@@ -527,6 +527,8 @@
         if (exists) {
           $('#select-charge-class-bed').val(class_charge_code).trigger('change');
           $('#select-charge-class-bed').prop('disabled', true);
+        } else {
+          $('#select-charge-class-bed').val(class_charge_code).trigger('change');
         }
       }
     })
