@@ -219,6 +219,9 @@
                                             <a class="nav-link active" id="baru-asper-tab" data-toggle="tab" href="#baru-asper" role="tab" aria-controls="baru-asper" aria-selected="false">Assesmen Klinik Hari Ini</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link" id="riwayat-edukasi-tab" data-toggle="tab" href="#riwayat-edukasi" role="tab" aria-controls="riwayat-edukasi" aria-selected="false">Riwayat Edukasi</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" id="riwayat-soapdok-tab" data-toggle="tab" href="#riwayat-soapdok" role="tab" aria-controls="riwayat-soapdok" aria-selected="false">Riwayat CPPT</a>
                                         </li>
                                         <!-- <li class="nav-item">
@@ -252,6 +255,9 @@
                                         </div>
                                         <div class="tab-pane fade" id="riwayat-resume" role="tabpanel" aria-labelledby="riwayat-resume-tab">
                                             @include('new_dokter.resume.riwayat')
+                                        </div>
+                                        <div class="tab-pane fade" id="riwayat-edukasi" role="tabpanel" aria-labelledby="riwayat-edukasi-tab">
+                                            @include('new_dokter.riwayat_dokter.edukasi_dokter')
                                         </div>
                                     </div>
                                     @include('new_perawat.soap.show')

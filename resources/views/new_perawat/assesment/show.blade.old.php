@@ -214,7 +214,7 @@
 <div id="p_s_asdok">
     <div class="row">
         <div class="col-lg-6">
-            <h3>ASESMEN AWAL KLINIK (DOKTER)</h3>
+            <h3>ASSESMEN AWAL KLINIK (DOKTER)</h3>
             <small>Diisi pada tanggal <span id="tgl-baru-asdok"></span></small>
         </div>
         <div class="col-lg-6">
@@ -231,64 +231,56 @@
                         <td colspan="2"><h4 class="pt-2 font-weight-bold">ANAMNESIS</h4></td>
                     </tr>
                     <tr class="tr-title">
-                        <td>Data diperoleh dari</td>
-                        <td class="data" id="data-diperoleh-dari"></td>
+                        <td>Diperoleh data dari</td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
                         <td>Keluhan Utama</td>
-                        <td class="data" id="keluhan-utama"></td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
                         <td>Riwayat Perjalanan Penyakit</td>
-                        <td class="data" id="riwayat-perjalanan-penyakit"></td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
                         <td>Riwayat Penyakit Dahulu</td>
-                        <td class="data" id="riwayat-penyakit-dahulu"></td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
                         <td>Riwayat Pengobatan</td>
-                        <td class="data" id="riwayat-pengobatan"></td>
+                        <td class="data"></td>
+                    </tr>
+                    <tr class="tr-title">
+                        <td>Alat Implant</td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
                         <td>Riwayat Penyakit Dalam Keluarga</td>
-                        <td class="data" id="riwayat-penyakit-dalam-keluarga"></td>
+                        <td class="data"></td>
+                    </tr>
+                    <tr class="tr-title">
+                        <td>Riwayat Pribadi (Personal, Sosial, Lingkungan) / Kebiasaan</td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
                         <td>Pemeriksaan Multi Organ</td>
-                        <td class="data" id="pemeriksaan-multi-organ"></td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
-                        <td>Kepala Dan Leher TORAKS: Paru(inspeksi,palpasi,perkursi dan auskultasi)</td>
-                        <td class="data" id="kepala-dan-leher-toraks"></td>
+                        <td>Daftar Masalah</td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
-                        <td>Jantung(inspeksi,palpasi,perkursi dan auskultasi)</td>
-                        <td class="data" id="jantung"></td>
+                        <td>Penatalaksanaan</td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
-                        <td>ABDOMEN</td>
-                        <td class="data" id="abdomen"></td>
+                        <td>Kontrol Ulang</td>
+                        <td class="data"></td>
                     </tr>
                     <tr class="tr-title">
-                        <td>GENITALIA DAN ANUS(diperiksa bila ada indikasi)</td>
-                        <td class="data" id="genitalia-dan-anus"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>HASIL PEMERIKSAAN PENUNJANG</td>
-                        <td class="data" id="hasil-pemeriksaan-penunjang"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>DAFTAR MASALAH/DIAGNOSIS MEDIK</td>
-                        <td class="data" id="daftar-masalah-diagnosis-medik"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>TATA LAKSANA AWAL</td>
-                        <td class="data" id="tata-laksana-awal"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Tanggal Pemberian</td>
-                        <td class="data" id="tanggal-pemberian"></td>
+                        <td>Masuk Rawat Inap</td>
+                        <td class="data"></td>
                     </tr>
                 </tbody>
             </table>

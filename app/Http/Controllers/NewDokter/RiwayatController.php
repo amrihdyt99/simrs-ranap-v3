@@ -174,4 +174,59 @@ class RiwayatController extends Controller
             ], 500);
         }
     }
+
+    public function getAssesmentData(Request $request)
+    {
+        $dataPasien = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where('m_registrasi.reg_no', $request->reg_no)
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName', 'm_registrasi.*')
+            ->first();
+
+        $assesmentData = DB::connection('mysql')
+            ->table('assesment_awal_dokter')
+            ->where('no_reg', $request->reg_no)
+            ->where('deleted', 0)
+            ->select(
+                'no_reg',
+                'anamnesis',
+                'keluhan_utama',
+                'riwayat_penyakit_sekarang',
+                'riwayat_penyakit_dahulu',
+                'riwayat_pengobatan',
+                'riwayat_penyakit_keluarga',
+                'pemeriksaan_multi_organ',
+                'toraks',
+                'jantung',
+                'abdomen',
+                'ekstremitas_atas_bawah',
+                'genetalia_dan_anus',
+                'hasil_pemeriksaan_penunjang',
+                'daftar_masalah_medik',
+                'tata_laksana_awal',
+                'tanggal_pemberian'
+            )
+            ->first();
+
+        $data = [
+            'dataPasien' => $dataPasien,
+            'assesmentData' => $assesmentData
+        ];
+
+        return response()->json($data);
+    }
+
+    public function getEdukasiData(Request $request)
+    {
+        $edukasiData = DB::table('rs_edukasi_pasien_dokter')
+            ->where('rs_edukasi_pasien_dokter.reg_no', $request->reg_no)
+            ->first();
+
+        return response()->json($edukasiData);
+    }
+
+
+
 }
