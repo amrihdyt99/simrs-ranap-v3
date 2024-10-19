@@ -350,12 +350,16 @@ function getCurrentBPJSPrice($currentData = [])
 
         if ($currentData['payer'] == 2 && $convertChargeClass->ChargeClassCode != '005') {
             // COMPARE PREVIOUS AND CURRENT CHARGE CLASS TO DECIDE IF GET NEW PRICE OR NOT
-            if (isset($currentData['PreviousChargeClassCode']) && $currentData['PreviousChargeClassCode'] != $currentData['ChargeClassCode']) {
+            if (isset($currentData['PreviousChargeClassCode']) && $currentData['PreviousChargeClassCode'] != $currentData['ChargeClassCode']) {   
                 $tarif = getItemTindakan($currentData['regNo'], $convertChargeClass->ChargeClassCode, $currentData['itemType'], $currentData['itemCode']);
 
                 $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
-            } else {
+            } else if (isset($currentData['PreviousChargeClassCode']) && $currentData['PreviousChargeClassCode'] == $currentData['ChargeClassCode']) { 
                 $tarif = $currentData['currentPrice'];
+            } else {
+                $tarif = getItemTindakan($currentData['regNo'], $convertChargeClass->ChargeClassCode, $currentData['itemType'], $currentData['itemCode']);
+                
+                $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
             }
         } else {
             $tarif = $currentData['currentPrice'];
