@@ -402,4 +402,4 @@ Route::prefix('dokter')->name('dokter.')->group(function () {
 
 Route::post('/add-edukasi-anastesi', [EdukasiAnastesiController::class, 'addEdukasiAnastesi'])->name('add.edukasi.anastesi');
 Route::get('/get-edukasi-anastesi', [EdukasiAnastesiController::class, 'getEdukasiAnastesi'])->name('get.edukasi.anastesi');
-Route::get('getPPALainnya', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getPPALainnya']);
+Route::get('getPPALainnya', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getPPALainnya'])->name('getPPALainnya');
