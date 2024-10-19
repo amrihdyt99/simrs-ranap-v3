@@ -1733,7 +1733,7 @@
                 cache: true 
             },
             placeholder: 'Pilih Tindakan',
-            minimumInputLength: 3 
+            minimumInputLength: 2 
         });
     }
 
