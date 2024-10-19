@@ -409,3 +409,9 @@ Route::get('/getRiwayatPenunjang', [App\Http\Controllers\NewDokter\RiwayatContro
 
 Route::get('/getRiwayatSoap', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatSoap']);
 Route::get('/getRiwayatObat', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatObat']);
+
+//assesment awal dokterrrr
+Route::get('/assesment-awal-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getAssesmentData'])->name('assesment-awal-dokter');
+//edukasi dokter
+Route::get('/edukasi-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getEdukasiData'])->name('edukasi-dokter');
+
