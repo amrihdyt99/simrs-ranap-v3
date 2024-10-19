@@ -168,6 +168,11 @@ class BillingController extends AaaBaseController
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromLab($request->reg_ri, $currentData));
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRadiology($request->reg_ri, $currentData));
         $order_penunjang = array_merge($order_penunjang, $this->getOrderFromPharmacy($request->reg_ri));
+        $order_penunjang = array_merge($order_penunjang, $this->getOrderFromRajal($request->reg_ri));
+
+        foreach ($order_penunjang as $op_key => $op_value) {
+            // $order_penunjang[$op_key]['ItemReview'] = 1;
+        }
 
         if (str_contains($request->reg_rj, '/ER/')) {
             $order_penunjang_prev = array_merge($order_penunjang_prev, $this->getOrderFromSphaira($request->reg_rj, $request->class));
@@ -371,6 +376,37 @@ class BillingController extends AaaBaseController
                     }
                 }
             }
+        }
+
+        return $order_penunjang;
+    }
+
+    public function getOrderFromRajal($reg_no){
+        $order_penunjang = [];
+
+        $data = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$reg_no);
+
+        $data = json_decode($data);
+
+        foreach ($data as $key => $value) {
+            $item['ItemUId'] = Str::random(5);
+            $item['ItemReg'] = $value->cpoe_reg;
+            $item['ItemCode'] = $value->cpoe_kode_tindakan;
+            $item['ItemOrder'] = $value->cpoe_id_tindakan;
+            $item['ItemOrderCode'] = $value->cpoe_kode;
+            $item['ItemTanggal'] = $value->cpoe_created;
+            $item['ItemName1'] = $value->cpoe_name;
+            $item['ItemBundle'] = null;
+            $item['ItemTindakan'] = $value->cpoe_jenis;
+            $item['ItemTarif'] = $value->cpoe_tarif;
+            $item['ItemTarifAwal'] = $value->cpoe_tarif;
+            $item['ItemJumlah'] = $value->cpoe_jumlah;
+            $item['ItemDokter'] = $value->cpoe_dokter;
+            $item['ItemPoli'] = 'Rehab Medik';
+            $item['ItemReview'] = '-';
+            $item['NonBPJS'] = 0;
+
+            array_push($order_penunjang, $item);
         }
 
         return $order_penunjang;

@@ -260,13 +260,19 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <small class="not_review bg-danger px-4 mr-2"></small> : Belum review | <i class="fas fa-check fa-lg text-success"></i> : Item ditagihkan
-                            <span class="float-right"><input type="checkbox" id="selecting_items" data-category="all" data-source="all"> Pilih semua item</span>
+                            <div class="p-2">
+                                Keterangan : <span class="not_review bg-danger px-4 ml-2"></span> Belum review | <i class="fas fa-check fa-lg text-success"></i> Item ditagihkan
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <input type="checkbox" id="selecting_items" data-category="all" data-source="all"> Pilih semua item
+                            </div>
                         </div>
 
                         <input id="billing_detail_json" name="billing_detail_json" type="hidden" value="[]">
                     </div>
-
+                    <div class="row">
+                        <div class="col-lg-12" id="alertNotification"></div>
+                    </div>
                     <div class="table-responsive">
                         {{-- <div id="panel-order" class="row equal-height"></div> --}}
                         <table width="100%" class="table-r mt-5" id="panel-order">
@@ -336,6 +342,7 @@
     var difference = 0
     var remain = 0
     var sum_nominal = 0
+    var unreviewed = 0
 
     var payer = ''
 
@@ -501,8 +508,8 @@
         })
     }
 
+    
     getDataOrder()
-
     function getDataOrder() {
         orders = []
         selected_orders = []
@@ -513,8 +520,7 @@
         difference = 0
         remain = 0
         sum_nominal = 0
-
-        // getItem('LAIN')
+        unreviewed = 0
 
         $('[id*="selecting_items"]').prop('checked', false)
         $('[id="multi_payer"]').val("").trigger('change')
@@ -591,6 +597,8 @@
                                     'name': sub_item,
                                     'count': 1
                                 })
+
+                                unreviewed += 1
                             }
 
                             $btn = ''
@@ -662,6 +670,18 @@
                             })
                         }
                     })
+                    
+                    // COUNT UNREVIEWED ITEMS
+                    if (unreviewed > 0) {
+                        $('[id="alertNotification"]').html(`
+                            <span class="text-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Transaksi belum bisa dilakukan, ada item tindakan yang belum direview, mohon untuk menghubungi bagian terkait
+                            </span>
+                        `)
+                    } else {
+                        $('[id="alertNotification"]').html(``)
+                    }
 
                     getStatusTagihan()
 
@@ -804,7 +824,9 @@
                 })
             }
 
-            $('[id="btn-validasi-billing"]').show()
+            if (unreviewed < 1) {
+                $('[id="btn-validasi-billing"]').show()
+            }
         } else {
             if (category == 'all') {
                 selected_orders = []
@@ -831,7 +853,7 @@
 
             $('[id="btn-validasi-billing"]').hide()
         }
-
+        
         total = selected_orders.reduce((acc, o) => acc + (parseFloat(o.ItemTarifAwal) * parseFloat(o.ItemJumlah)), 0)
 
         $('[id="validasi-tagihan"]').html('Rp. ' + formatNumber(formatNumber(parseFloat(total).toFixed(2))))
@@ -1053,6 +1075,14 @@
                     }
 
                     $('span[onclick*="deleteItem("]').show()
+                }
+
+                $checkAlertNotification = $('[id="alertNotification"]').html()
+
+                if ($checkAlertNotification) {
+                    $('[id="btn-validasi-billing"]').hide()
+                } else {
+                    $('[id="btn-validasi-billing"]').show()
                 }
             }
         });
