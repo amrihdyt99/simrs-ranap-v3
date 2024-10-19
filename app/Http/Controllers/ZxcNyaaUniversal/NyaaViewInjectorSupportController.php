@@ -41,7 +41,11 @@ class NyaaViewInjectorSupportController extends AaaBaseController
 
         DB::table('job_orders_dt')
             ->where('id', $request->id)
-            ->delete();
+            ->update([
+                'deleted' => 1,
+                'deleted_by' => auth()->user()->id,
+                'deleted_at' => Carbon::now(),
+            ]);
 
         return response()->json(["sukses_pesan" => 'Sukses! Data berhasil dihapus.'], 200);
     }
