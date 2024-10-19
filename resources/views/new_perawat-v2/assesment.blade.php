@@ -160,12 +160,22 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
                 <div class="row">
+                    <div class="left-tab" id="tab-physician-team" onclick="clickTab('physician-team')">
+                        Physician Team
+                    </div>
+                </div>
+                <div class="row">
                     <div class="left-tab" id="tab-soap" onclick="clickTab('soap')">
                         CPPT
                     </div>
                 </div>
                 @else
                 @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
+                <div class="row">
+                    <div class="left-tab" id="tab-physician-team" onclick="clickTab('physician-team')">
+                        Physician Team
+                    </div>
+                </div>
                 <div class="row">
                     <div class="left-tab active" id="tab-radiologi" onclick="clickTab('radiologi')">
                         Radiologi
