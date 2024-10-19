@@ -1090,7 +1090,8 @@ class OrderObatController extends Controller
     {
         try {
             $check = DB::table('rs_pasien_instruksi_luar')
-                ->where('id_cppt', $request->id_cppt)
+                ->where('reg_no', $request->reg_no)
+                ->whereDate('created_at', date('Y-m-d'))
                 ->first();
 
             $data = [

@@ -32,7 +32,7 @@ use App\Http\Controllers\Master\v2\NewServiceUnitController;
 use App\Http\Controllers\Master\v2\SiteDepartmentController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter,perawat'])->group(function () {
+Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter,perawat,farmasi'])->group(function () {
     /*
     Route::get('/', function () {
         return redirect()->route('master.bed.index');
