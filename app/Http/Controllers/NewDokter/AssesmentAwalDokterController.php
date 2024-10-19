@@ -451,30 +451,27 @@ class AssesmentAwalDokterController extends Controller
 
                 $resp = json_decode($send_to_radiology);
 
-                foreach ($cek_rad as $value_rad) {
-                    DB::table('job_orders_dt')
-                        ->where('id', $value_rad->id)
-                        ->update([
-                            'order_no' => $a['job_order_no']
-                        ]);
-                }
-
                 if ($resp->success) {
+                    foreach ($cek_rad as $value_rad) {
+                        DB::table('job_orders_dt')
+                            ->where('id', $value_rad->id)
+                            ->update([
+                                'order_no' => $a['job_order_no']
+                            ]);
+                    }
+
                     $jobOrder['dikirim_ke_farmasi'] = 1;
-                } else {
-                    $jobOrder['dikirim_ke_farmasi'] = 0;
+                    $jobOrder['order_no'] = $a['job_order_no'];
+                    $jobOrder['reg_no'] = $reg->reg_no;
+                    $jobOrder['kode_dokter'] = $value->dokter_order;
+                    $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
+                    $jobOrder['service_unit'] = $reg->service_unit;
+                    $jobOrder['id_cppt'] = $id;
+                    $jobOrder['status_kirim'] = $send_to_radiology;
+
+                    $store_jor = DB::table('job_orders')
+                                    ->insert($jobOrder);
                 }
-
-                $jobOrder['order_no'] = $a['job_order_no'];
-                $jobOrder['reg_no'] = $reg->reg_no;
-                $jobOrder['kode_dokter'] = $value->dokter_order;
-                $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
-                $jobOrder['service_unit'] = $reg->service_unit;
-                $jobOrder['id_cppt'] = $id;
-                $jobOrder['status_kirim'] = $send_to_radiology;
-
-                $store_jor = DB::table('job_orders')
-                                ->insert($jobOrder);
 
                 if ($resp->success == false) {
                     return [
@@ -514,6 +511,18 @@ class AssesmentAwalDokterController extends Controller
                     'reg_medrec',
                 ])
                 ->first();
+
+            $pasien = '';
+
+            if (isset($reg)) {
+                $pasien = DB::connection('mysql2')
+                    ->table('m_pasien')
+                    ->where('MedicalNo', $reg->reg_medrec)
+                    ->select([
+                        'PatientAddress'
+                    ])
+                    ->first();
+            }
 
             $cito = 1;
             $item = [];
@@ -573,35 +582,33 @@ class AssesmentAwalDokterController extends Controller
             $a['order_type'] = 'Laboratory';
             $a['medical_no'] = $reg->reg_medrec;
             $a['scheduled_dttm'] = date('YmdHis');
+            $a['address'] = $pasien->PatientAddress ?? '-';
 
             $send_to_laboratory = postService(urlLabRadiology().'/api/order-lab', $a);
 
             $resp = json_decode($send_to_laboratory);
 
-            foreach ($cek_lab as $value_lab) {
-                DB::table('job_orders_dt')
-                    ->where('id', $value_lab->id)
-                    ->update([
-                        'order_no' => $a['job_order_no']
-                    ]);
-            }
-
             if ($resp->success) {
+                foreach ($cek_lab as $value_lab) {
+                    DB::table('job_orders_dt')
+                        ->where('id', $value_lab->id)
+                        ->update([
+                            'order_no' => $a['job_order_no']
+                        ]);
+                }
+
                 $jobOrder['dikirim_ke_farmasi'] = 1;
-            } else {
-                $jobOrder['dikirim_ke_farmasi'] = 0;
+                $jobOrder['order_no'] = $a['job_order_no'];
+                $jobOrder['reg_no'] = $reg->reg_no;
+                $jobOrder['kode_dokter'] = $cek_lab[0]->dokter_order;
+                $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
+                $jobOrder['service_unit'] = $reg->service_unit;
+                $jobOrder['id_cppt'] = $id;
+                $jobOrder['status_kirim'] = $send_to_laboratory;
+
+                $store_jor = DB::table('job_orders')
+                                ->insert($jobOrder);
             }
-
-            $jobOrder['order_no'] = $a['job_order_no'];
-            $jobOrder['reg_no'] = $reg->reg_no;
-            $jobOrder['kode_dokter'] = $cek_lab[0]->dokter_order;
-            $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
-            $jobOrder['service_unit'] = $reg->service_unit;
-            $jobOrder['id_cppt'] = $id;
-            $jobOrder['status_kirim'] = $send_to_laboratory;
-
-            $store_jor = DB::table('job_orders')
-                            ->insert($jobOrder);
 
             if ($resp->success == false) {
                 return [
@@ -676,17 +683,25 @@ class AssesmentAwalDokterController extends Controller
             'is_dokter' => '1',
         );
 
+        $rad = $this->kirim_rad($request->soapdok_id, $request->id);
+        $lab = $this->kirim_lab($request->soapdok_id, $request->id);
+
+        if (isset($lab) || isset($rad)) {
+            return response()->json([
+                'success' => false,
+                'lab' => $lab, 
+                'rad' => $rad, 
+            ]);
+        }
+
         $simpancppt = DB::connection('mysql')
             ->table('rs_pasien_cppt')
             ->where('soapdok_id', $request->soapdok_id)
             ->update($paramscppt);
 
         if ($simpancppt == true) {
-            $this->kirim_rad($request->soapdok_id, $request->id);
-            $this->kirim_lab($request->soapdok_id, $request->id);
-            
             return response()->json([
-                'success' => true
+                'success' => true,
             ]);
         } else {
             return response()->json([

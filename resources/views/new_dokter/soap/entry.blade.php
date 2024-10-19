@@ -19,6 +19,7 @@
 @endif
 
 <button class="btn btn-primary float-right mb-3 mr-1" onclick="$('#modalViewHistorySoap').modal('show')"><i class="fas fa-history"></i> View History SOAP</button>
+<button class="btn btn-info float-right mb-3 mr-1" onclick="getSoapDokter()"><i class="fas fa-redo"></i> Reload Data</button>
 
 
 <table class="table1" rules="all" style="width:100%">

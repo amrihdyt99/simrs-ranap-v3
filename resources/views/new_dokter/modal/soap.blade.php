@@ -271,7 +271,9 @@
           @endif
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary float-right" onclick="clickTab('soap')" data-dismiss="modal">Tutup Panel CPPT</button>
-            <button type="button"  class="btn btn-success" id="btn-save-soapdok" onclick="simpanCppt()">Simpan CPPT</button>
+            <div id="actionButtonCPPTDokter">
+                <button type="button"  class="btn btn-success" id="btn-save-soapdok" onclick="simpanCppt()">Simpan CPPT</button>
+            </div>
         </div>
       </div>
     </div>
@@ -557,12 +559,34 @@
                     "id":"{{ auth()->user()->id}}",
 
                 },
+                beforeSend: function(){
+                    $('[id="actionButtonCPPTDokter"]').html(`
+                        <button type="button" class="btn btn-warning" disabled><i class="fas fa-spinner fa-spin"></i> Proses data</button>
+                    `)
+                },
                 success: function (data) {
+                    $('[id="actionButtonCPPTDokter"]').html(`
+                        <button type="button"  class="btn btn-success" id="btn-save-soapdok" onclick="simpanCppt()">Simpan CPPT</button>
+                    `)
                     if(data.success == true){
                         $('#modalSOAP').modal('hide');
                         getSoapDokter()
                         clickTab('soap')
-                    }else{
+                    } else if (!data.lab.success) {
+                        Swal.fire({
+                            title: 'Gagal kirim order lab',
+                            text: data.lab.message+', mohon hubungi Tim Administrator',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    } else if (!data.rad.success) {
+                        Swal.fire({
+                            title: 'Gagal kirim order radiologi',
+                            text: data.rad.message+', mohon hubungi Tim Administrator',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    } else{
                         Swal.fire({
                             title: 'Gagal',
                             text: 'Data CPPT gagal disimpan',
