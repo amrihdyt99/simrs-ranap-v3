@@ -420,7 +420,7 @@
         const reg = '{{$dataPasien->reg_no}}';
         const rm = '{{$dataPasien->reg_medrec}}';
         const bed = '{{$dataPasien->currentLocation["BedID"]}}';
-        const utama = '{{$dataPasien->dpjpName}}';
+        const utama = '{{$dataPasien->reg_dokter}}';
         const soapdok_dokter = '{{ auth()->user()->dokter_id}}';
         const nama_ppa = '{{auth()->user()->name}}';
 
