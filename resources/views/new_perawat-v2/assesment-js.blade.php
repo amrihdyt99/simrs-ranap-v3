@@ -1029,6 +1029,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
+                            neko_select2_init(`{{ route("getPPALainnya") }}`, 'physician_kode_lainnya ');
                             getPhysicianTeamPerawat();
                         },
                         error: function(data) {

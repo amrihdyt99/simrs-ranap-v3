@@ -402,4 +402,16 @@ Route::prefix('dokter')->name('dokter.')->group(function () {
 
 Route::post('/add-edukasi-anastesi', [EdukasiAnastesiController::class, 'addEdukasiAnastesi'])->name('add.edukasi.anastesi');
 Route::get('/get-edukasi-anastesi', [EdukasiAnastesiController::class, 'getEdukasiAnastesi'])->name('get.edukasi.anastesi');
-Route::get('getPPALainnya', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getPPALainnya']);
+Route::get('getPPALainnya', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getPPALainnya'])->name('getPPALainnya');
+// Riwayat Dokter
+Route::get('/getRiwayatPenunjang', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatPenunjang']);
+// Route::get('/getRiwayatSOAP', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatSOAP']);
+
+Route::get('/getRiwayatSoap', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatSoap']);
+Route::get('/getRiwayatObat', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatObat']);
+
+//assesment awal dokterrrr
+Route::get('/assesment-awal-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getAssesmentData'])->name('assesment-awal-dokter');
+//edukasi dokter
+Route::get('/edukasi-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getEdukasiData'])->name('edukasi-dokter');
+
