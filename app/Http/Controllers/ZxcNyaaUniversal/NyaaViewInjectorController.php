@@ -409,12 +409,23 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('asdewasa_reg', $request->reg_no)
             ->latest()->first();
 
+        $diagnosa_gizi_dewasa = DB::connection('mysql')
+            ->table('diagnosa_gizi_dewasa')
+            ->where('reg_no', $request->reg_no)
+            ->get();
+
+        $monitoring_evaluasi_gizi_dewasa = DB::connection('mysql')
+            ->table('monitoring_evaluasi_gizi_dewasa')
+            ->where('reg_no', $request->reg_no)
+            ->get();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'assesment_gizi_dewasa' => optional($assesment_gizi_dewasa),
             'asuhan_gizi_dewasa' => optional($asuhan_gizi_dewasa),
-
+            'diagnosa_gizi_dewasa' => $diagnosa_gizi_dewasa,
+            'monitoring_evaluasi_gizi_dewasa' => $monitoring_evaluasi_gizi_dewasa,
         );
         return view('new_perawat.gizi.index_dewasa')
             ->with($context);

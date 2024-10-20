@@ -314,6 +314,7 @@
             data: $('#form_assesment_gizi_dewasa').serialize() + '&diagnosa=' + $('#t_asuhan_gizi_dewasa').html() + '&monitoring=' + $('#t_monitoring_asuhan_gizi_dewasa').html() + "&medrec=" + medrec + "&regno=" + regno,
             success: function(data) {
                 neko_simpan_success();
+                $('.left-tab.active').click();
             },
             error: function(data) {
                 neko_simpan_error_noreq();

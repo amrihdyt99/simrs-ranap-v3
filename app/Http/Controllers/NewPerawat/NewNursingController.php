@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class NewNursingController extends Controller
 {
@@ -3342,5 +3343,76 @@ class NewNursingController extends Controller
         $ews = DB::connection('mysql')->table('monitoring_news')->where('reg_no', $request->reg_no)->orderBy('tanggal_dan_waktu', 'DESC')->first();
 
         return $ews;
+    }
+
+    public function StoreAsuhanGiziDewasa(Request $request)
+    {
+        extract($request->all());
+        $asuhan['asdewasa_reg'] = $request->reg_no;
+
+        DB::beginTransaction();
+
+        try {
+            $validator = Validator::make($request->all(), []);
+
+            if ($validator->passes()) {
+                $cek = DB::connection('mysql')
+                    ->table('asuhan_gizi_dewasa')
+                    ->where('asdewasa_reg', $request->reg_no)
+                    ->count();
+                
+                if ($cek > 0) {
+                    $update = DB::connection('mysql')
+                        ->table('asuhan_gizi_dewasa')
+                        ->where('asdewasa_reg', $request->reg_no)
+                        ->update($asuhan);
+                } else {
+                    $store = DB::connection('mysql')
+                        ->table('asuhan_gizi_dewasa')
+                        ->insert($asuhan);
+                }
+
+                DB::connection('mysql')->table('diagnosa_gizi_dewasa')
+                    ->where('reg_no', $request->reg_no)
+                    ->delete();
+
+                $diagnosa = $request->input('diagnosa', []);
+
+                foreach ($diagnosa as $row) {
+                    DB::connection('mysql')->table('diagnosa_gizi_dewasa')->insert([
+                        'reg_no' => $request->reg_no,
+                        'med_rec' => $request->med_rec,
+                        'masalah' => $row['masalah'],
+                        'berkaitan_dengan' => $row['berkaitan_dengan'],
+                        'ditandai_dengan' => $row['ditandai_dengan'],
+                        'created_at' => now(),
+                    ]);
+                }
+
+                DB::connection('mysql')->table('monitoring_evaluasi_gizi_dewasa')
+                    ->where('reg_no', $request->reg_no)
+                    ->delete();
+
+                $monitoring = $request->input('monitoring', []);
+
+                foreach ($monitoring as $row) {
+
+                    DB::connection('mysql')->table('monitoring_evaluasi_gizi_dewasa')->insert([
+                        'reg_no' => $request->reg_no,
+                        'med_rec' => $request->med_rec,
+                        'tanggal' => $row['tanggal'],
+                        'monitoring_evaluasi' => $row['monitoring_evaluasi'],
+                        'terapi_diet' => $row['terapi_diet'],
+                        'nama_dietisien' => $row['nama_dietisien'],
+                        'paraf_dietisien' => $row['paraf_dietisien'],
+                        'created_at' => now(),
+                    ]);
+                }
+                DB::commit();
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 }
