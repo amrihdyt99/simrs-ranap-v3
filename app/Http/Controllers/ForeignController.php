@@ -15,6 +15,8 @@ class ForeignController extends Controller
 
             $getUser = User::where('dokter_id', $request->dokter_code)->first();
 
+            $currentLocation = getCurrentLocation($request->reg_no);
+
             $data = [
                 "reg_no" => $getData->reg_no,
                 "reg_medrec" => $getData->reg_medrec,
@@ -23,10 +25,11 @@ class ForeignController extends Controller
                 "reg_tipe_kunj" => "",
                 "reg_cara_bayar" => "Corporate",
                 "reg_no_dokumen" => 1,
-                "reg_class" => '00'.$getData->charge_class_code ?? $getData->reg_class,
+                "reg_class" => $currentLocation['ChargeClassCode'],
                 "reg_no_kartu" => $getData->reg_no_kartu,
                 "reg_corporate" => $getData->reg_cara_bayar,
-                "reg_user" => $getUser->name
+                "reg_user" => $getUser->name,
+                "reg_tgl" => date('Y-m-d H:i:s')
             ];
 
             $sendData = postService(urlSimrs().'api/rajal/pendaftaran/storeRegistrationFromOthers', $data);

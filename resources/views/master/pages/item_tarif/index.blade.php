@@ -11,9 +11,9 @@
 @section('nyaa_content_body')
 <div class="row mb-2">
   <div class="col-sm-10 pb-3">
-    <a href="{{ route('master.item-tarif.create') }}" class="protecc btn btn-sm btn-success">
+    <!-- <a href="{{ route('master.item-tarif.create') }}" class="protecc btn btn-sm btn-success">
       Tambah Data Baru
-    </a>
+    </a> -->
   </div>
   <div class="col-sm-2">
     <button id="tarikDataItemTarif" class="btn btn-primary">

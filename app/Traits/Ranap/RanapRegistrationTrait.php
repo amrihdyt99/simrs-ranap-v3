@@ -343,40 +343,36 @@ trait RanapRegistrationTrait
     }
 
     public function getDataSlipAdmisi($regno)
-    {
-        $datamypatient = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
-            ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
-            ->leftJoin('m_room_class', 'm_registrasi.reg_class', '=', 'm_room_class.ClassCode')
-            ->leftJoin('m_registrasi_pj', 'm_registrasi.reg_no', '=', 'm_registrasi_pj.reg_no')
-            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
-            ->select(
-                'm_registrasi.*',
-                'm_pasien.*',
-                'm_paramedis.ParamedicName',
-                'm_paramedis.FeeAmount',
-                'm_ruangan_baru.*',
-                'businesspartner.BusinessPartnerName as reg_cara_bayar_name',
-                'm_room_class.ClassName as reg_class_name'
-            )
-            ->first();
+{
+    $datamypatient = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+        ->leftJoin('m_ruangan_baru', 'm_registrasi.service_unit', '=', 'm_ruangan_baru.id')
+        ->leftJoin('businesspartner', 'm_registrasi.reg_cara_bayar', '=', 'businesspartner.id')
+        ->leftJoin('m_room_class', 'm_registrasi.reg_class', '=', 'm_room_class.ClassCode')
+        ->leftJoin('m_registrasi_pj', 'm_registrasi.reg_no', '=', 'm_registrasi_pj.reg_no')
+        ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
+        ->select(
+            'm_registrasi.*',
+            'm_pasien.*',
+            'm_paramedis.ParamedicName',
+            'm_paramedis.FeeAmount',
+            'm_ruangan_baru.*',
+            'businesspartner.BusinessPartnerName as reg_cara_bayar_name',
+            'm_room_class.ClassName as reg_class_name'
+        )
+        ->first();
 
-        if ($datamypatient) {
-            $ranap_reg = $datamypatient->reg_lama;
-            if ($ranap_reg) {
-                $response = \Illuminate\Support\Facades\Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/' . str_replace('/', '_', $ranap_reg));
-                if ($response->successful()) {
-                    $dataFromApi = $response->json();
-                    if (!empty($dataFromApi)) {
-                        $datamypatient->poli_asal = $dataFromApi['poli_asal'] ?? null;
-                        $datamypatient->ranap_diagnosa = $dataFromApi['ranap_diagnosa'] ?? null;
-                    } else {
-                        $datamypatient->poli_asal = null;
-                        $datamypatient->ranap_diagnosa = null;
-                    }
+    if ($datamypatient) {
+        $ranap_reg = $datamypatient->reg_lama;
+        if ($ranap_reg) {
+            $response = \Illuminate\Support\Facades\Http::get('http://rsud.sumselprov.go.id/simrs-rajal/api/rajal/pendaftaran/' . str_replace('/', '_', $ranap_reg));
+            if ($response->successful()) {
+                $dataFromApi = $response->json();
+                if (!empty($dataFromApi)) {
+                    $datamypatient->poli_asal = $dataFromApi['poli_asal'] ?? null;
+                    $datamypatient->ranap_diagnosa = $dataFromApi['ranap_diagnosa'] ?? null;
                 } else {
                     $datamypatient->poli_asal = null;
                     $datamypatient->ranap_diagnosa = null;
@@ -385,33 +381,60 @@ trait RanapRegistrationTrait
                 $datamypatient->poli_asal = null;
                 $datamypatient->ranap_diagnosa = null;
             }
-
-            $penanggungJawab = DB::connection('mysql2')
-                ->table('m_registrasi_pj')
-                ->where('reg_no', $this->parseRegNoByUnderScore($regno))
-                ->pluck('reg_pjawab_nama')
-                ->toArray();
-
-            if (empty($penanggungJawab)) {
-                $penanggungJawab[] = $datamypatient->PatientName;
-            } else {
-                if (!in_array($datamypatient->PatientName, $penanggungJawab)) {
-                    $penanggungJawab[] = $datamypatient->PatientName;
-                }
-            }
-
-            $datamypatient->penanggung_jawab_list = $penanggungJawab;
+        } else {
+            $datamypatient->poli_asal = null;
+            $datamypatient->ranap_diagnosa = null;
         }
 
-        $user = auth()->user();
-        $data['datamypatient'] = $datamypatient;
-        $data['datapasien'] = $datamypatient;
-        $data['user_name'] = $user->name;
-        $data['user_signature'] = $user->signature;
-        $url_qr = route('agreement.admisi', $regno);
-        $data['qrcode'] = QrCode::size(150)->generate($url_qr);
-        return $data;
+        $penanggungJawab = DB::connection('mysql2')
+            ->table('m_registrasi_pj')
+            ->where('reg_no', $this->parseRegNoByUnderScore($regno))
+            ->pluck('reg_pjawab_nama')
+            ->toArray();
+
+        if (empty($penanggungJawab)) {
+            $penanggungJawab[] = $datamypatient->PatientName;
+        } else {
+            if (!in_array($datamypatient->PatientName, $penanggungJawab)) {
+                $penanggungJawab[] = $datamypatient->PatientName;
+            }
+        }
+
+        $datamypatient->penanggung_jawab_list = $penanggungJawab;
+
+        // Mengambil data perawat dari field reg_perawat_care
+        $regPerawatCare = json_decode($datamypatient->reg_perawat_care, true);
+        if ($regPerawatCare && isset($regPerawatCare[0]['kode'])) {
+            $perawatKode = $regPerawatCare[0]['kode'];
+            \Log::info('Kode Perawat: ' . $perawatKode);
+
+            // Mengambil nama dan tanda tangan perawat dari tabel users
+            $perawat = DB::connection('mysql2')->table('users')
+                ->where('perawat_id', $perawatKode)
+                ->select('name', 'signature')
+                ->first();
+
+            if ($perawat) {
+                $datamypatient->perawat_name = $perawat->name;
+                $datamypatient->perawat_signature = $perawat->signature;
+            } else {
+                \Log::info('Perawat tidak ditemukan untuk kode: ' . $perawatKode);
+            }
+        } else {
+            \Log::info('Field reg_perawat_care kosong atau format tidak valid.');
+        }
     }
+
+    $user = auth()->user();
+    $data['datamypatient'] = $datamypatient;
+    $data['datapasien'] = $datamypatient;
+    $data['user_name'] = $user->name;
+    $data['user_signature'] = $user->signature;
+    $url_qr = route('agreement.admisi', $regno);
+    $data['qrcode'] = QrCode::size(150)->generate($url_qr);
+
+    return $data;
+}
 
     public function getDataGeneralConsent($regno)
     {
@@ -456,53 +479,85 @@ trait RanapRegistrationTrait
     }
 
     public function getDataSuratRawatIntensif($reg_no)
-    {
-        $data_pasien = DB::connection('mysql2')
-            ->table('m_registrasi')
-            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($reg_no))
-            ->select(
-                'm_pasien.PatientName as nama',
-                'm_pasien.DateOfBirth as tanggal_lahir',
-                'm_pasien.GCSex as jenis_kelamin',
-                'm_pasien.PatientAddress as alamat',
-                'm_pasien.MedicalNo as nomor_rm',
-                'm_registrasi.reg_no as reg_no'
-            )
+{
+    $data_pasien = DB::connection('mysql2')
+        ->table('m_registrasi')
+        ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+        ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($reg_no))
+        ->select(
+            'm_pasien.PatientName as nama',
+            'm_pasien.DateOfBirth as tanggal_lahir',
+            'm_pasien.GCSex as jenis_kelamin',
+            'm_pasien.PatientAddress as alamat',
+            'm_pasien.MedicalNo as nomor_rm',
+            'm_registrasi.reg_no as reg_no',
+            'm_registrasi.reg_dokter_care',
+            'm_registrasi.reg_perawat_care'
+        )
+        ->first();
+
+    $penanggungJawab = DB::connection('mysql2')
+        ->table('m_registrasi_pj')
+        ->where('reg_no', $this->parseRegNoByUnderScore($reg_no))
+        ->select(
+            'reg_pjawab_nama as familyname',
+            'jenis_kelamin as jenis_kelamin',
+            'reg_pjawab_alamat as keluarga_alamat',
+            'tanggal_lahir as tanggal_lahir_pj'
+        )
+        ->get();
+
+    foreach ($penanggungJawab as $pj) {
+        if ($pj->tanggal_lahir_pj) {
+            $pj->umur_pj = Carbon::parse($pj->tanggal_lahir_pj)->age;
+        }
+    }
+
+    $penanggungJawabList = $penanggungJawab->pluck('familyname')->toArray();
+    if (empty($penanggungJawabList)) {
+        $penanggungJawabList[] = $data_pasien->nama;
+    } elseif (!in_array($data_pasien->nama, $penanggungJawabList)) {
+        $penanggungJawabList[] = $data_pasien->nama;
+    }
+    $data_pasien->penanggung_jawab_list = $penanggungJawabList;
+    $data_pasien->penanggung_jawab = $penanggungJawab;
+
+    $regDokterCare = json_decode($data_pasien->reg_dokter_care, true);
+    if ($regDokterCare && isset($regDokterCare[0]['kode'])) {
+        $dokterKode = $regDokterCare[0]['kode'];
+        $dokter = DB::connection('mysql2')->table('users')
+            ->where('dokter_id', $dokterKode)
+            ->select('name', 'signature')
             ->first();
 
-        $penanggungJawab = DB::connection('mysql2')
-            ->table('m_registrasi_pj')
-            ->where('reg_no', $this->parseRegNoByUnderScore($reg_no))
-            ->select(
-                'reg_pjawab_nama as familyname',
-                'jenis_kelamin as jenis_kelamin',
-                'reg_pjawab_alamat as keluarga_alamat',
-                'tanggal_lahir as tanggal_lahir_pj'
-            )
-            ->get();
-
-        foreach ($penanggungJawab as $pj) {
-            if ($pj->tanggal_lahir_pj) {
-                $pj->umur_pj = Carbon::parse($pj->tanggal_lahir_pj)->age;
-            }
+        if ($dokter) {
+            $data_pasien->dokter_name = $dokter->name;
+            $data_pasien->dokter_signature = $dokter->signature;
         }
-
-        $penanggungJawabList = $penanggungJawab->pluck('familyname')->toArray();
-
-        if (empty($penanggungJawabList)) {
-            $penanggungJawabList[] = $data_pasien->nama;
-        } elseif (!in_array($data_pasien->nama, $penanggungJawabList)) {
-            $penanggungJawabList[] = $data_pasien->nama;
-        }
-
-        $data_pasien->penanggung_jawab_list = $penanggungJawabList;
-        $data_pasien->penanggung_jawab = $penanggungJawab;
-        $url = route('agreement.rawat-intensif', $reg_no);
-        $data_pasien->qrcode = QrCode::size(150)->generate($url);
-
-        return $data_pasien;
     }
+
+    $regPerawatCare = json_decode($data_pasien->reg_perawat_care, true);
+    if ($regPerawatCare && isset($regPerawatCare[0]['kode'])) {
+        $perawatKode = $regPerawatCare[0]['kode'];
+
+        $perawat = DB::connection('mysql2')->table('users')
+            ->where('perawat_id', $perawatKode)
+            ->select('name', 'signature')
+            ->first();
+
+        if ($perawat) {
+            $data_pasien->perawat_name = $perawat->name;
+            $data_pasien->perawat_signature = $perawat->signature;
+        }
+    }
+
+    $url = route('agreement.rawat-intensif', $reg_no);
+    $data_pasien->qrcode = QrCode::size(150)->generate($url);
+
+    return $data_pasien;
+}
+
+
 
     private function formatUsia($dateOfBirth)
     {

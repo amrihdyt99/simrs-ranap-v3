@@ -17,7 +17,7 @@
 
         #note {
             position: absolute;
-            left: 50px;
+            /* left: 50px; */
             top: 35px;
             padding: 0px;
             margin: 0px;
@@ -27,12 +27,12 @@
 </head>
 
 <body>
-    <table width="1002" border="1" align="center" cellpadding="0" cellspacing="0">
+    <table width="1002" border="0" align="center" cellpadding="0" cellspacing="0">
         <tr>
             <td width="998" align="center"><img src="{{asset('new_assets/images/kop.png')}}" alt="" width="1051" height="178" /><br />
                 <table width="1060" border="0" align="center" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td colspan="10" align="center"><em><h4><strong>SLIP ADMISSION</strong></h4></em></td>
+                        <td colspan="10" align="center"><em><h4><strong>SLIP ADMISI</strong></h4></em></td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -40,7 +40,7 @@
                         <td>&nbsp;</td>
                         <td colspan="2"><strong>Hari / tanggal / pukul</strong></td>
                         <td width="9">:</td>
-                        <td colspan="4">{{ isset($datapasien->reg_tgl) ? \Carbon\Carbon::parse($datapasien->reg_tgl)->format('d F Y') : '-' }}&nbsp;</td>
+                        <td colspan="4">{{ isset($datapasien->reg_tgl) ? \Carbon\Carbon::parse($datapasien->reg_tgl)->isoFormat('D MMMM Y') : '-' }}&nbsp;</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -204,6 +204,7 @@
                         <td>&nbsp;</td>
                         <td>Petugas Ruangan</td>
                         <td>:</td>
+                        <td>{{$datamypatient->perawat_name ?? '-'}}</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -503,7 +504,7 @@ IRD--}}
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td align="left"><strong>Palembang,</strong> {{ \Carbon\Carbon::now()->format('d F Y') }}</td>
+                        <td align="left"><strong>Palembang,</strong> {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
@@ -519,20 +520,20 @@ IRD--}}
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="center">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="left">&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td align="center"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         
                     </tr>
                     <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td align="center">
                             @if($datapasien->ttd_admisi!=null)
                             <img src="{{$datapasien->ttd_admisi}}" width="100" height="50" />
@@ -568,9 +569,14 @@ IRD--}}
                                 </span>
                             </div>
                         </td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+                        <td></td>
+                        <td></td> 
+                        <td align="center">
+                            @if($datapasien->perawat_signature != null)
+                                <img src="{{$datapasien->perawat_signature}}" width="150" height="100" /><br>
+                            @endif
+                            ({{ $datapasien->perawat_name ?? 'Nama Perawat' }})
+                        </td>
                         <td>&nbsp;</td>
                         <td align="left">
                             @if($user_signature != null)
