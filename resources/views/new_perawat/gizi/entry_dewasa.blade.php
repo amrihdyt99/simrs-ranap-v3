@@ -295,3 +295,7 @@
         </div>
     </div>
 </div>
+<div class="float-right mt-5">
+    <button type="button" class="btn btn-success" id="save_asesmen_gizi">Simpan</button>
+</div>
+

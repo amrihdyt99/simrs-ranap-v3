@@ -155,7 +155,12 @@ $registrasi_data = DB::connection('mysql2')
                 @else
                 @if (Auth::user()->level_user == 'dietitian')
                 <div class="row">
-                    <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
+                    <div class="left-tab active" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
+                        Asuhan Gizi Dewasa
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="left-tab" id="tab-edukasi" onclick="clickTab('edukasi')">
                         Edukasi
                     </div>
                 </div>

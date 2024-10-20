@@ -814,6 +814,10 @@
                         success: function(data) {
                             inject_view_data(data);
                             asuhanGiziDewasa_init();
+                            loadAllFunctionAssesmentGiziDewasa();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -2450,3 +2454,4 @@
 @include('new_perawat.nursing.v2.js.nursing_js')
 @include('new_perawat.soap.js.soap_perawat_js')
 @include('new_perawat.riwayat-v2.js.riwayat_js')
+@include('new_perawat.gizi.js.assesesment_gizi_dewasa_js')
