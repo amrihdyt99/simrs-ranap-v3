@@ -364,6 +364,7 @@ class TransferInternalController extends Controller
                     'created_at'    => date('Y-m-d H:i:s'),
                     'deleted'       => 0,
                     'created_by_id' => auth()->user()->id,
+                    'created_by_name' => auth()->user()->name,
                 ];
 
                 $check_ = DB::table('job_orders_dt')
@@ -455,14 +456,13 @@ class TransferInternalController extends Controller
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
             ->whereNull('registration_no')
             ->where('m_bed.is_active', 1)
             ->where('m_bed.bed_status', '0116^R')
             ->get();
-        // dd($ruangan[1]);
         return response()->json([
             'data' => $ruangan
         ]);
