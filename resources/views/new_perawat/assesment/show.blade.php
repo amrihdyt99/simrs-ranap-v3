@@ -11,204 +11,47 @@
         </div>
     </div>
     <div class="row">
+        @if ($dataPasien->kategori_pasien == 'dewasa')
+            <div class="col-lg-6">
+                @include('new_perawat.riwayat-v2.assesment_awal.dewasa.table-awal')
+            </div>
+            <div class="col-lg-6">
+                @include('new_perawat.riwayat-v2.assesment_awal.dewasa.table-nyeri')
+                @include('new_perawat.riwayat-v2.assesment_awal.dewasa.table-gizi')
+            </div>
+        @endif
+
+        @if ($dataPasien->kategori_pasien == 'kebidanan')
+            <div class="col-lg-6">
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-awal')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-kehamilan')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-gizi')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-nyeri')
+            </div>
+            <div class="col-lg-6">
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-fungsional')
+                @include('new_perawat.riwayat-v2.assesment_awal.obgyn.table-kulit-kebutuhan')
+            </div>
+        @endif
+
+        @if ($dataPasien->kategori_pasien == 'anak')
         <div class="col-lg-6">
-            <table id="t-baru-asper" class="table1" width="100%">
-                <tbody>
-                    <tr>
-                        <td colspan="2"><h4 class="pt-2 font-weight-bold">PEMERIKSAAN FISIK UMUM</h4></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Kesadaran</td>
-                        <td class="data"></td>
-                    </tr> 
-                    <tr class="tr-title">
-                        <td>Kondisi Umum</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Tekanan Darah</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Nadi</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Suhu</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Pernapasan</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Tinggi Badan</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Berat Badan</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Kebutuhan Khusus</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Riwayat Alergi</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><h4 class="pt-2 font-weight-bold">SKRINNING NYERI</h4> </td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Pasien Merasa Nyeri?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Durasi Waktu</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Pencentus Nyeri</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Deskripsi Nyeri</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Lokasi dan Penjalaran</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Skala Nyeri</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Kapan Terjadi Nyeri</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Frekuensi Nyeri</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><h4 class="pt-2 font-weight-bold">PEMERIKSAAN RESIKO CEDERA / JATUH</h4></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Gaya berjalan pasien tidak seimbang ?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Pasien butuh alat bantu duduk?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Hasil</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><h4 class="pt-2 font-weight-bold">KEBUTUHAN NUTRISI DAN CAIRAN</h4></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Keluhan</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Rasa Haus Berlebihan</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Mukosa Mulut</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Turgor Kulit</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Edema</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><h4 class="pt-2 font-weight-bold">DATA PSIKOLOGIS, SOSIAL, EKONOMI, dan SPIRITUAL</h4></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Status Emosional</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Riwayat trauma psikis</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td>Hambatan sosial, ekonomi</td>
-                        <td class="data"></td>
-                    </tr>
-                </tbody>
-            </table>
+            @include('new_perawat.riwayat-v2.assesment_awal.anak.table-awal')
         </div>
         <div class="col-lg-6">
-            <table class="table1" width="100%">
-                <tbody id="t-baru-diagnosa">
-                </tbody>
-                <tfoot id="t-f-baru-diagnosa"></tfoot>
-            </table>
-            <table class="table1 mt-3" width="100%">
-                <tbody id="t-baru-intervensi">
-                </tbody>
-            </table>
-            <table id="t-baru-skrinning-dewasa" class="table1 mt-3" width="100%">
-                <tbody>
-                    <tr>
-                        <td colspan="2"><h4 class="pt-2 font-weight-bold">SKRINNING GIZI <i>Malnutrisi Screening Test</i> (DEWASA)</h4></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td width="50%">1 Apakah pasien mengalami penurunan berat badan yag tidak direncanakan/tidak diinginkan dalam 6 bulan terakhir ?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td width="50%">2. Apakah asupan makan pasien berkurang karena penurunan nafsu makan /  kesulitan menerima makanan ?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td class="font-weight-bold">Skor</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td class="font-weight-bold">Kategori</td>
-                        <td class="data"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table id="t-baru-skrinning-anak" class="table1 mt-3" width="100%">
-                <tbody>
-                    <tr>
-                        <td colspan="2"><h4 class="pt-2 font-weight-bold">SKRINNING GIZI <i>STRONG-KIDS</i> (ANAK-ANAK)</h4></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td width="50%">1 Apakah pasien tampak kurus ?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td width="50%">2. Apakah terdapat penurunan BB selama satu bulan terakhir ?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td width="50%">3. Apakah terdapat salah satu dari kondisi berikut ?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td width="50%">4. Apakah terdapat penyakit atau keadaan yang mengakibatkan pasien berisiko mengalami malnutrisi ?</td>
-                        <td class="data"></td>
-                    </tr>
-                    <tr class="tr-title">
-                        <td class="font-weight-bold">Skor</td>
-                        <td class="data"></td>
-                    </tr>
-                </tbody>
-            </table>
+            @include('new_perawat.riwayat-v2.assesment_awal.anak.table-gizi')
+            @include('new_perawat.riwayat-v2.assesment_awal.anak.table-nyeri')
         </div>
+        @endif
+
+        @if ($dataPasien->kategori_pasien == 'bayi')
+        <div class="col-lg-6">
+            @include('new_perawat.riwayat-v2.assesment_awal.neonatus.table-awal')
+            @include('new_perawat.riwayat-v2.assesment_awal.neonatus.table-nyeri-eliminasi')
+        </div>
+        <div class="col-lg-6">
+        </div>
+        @endif
     </div>
 </div>
 <div id="p_s_asdok">
