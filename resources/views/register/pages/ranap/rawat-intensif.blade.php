@@ -171,7 +171,14 @@
             </div>
             <div class="text-center">
                 <p>Dokter</p>
-                <p>(................................)</p>
+                @if(isset($data_pasien->dokter_signature))
+                    <div style="display: flex; justify-content: center; margin-left: 20px;">
+                        <img src="{{ $data_pasien->dokter_signature }}" width="170" height="100" alt="Tanda tangan dokter">
+                    </div>
+                    <p>{{ $data_pasien->dokter_name ?? '(................................)' }}</p>
+                @else
+                    <p>(................................)</p>
+                @endif
             </div>
             <div class="text-center">
                 <p>Keluarga</p>
@@ -189,7 +196,12 @@
             </div>
             <div class="text-center">
                 <p>Perawat</p>
-                <p>(................................)</p>
+                @if(isset($data_pasien->perawat_signature))
+                    <img src="{{ $data_pasien->perawat_signature }}" width="170" height="100" alt="Tanda tangan perawat">
+                    <p>{{ $data_pasien->perawat_name ?? '(................................)' }}</p>
+                @else
+                    <p>(................................)</p>
+                @endif
             </div>
         </div>
     </div>

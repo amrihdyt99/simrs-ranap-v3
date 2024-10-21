@@ -328,6 +328,7 @@
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
     var classcode = "{{$pasien->ChargeClassCode ?? $pasien->charge_class_code}}"
+    var service_unit_id = "{{$pasien->ServiceUnitID}}"
     var payer_id = "{{$pasien->reg_cara_bayar}}"
     var $reg_no = $reg.replace(/\//g, '_')
     var modal = '#modalEntryOrder'
@@ -458,7 +459,7 @@
                 url: `{{route('order.tindakan')}}`,
                 type: 'POST',
                 dataType: 'json',
-                data: $('#form-entry-order').serialize(),
+                data: $('#form-entry-order').serialize()+'&service_unit_id='+service_unit_id,
                 success: function(resp) {
                     if (resp.success == true) {
                         alert(resp.message)

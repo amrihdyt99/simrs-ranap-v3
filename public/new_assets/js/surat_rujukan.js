@@ -282,12 +282,16 @@ $(document).ready(function () {
     function triggerGetSuratRujukanDokter() {
         $("#tab-surat-rujukan").off('click').on("click", function () {
             getSuratRujukanDokter();
-            initProsedurOperasiTable();
-            initAlatTerpasangTable();
-            initObatDiterimaTable();
-            initObatDibawaTable();
-            initStatusPasienTable();
+            initAllTables();
         });
+    }
+
+    function initAllTables() {
+        initProsedurOperasiTable();
+        initAlatTerpasangTable();
+        initObatDiterimaTable();
+        initObatDibawaTable();
+        initStatusPasienTable();
     }
 
     function simpanSuratRujukan() {
@@ -404,7 +408,6 @@ $(document).ready(function () {
             }
         });
     }
-    initProsedurOperasiTable();
 
     function initAlatTerpasangTable() {
         if ($.fn.DataTable.isDataTable('#tableAlatTerpasang')) {
@@ -511,7 +514,6 @@ $(document).ready(function () {
             }
         });
     }
-    initAlatTerpasangTable();
 
     function initObatDiterimaTable() {
         if ($.fn.DataTable.isDataTable('#tableObatDiterima')) {
@@ -623,7 +625,6 @@ $(document).ready(function () {
             }
         });
     }
-    initObatDiterimaTable();
 
     function initObatDibawaTable() {
         if ($.fn.DataTable.isDataTable('#tableObatDibawa')) {
@@ -734,8 +735,6 @@ $(document).ready(function () {
             }
         });
     }
-
-    initObatDibawaTable();
 
     function initStatusPasienTable() {
         if ($.fn.DataTable.isDataTable('#tableStatusPasien')) {

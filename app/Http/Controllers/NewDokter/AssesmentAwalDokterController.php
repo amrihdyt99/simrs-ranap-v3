@@ -172,6 +172,8 @@ class AssesmentAwalDokterController extends Controller
         unset($params['ttd_sasaran']);
         unset($params['medrec']);
         unset($params['type']);
+        unset($params['ttd_dokter_anastesi']);
+        unset($params['ttd_pihak_pasien_anastesi']);
 
         if ($cek) {
             $simpan = DB::connection('mysql')

@@ -191,7 +191,6 @@
 
     $('#tarikDataParamedic').click(function() {
         var $button = $(this);
-        $button.prop('disabled', true);
 
         Swal.fire({
             title: 'Tarik Data Paramedic ?',
@@ -203,6 +202,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                $button.prop('disabled', true);
                 $.ajax({
                     url: "{{ url('tarik/paramedic') }}",
                     method: 'GET',

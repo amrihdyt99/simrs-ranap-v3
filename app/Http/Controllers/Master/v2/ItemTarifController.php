@@ -32,7 +32,7 @@ class ItemTarifController extends Controller
                     $editUrl = route('master.item-tarif.edit', [$row->tarif_id]);
 
                     $actionBtn = '<div class="btn-group" role="group">';
-                    $actionBtn .= "<button type='button' class='btn btn-warning'><a href='$editUrl'><i class='fas fa-edit'></i> Edit</a></button>";
+                    $actionBtn .= "<a href='$editUrl'><button type='button' class='btn btn-info text-white'><i class='fas fa-eye'></i> Detail</button></a>";
                     $actionBtn .= "<button type='button' class='btn btn-danger' onclick='confirmDelete(this)' data-id='$row->tarif_id'><i class='fas fa-trash'></i> Hapus</button>";
                     $actionBtn .= '</div>';
 

@@ -47,11 +47,8 @@
 
                 <div class="form-group">
                   <label for="masalah_layanan">Layanan</label>
-                  <select id="masalah_layanan" name="masalah_layanan" class="form-control select2bs4">
-                    <option value="">Pilih</option>
-                    <option value="1">Ya</option>
-                    <option value="0">Tidak</option>
-                  </select>
+                  <input type="text" class="form-control @error('masalah_layanan') is-invalid @enderror"
+                    id="masalah_layanan" name="masalah_layanan" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>

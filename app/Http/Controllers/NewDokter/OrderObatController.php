@@ -704,7 +704,6 @@ class OrderObatController extends Controller
                 $item_to_store = [
                     'reg_no' => $request->cpoe_reg,
                     'item_code' => $request->cpoe_tindakan[$key],
-                    'id_cppt' => $request->cpoe_cppt,
                     'dokter_order' => $request->kode_dokter,
                     'deleted' => 0,
                     'created_by_id' => $request->user_id ?? null,
@@ -717,11 +716,13 @@ class OrderObatController extends Controller
                     'harga_jual' => $request->cpoe_tarif[$key],
                     'qty' => 1,
                     'created_by_name' => $request->name ?? null,
-                    'non_bpjs' => $request->non_bpjs ?? 0
+                    'non_bpjs' => $request->non_bpjs ?? 0,
+                    'id_cppt' => $request->cpoe_cppt,
                 ];
 
                 $check_existing_item = DB::table('job_orders_dt')
                     ->where($item_to_store)
+                    ->whereDate('created_at', date('Y-m-d'))
                     ->first();
 
                 $item_to_store = array_merge($item_to_store, $sub_item);
@@ -737,7 +738,7 @@ class OrderObatController extends Controller
                 $jobOrder['reg_no'] = $request->cpoe_reg;
                 $jobOrder['kode_dokter'] = $request->kode_dokter;
                 $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
-                $jobOrder['service_unit'] = $data_pasien->service_unit_id;
+                $jobOrder['service_unit'] = $request->service_unit_id ?? $data_pasien->service_unit_id;
                 $jobOrder['id_cppt'] = $request->cpoe_cppt;
 
                 $store_jor = DB::table('job_orders')
