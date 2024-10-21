@@ -46,6 +46,8 @@ class TarikDataController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_paramedis')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -58,6 +60,8 @@ class TarikDataController extends Controller
             $cek = Department::find($kue['DepartmentCode']);
             if (!$cek) {
                 DB::connection('mysql2')->table('m_departemen')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         return response()->json(['status' => 'success', 'message' => 'Data Departemen berhasil ditarik']);
@@ -83,6 +87,8 @@ class TarikDataController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_site_departemen')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -134,6 +140,8 @@ class TarikDataController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_class_category')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -146,35 +154,37 @@ class TarikDataController extends Controller
 
         foreach ($data['data'] as $kue) {
             $cek = RoomClass::find($kue['ClassCode']);
+            $insertData = [
+                'ClassCode' => $kue['ClassCode'],
+                'ClassName' => $kue['ClassName'],
+                'ShortName' => $kue['ShortName'],
+                'Initial' => $kue['Initial'],
+                'ClassCategoryCode' => $kue['ClassCategoryCode'],
+                'GCClassRL' => $kue['GCClassRL'],
+                'ClassLevel' => $kue['ClassLevel'],
+                'IsAdministrationChargeByClass' => (int) $kue['IsAdministrationChargeByClass'],
+                'MinAdministrationCharge' => $kue['MinAdministrationCharge'],
+                'MaxAdministrationCharge' => $kue['MaxAdministrationCharge'],
+                'PercentageAdministrationCharge' => $kue['PercentageAdministrationCharge'],
+                'PhysicianChargesItemID' => $kue['PhysicianChargesItemID'] ?? null,
+                'DisplayPrice' => $kue['DisplayPrice'] ?? null,
+                'PictureFileName' => $kue['PictureFileName'],
+                'PatientPerRoomQty' => (int) $kue['PatientPerRoomQty'],
+                'IsHasAC' => (int) $kue['IsHasAC'],
+                'IsHasPrivateBathRoom' => (int) $kue['IsHasPrivateBathRoom'],
+                'IsHasRefrigerator' => (int) $kue['IsHasRefrigerator'],
+                'IsHasTV' => (int) $kue['IsHasTV'],
+                'IsHasWifi' => (int) $kue['IsHasWifi'],
+                'Remarks' => $kue['Remarks'] ?? null,
+                'IsActive' => (int) $kue['IsActive'],
+                'IsDeleted' => (int) $kue['IsDeleted'],
+                'LastUpdatedBy' => $kue['LastUpdatedBy'],
+                'LastUpdatedDateTime' => $kue['LastUpdatedDateTime'],
+            ];
             if (!$cek) {
-                $insertData = [
-                    'ClassCode' => $kue['ClassCode'],
-                    'ClassName' => $kue['ClassName'],
-                    'ShortName' => $kue['ShortName'],
-                    'Initial' => $kue['Initial'],
-                    'ClassCategoryCode' => $kue['ClassCategoryCode'],
-                    'GCClassRL' => $kue['GCClassRL'],
-                    'ClassLevel' => $kue['ClassLevel'],
-                    'IsAdministrationChargeByClass' => (int) $kue['IsAdministrationChargeByClass'],
-                    'MinAdministrationCharge' => $kue['MinAdministrationCharge'],
-                    'MaxAdministrationCharge' => $kue['MaxAdministrationCharge'],
-                    'PercentageAdministrationCharge' => $kue['PercentageAdministrationCharge'],
-                    'PhysicianChargesItemID' => $kue['PhysicianChargesItemID'] ?? null,
-                    'DisplayPrice' => $kue['DisplayPrice'] ?? null,
-                    'PictureFileName' => $kue['PictureFileName'],
-                    'PatientPerRoomQty' => (int) $kue['PatientPerRoomQty'],
-                    'IsHasAC' => (int) $kue['IsHasAC'],
-                    'IsHasPrivateBathRoom' => (int) $kue['IsHasPrivateBathRoom'],
-                    'IsHasRefrigerator' => (int) $kue['IsHasRefrigerator'],
-                    'IsHasTV' => (int) $kue['IsHasTV'],
-                    'IsHasWifi' => (int) $kue['IsHasWifi'],
-                    'Remarks' => $kue['Remarks'] ?? null,
-                    'IsActive' => (int) $kue['IsActive'],
-                    'IsDeleted' => (int) $kue['IsDeleted'],
-                    'LastUpdatedBy' => $kue['LastUpdatedBy'],
-                    'LastUpdatedDateTime' => $kue['LastUpdatedDateTime'],
-                ];
                 DB::connection('mysql2')->table('m_room_class')->insert($insertData);
+            } else {
+                $cek->update($insertData);
             }
         }
 
@@ -191,6 +201,8 @@ class TarikDataController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_ruangan')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -204,6 +216,8 @@ class TarikDataController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_unit')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
