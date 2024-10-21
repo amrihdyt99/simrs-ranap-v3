@@ -89,6 +89,8 @@ class TarikDataRajalController extends Controller
     {
 
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/education');
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_education ON');
+
         foreach ($data['data']  as $kue) {
             $cek = Education::find($kue['EducationID']);
             if (!$cek) {
@@ -121,6 +123,8 @@ class TarikDataRajalController extends Controller
     {
 
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/m_item');
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_item ON');
+
         foreach ($data['data']  as $kue) {
             $cek = Item::find($kue['ItemID']);
             $groupItem = $kue['ItemGroupCode'];
@@ -141,6 +145,7 @@ class TarikDataRajalController extends Controller
     {
         try {
             $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/m_item_tarif');
+            DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_item_tarif ON');
 
             foreach ($data['data']  as $kue) {
                 $cek = ItemTarif::find($kue['tarif_id']);

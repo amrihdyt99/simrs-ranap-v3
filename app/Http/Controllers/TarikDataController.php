@@ -41,6 +41,8 @@ class TarikDataController extends Controller
     public function paramedic()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs-rajal/data_paramedic');
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_paramedis ON');
+
         foreach ($data as $kue) {
             $cek = Paramedic::find($kue['ParamedicID']);
             if (!$cek) {
@@ -81,12 +83,16 @@ class TarikDataController extends Controller
     public function site_departement()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/site_departement');
+
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_site_departemen ON');
+
+
         foreach ($data['data']  as $kue) {
             unset($kue['LastUpdatedDateTime']);
             $cek = SiteDepartment::find($kue['SiteDepartmentID']);
             if (!$cek) {
                 DB::connection('mysql2')
-                    ->table('m_site_departemen')->insert([$kue]);
+                    ->table('m_site_departemen')->insert($kue);
             } else {
                 $cek->update($kue);
             }
@@ -97,6 +103,7 @@ class TarikDataController extends Controller
     public function departement_service_unit()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/departemen_service_unit');
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_unit_departemen ON');
 
         foreach ($data['data']  as $kue) {
             $data = [
@@ -196,6 +203,7 @@ class TarikDataController extends Controller
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/room');
         // DB::connection('mysql2')->table('m_ruangan')->delete();
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_ruangan ON');
         foreach ($data['data'] as $kue) {
             $cek = Room::find($kue['RoomID']);
             if (!$cek) {
@@ -238,6 +246,7 @@ class TarikDataController extends Controller
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/business');
         DB::connection('mysql2')->table('businesspartner')->delete();
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT businesspartner ON');
         foreach ($data['data'] as $kue) {
             DB::connection('mysql2')
                 ->table('businesspartner')->insert([
@@ -264,6 +273,8 @@ class TarikDataController extends Controller
     public function bed()
     {
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira/bed');
+
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_bed ON');
         foreach ($data['data'] as $kue) {
             $cek = DB::connection('mysql2')->table('m_bed')->where('bed_id', $kue['BedID'])->count();
             if ($cek == 0) {
@@ -402,6 +413,7 @@ class TarikDataController extends Controller
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs-rajal/api/master/users');
         //delete data yg baru ditarik jika double
         // DB::connection('mysql2')->table('users')->whereYear('created_at', 2024)->delete();
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT users ON');
 
         foreach ($data as $kue) {
             $cek = User::find($kue['id']);
