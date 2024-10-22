@@ -277,7 +277,7 @@
                                 <div id="panel-laporan-operasi">
                                     <div class="d-flex justify-content-between">
                                         <h2>Laporan Operasi</h2>
-                                        <button class="btn btn-sm btn-primary">Cetak Laporan</button>
+                                        {{-- <button class="btn btn-sm btn-primary">Cetak Laporan</button> --}}
                                     </div>
                                     <hr>
                                     @include('new_dokter.laporan-operasi.index')

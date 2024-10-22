@@ -37,3 +37,30 @@
   </div>
 </div>
 
+@push('myscripts')
+  <script>
+    const handleSave = ()=>{
+      // show dialog confirmation
+      Swal.fire({
+        title: 'Simpan Laporan Operasi',
+        text: "Apakah anda yakin ingin menyimpan laporan operasi ini?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // do save operation
+          Swal.fire(
+            'Berhasil!',
+            'Berhasil disimpan.',
+            'success'
+          )
+        }
+      })
+    }
+  </script>
+@endpush
+

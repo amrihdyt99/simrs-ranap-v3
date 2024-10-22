@@ -3,9 +3,8 @@
     <br/>
     <div class="form-group">
         <label for="anamnesis-singkat">Anamnesis Singkat</label>
-        <textarea class="form-control" id="anamnesis-singkat" rows="4" name="anamnesis_singkat"></textarea>
+        <textarea class="form-control" id="anamnesis-singkat" rows="4" name="anamnesis_singkat">{{ $data['assesment_awal_dokter']->keluhan_utama }}</textarea>
     </div>
-
     <div class="form-group">
         <label for="alergi">Alergi</label>
         <div class="row">
@@ -42,8 +41,12 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach ($data['pasien_prosedur'] as $item)
                 <tr>
-                    <td><input type="text" name="nama_operasi" id="nama_operasi" class="form-control"></td>
+                    <td>
+                        <input type="hidden" name="nama_operasi" id="nama_operasi" class="form-control" value="{{ $item->pprosedur_prosedur }}">
+                        <span>{{ $item->pprosedur_prosedur }}</span>&nbsp; <span>{{ $item->nama_tindakan }}</span>
+                    </td>
                     <td>
                         <div class="row">
                             <div class="cols-sm-12 col-lg-2">
@@ -59,12 +62,13 @@
                         </div>
                     </td>
                 </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
 
     <div class="d-flex align-item-center justify-content-center mt-3 mb-3">
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" onclick="handleSave()">
             Simpan
         </button>
     </div>

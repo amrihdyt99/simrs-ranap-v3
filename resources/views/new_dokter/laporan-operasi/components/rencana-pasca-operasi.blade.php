@@ -211,6 +211,12 @@
             </div>
         </div>
    </div>
+
+   <div class="d-flex align-item-center justify-content-center mt-3 mb-3">
+        <button class="btn btn-primary" onclick="handleSave()">
+            Simpan
+        </button>
+    </div>
 </div>
 
 @push('myscripts')

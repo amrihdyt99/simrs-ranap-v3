@@ -96,6 +96,13 @@ class SummaryController extends Controller
             ->toArray();
 
         $data['physician_team_role'] = $physician_team_role;
+        $data['assesment_awal_dokter'] = DB::connection('mysql')->table('assesment_awal_dokter')->where('no_reg', $reg)->first();
+        $data['pasien_prosedur'] = DB::connection('mysql')->table('rs_pasien_prosedur')
+            ->leftJoin('icd9cm_bpjs', 'rs_pasien_prosedur.pprosedur_prosedur', '=', 'icd9cm_bpjs.ID_TIND')
+            ->where('pprosedur_reg', $reg)
+            ->select('rs_pasien_prosedur.*', 'icd9cm_bpjs.NM_TINDAKAN as nama_tindakan')
+            ->get();
+        // dd($data['pasien_prosedur']);
 
         return view('new_dokter.assesment', compact('data', 'reg', 'patient', 'dataPasien', 'icd9cm', 'icd10', 'diagnosa', 'prosedur', 'subs', 'id_cppt', 'physician_team_role'));
     }

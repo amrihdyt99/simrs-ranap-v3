@@ -105,7 +105,8 @@ class RegisterController extends Controller
                 'm_registrasi.reg_cara_bayar',
             ])
             ->whereNull('reg_deleted')
-            ->orderByDesc('reg_tgl');
+            ->orderByDesc('reg_tgl')
+            ->get();
 
         return DataTables()
             ->of($data)
