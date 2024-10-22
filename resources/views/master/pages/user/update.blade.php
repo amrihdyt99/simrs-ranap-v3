@@ -29,7 +29,7 @@
                                     <label for="ParamedicCode">Pilih Paramedis</label>
                                     <select type="text"
                                         class="form-control @error('ParamedicCode') is-invalid @enderror"
-                                        id="ParamedicCode" name="ParamedicCode" required>
+                                        id="ParamedicCode" name="ParamedicCode">
                                         <option value="{{ $user->dokter_id ?? $user->perawat_id }}" selected>
                                             {{ app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->get_paraedic_name($user->dokter_id ?? $user->perawat_id) }}
                                         </option>

@@ -57,6 +57,7 @@ class TarikDataRajalController extends Controller
     {
 
         $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/draft');
+        DB::connection('mysql2')->unprepared('SET IDENTITY_INSERT m_draft ON');
         foreach ($data['data']  as $kue) {
             $cek = Draft::find($kue['draft_id']);
             if (!$cek) {

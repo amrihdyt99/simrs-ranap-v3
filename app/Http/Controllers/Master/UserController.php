@@ -154,7 +154,7 @@ class UserController extends Controller
     {
         // Validasi input
         $rules = [
-            'ParamedicCode' => 'required',
+            // 'ParamedicCode' => 'required',
             'username' => 'required|string|max:255',
             'userlevel' => 'required',
         ];
@@ -166,22 +166,22 @@ class UserController extends Controller
                 ->withInput();
         }
 
-        $dataparamedis = DB::connection('mysql2')
-            ->table("m_paramedis")
-            ->where('ParamedicCode', $request->ParamedicCode)
-            ->first();
+        // $dataparamedis = DB::connection('mysql2')
+        //     ->table("m_paramedis")
+        //     ->where('ParamedicCode', $request->ParamedicCode)
+        //     ->first();
 
-        if (!$dataparamedis) {
-            return redirect()->route('master.user.edit', [$user->id])
-                ->with('error', 'Data paramedis tidak ditemukan.')
-                ->withInput();
-        }
+        // if (!$dataparamedis) {
+        //     return redirect()->route('master.user.edit', [$user->id])
+        //         ->with('error', 'Data paramedis tidak ditemukan.')
+        //         ->withInput();
+        // }
 
         $params = [
-            'name' => $dataparamedis->ParamedicName,
+            'name' => $dataparamedis->ParamedicName ?? '-',
             'username' => $request->username,
-            'dokter_id' => $dataparamedis->ParamedicCode,
-            'perawat_id' => $dataparamedis->ParamedicCode,
+            'dokter_id' => $dataparamedis->ParamedicCode ?? '',
+            'perawat_id' => $dataparamedis->ParamedicCode ?? '',
             'level_user' => $request->userlevel,
         ];
 

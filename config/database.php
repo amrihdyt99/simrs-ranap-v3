@@ -43,6 +43,8 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+
+
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
@@ -80,6 +82,8 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+
+
 
         'pgsql' => [
             'driver' => 'pgsql',
@@ -148,45 +152,37 @@ return [
             'prefix_indexes' => true,
         ],
 
-        /*
+
 
         // SQLSERVER
 
-        'mysql' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_SECOND_HOST', 'localhost'),
-            'port' => env('DB_SECOND_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_SECOND_USERNAME', 'forge'),
-            'password' => env('DB_SECOND_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'options' => array(
-                PDO::ATTR_STRINGIFY_FETCHES => false,
-                PDO::SQLSRV_ATTR_FETCHES_NUMERIC_TYPE => true
-            ),
-            'prefix_indexes' => true,
-        ],
+        // 'mysql' => [
+        //     'driver' => 'sqlsrv',
+        //     'url' => env('DATABASE_URL'),
+        //     'host' => env('DB_HOST', 'localhost'),
+        //     'port' => env('DB_PORT', '1433'),
+        //     'database' => env('DB_DATABASE', 'forge'),
+        //     'username' => env('DB_USERNAME', 'forge'),
+        //     'password' => env('DB_PASSWORD', ''),
+        //     'charset' => 'utf8',
+        //     'prefix' => '',
+        //     'prefix_indexes' => true,
+        // ],
 
-        'mysql2' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_SECOND_HOST', 'localhost'),
-            'port' => env('DB_SECOND_PORT', '1433'),
-            'database' => env('DB_DATABASE2', 'forge'),
-            'username' => env('DB_SECOND_USERNAME', 'forge'),
-            'password' => env('DB_SECOND_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'options' => array(
-                PDO::ATTR_STRINGIFY_FETCHES => false,
-                PDO::SQLSRV_ATTR_FETCHES_NUMERIC_TYPE => true
-            ),
-            'prefix_indexes' => true,
-        ],
+        // 'mysql2' => [
+        //     'driver' => 'sqlsrv',
+        //     'url' => env('DATABASE_URL'),
+        //     'host' => env('DB_HOST', 'localhost'),
+        //     'port' => env('DB_PORT', '1433'),
+        //     'database' => env('DB_DATABASE2', 'forge'),
+        //     'username' => env('DB_USERNAME2', 'forge'),
+        //     'password' => env('DB_PASSWORD2', ''),
+        //     'charset' => 'utf8',
+        //     'prefix' => '',
+        //     'prefix_indexes' => true,
+        // ],
 
-        */
+
 
     ],
 
