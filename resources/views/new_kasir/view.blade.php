@@ -204,7 +204,7 @@
                     <b>
                         <h6 id="bill_poli">
                             {{ $pasien->ServiceUnitName ?? '-' }} <br>
-                            {{ $pasien->RoomName ?? '-' }} <br> 
+                            {{ $pasien->RoomName ?? '-' }} <br>
                             {{ $pasien->BedCode ?? '-' }}
                     </b></h6>
                 </div>
@@ -459,7 +459,7 @@
                 url: `{{route('order.tindakan')}}`,
                 type: 'POST',
                 dataType: 'json',
-                data: $('#form-entry-order').serialize()+'&service_unit_id='+service_unit_id,
+                data: $('#form-entry-order').serialize() + '&service_unit_id=' + service_unit_id,
                 success: function(resp) {
                     if (resp.success == true) {
                         alert(resp.message)
@@ -509,8 +509,9 @@
         })
     }
 
-    
+
     getDataOrder()
+
     function getDataOrder() {
         orders = []
         selected_orders = []
@@ -671,7 +672,7 @@
                             })
                         }
                     })
-                    
+
                     // COUNT UNREVIEWED ITEMS
                     if (unreviewed > 0) {
                         $('[id="alertNotification"]').html(`
@@ -854,7 +855,7 @@
 
             $('[id="btn-validasi-billing"]').hide()
         }
-        
+
         total = selected_orders.reduce((acc, o) => acc + (parseFloat(o.ItemTarifAwal) * parseFloat(o.ItemJumlah)), 0)
 
         $('[id="validasi-tagihan"]').html('Rp. ' + formatNumber(formatNumber(parseFloat(total).toFixed(2))))
