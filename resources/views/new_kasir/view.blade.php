@@ -298,7 +298,7 @@
                         <br>
                         <div id="action_button">
                             <button id="btn_open_invoice" class="btn btn-danger float-right mb-3 mx-1">OPEN INVOICE</button>
-                            <button id="btn-cetak-review" class="btn btn-info float-right mb-3 mx-1">REVIEW INVOICE</button>
+                            <button id="btn-cetak-review" class="btn btn-info float-right mb-3 mx-1">DETAIL TRANSAKSI</button>
                             <button id="btn-cetak-invoice" class="btn btn-success float-right mb-3 mx-1">CETAK INVOICE</button>
                             <button id="btn-cetak-summary" class="btn btn-secondary float-right mb-3 mx-1">CETAK SUMMARY</button>
                             <button id="btn-kwitansi" class="btn btn-warning float-right mb-3 mx-1">CETAK KWITANSI</button>
@@ -328,7 +328,7 @@
     var $reg = "{{$reg_no}}";
     var $reg_RJ = "{{$reg_rj}}";
     var classcode = "{{$pasien->ChargeClassCode ?? $pasien->charge_class_code}}"
-    var service_unit_id = "{{$pasien->ServiceUnitID}}"
+    var service_unit_id = "{{$pasien->ServiceUnitID ?? $pasien->service_unit ?? null}}"
     var payer_id = "{{$pasien->reg_cara_bayar}}"
     var $reg_no = $reg.replace(/\//g, '_')
     var modal = '#modalEntryOrder'
@@ -353,6 +353,10 @@
 
     if ('{{$inpatient_days["success"]}}' == false) {
         alert('{{$inpatient_days["msg"]}}')
+    }
+
+    if ('{{empty($pasien->ChargeClassCode)}}') {
+        alert('Tarif item tagihan Rp.0, \nData charge class dan service unit tidak ada, mohon hubungi bagian admisi')
     }
 
     $('body').on('click', '#btn-validasi-billing', function() {
@@ -560,6 +564,7 @@
                             item.data.push({
                                 'ItemTindakan': 'Non BPJS',
                                 'NonBPJS': 1,
+                                'ItemTarifAwal': 0,
                                 'ItemTarif': 0,
                                 'ItemJumlah': 0
                             })
@@ -854,6 +859,8 @@
 
             $('[id="btn-validasi-billing"]').hide()
         }
+
+        console.log(selected_orders)
         
         total = selected_orders.reduce((acc, o) => acc + (parseFloat(o.ItemTarifAwal) * parseFloat(o.ItemJumlah)), 0)
 
@@ -1013,8 +1020,8 @@
                                 getStatusTagihan()
                                 $reg_split = $reg.split('/').join('')
                                 // window.open("{{url('auth/billing/invoice')}}/"+$reg_no, '_blank')
-                            } else if (resp.status == 500) {
-                                alert('Data penunjang paket MCU gagal disimpan')
+                            } else if (!resp.success) {
+                                alert(resp.message)
                             } else {
                                 alert('Pembayaran pasien gagal divalidasi')
                             }
@@ -1350,17 +1357,21 @@
                 reg_no: '{{ $reg_no }}',
             },
             success: function(data) {
-                // Create a new window for printing
-                var printWindow = window.open('', '', 'height=800,width=1000');
+                if (data.message) {
+                    alert(data.message)
+                } else {
+                    // Create a new window for printing
+                    var printWindow = window.open('', '', 'height=800,width=1000');
 
-                // Add content to the new window
-                printWindow.document.write(data);
+                    // Add content to the new window
+                    printWindow.document.write(data);
 
-                // Close the document to render the content
-                printWindow.document.close();
+                    // Close the document to render the content
+                    printWindow.document.close();
 
-                // Trigger the print dialog
-                printWindow.print();
+                    // Trigger the print dialog
+                    printWindow.print();
+                }
 
             },
             error: function(error) {
