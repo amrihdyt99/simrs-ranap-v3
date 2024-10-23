@@ -94,6 +94,8 @@ Route::prefix('nyx-sistem')
                 Route::post('rekonsiliasi-obat', [RekonsiliasiObatController::class, 'index'])->name('rekonsiliasi_obat');
                 Route::post('case_manager', [NyaaViewInjectorController::class, 'form_Case_manager'])->name('case_manager');
                 Route::post('pemeriksaan_penunjang', [NyaaViewInjectorController::class, 'pemeriksaan_penunjang'])->name('pemeriksaan_penunjang');
+                Route::post('assesment_gizi_anak', [NyaaViewInjectorController::class, 'assesment_gizi_anak'])->name('assesment_gizi_anak');
+                Route::post('assesment_gizi_obgyn', [NyaaViewInjectorController::class, 'assesment_gizi_obgyn'])->name('assesment_gizi_obgyn');
             });
         });
 

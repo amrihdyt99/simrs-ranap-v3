@@ -158,7 +158,7 @@
     function StoreAsuhanGiziDewasa() {
         neko_proses();
         Swal.fire({
-            title: "Simpan pengkajian awal Obgyn?",
+            title: "Simpan asuhan gizi dewasa?",
             icon: 'warning',
             showCloseButton: true,
             showCancelButton: true,
