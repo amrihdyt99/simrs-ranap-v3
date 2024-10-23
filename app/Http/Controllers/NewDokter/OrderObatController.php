@@ -713,7 +713,7 @@ class OrderObatController extends Controller
                     'order_no' => $order_no,
                     'jenis_order' => $request->jenisorder,
                     'item_name' => $request->cpoe_nama[$key],
-                    'harga_jual' => $request->cpoe_tarif[$key],
+                    'harga_jual' => (float) $request->cpoe_tarif[$key],
                     'qty' => 1,
                     'created_by_name' => $request->name ?? null,
                     'non_bpjs' => $request->non_bpjs ?? 0,
@@ -738,7 +738,7 @@ class OrderObatController extends Controller
                 $jobOrder['reg_no'] = $request->cpoe_reg;
                 $jobOrder['kode_dokter'] = $request->kode_dokter;
                 $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
-                $jobOrder['service_unit'] = $request->service_unit_id ?? $data_pasien->service_unit_id;
+                $jobOrder['service_unit'] = $request->service_unit_id ?? $data_pasien->service_unit_id ?? null;
                 $jobOrder['id_cppt'] = $request->cpoe_cppt;
 
                 $store_jor = DB::table('job_orders')
