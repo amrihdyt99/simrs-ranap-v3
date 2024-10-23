@@ -17,7 +17,7 @@
         <form id="form_assesment_gizi_dewasa">
             @csrf
             <div class="text-black" style="font-size: 14px">
-                @include('new_perawat.gizi.entry_dewasa')
+                @include('new_perawat.gizi.dewasa.entry_dewasa')
             </div>
         </form>
     </div>
@@ -27,7 +27,7 @@
         <form id="form_asuhan_gizi_dewasa">
             @csrf
             <div class="text-black" style="font-size: 14px">
-                @include('new_perawat.gizi.entry_asuhan_dewasa')
+                @include('new_perawat.gizi.dewasa.entry_asuhan_dewasa')
             </div>
         </form>
     </div>

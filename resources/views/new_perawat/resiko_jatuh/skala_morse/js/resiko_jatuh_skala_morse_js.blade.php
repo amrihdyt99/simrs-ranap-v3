@@ -77,7 +77,7 @@
                 detailTable.find('input[name="resiko_jatuh_morse_infus"][value="' + response.data.resiko_jatuh_morse_infus + '"]').prop('checked', true);
                 detailTable.find('input[name="resiko_jatuh_morse_berjalan"][value="' + response.data.resiko_jatuh_morse_berjalan + '"]').prop('checked', true);
                 detailTable.find('input[name="resiko_jatuh_morse_mental"][value="' + response.data.resiko_jatuh_morse_mental + '"]').prop('checked', true);
-                detailTable.find('input[name="resiko_jatuh_morse_ketegori"][value="' + response.data.resiko_jatuh_morse_ketegori + '"]').prop('checked', true);
+                detailTable.find('input[name="resiko_jatuh_morse_ketegori"][value="' + response.data.resiko_jatuh_morse_kategori + '"]').prop('checked', true);
 
                 $('#resiko_jatuh_morse_total_skor_detail').text(response.data.resiko_jatuh_morse_total_skor);
 

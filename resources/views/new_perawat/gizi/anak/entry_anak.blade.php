@@ -11,6 +11,10 @@
         <input type="number" name="dewasa_bb" value="{{$assesment_gizi_dewasa->dewasa_bb}}" class="form-control" placeholder="BB">
     </div>
     <div class="col-lg-3">
+        <label for="">TB (cm)</label>
+        <input type="number" name="dewasa_tb" class="form-control" placeholder="TB">
+    </div>
+    <div class="col-lg-3">
         <label for="">BBI (cm)</label>
         <input type="number" name="bbi" value="{{$assesment_gizi_dewasa->bbi}}" class="form-control" placeholder="BBI">
     </div>
@@ -32,41 +36,55 @@
         <label for="">IMT (kg/m)</label>
         <input type="number" name="dewasa_imt" value="{{$assesment_gizi_dewasa->dewasa_imt}}" class="form-control" placeholder="IMT">
     </div>
-    <div class="col-lg-3"></div>
     <div class="col-lg-3">
         <label for="">%LLA</label>
         <input type="number" name="dewasa_lla_lainnya" value="{{$assesment_gizi_dewasa->dewasa_lla_lainnya}}" class="form-control" placeholder="%LLA">
     </div>
+    
+
+</div>
+
+<div class="form-group">
+    <div class="col-lg-3">
+        <label for="">LILA(CM)</label>
+        <input type="number" name="dewasa_lila" value="" class="form-control" placeholder="LILA(CM)">
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+        <label for="">BBL</label>
+        <input type="text" name="dewasa_bbl" value="" class="form-control" placeholder="BBL">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+        <label for="">BB/U</label>
+        <input type="text" name="dewasa_bb_u" value="" class="form-control" placeholder="BB/U">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+        <label for="">TB/U</label>
+        <input type="text" name="dewasa_tb_u" value="" class="form-control" placeholder="TB/U">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+        <label for="">Status Gizi</label>
+        <input type="text" name="dewasa_status_gizi" value="" class="form-control" placeholder="Status Gizi">
+        </div>
+    </div>
 </div>
 
 <div class="row">
-    <legend class="col-form-label col-sm-2 ptx-0 pt-1"><b>A. BIOKIMIA</b></legend>
-    <div class="col-sm-2">
-        <div class="custom-control custom-radio custom-control-inline">
-            <input id="Normal" type="radio" {{$assesment_gizi_dewasa->dewasa_biokimia=='Normal' ? 'checked' : ''}} class="custom-control-input" id="Normal" value="Normal" name="dewasa_biokimia" >
-            <label class="custom-control-label" for="Normal">Normal</label>
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="custom-control custom-radio custom-control-inline">
-            <input id="Bermasalah" type="radio" class="custom-control-input" id="Bermasalah" value="Bermasalah" name="dewasa_biokimia" {{$assesment_gizi_dewasa->dewasa_biokimia=='Bermasalah' ? 'checked' : ''}} >
-            <label class="custom-control-label" for="Bermasalah">Bermasalah</label>
-        </div>
+    <legend class="col-form-label col-sm-2 ptx-0 pt-1 text-left"><b>A. BIOKIMIA</b></legend>
+    <div class="col-sm-8">
+        <input id="dewasa_biokimia" type="text" class="form-control" value="{{$assesment_gizi_dewasa->dewasa_biokimia}}" name="dewasa_biokimia" placeholder="Masukkan hasil biokimia">
     </div>
 </div>
-<div class="row">
-    <legend class="col-form-label col-sm-2 ptx-0 pt-1"><b>B. FISIK - KLINIK</b></legend>
-    <div class="col-sm-2">
-        <div class="custom-control custom-radio custom-control-inline">
-            <input id="Normal_2" type="radio" class="custom-control-input" id="Normal_2" value="Normal" name="dewasa_fisik" {{$assesment_gizi_dewasa->dewasa_fisik=='Normal' ? 'checked' : ''}} >
-            <label class="custom-control-label" for="Normal_2">Normal</label>
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <div class="custom-control custom-radio custom-control-inline">
-            <input id="Bermasalah_2" type="radio" class="custom-control-input" id="Bermasalah_2" value="Bermasalah" name="dewasa_fisik" {{$assesment_gizi_dewasa->dewasa_fisik=='Bermasalah' ? 'checked' : ''}} >
-            <label class="custom-control-label" for="Bermasalah_2">Bermasalah</label>
-        </div>
+<div class="row mt-2">
+    <legend class="col-form-label col-sm-2 ptx-0 pt-1 text-left"><b>B. FISIK - KLINIK</b></legend>
+    <div class="col-sm-8">
+        <input id="dewasa_fisik" type="text" class="form-control" value="{{$assesment_gizi_dewasa->dewasa_fisik}}" name="dewasa_fisik" placeholder="Masukkan hasil fisik klinik">
     </div>
 </div>
 
