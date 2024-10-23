@@ -361,7 +361,7 @@ $(document).ready(function () {
                     $("#persetujuan_alamat_2").val(
                         persetujuan.persetujuan_alamat_2
                     );
-                    $("#persetujuan_tanggal_waktu_ttd").val(
+                    $("#persetujuan_tanggal_waktu_ttd_dokter").val(
                         persetujuan.persetujuan_tanggal_waktu_ttd
                     );
                     $("#signature_persetujuan_penerima").val(
@@ -567,7 +567,7 @@ $(document).ready(function () {
                         penolakan.penolakan_tanggal_lahir_2
                     );
                     $("#penolakan_alamat_2").val(penolakan.penolakan_alamat_2);
-                    $("#penolakan_tanggal_ttd").val(
+                    $("#penolakan_tanggal_ttd_penolakan").val(
                         penolakan.penolakan_tanggal_ttd
                     );
                     $("#signature_penolakan_penerima").val(

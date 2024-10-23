@@ -3118,7 +3118,7 @@ class NewNursingController extends Controller
                 'ParamedicCode' => $request->ParamedicCode,
                 'informasi_pemberi_info' => $request->informasi_pemberi_info,
                 'informasi_penerima_info' => $request->informasi_penerima_info,
-                'informasi_diberikan_pada' => $request->informasi_diberikan_pada,
+                'informasi_diberikan_pada' => Carbon::parse($request->informasi_diberikan_pada)->toDateTimeLocalString(),
                 'informasi_diagnosis_text' => $request->informasi_diagnosis_text,
                 'informasi_dasar_diagnosis_text' => $request->informasi_dasar_diagnosis_text,
                 'informasi_tindakan_kedokteran_text' => $request->informasi_tindakan_kedokteran_text,
@@ -3130,7 +3130,6 @@ class NewNursingController extends Controller
                 'informasi_prognosis_text' => $request->informasi_prognosis_text,
                 'informasi_alternatif_text' => $request->informasi_alternatif_text,
                 'informasi_lain_lain_text' => $request->informasi_lain_lain_text,
-                'informasi_diagnosis_paraf' => $request->informasi_diagnosis_paraf,
                 'informasi_diagnosis_paraf' => $request->informasi_diagnosis_paraf,
                 'informasi_dasar_diagnosis_paraf' => $request->informasi_dasar_diagnosis_paraf,
                 'informasi_tindakan_kedokteran_paraf' => $request->informasi_tindakan_kedokteran_paraf,
@@ -3193,7 +3192,7 @@ class NewNursingController extends Controller
             'persetujuan_jenis_kelamin_2' => $request->persetujuan_jenis_kelamin_2,
             'persetujuan_tanggal_lahir_2' => $request->persetujuan_tanggal_lahir_2,
             'persetujuan_alamat_2' => $request->persetujuan_alamat_2,
-            'persetujuan_tanggal_waktu_ttd' => $request->persetujuan_tanggal_waktu_ttd,
+            'persetujuan_tanggal_waktu_ttd' => Carbon::parse($request->persetujuan_tanggal_waktu_ttd)->toDateTimeString(),
             'persetujuan_ttd_yg_menyatakan' => $request->ttd_penerima_setuju,
             'persetujuan_ttd_dokter' => $request->ttd_dokter_setuju,
             'persetujuan_ttd_keluarga' => $request->ttd_keluarga_setuju,
@@ -3229,7 +3228,7 @@ class NewNursingController extends Controller
             'penolakan_jenis_kelamin_2' => $request->penolakan_jenis_kelamin_2,
             'penolakan_tanggal_lahir_2' => $request->penolakan_tanggal_lahir_2,
             'penolakan_alamat_2' => $request->penolakan_alamat_2,
-            'penolakan_tanggal_ttd' => $request->penolakan_tanggal_ttd,
+            'penolakan_tanggal_ttd' => Carbon::parse($request->penolakan_tanggal_ttd)->toDateTimeString(),
 
             'penolakan_ttd_yg_menyatakan' => $request->ttd_penerima_penolakan,
             'penolakan_ttd_dokter' => $request->ttd_dokter_penolakan,
@@ -3360,7 +3359,7 @@ class NewNursingController extends Controller
                     ->table('asuhan_gizi_dewasa')
                     ->where('asdewasa_reg', $request->reg_no)
                     ->count();
-                
+
                 if ($cek > 0) {
                     $update = DB::connection('mysql')
                         ->table('asuhan_gizi_dewasa')

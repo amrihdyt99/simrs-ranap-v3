@@ -36,28 +36,32 @@ class PatientController extends Controller
             ->table("m_registrasi")
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin(DB::raw('(SELECT RegNo, ToUnitServiceID, ToClassCode
+            ->leftJoin(
+                DB::raw('(SELECT RegNo, ToUnitServiceID, ToClassCode
                                 FROM m_bed_history
                                 WHERE id = (SELECT MAX(id) FROM m_bed_history bh WHERE bh.RegNo = m_bed_history.RegNo))
-                                as m_bed_history'), 
-                   'm_registrasi.reg_no', '=', 'm_bed_history.RegNo')
-            ->leftJoin('m_ruangan', function($join) {
+                                as m_bed_history'),
+                'm_registrasi.reg_no',
+                '=',
+                'm_bed_history.RegNo'
+            )
+            ->leftJoin('m_ruangan', function ($join) {
                 $join->on('m_ruangan.RoomID', '=', 'm_bed_history.ToUnitServiceID')
-                     ->orOn('m_ruangan.RoomID', '=', DB::raw('CAST(m_registrasi.service_unit AS UNSIGNED)'));
+                    ->orOn('m_ruangan.RoomID', '=', DB::raw('CAST(m_registrasi.service_unit AS UNSIGNED)'));
             })
-            ->leftJoin('m_room_class', function($join) {
+            ->leftJoin('m_room_class', function ($join) {
                 $join->on('m_room_class.ClassCode', '=', 'm_bed_history.ToClassCode')
-                     ->orOn('m_room_class.ClassCode', '=', 'm_registrasi.bed');
+                    ->orOn('m_room_class.ClassCode', '=', 'm_registrasi.bed');
             })
-            ->leftJoin('m_unit_departemen', function($join) {
+            ->leftJoin('m_unit_departemen', function ($join) {
                 $join->on('m_unit_departemen.ServiceUnitID', '=', 'm_bed_history.ToUnitServiceID')
-                     ->orOn('m_unit_departemen.ServiceUnitID', '=', DB::raw('CAST(m_registrasi.service_unit AS UNSIGNED)'));
+                    ->orOn('m_unit_departemen.ServiceUnitID', '=', DB::raw('CAST(m_registrasi.service_unit AS UNSIGNED)'));
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->leftJoin('businesspartner', 'businesspartner.id', '=', 'm_registrasi.reg_cara_bayar')
             ->leftJoin('m_physician_team', 'm_registrasi.reg_no', '=', 'm_physician_team.reg_no')
             ->leftJoin('m_paramedis as physician', 'm_physician_team.kode_dokter', '=', 'physician.ParamedicCode');
-    
+
         if ($type == 'area') {
             $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
                 ->whereRaw("
@@ -68,9 +72,9 @@ class PatientController extends Controller
                     $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
                         ->orWhereExists(function ($subQuery) {
                             $subQuery->select(DB::raw(1))
-                                    ->from('m_physician_team')
-                                    ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
-                                    ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
+                                ->from('m_physician_team')
+                                ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
+                                ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
                         });
                 });
         } else {
@@ -79,7 +83,7 @@ class PatientController extends Controller
                     $datamypatient = $datamypatient->where($value['key'], $value['value']);
                 }
             }
-            
+
             $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
                 ->whereRaw("
                     (reg_dokter_care = '' or reg_dokter_care like ?) 
@@ -89,9 +93,9 @@ class PatientController extends Controller
                     $query->where('m_registrasi.reg_dokter', Auth::user()->dokter_id)
                         ->orWhereExists(function ($subQuery) {
                             $subQuery->select(DB::raw(1))
-                                    ->from('m_physician_team')
-                                    ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
-                                    ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
+                                ->from('m_physician_team')
+                                ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
+                                ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
                         });
                 });
         }
@@ -108,18 +112,18 @@ class PatientController extends Controller
                 'm_registrasi.service_unit',
                 'm_unit_departemen.ServiceUnitCode',
                 DB::raw("
-                    (select ".getLimit()[0]." ToUnitServiceID from m_bed_history where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ToUnitServiceID,
-                    (select ".getLimit()[0]." ServiceUnitCode from m_bed_history join m_unit_departemen on ServiceUnitID = ToUnitServiceID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as ServiceUnitCodeNext,
-                    (select ".getLimit()[0]." room_id from m_bed where bed_id = bed ".getLimit()[1].") as room_id,
-                    (select ".getLimit()[0]." room_id from m_bed_history join m_bed on bed_id = ToBedID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc ".getLimit()[1].") as room_id_next
+                    (select " . getLimit()[0] . " ToUnitServiceID from m_bed_history where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc " . getLimit()[1] . ") as ToUnitServiceID,
+                    (select " . getLimit()[0] . " ServiceUnitCode from m_bed_history join m_unit_departemen on ServiceUnitID = ToUnitServiceID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc " . getLimit()[1] . ") as ServiceUnitCodeNext,
+                    (select " . getLimit()[0] . " room_id from m_bed where bed_id = bed " . getLimit()[1] . ") as room_id,
+                    (select " . getLimit()[0] . " room_id from m_bed_history join m_bed on bed_id = ToBedID where RegNo = m_registrasi.reg_no order by CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) desc " . getLimit()[1] . ") as room_id_next
                 "),
                 // DB::raw('MAX(COALESCE(m_bed_history.ToUnitServiceID, CAST(m_registrasi.service_unit AS UNSIGNED))) as room_id'),
                 DB::raw('GROUP_CONCAT(DISTINCT physician.ParamedicName SEPARATOR "| ") as physician_team'),
                 DB::raw("
                     (
                         select CONCAT('[', GROUP_CONCAT(CONCAT('\"', kategori, '\"') ORDER BY kategori ASC SEPARATOR ', '), ']')
-                        from ".getUni()->db_connection_mysql2()->getDatabaseName().".m_physician_team 
-                        where kode_dokter = '".$dokter_code."'
+                        from " . getUni()->db_connection_mysql2()->getDatabaseName() . ".m_physician_team 
+                        where kode_dokter = '" . $dokter_code . "'
                         and reg_no = m_registrasi.reg_no
                     ) as physician_team_role
                 ")
@@ -139,8 +143,8 @@ class PatientController extends Controller
             ->get();
 
         foreach ($data as $key => $value) {
-            $serviceUnit = DB::select("(select ServiceUnitName from ".getDatabase('master').".m_unit where ServiceUnitCode = '".($value->ServiceUnitCodeNext ?? $value->ServiceUnitCode)."')");
-            $room = DB::select("(select RoomName from ".getDatabase('master').".m_ruangan where RoomID = ".($value->room_id_next ?? $value->room_id).")");
+            $serviceUnit = DB::select("(select ServiceUnitName from " . getDatabase('master') . ".m_unit where ServiceUnitCode = '" . ($value->ServiceUnitCodeNext ?? $value->ServiceUnitCode) . "')");
+            $room = DB::select("(select RoomName from " . getDatabase('master') . ".m_ruangan where RoomID = " . ($value->room_id_next ?? $value->room_id) . ")");
 
             $data[$key]->service_unit = $value->ToUnitServiceID ?? $value->service_unit;
             $data[$key]->ServiceUnitName = count($serviceUnit) > 0 ? $serviceUnit[0]->ServiceUnitName : '';
@@ -154,8 +158,8 @@ class PatientController extends Controller
 
         return view('dokter.pages.table', compact('data', 'type'));
     }
-    
-    
+
+
 
     public function ajax_index($request)
     {
@@ -168,53 +172,53 @@ class PatientController extends Controller
             ->join('businesspartner', 'reg_cara_bayar', 'businesspartner.id');
 
         if (isset($request->params)) {
-            foreach($request->params as $value){
-				if(isset($value['method'])){
-					if(isset($value['range'])){
-						$datamypatient = $datamypatient->{$value['method']}($value['key'], $value['range'], $value['value']);
-					} else {
-						$datamypatient = $datamypatient->{$value['method']}($value['key'], $value['value']);
-					}
-				} else if(isset($value['like']) && $value['like']){
-					$datamypatient = $datamypatient->where($value['key'], 'like', '%'.$value['value'].'%');
-				} else {
-					$datamypatient = $datamypatient->where($value['key'], $value['value']);
-				}
-			}
+            foreach ($request->params as $value) {
+                if (isset($value['method'])) {
+                    if (isset($value['range'])) {
+                        $datamypatient = $datamypatient->{$value['method']}($value['key'], $value['range'], $value['value']);
+                    } else {
+                        $datamypatient = $datamypatient->{$value['method']}($value['key'], $value['value']);
+                    }
+                } else if (isset($value['like']) && $value['like']) {
+                    $datamypatient = $datamypatient->where($value['key'], 'like', '%' . $value['value'] . '%');
+                } else {
+                    $datamypatient = $datamypatient->where($value['key'], $value['value']);
+                }
+            }
         } else {
             $datamypatient = $datamypatient
                 ->where('m_registrasi.reg_discharge', '!=', '3');
         }
 
         $datamypatient = $datamypatient->select([
-                'm_pasien.PatientName',
-                'm_registrasi.reg_medrec',
-                'm_registrasi.reg_no',
-                'm_paramedis.ParamedicName',
-                'm_ruangan_baru.nama_ruangan',
-                'm_registrasi.reg_cara_bayar',
-                'm_registrasi.reg_tgl',
-                'm_registrasi.reg_jam',
-                'BusinessPartnerName'
-            ])
+            'm_pasien.PatientName',
+            'm_registrasi.reg_medrec',
+            'm_registrasi.reg_no',
+            'm_paramedis.ParamedicName',
+            'm_ruangan_baru.nama_ruangan',
+            'm_registrasi.reg_cara_bayar',
+            'm_registrasi.reg_tgl',
+            'm_registrasi.reg_jam',
+            'BusinessPartnerName'
+        ])
             ->orderByDesc('m_registrasi.reg_tgl');
 
-            if (isset($request->no_ajax)) {
-                return $datamypatient->get();
-            } else {
-                return DataTables()
-                    ->of($datamypatient)
-                    ->editColumn('aksi_data', function ($query) use ($request) {
-                        return ('<a href="'
-                            . route('dokter.patient.summary', ['patient' => $query->reg_no])
-                            . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-clipboard-check"></i>Periksa</a>');
-                    })
-                    // ->editColumn('PatientName', function ($query) use ($request) {
-                    //     return $query->registration ? ($query->registration->pasien ? $query->registration->pasien->PatientName :'') : '';
-                    // })
-                    ->escapeColumns([])
-                    ->toJson();
-            }
+        if (isset($request->no_ajax)) {
+            return $datamypatient->get();
+        } else {
+            return DataTables()
+                ->of($datamypatient)
+                ->editColumn('aksi_data', function ($query) use ($request) {
+                    return ('<a href="'
+                        . route('dokter.patient.summary', ['patient' => $query->reg_no])
+                        . '" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-clipboard-check"></i>Periksa</a>');
+                })
+                // ->editColumn('PatientName', function ($query) use ($request) {
+                //     return $query->registration ? ($query->registration->pasien ? $query->registration->pasien->PatientName :'') : '';
+                // })
+                ->escapeColumns([])
+                ->toJson();
+        }
     }
 
     public function ajax_index2($request)
@@ -290,7 +294,8 @@ class PatientController extends Controller
         return view('dokter.pages.patient.detail', $data);
     }
 
-    public function takeOver(Request $request){
+    public function takeOver(Request $request)
+    {
         try {
             $check_ = RegistrationInap::where('reg_no', $request->reg_no)
                 ->first();
@@ -330,7 +335,7 @@ class PatientController extends Controller
                     ]
                 ];
             }
-            
+
             $update = RegistrationInap::where('reg_no', $request->reg_no)
                 ->update([
                     'reg_dokter_care' => json_encode($data)
@@ -349,8 +354,6 @@ class PatientController extends Controller
                     'message' => $request->type == 'cancel' ? 'Pelayanan pasien gagal dibatalkan' : 'Pasien gagal diambil alih'
                 ];
             }
-            
-
         } catch (\Throwable $th) {
             throw $th;
         }

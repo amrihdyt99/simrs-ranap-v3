@@ -181,10 +181,10 @@ class NyaaViewInjectorController extends AaaBaseController
         $dbMaster = DB::connection('mysql2')->getDatabaseName();
         $dbInap = DB::connection('mysql')->getDatabaseName();
 
-        $datamypatient = DB::table($dbMaster . '.m_registrasi')
-            ->leftJoin($dbMaster . '.m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin($dbMaster . '.m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin($dbInap . '.icd10_bpjs', 'm_registrasi.reg_diagnosis', '=', 'icd10_bpjs.ID_ICD10')
+        $datamypatient = DB::table($dbMaster . '.dbo.m_registrasi as m_registrasi')
+            ->leftJoin($dbMaster . '.dbo.m_pasien as m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin($dbMaster . '.dbo.m_paramedis as m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin($dbInap . '.dbo.icd10_bpjs as icd10_bpjs', 'm_registrasi.reg_diagnosis', '=', 'icd10_bpjs.ID_ICD10')
             ->select('m_registrasi.*', 'm_pasien.*', 'm_paramedis.ParamedicName', 'icd10_bpjs.NM_ICD10')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
             ->first();
@@ -1767,15 +1767,18 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
-            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName', 'm_registrasi.*')
             ->first();
 
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
 
+        $dbMaster = DB::connection('mysql2')->getDatabaseName();
+        $dbInap = DB::connection('mysql')->getDatabaseName();
+
         $informasi = DB::connection('mysql')
-            ->table('rs_tindakan_medis_informasi')
-            ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
-            ->select('rs_tindakan_medis_informasi.*', 'rs_m_paramedic.ParamedicName')
+            ->table($dbInap . '.dbo.rs_tindakan_medis_informasi as rs_tindakan_medis_informasi')
+            ->join($dbMaster . '.dbo.m_paramedis as m_paramedis', 'rs_tindakan_medis_informasi.paramediccode', '=', 'm_paramedis.paramediccode')
+            ->select('rs_tindakan_medis_informasi.*', 'm_paramedis.ParamedicName')
             ->where('reg_no', $request->reg_no)
             ->first();
 
@@ -1797,7 +1800,7 @@ class NyaaViewInjectorController extends AaaBaseController
             [
                 'status' => true,
                 'data' => [
-                  
+
                     'informasi' => $informasi,
                     'persetujuan' => $persetujuan,
                     'penolakan' => $penolakan,

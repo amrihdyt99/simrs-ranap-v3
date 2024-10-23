@@ -130,7 +130,7 @@
                             </h5>
                         </td>
                         <td>
-                            <input type="datetime-local" name="penolakan_tanggal_ttd" id="penolakan_tanggal_ttd" class="form-control" value="">
+                            <input type="datetime-local" name="penolakan_tanggal_ttd" id="penolakan_tanggal_ttd_penolakan" class="form-control" value="">
                         </td>
                     </tr>
                 </tbody>
@@ -186,14 +186,14 @@
                                     <input type="hidden" id="signature_penolakan_keluarga" name="penolakan_ttd_keluarga" value="">
                                     <button type="button" id="clear_btn_penolakan_keluarga" class="btn btn-danger" data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
                                     @if(isset($registrasi_pj))
-                                        <select name="nama_penolakan_keluarga" id="nama_penolakan_keluarga" class="form-control mt-2">
-                                            <option value="">Pilih Nama Keluarga</option>
-                                            @foreach($registrasi_pj as $pj)
-                                                <option value="{{ $pj->reg_pjawab_nama }}">{{ $pj->reg_pjawab_nama }}</option>
-                                            @endforeach
-                                        </select>
+                                    <select name="nama_penolakan_keluarga" id="nama_penolakan_keluarga" class="form-control mt-2">
+                                        <option value="">Pilih Nama Keluarga</option>
+                                        @foreach($registrasi_pj as $pj)
+                                        <option value="{{ $pj->reg_pjawab_nama }}">{{ $pj->reg_pjawab_nama }}</option>
+                                        @endforeach
+                                    </select>
                                     @else
-                                        <input type="text" name="nama_penolakan_keluarga" id="nama_penolakan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="">
+                                    <input type="text" name="nama_penolakan_keluarga" id="nama_penolakan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="">
                                     @endif
                                 </div>
                             </div>
@@ -217,8 +217,8 @@
                 </tr>
             </tbody>
         </table>
-        
-        
+
+
     </div>
-    <button class="btn btn-success float-left mt-4" id="save-penolakan-tindakan-medis" type="button" >Simpan</button>
+    <button class="btn btn-success float-left mt-4" id="save-penolakan-tindakan-medis" type="button">Simpan</button>
 </form>

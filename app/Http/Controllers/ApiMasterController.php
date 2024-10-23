@@ -535,4 +535,26 @@ class ApiMasterController extends Controller
 		}
 		return response()->json($json, $json['code']);
 	}
+
+	public function getICD10(Request $request)
+	{
+		$dat = DB::connection('mysql_ranap')->table('icd10_bpjs')->get();
+		if ($dat) {
+
+			DB::connection('mysql')->table('icd10_bpjs')->truncate();
+			foreach ($dat as $kue) {
+				$icd = (array) $kue;
+				DB::connection('mysql')
+					->table('icd10_bpjs')->insert($icd);
+			}
+			$json['code'] = 200;
+			$json['msg'] = 'Ok';
+			$json['data'] = "data icd 10 berhasil disimpan";
+		} else {
+			$json['code'] = 201;
+			$json['msg'] = 'Tidak ada data';
+			$json['data'] = null;
+		}
+		return response()->json($json, $json['code']);
+	}
 }

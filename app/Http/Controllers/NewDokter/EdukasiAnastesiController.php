@@ -25,18 +25,18 @@ class EdukasiAnastesiController extends Controller
             'nama_pihak_pasien',
             'nama_dokter',
         ]);
-        
+
         $reg_no = $request->reg_no;
         $params['ttd_pihak_pasien'] = $request->ttd_pihak_pasien_anastesi;
         $params['ttd_dokter'] = $request->ttd_dokter_anastesi;
         $params['reg_no'] = $reg_no;
-        
+
 
         $cek = DB::connection('mysql')->table('rs_edukasi_pasien_anastesi')->where('reg_no', $reg_no)->count();
         if ($cek > 0) {
-            $params['updated_at'] = now(); 
+            $params['updated_at'] = now();
             $params['updated_by'] = $request->username;
-        }else{
+        } else {
             $params['created_at'] = now();
             $params['created_by'] = $request->username;
         }
@@ -60,18 +60,19 @@ class EdukasiAnastesiController extends Controller
         $dbMaster = DB::connection('mysql2')->getDatabaseName();
         $dbInap = DB::connection('mysql')->getDatabaseName();
 
-        $data_pasien = DB::table($dbMaster . '.m_registrasi')
-            ->leftJoin($dbMaster . '.m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
-            ->leftJoin($dbMaster . '.m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
-            ->leftJoin($dbInap . '.icd10_bpjs', 'm_registrasi.reg_diagnosis', '=', 'icd10_bpjs.ID_ICD10')
+        $data_pasien = DB::table($dbMaster . '.dbo.m_registrasi as m_registrasi')
+            ->leftJoin($dbMaster . '.dbo.m_pasien as m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin($dbMaster . '.dbo.m_paramedis as m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin($dbInap . '.dbo.icd10_bpjs as icd10_bpjs', 'm_registrasi.reg_diagnosis', '=', 'icd10_bpjs.ID_ICD10')
             ->select(
-                'm_registrasi.reg_medrec', 
+                'm_registrasi.reg_medrec',
                 'm_pasien.PatientName',
                 'm_pasien.DateOfBirth',
                 'm_pasien.GCSex',
                 'm_pasien.MobilePhoneNo1',
-                'm_paramedis.ParamedicName', 
-                'icd10_bpjs.NM_ICD10')
+                'm_paramedis.ParamedicName',
+                'icd10_bpjs.NM_ICD10'
+            )
             ->where('m_registrasi.reg_no', $reg_no)
             ->first();
 

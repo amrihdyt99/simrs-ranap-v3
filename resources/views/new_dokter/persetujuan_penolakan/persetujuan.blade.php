@@ -8,7 +8,7 @@
             }
 @endphp --}}
 <form id="PersetujuanTindakanMedis">
-<input type="hidden" name="kode_tindakan_medis_setuju_tolak" id="kode_tindakan_medis_setuju_tolak" value="">
+    <input type="hidden" name="kode_tindakan_medis_setuju_tolak" id="kode_tindakan_medis_setuju_tolak" value="">
     <div class="card">
         <div class="card-header">
             <h5><b>PERSETUJUAN TINDAKAN MEDIS</b></h5>
@@ -29,13 +29,13 @@
                         Jenis Kelamin
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki" >
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki">
                         <label for="persetujuan_jenis_kelamin_1_laki_laki">Laki-laki</label>
-                    
-                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan" >
+
+                        <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan">
                         <label for="persetujuan_jenis_kelamin_1_perempuan">Perempuan</label>
                     </td>
-                    
+
                 </tr>
                 <tr>
                     <td>
@@ -66,15 +66,15 @@
                         Terhadap
                     </td>
                     <td>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_1" value="Saya sendiri" >
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_1" value="Saya sendiri">
                         <label for="persetujuan_terhadap_1">Saya sendiri</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_2" value="Anak" >
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_2" value="Anak">
                         <label for="persetujuan_terhadap_2">Anak</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_3" value="Ayah" >
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_3" value="Ayah">
                         <label for="persetujuan_terhadap_3">Ayah</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_4" value="Ibu" >
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_4" value="Ibu">
                         <label for="persetujuan_terhadap_4">Ibu</label>
-                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_5" value="Saudara" >
+                        <input type="radio" name="persetujuan_terhadap" id="persetujuan_terhadap_5" value="Saudara">
                         <label for="persetujuan_terhadap_5">Saudara</label>
                     </td>
                 </tr>
@@ -132,7 +132,7 @@
                             </h5>
                         </td>
                         <td>
-                            <input type="datetime-local" name="persetujuan_tanggal_waktu_ttd" id="persetujuan_tanggal_waktu_ttd"
+                            <input type="datetime-local" name="persetujuan_tanggal_waktu_ttd" id="persetujuan_tanggal_waktu_ttd_dokter"
                                 class="form-control" value="">
                         </td>
                     </tr>
@@ -204,14 +204,14 @@
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
                                     @if(isset($registrasi_pj))
-                                        <select name="nama_persetujuan_keluarga" id="nama_persetujuan_keluarga" class="form-control mt-2">
-                                            <option value="">Pilih Nama Keluarga</option>
-                                            @foreach($registrasi_pj as $pj)
-                                                <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
-                                            @endforeach
-                                        </select>
+                                    <select name="nama_persetujuan_keluarga" id="nama_persetujuan_keluarga" class="form-control mt-2">
+                                        <option value="">Pilih Nama Keluarga</option>
+                                        @foreach($registrasi_pj as $pj)
+                                        <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
+                                        @endforeach
+                                    </select>
                                     @else
-                                        <input type="text" name="nama_persetujuan_keluarga" id="nama_persetujuan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="">
+                                    <input type="text" name="nama_persetujuan_keluarga" id="nama_persetujuan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="">
                                     @endif
                                 </div>
                             </div>
@@ -240,7 +240,7 @@
                 </tr>
             </tbody>
         </table>
-        
+
     </div>
     <button class="btn btn-success float-left mt-4" id="save-persetujuan-tindakan-medis" type="button">Simpan</button>
 </form>

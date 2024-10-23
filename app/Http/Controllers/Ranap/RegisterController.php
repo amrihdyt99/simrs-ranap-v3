@@ -111,7 +111,9 @@ class RegisterController extends Controller
                 'm_registrasi.reg_cara_bayar',
             ])
             ->whereNull('reg_deleted')
-            ->orderByDesc('reg_tgl');
+            ->orderByDesc('reg_tgl')
+            ->get();
+
 
         return DataTables()
             ->of($data)
@@ -169,6 +171,7 @@ class RegisterController extends Controller
             ->escapeColumns([])
             ->toJson();
     }
+
 
     /**
      * @Param string $reg_no
@@ -1096,7 +1099,7 @@ class RegisterController extends Controller
         $data = Pasien::select(
             'm_pasien.PatientName',
             'm_pasien.SSN',
-            DB::raw("IFNULL(keluarga.FamilyName, '') as FamilyName"),
+            DB::raw("ISNULL(keluarga.FamilyName, '') as FamilyName"),
             'keluarga.GCRelationShip',
             'keluarga.PhoneNo',
             'keluarga.Address',

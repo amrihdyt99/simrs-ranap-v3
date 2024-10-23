@@ -416,3 +416,8 @@ Route::get('/assesment-awal-dokter', [App\Http\Controllers\NewDokter\RiwayatCont
 //edukasi dokter
 Route::get('/edukasi-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getEdukasiData'])->name('edukasi-dokter');
 
+
+// API MYSQL
+Route::prefix('mysql')->name('api-mysql.')->group(function () {
+	Route::get('icd10', [ApiMasterController::class, 'getICD10'])->name('mysql.icd10');
+});

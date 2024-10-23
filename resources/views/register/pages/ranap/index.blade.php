@@ -123,25 +123,25 @@
 </div>
 
 <div class="modal fade" id="modalPersetujuanMedis" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg custom-width" role="document">
-      <div class="modal-content">
-        <div class="modal-header d-flex justify-content-between">
-          <h5 class="modal-title" id="resultModalLabel">Persetujuan Medis</h5>
-          <div class="d-flex align-items-center">
-            <button id="printButtonPersetujuanMedis" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+  <div class="modal-dialog modal-lg custom-width" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="resultModalLabel">Persetujuan Medis</h5>
+        <div class="d-flex align-items-center">
+          <button id="printButtonPersetujuanMedis" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <iframe id="iframe-persetujuanMedis" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
-          
-        
       </div>
+      <iframe id="iframe-persetujuanMedis" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
+
+
     </div>
+  </div>
   </section>
 
-<div class="modal fade" id="modalRingkasanPasien" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+  <div class="modal fade" id="modalRingkasanPasien" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg custom-width" role="document">
       <div class="modal-content">
         <div class="modal-header d-flex justify-content-between">
@@ -156,7 +156,7 @@
         <iframe id="iframe-ringkasanPasien" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
       </div>
     </div>
-</div>
+  </div>
 </div>
 @endsection
 
@@ -227,37 +227,37 @@
       },
       columns: [{
           data: "reg_tgl",
-          name: "m_registrasi.reg_tgl",
+          name: "reg_tgl",
           orderable: true,
           searchable: true,
         },
         {
           data: "reg_no",
-          name: "m_registrasi.reg_no",
+          name: "reg_no",
           orderable: true,
           searchable: true,
         },
         {
           data: "reg_medrec",
-          name: "m_registrasi.reg_medrec",
+          name: "reg_medrec",
           orderable: true,
           searchable: true,
         },
         {
           data: "PatientName",
-          name: "m_pasien.PatientName",
+          name: "PatientName",
           orderable: true,
           searchable: true,
         },
         {
           data: "ParamedicName",
-          name: "m_paramedis.ParamedicName",
+          name: "ParamedicName",
           orderable: true,
           searchable: true,
         },
         {
           data: "reg_cara_bayar",
-          name: "m_registrasi.reg_cara_bayar",
+          name: "reg_cara_bayar",
           orderable: true,
           searchable: true,
         },
@@ -352,7 +352,7 @@
               iframe.contentDocument.open();
               iframe.contentDocument.write(data);
               iframe.contentDocument.close();
-              $('#modalPersetujuanMedis').modal('show').on('shown.bs.modal', function () {
+              $('#modalPersetujuanMedis').modal('show').on('shown.bs.modal', function() {
                 var modalDialog = $(this).find('.modal-dialog');
                 modalDialog.css({
                   'max-width': '80%',
@@ -433,34 +433,34 @@
   }
 </script>
 <script>
-document.getElementById('printButtonRingkasanPasien').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-ringkasanPasien');
-  iframe.contentWindow.focus();
-  iframe.contentWindow.print();
-});
-document.getElementById('printButtonAdmisi').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-admisi');
-  iframe.contentWindow.focus();
-  iframe.contentWindow.print();
-});
-document.getElementById('printButtonGC').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-generalConsent');
-  iframe.contentWindow.focus();
-  iframe.contentWindow.print();
-});
-document.getElementById('printButtonIntensif').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-rawatIntensif');
-  iframe.contentWindow.focus();
-  iframe.contentWindow.print();
-});
-document.getElementById('printButtonPersetujuanMedis').addEventListener('click', function() {
-  var iframe = document.getElementById('iframe-persetujuanMedis');
-  if (iframe && iframe.contentWindow) {
+  document.getElementById('printButtonRingkasanPasien').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-ringkasanPasien');
     iframe.contentWindow.focus();
     iframe.contentWindow.print();
-  } else {
-    console.error('iframe-persetujuanMedis not found or not loaded');
-  }
-});
+  });
+  document.getElementById('printButtonAdmisi').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-admisi');
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  });
+  document.getElementById('printButtonGC').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-generalConsent');
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  });
+  document.getElementById('printButtonIntensif').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-rawatIntensif');
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  });
+  document.getElementById('printButtonPersetujuanMedis').addEventListener('click', function() {
+    var iframe = document.getElementById('iframe-persetujuanMedis');
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    } else {
+      console.error('iframe-persetujuanMedis not found or not loaded');
+    }
+  });
 </script>
 @endpush
