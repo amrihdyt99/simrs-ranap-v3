@@ -1,5 +1,4 @@
-
-    {{-- @php
+{{-- @php
         $informasi = optional((object)[]);
         $dataPasien = optional((object)[]);
         $registrasi_pj = optional((object)[]);
@@ -42,3 +41,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    let buttonEdukasiAnastesi = document.getElementById('edukasi_anastesi_tab');
+
+    // Add an event listener for the 'click' event
+    buttonEdukasiAnastesi.addEventListener('click', function() {
+        // Change the text content of the paragraph when the button is clicked
+        getEdukasiAnastesi();
+        ttd_edukasi_perawat();
+    });
+</script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dokter;
 use App\Http\Controllers\Controller;
 
 use App\Http\Controllers\ZxcNyaaUniversal\AaaBaseController;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -42,11 +43,13 @@ class SuratRujukanController extends AaaBaseController
             return response()->json(['message' => 'Data pasien tidak ditemukan'], 404);
         }
 
-        $surat_rujukan = DB::connection('mysql')
-            ->table('rs_rujukan_persiapan_pasien')
-            ->join('rs_m_paramedic', 'rs_rujukan_persiapan_pasien.paramediccode', '=', 'rs_m_paramedic.paramediccode')
+        $dbMaster = DB::connection('mysql2')->getDatabaseName();
+        $dbInap = DB::connection('mysql')->getDatabaseName();
+
+        $surat_rujukan = DB::table($dbInap . '.dbo.rs_rujukan_persiapan_pasien as rs_rujukan_persiapan_pasien')
+            ->join($dbMaster . '.dbo.m_paramedis as m_paramedis', 'rs_rujukan_persiapan_pasien.ParamedicCode', '=', 'm_paramedis.ParamedicCode')
             ->where('reg_no', $request->reg_no)
-            ->select('rs_rujukan_persiapan_pasien.*', 'rs_m_paramedic.ParamedicName')
+            ->select('rs_rujukan_persiapan_pasien.*', 'm_paramedis.ParamedicName')
             ->first();
 
         Log::info('Surat rujukan:', ['data' => $surat_rujukan]);
@@ -157,7 +160,7 @@ class SuratRujukanController extends AaaBaseController
                     'med_rec' => $request->med_rec,
                     'kode_surat_rujukan' => $request->kode_surat_rujukan,
                     'detail_prosedur_operasi' => $request->detailProsedurOperasi,
-                    'waktu_prosedur_operasi' => $request->waktuProsedurOperasi,
+                    'waktu_prosedur_operasi' => Carbon::parse($request->waktuProsedurOperasi)->toDateTimeString(),
                     'aktif' => 1,
                     'aktif_at' => $currentDateTime,
                     'aktif_by_user_name' => $request->username,
@@ -168,7 +171,7 @@ class SuratRujukanController extends AaaBaseController
                 ]);
 
                 return response()->json([
-                    'status' => 'success', 
+                    'status' => 'success',
                     'message' => 'Data berhasil disimpan',
                     'id' => $id
                 ]);
@@ -244,7 +247,7 @@ class SuratRujukanController extends AaaBaseController
                     'med_rec' => $request->med_rec,
                     'kode_surat_rujukan' => $request->kode_surat_rujukan,
                     'nama_alat_terpasang' => $request->nama_alat_terpasang,
-                    'waktu_alat_terpasang' => $request->waktu_alat_terpasang,
+                    'waktu_alat_terpasang' => Carbon::parse($request->waktu_alat_terpasang)->toDateTimeString(),
                     'aktif' => 1,
                     'aktif_at' => $currentDateTime,
                     'aktif_by_user_name' => $request->username,
@@ -255,7 +258,7 @@ class SuratRujukanController extends AaaBaseController
                 ]);
 
                 return response()->json([
-                    'status' => 'success', 
+                    'status' => 'success',
                     'message' => 'Data berhasil disimpan',
                     'id' => $id
                 ]);
@@ -344,7 +347,7 @@ class SuratRujukanController extends AaaBaseController
                 ]);
 
                 return response()->json([
-                    'status' => 'success', 
+                    'status' => 'success',
                     'message' => 'Data berhasil disimpan',
                     'id' => $id
                 ]);
@@ -434,7 +437,7 @@ class SuratRujukanController extends AaaBaseController
                 ]);
 
                 return response()->json([
-                    'status' => 'success', 
+                    'status' => 'success',
                     'message' => 'Data berhasil disimpan',
                     'id' => $id
                 ]);
@@ -514,7 +517,7 @@ class SuratRujukanController extends AaaBaseController
                     'reg_no' => $request->reg_no,
                     'med_rec' => $request->med_rec,
                     'kode_surat_rujukan' => $request->kode_surat_rujukan,
-                    'waktu' => $request->waktu,
+                    'waktu' => Carbon::parse($request->waktu)->toDateTimeString(),
                     'kesadaran' => $request->kesadaran,
                     'td' => $request->td,
                     'hr' => $request->hr,
@@ -529,7 +532,7 @@ class SuratRujukanController extends AaaBaseController
                 ]);
 
                 return response()->json([
-                    'status' => 'success', 
+                    'status' => 'success',
                     'message' => 'Data berhasil disimpan',
                     'id' => $id
                 ]);
@@ -573,6 +576,4 @@ class SuratRujukanController extends AaaBaseController
             return response()->json(['status' => 'error', 'message' => 'Mode tidak valid'], 400);
         }
     }
-
-
 }

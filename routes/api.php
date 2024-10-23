@@ -420,4 +420,5 @@ Route::get('/edukasi-dokter', [App\Http\Controllers\NewDokter\RiwayatController:
 // API MYSQL
 Route::prefix('mysql')->name('api-mysql.')->group(function () {
 	Route::get('icd10', [ApiMasterController::class, 'getICD10'])->name('mysql.icd10');
+	Route::get('icd9', [ApiMasterController::class, 'getICD9'])->name('mysql.icd9');
 });

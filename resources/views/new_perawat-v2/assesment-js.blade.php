@@ -537,24 +537,24 @@
                 //     });
                 // },
 
-                'edukasi': function() {
-                    $.ajax({
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "reg_no": regno,
-                            "medrec": medrec,
-                        },
-                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
-                        success: function(data) {
-                            inject_view_data(data);
-                            ttd_edukasi_perawat();
-                        },
-                        error: function(data) {
-                            clear_show_error();
-                        },
-                    });
-                },
+                // 'edukasi': function() {
+                //     $.ajax({
+                //         type: "POST",
+                //         data: {
+                //             "_token": "{{ csrf_token() }}",
+                //             "reg_no": regno,
+                //             "medrec": medrec,
+                //         },
+                //         url: "{{route('nyaa_universal.view_injector.perawat.assesment_entry_edukasi_pasien')}}",
+                //         success: function(data) {
+                //             inject_view_data(data);
+                //             ttd_edukasi_perawat();
+                //         },
+                //         error: function(data) {
+                //             clear_show_error();
+                //         },
+                //     });
+                // },
 
                 'nyeri': function() {
                     $.ajax({
@@ -1707,14 +1707,14 @@
     }
 
     // Admin Nurse
-    function getTindakanKeperawatan(){
+    function getTindakanKeperawatan() {
         $('#order_tindakan').select2({
             ajax: {
                 url: "{{ route('nyaa_universal.select2.data_tindakan_baru_v2') }}",
                 type: 'POST',
                 dataType: 'json',
                 delay: 250,
-                data: function (params) {
+                data: function(params) {
                     return {
                         reg: regno,
                         class: bed_history_class,
@@ -1735,10 +1735,10 @@
                         })
                     };
                 },
-                cache: true 
+                cache: true
             },
             placeholder: 'Pilih Tindakan',
-            minimumInputLength: 2 
+            minimumInputLength: 2
         });
     }
 

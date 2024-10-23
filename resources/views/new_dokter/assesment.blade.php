@@ -19,15 +19,15 @@
 </nav>
 
 @if(isset($physician_team_role) && is_array($physician_team_role))
-    @php
-        $isKonsul = in_array('Konsul', $physician_team_role);
-    @endphp
+@php
+$isKonsul = in_array('Konsul', $physician_team_role);
+@endphp
 
-    @if ($isKonsul)
-    <div class="alert alert-warning mb-3 blink" role="alert" onclick="clickTab('physician-team-dokter')">
-        <i class="fa fa-exclamation-triangle mr-2"></i>Pasien memerlukan konsultasi, <span class="badge badge-info">Jawab Konsultasi</span> untuk menjawab permintaan konsultasi
-    </div>
-    @endif
+@if ($isKonsul)
+<div class="alert alert-warning mb-3 blink" role="alert" onclick="clickTab('physician-team-dokter')">
+    <i class="fa fa-exclamation-triangle mr-2"></i>Pasien memerlukan konsultasi, <span class="badge badge-info">Jawab Konsultasi</span> untuk menjawab permintaan konsultasi
+</div>
+@endif
 @endif
 
 @if (request()->has('tab') && request()->get('tab') == 'physician-team-dokter')
@@ -81,12 +81,12 @@
                     <div class="left-tab" id="tab-pemeriksaan-penunjang" onclick="clickTab('pemeriksaan-penunjang')">
                         Hasil Pemeriksaan Penunjang
                     </div>
-                </div>  
+                </div>
                 <div class="row">
                     <div class="left-tab" id="tab-persetujuan-penolakan" onclick="clickTab('persetujuan-penolakan')">
                         Persetujuan/Penolakan Tindakan Medis
                     </div>
-                </div>  
+                </div>
                 {{-- <div class="row">--}}
                 {{-- <div class="left-tab" id="tab-konsultasi" onclick="clickTab('konsultasi')">--}}
                 {{-- Konsultasi--}}
@@ -325,11 +325,11 @@
 
     getEdukasi('#formEdukasiDokter', 'dokter')
 
-    $('#edukasi_anastesi_tab').on('click', function() {
-        getEdukasiAnastesi();
-    });
+    // $('#edukasi_anastesi_tab').on('click', function() {
+    //     getEdukasiAnastesi();
+    // });
 
-    function getEdukasiAnastesi(){
+    function getEdukasiAnastesi() {
         $.ajax({
             url: $hosted + '/api/get-edukasi-anastesi',
             method: 'GET',
@@ -340,10 +340,10 @@
                 // console.log(response);
                 let edukasi = response.data_edukasi;
                 let pasien = response.data_pasien;
-                let ttd_dokter = ''; 
+                let ttd_dokter = '';
                 let doktername = '{{auth()->user()->name}}';
-                
-                if (edukasi) { 
+
+                if (edukasi) {
                     $('input[name="dilakukan_ke"][value="' + edukasi.dilakukan_ke + '"]').prop('checked', true);
                     $('input[name="tindakan"]').val(edukasi.tindakan);
                     $('input[name="jenis_anastesi"]').val(edukasi.jenis_anastesi);
@@ -586,7 +586,7 @@
     // function clickTab(tabId) {
     //     $('div[id*="panel-"]').hide();
     //     $('div[id*="tab-"]').removeClass('active');
-        
+
     //     $('#panel-' + tabId).show();
     //     $('#tab-' + tabId).addClass('active');
     // }
