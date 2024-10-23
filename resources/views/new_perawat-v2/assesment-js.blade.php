@@ -824,6 +824,51 @@
                         },
                     });
                 },
+                'gizi-anak': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_gizi_anak')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            // asuhanGiziDewasa_init();
+                            // loadAllFunctionAssesmentGiziDewasa();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
+
+                'gizi-obgyn': function() {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            "_token": $('[name="_token"]').val(),
+                            "reg_no": regno,
+                            "medrec": medrec,
+                        },
+                        url: "{{route('nyaa_universal.view_injector.perawat.assesment_gizi_obgyn')}}",
+                        success: function(data) {
+                            inject_view_data(data);
+                            // asuhanGiziDewasa_init();
+                            // loadAllFunctionAssesmentGiziDewasa();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
+                        },
+                        error: function(data) {
+                            clear_show_error();
+                        },
+                    });
+                },
 
                 'nursing-note': function() {
                     $.ajax({
@@ -976,7 +1021,9 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nursing_full')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            loadDatatableNews();
+                            $('#history-tab').on('click', function() {
+                                loadDatatableNews();
+                            });
                             loadAllFunctionNursing();
                         },
                         error: function(data) {
@@ -1035,6 +1082,10 @@
                             neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
                             neko_select2_init(`{{ route("getPPALainnya") }}`, 'physician_kode_lainnya ');
                             getPhysicianTeamPerawat();
+                            $('#btn_simpan_jawaban_konsul').on('click', function() {
+                                saveKonsul('jawaban');
+                            });
+                            getKonsulData();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -2455,3 +2506,4 @@
 @include('new_perawat.soap.js.soap_perawat_js')
 @include('new_perawat.riwayat-v2.js.riwayat_js')
 @include('new_perawat.gizi.js.assesesment_gizi_dewasa_js')
+@include('new_perawat.physician_team.js.konsul_js')
