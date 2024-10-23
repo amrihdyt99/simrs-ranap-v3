@@ -111,22 +111,22 @@ header("Content-type: text/css; charset: UTF-8");
             <tr>
               <td>Nama Pasien</td>
               <td>:</td>
-              <td>{{ $patient->PatientName }}</td>
+              <td>{{ $patient->PatientName ?? '' }}</td>
             </tr>
             <tr>
               <td>Tanggal Lahir</td>
               <td>:</td>
-              <td>{{ $patient->DateOfBirth }}</td>
+              <td>{{ $patient->DateOfBirth ?? '' }}</td>
             </tr>
             <tr>
               <td>Tanggal Registrasi</td>
               <td>:</td>
-              <td>{{ $patient->reg_tgl }}</td>
+              <td>{{ $patient->reg_tgl ?? '' }}</td>
             </tr>
             <tr>
               <td>Dokter</td>
               <td>:</td>
-              <td>{{ $patient->ParamedicName }}</td>
+              <td>{{ $patient->ParamedicName ?? '' }}</td>
             </tr>
           </tbody>
         </table>
@@ -138,17 +138,17 @@ header("Content-type: text/css; charset: UTF-8");
             <tr>
               <td>MRN</td>
               <td>:</td>
-              <td>{{ $patient->reg_medrec }}</td>
+              <td>{{ $patient->reg_medrec ?? '' }}</td>
             </tr>
             <tr>
-              <td>Servce Unit / Room</td>
+              <td>Service Unit / Room</td>
               <td>:</td>
-              <td>{{ $ruangan->kelompok . ' / ' . $ruangan->kelas }}</td>
+              <td>{{ $ruangan->kelompok ?? '' . ' / ' . $ruangan->kelas ?? '' }}</td>
             </tr>
             <tr>
               <td>Corporate</td>
               <td>:</td>
-              <td>{{ $patient->BusinessPartnerName }}</td>
+              <td>{{ $patient->BusinessPartnerName ?? '' }}</td>
             </tr>
             <tr>
               <td>Document Contract</td>
