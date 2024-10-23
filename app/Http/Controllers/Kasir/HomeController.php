@@ -15,7 +15,7 @@ class HomeController extends Controller
 
         $data['pasien'] = DB::connection('mysql2')
             ->table('m_registrasi as a')
-            ->leftjoin($dbInap.'.rs_pasien_billing_validation as b', 'pvalidation_reg', 'reg_no');
+            ->leftjoin($dbInap.sqlServerConfig()[0].'.rs_pasien_billing_validation as b', 'pvalidation_reg', 'reg_no');
 
         if (isset($request->statusPayment) && $request->statusPayment != 'all') {
             if ($request->statusPayment == 'validated') {
@@ -43,8 +43,8 @@ class HomeController extends Controller
                 'a.*',
                 DB::raw("CONCAT(a.reg_tgl, ' ', a.reg_jam) as reg_datetime"),
                 DB::raw("(select ".getLimit()[0]." PatientName from m_pasien where MedicalNo = a.reg_medrec ".getLimit()[1].") as PatientName"),
-                DB::raw("(select ".getLimit()[0]." pvalidation_code from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no ".getLimit()[1].") as pvalidation_code"),
-                DB::raw("(select ".getLimit()[0]." pvalidation_status from $dbInap.rs_pasien_billing_validation where pvalidation_reg = a.reg_no order by created_at desc ".getLimit()[1].") as pvalidation_status"),
+                DB::raw("(select ".getLimit()[0]." pvalidation_code from ".$dbInap.sqlServerConfig()[0].".rs_pasien_billing_validation where pvalidation_reg = a.reg_no ".getLimit()[1].") as pvalidation_code"),
+                DB::raw("(select ".getLimit()[0]." pvalidation_status from ".$dbInap.sqlServerConfig()[0].".rs_pasien_billing_validation where pvalidation_reg = a.reg_no order by created_at desc ".getLimit()[1].") as pvalidation_status"),
             ])
             ->orderBy('reg_datetime', 'desc')
             ->get();

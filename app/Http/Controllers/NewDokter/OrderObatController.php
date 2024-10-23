@@ -738,7 +738,7 @@ class OrderObatController extends Controller
                 $jobOrder['reg_no'] = $request->cpoe_reg;
                 $jobOrder['kode_dokter'] = $request->kode_dokter;
                 $jobOrder['waktu_order'] = date('Y-m-d H:i:s');
-                $jobOrder['service_unit'] = $request->service_unit_id ?? $data_pasien->service_unit_id;
+                $jobOrder['service_unit'] = $request->service_unit_id ?? $data_pasien->service_unit_id ?? null;
                 $jobOrder['id_cppt'] = $request->cpoe_cppt;
 
                 $store_jor = DB::table('job_orders')
