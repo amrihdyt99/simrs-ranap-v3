@@ -143,7 +143,7 @@
                 <tr>
                     <td>Dokter Bedah : {{ $laporan_operasi['operasi_tindakan']->dokter_bedah ?? '' }}</td>
                     <td>Asisten I : {{ $laporan_operasi['operasi_tindakan']->asisten_1 ?? '' }}</td>
-                    <td>Asostem II : {{ $laporan_operasi['operasi_tindakan']->asisten_2 ?? '' }}</td>
+                    <td>Asisten II : {{ $laporan_operasi['operasi_tindakan']->asisten_2 ?? '' }}</td>
                 </tr>
                 <tr>
                     <td>Dokter Anestesi : {{ $laporan_operasi['operasi_tindakan']->dokter_anastesi ?? '' }}</td>
@@ -473,7 +473,9 @@
                 <td>
                     <div class="text-center">
                         <h5>Dokter Operator</h5>
-                        <div style="min-height: 100px;"></div>
+                        <div style="min-height: 100px;">
+                            <img src="{{ $laporan_operasi['dokter_operator_pasca_operasi']->signature ?? '' }}" alt="">
+                        </div>
                         <h6 class="text-center">
                             {{ $laporan_operasi['dokter_operator_pasca_operasi']->ParamedicName ?? '' }}
                         </h6>
