@@ -24,29 +24,29 @@ class TransferInternalController extends Controller
                              bed_asal.bed_code AS bed_code_asal, bed_asal.RoomName AS bed_asal_name , bed_asal.ServiceUnitName AS bed_asal_unit, bed_asal.ClassName AS bed_asal_class,
                              bed_tujuan.bed_code AS bed_code_tujuan, bed_tujuan.RoomName AS bed_tujuan_name, bed_tujuan.ServiceUnitName AS bed_tujuan_unit, bed_tujuan.ClassName AS bed_tujuan_class,
                              internal.transfer_rawat_intensif
-                        FROM $dbInap.transfer_internal AS internal
-                        LEFT JOIN $dbMaster.m_pasien AS pasien on pasien.MedicalNo = internal.medrec
+                        FROM $dbInap.dbo.transfer_internal AS internal
+                        LEFT JOIN $dbMaster.dbo.m_pasien AS pasien on pasien.MedicalNo = internal.medrec
                         LEFT JOIN (
-                            SELECT $dbMaster.m_bed.bed_id, $dbMaster.m_bed.bed_code, $dbMaster.m_bed.class_code, 
-                                    $dbMaster.m_ruangan.RoomName, $dbMaster.m_unit.ServiceUnitName, $dbMaster.m_room_class.ClassName
-                            FROM $dbMaster.m_bed
-                            LEFT JOIN $dbMaster.m_ruangan ON $dbMaster.m_ruangan.RoomID = $dbMaster.m_bed.room_id
-                            LEFT JOIN $dbMaster.m_room_class ON $dbMaster.m_room_class.ClassCode = $dbMaster.m_bed.class_code
-                            LEFT JOIN $dbMaster.m_unit_departemen ON 
-                                ($dbMaster.m_unit_departemen.ServiceUnitID = $dbMaster.m_bed.service_unit_id OR $dbMaster.m_unit_departemen.ServiceUnitCode = $dbMaster.m_bed.service_unit_id)
-                            LEFT JOIN $dbMaster.m_unit ON $dbMaster.m_unit.ServiceUnitCode = $dbMaster.m_unit_departemen.ServiceUnitCode
-                            WHERE $dbMaster.m_unit_departemen.isActive = 1
+                            SELECT m_bed.bed_id, m_bed.bed_code, m_bed.class_code, 
+                                    m_ruangan.RoomName, m_unit.ServiceUnitName, m_room_class.ClassName
+                            FROM $dbMaster.dbo.m_bed as m_bed
+                            LEFT JOIN $dbMaster.dbo.m_ruangan as m_ruangan ON m_ruangan.RoomID = m_bed.room_id
+                            LEFT JOIN $dbMaster.dbo.m_room_class as m_room_class ON m_room_class.ClassCode = m_bed.class_code
+                            LEFT JOIN $dbMaster.dbo.m_unit_departemen as m_unit_departemen ON 
+                                (m_unit_departemen.ServiceUnitID = m_bed.service_unit_id OR m_unit_departemen.ServiceUnitCode = m_bed.service_unit_id)
+                            LEFT JOIN $dbMaster.dbo.m_unit as m_unit ON m_unit.ServiceUnitCode = m_unit_departemen.ServiceUnitCode
+                            WHERE m_unit_departemen.isActive = 1
                         ) AS bed_asal on bed_asal.bed_id = internal.transfer_unit_asal
                         LEFT JOIN (
-                            SELECT $dbMaster.m_bed.bed_id, $dbMaster.m_bed.bed_code, $dbMaster.m_bed.class_code, 
-                                    $dbMaster.m_ruangan.RoomName, $dbMaster.m_unit.ServiceUnitName, $dbMaster.m_room_class.ClassName
-                            FROM $dbMaster.m_bed
-                            LEFT JOIN $dbMaster.m_ruangan ON $dbMaster.m_ruangan.RoomID = $dbMaster.m_bed.room_id
-                            LEFT JOIN $dbMaster.m_room_class ON $dbMaster.m_room_class.ClassCode = $dbMaster.m_bed.class_code
-                            LEFT JOIN $dbMaster.m_unit_departemen ON
-                                ($dbMaster.m_unit_departemen.ServiceUnitID = $dbMaster.m_bed.service_unit_id OR $dbMaster.m_unit_departemen.ServiceUnitCode = $dbMaster.m_bed.service_unit_id)
-                            LEFT JOIN $dbMaster.m_unit ON $dbMaster.m_unit.ServiceUnitCode = $dbMaster.m_unit_departemen.ServiceUnitCode
-                            WHERE $dbMaster.m_unit_departemen.isActive = 1
+                            SELECT m_bed.bed_id, m_bed.bed_code, m_bed.class_code, 
+                                    m_ruangan.RoomName, m_unit.ServiceUnitName, m_room_class.ClassName
+                            FROM $dbMaster.dbo.m_bed as m_bed
+                            LEFT JOIN $dbMaster.dbo.m_ruangan as m_ruangan ON m_ruangan.RoomID = m_bed.room_id
+                            LEFT JOIN $dbMaster.dbo.m_room_class as m_room_class ON m_room_class.ClassCode = m_bed.class_code
+                            LEFT JOIN $dbMaster.dbo.m_unit_departemen as m_unit_departemen ON
+                                (m_unit_departemen.ServiceUnitID = m_bed.service_unit_id OR m_unit_departemen.ServiceUnitCode = m_bed.service_unit_id)
+                            LEFT JOIN $dbMaster.dbo.m_unit as m_unit ON m_unit.ServiceUnitCode = m_unit_departemen.ServiceUnitCode
+                            WHERE m_unit_departemen.isActive = 1
                         ) AS bed_tujuan on bed_tujuan.bed_id = internal.transfer_unit_tujuan
                         WHERE internal.transfer_reg = '$request->reg_no'
                         ORDER BY internal.transfer_id DESC";
@@ -90,34 +90,34 @@ class TransferInternalController extends Controller
                              internal.status_transfer, internal.kode_transfer_internal, internal.ditransfer_oleh_user_id,
                              bed_asal.bed_code AS bed_code_asal, bed_asal.RoomName AS bed_asal_name , bed_asal.ServiceUnitName AS bed_asal_unit, bed_asal.ClassName AS bed_asal_class,
                              bed_tujuan.bed_code AS bed_code_tujuan, bed_tujuan.RoomName AS bed_tujuan_name, bed_tujuan.ServiceUnitName AS bed_tujuan_unit, bed_tujuan.ClassName AS bed_tujuan_class
-                        FROM $dbInap.transfer_internal AS internal
-                        LEFT JOIN $dbMaster.m_pasien AS pasien on pasien.MedicalNo = internal.medrec
+                        FROM $dbInap.dbo.transfer_internal AS internal
+                        LEFT JOIN $dbMaster.dbo.m_pasien AS pasien on pasien.MedicalNo = internal.medrec
                         LEFT JOIN (
-                            SELECT $dbMaster.m_bed.bed_id, $dbMaster.m_bed.bed_code, $dbMaster.m_bed.class_code, 
-                                    $dbMaster.m_ruangan.RoomName, $dbMaster.m_unit.ServiceUnitName, $dbMaster.m_room_class.ClassName
-                            FROM $dbMaster.m_bed
-                            LEFT JOIN $dbMaster.m_ruangan ON $dbMaster.m_ruangan.RoomID = $dbMaster.m_bed.room_id
-                            LEFT JOIN $dbMaster.m_room_class ON $dbMaster.m_room_class.ClassCode = $dbMaster.m_bed.class_code
-                            LEFT JOIN $dbMaster.m_unit_departemen ON 
-                                ($dbMaster.m_unit_departemen.ServiceUnitID = $dbMaster.m_bed.service_unit_id OR $dbMaster.m_unit_departemen.ServiceUnitCode = $dbMaster.m_bed.service_unit_id)
-                            LEFT JOIN $dbMaster.m_unit ON $dbMaster.m_unit.ServiceUnitCode = $dbMaster.m_unit_departemen.ServiceUnitCode
-                            WHERE $dbMaster.m_unit_departemen.isActive = 1
+                            SELECT m_bed.bed_id, m_bed.bed_code, m_bed.class_code, 
+                                    m_ruangan.RoomName, m_unit.ServiceUnitName, m_room_class.ClassName
+                            FROM $dbMaster.dbo.m_bed
+                            LEFT JOIN $dbMaster.dbo.m_ruangan as m_ruangan ON m_ruangan.RoomID = m_bed.room_id
+                            LEFT JOIN $dbMaster.dbo.m_room_class as m_room_class ON m_room_class.ClassCode = m_bed.class_code
+                            LEFT JOIN $dbMaster.dbo.m_unit_departemen as m_unit_departemen ON 
+                                (m_unit_departemen.ServiceUnitID = m_bed.service_unit_id OR m_unit_departemen.ServiceUnitCode = m_bed.service_unit_id)
+                            LEFT JOIN $dbMaster.dbo.m_unit as m_unit ON m_unit.ServiceUnitCode = m_unit_departemen.ServiceUnitCode
+                            WHERE m_unit_departemen.isActive = 1
                         ) AS bed_asal on bed_asal.bed_id = internal.transfer_unit_asal
                         LEFT JOIN (
-                            SELECT $dbMaster.m_bed.bed_id, $dbMaster.m_bed.bed_code, $dbMaster.m_bed.class_code, 
-                                    $dbMaster.m_ruangan.RoomName, $dbMaster.m_unit.ServiceUnitName, $dbMaster.m_room_class.ClassName
-                            FROM $dbMaster.m_bed
-                            LEFT JOIN $dbMaster.m_ruangan ON $dbMaster.m_ruangan.RoomID = $dbMaster.m_bed.room_id
-                            LEFT JOIN $dbMaster.m_room_class ON $dbMaster.m_room_class.ClassCode = $dbMaster.m_bed.class_code
-                            LEFT JOIN $dbMaster.m_unit_departemen ON
-                                ($dbMaster.m_unit_departemen.ServiceUnitID = $dbMaster.m_bed.service_unit_id OR $dbMaster.m_unit_departemen.ServiceUnitCode = $dbMaster.m_bed.service_unit_id)
-                            LEFT JOIN $dbMaster.m_unit ON $dbMaster.m_unit.ServiceUnitCode = $dbMaster.m_unit_departemen.ServiceUnitCode
-                            WHERE $dbMaster.m_unit_departemen.isActive = 1
+                            SELECT m_bed.bed_id, m_bed.bed_code, m_bed.class_code, 
+                                    m_ruangan.RoomName, m_unit.ServiceUnitName, m_room_class.ClassName
+                            FROM $dbMaster.dbo.m_bed as m_bed
+                            LEFT JOIN $dbMaster.dbo.m_ruangan as m_ruangan ON m_ruangan.RoomID = m_bed.room_id
+                            LEFT JOIN $dbMaster.dbo.m_room_class as m_room_class ON m_room_class.ClassCode = m_bed.class_code
+                            LEFT JOIN $dbMaster.dbo.m_unit_departemen as m_unit_departemen ON
+                                (m_unit_departemen.ServiceUnitID = m_bed.service_unit_id OR m_unit_departemen.ServiceUnitCode = m_bed.service_unit_id)
+                            LEFT JOIN $dbMaster.dbo.m_unit as m_unit ON m_unit.ServiceUnitCode = m_unit_departemen.ServiceUnitCode
+                            WHERE m_unit_departemen.isActive = 1
                         ) AS bed_tujuan on bed_tujuan.bed_id = internal.transfer_unit_tujuan
-                            WHERE `internal`.`transfer_reg` = '$request->reg_no' 
-                                AND `internal`.`diterima_oleh_user_id` = '$user_id'
-                                AND `internal`.`status_transfer` = 0
-                            ORDER BY `internal`.`transfer_id` DESC";
+                            WHERE internal.transfer_reg = '$request->reg_no' 
+                                AND internal.diterima_oleh_user_id = '$user_id'
+                                AND internal.status_transfer = 0
+                            ORDER BY internal.transfer_id DESC";
 
             $data = DB::select($query);
 
@@ -176,7 +176,7 @@ class TransferInternalController extends Controller
 
                 if ($tf_internal->transfer_rawat_intensif == 1) {
                     $data = array(
-                        'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
+                        'transfer_terima_tanggal' => Carbon::parse($request->transfer_terima_tanggal)->toDateTimeLocalString(),
                         'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
                         'transfer_terima_gcs_e' => $request->transfer_terima_gcs_e,
                         'transfer_terima_gcs_m' => $request->transfer_terima_gcs_m,
@@ -195,7 +195,7 @@ class TransferInternalController extends Controller
                     $perawat_tujuan = DB::connection('mysql2')->table('users')->where('username', $tf_internal->diterima_oleh_user_id)->first();
 
                     $data = array(
-                        'transfer_terima_tanggal' => $request->transfer_terima_tanggal,
+                        'transfer_terima_tanggal' => Carbon::parse($request->transfer_terima_tanggal)->toDateTimeLocalString(),
                         'transfer_terima_kondisi' => $request->transfer_terima_kondisi,
                         'transfer_terima_gcs_e' => $request->transfer_terima_gcs_e,
                         'transfer_terima_gcs_m' => $request->transfer_terima_gcs_m,

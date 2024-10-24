@@ -21,8 +21,8 @@ class NeonatusController extends Controller
         $fisik['med_rec'] = $request->med_rec;
         $skrinning['reg_no'] = $request->reg_no;
         $skrinning['med_rec'] = $request->med_rec;
-        $ttd['reg_no'] = $request->reg_no;
-        $ttd['med_rec'] = $request->med_rec;
+        // $ttd['reg_no'] = $request->reg_no;
+        // $ttd['med_rec'] = $request->med_rec;
         if (isset($skrinning['bahasa'])) {
             $skrinning['bahasa'] = implode(', ', $skrinning['bahasa']);
         } else {
@@ -48,7 +48,7 @@ class NeonatusController extends Controller
 
                 $cekFisik = NeonatusFisik::where('reg_no', $reg_no)->count();
                 $cekSkrinning = NeonatusNyeri::where('reg_no', $reg_no)->count();
-                $cekTtd = NeonatusTtd::where('reg_no', $reg_no)->count();
+                // $cekTtd = NeonatusTtd::where('reg_no', $reg_no)->count();
                 if ($cekFisik > 0) {
                     $fisikData = NeonatusFisik::where('reg_no', $reg_no)->first();
                     $fisikData->update($fisik);
@@ -58,7 +58,7 @@ class NeonatusController extends Controller
                     // Neonatus::create($skrinning);
                 }
 
-                $ttd['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
+                // $ttd['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
                 $skrinning['pengkajian_neonatus_id'] = $fisikData->pengkajian_neonatus_id;
 
                 if ($cekSkrinning > 0) {
@@ -68,12 +68,12 @@ class NeonatusController extends Controller
                     NeonatusNyeri::create($skrinning);
                 }
 
-                if ($cekTtd > 0) {
-                    $ttdData = NeonatusTtd::where('reg_no', $reg_no)->first();
-                    $ttdData->update($ttd);
-                } else {
-                    NeonatusTtd::create($ttd);
-                }
+                // if ($cekTtd > 0) {
+                //     $ttdData = NeonatusTtd::where('reg_no', $reg_no)->first();
+                //     $ttdData->update($ttd);
+                // } else {
+                //     NeonatusTtd::create($ttd);
+                // }
 
 
                 DB::commit();

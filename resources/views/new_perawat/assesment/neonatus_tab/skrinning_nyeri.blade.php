@@ -9,8 +9,8 @@ $skrinning = optional((object)[]);
     <div class="card-header bg-secondary">
       <h3 class="card-title">SKRINING NYERI (diisi oleh perawat / bidan)</h3>
       <div class="form-check">
-        <input type="checkbox" id="bahasa_indonesia" name="skrinning[skala_nips]" value="1" {{ $skrinning->skala_nips==1 ? 'checked' : '' }}>
-        <label for="bahasa_indonesia">Skala NIPS (Neonatus Infants Pain Scale)</label>
+        <input type="checkbox" id="skala_nips" name="skrinning[skala_nips]" value="1" {{ $skrinning->skala_nips==1 ? 'checked' : '' }}>
+        <label for="skala_nips">Skala NIPS (Neonatus Infants Pain Scale)</label>
       </div>
     </div>
     <div class="card-body">
@@ -213,8 +213,8 @@ $skrinning = optional((object)[]);
           </div>
         </div>
         <div class="col-sm-3">
-          <input type="checkbox" id="bahasa_indonesia" name="skrinning[frekuensi_bab_no]" value="Tidak dapat dikaji" {{ $skrinning->saturasi_oksigen=="Tidak dapat dikaji" ? 'checked' : '' }}>
-          <label for="bahasa_indonesia">Tidak dapat dikaji</label>
+          <input type="checkbox" id="frekuensi_bab_no" name="skrinning[frekuensi_bab_no]" value="Tidak dapat dikaji" {{ $skrinning->frekuensi_bab_no=="Tidak dapat dikaji" ? 'checked' : '' }}>
+          <label for="frekuensi_bab_no">Tidak dapat dikaji</label>
         </div>
       </div>
       <div class="form-group">
@@ -346,112 +346,112 @@ $skrinning = optional((object)[]);
       $hambatan=explode(', ',$skrinning->hambatan_ortu)??[];
       @endphp
       <div class="form-group">
-      <div class="col-sm-12">
-        <div class="custom-control custom-checkbox custom-control-inline">
-          <input type="checkbox" class="custom-control-input" id="hambatan_tidak_ada" value="Tidak Ada" name="skrinning[hambatan_ortu][]" {{in_array('Tidak Ada',$hambatan) ? 'checked' : ''}}>
-          <label class="custom-control-label" for="hambatan_tidak_ada">Tidak Ada</label>
-        </div>
-        <div class="custom-control custom-checkbox custom-control-inline">
-          <input type="checkbox" class="custom-control-input" id="hambatan_bahasa" value="Bahasa" name="skrinning[hambatan_ortu][]" {{in_array('Bahasa',$hambatan) ? 'checked' : ''}}>
-          <label class="custom-control-label" for="hambatan_bahasa">Bahasa</label>
-        </div>
-        <div class="custom-control custom-checkbox custom-control-inline">
-          <input type="checkbox" class="custom-control-input" id="hambatan_kognitif" value="Kognitif terbatas" name="skrinning[hambatan_ortu][]" {{in_array('Kognitif terbatas',$hambatan) ? 'checked' : ''}}>
-          <label class="custom-control-label" for="hambatan_kognitif">Kognitif terbatas</label>
-        </div>
-        <div class="custom-control custom-checkbox custom-control-inline">
-          <input type="checkbox" class="custom-control-input" id="hambatan_penglihatan" value="Penglihatan terganggu" name="skrinning[hambatan_ortu][]" {{in_array('Penglihatan terganggu',$hambatan) ? 'checked' : ''}}>
-          <label class="custom-control-label" for="hambatan_penglihatan">Penglihatan terganggu</label>
-        </div>
-        <div class="custom-control custom-checkbox custom-control-inline">
-          <input type="checkbox" class="custom-control-input" id="hambatan_budaya" value="Budaya/agama/spiritual" name="skrinning[hambatan_ortu][]" {{in_array('Budaya/agama/spiritual',$hambatan) ? 'checked' : ''}}>
-          <label class="custom-control-label" for="hambatan_budaya">Budaya/agama/spiritual</label>
-        </div>
-        <div class="custom-control custom-checkbox custom-control-inline">
-          <input type="checkbox" class="custom-control-input" id="hambatan_emosional" value="Emosional" name="skrinning[hambatan_ortu][]" {{in_array('Emosional',$hambatan) ? 'checked' : ''}}>
-          <label class="custom-control-label" for="hambatan_emosional">Emosional</label>
-        </div>
         <div class="col-sm-12">
           <div class="custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="hambatan_pendengaran" value="Pendengaran terganggu" name="skrinning[hambatan_ortu][]" {{in_array('Pendengaran terganggu',$hambatan) ? 'checked' : ''}}>
-            <label class="custom-control-label" for="hambatan_pendengaran">Pendengaran terganggu</label>
+            <input type="checkbox" class="custom-control-input" id="hambatan_tidak_ada" value="Tidak Ada" name="skrinning[hambatan_ortu][]" {{in_array('Tidak Ada',$hambatan) ? 'checked' : ''}}>
+            <label class="custom-control-label" for="hambatan_tidak_ada">Tidak Ada</label>
           </div>
           <div class="custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="hambatan_fisik" value="Fisik lemah" name="skrinning[hambatan_ortu][]" {{in_array('Fisik lemah',$hambatan) ? 'checked' : ''}}>
-            <label class="custom-control-label" for="hambatan_fisik">Fisik lemah</label>
+            <input type="checkbox" class="custom-control-input" id="hambatan_bahasa" value="Bahasa" name="skrinning[hambatan_ortu][]" {{in_array('Bahasa',$hambatan) ? 'checked' : ''}}>
+            <label class="custom-control-label" for="hambatan_bahasa">Bahasa</label>
           </div>
           <div class="custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="hambatan_bicara" value="Gangguan bicara" name="skrinning[hambatan_ortu][]" {{in_array('Gangguan bicara',$hambatan) ? 'checked' : ''}}>
-            <label class="custom-control-label" for="hambatan_bicara">Gangguan bicara</label>
+            <input type="checkbox" class="custom-control-input" id="hambatan_kognitif" value="Kognitif terbatas" name="skrinning[hambatan_ortu][]" {{in_array('Kognitif terbatas',$hambatan) ? 'checked' : ''}}>
+            <label class="custom-control-label" for="hambatan_kognitif">Kognitif terbatas</label>
           </div>
           <div class="custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="hambatan_motivasi" value="Motivasi kurang" name="skrinning[hambatan_ortu][]" {{in_array('Motivasi kurang',$hambatan) ? 'checked' : ''}}>
-            <label class="custom-control-label" for="hambatan_motivasi">Motivasi kurang</label>
+            <input type="checkbox" class="custom-control-input" id="hambatan_penglihatan" value="Penglihatan terganggu" name="skrinning[hambatan_ortu][]" {{in_array('Penglihatan terganggu',$hambatan) ? 'checked' : ''}}>
+            <label class="custom-control-label" for="hambatan_penglihatan">Penglihatan terganggu</label>
           </div>
           <div class="custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="hambatan_keyakinan" value="Keyakinan/mitos" name="skrinning[hambatan_ortu][]" {{in_array('Keyakinan/mitos',$hambatan) ? 'checked' : ''}}>
-            <label class="custom-control-label" for="hambatan_keyakinan">Keyakinan/mitos</label>
+            <input type="checkbox" class="custom-control-input" id="hambatan_budaya" value="Budaya/agama/spiritual" name="skrinning[hambatan_ortu][]" {{in_array('Budaya/agama/spiritual',$hambatan) ? 'checked' : ''}}>
+            <label class="custom-control-label" for="hambatan_budaya">Budaya/agama/spiritual</label>
           </div>
           <div class="custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="hambatan_lain" value="Lain-lain" name="skrinning[hambatan_ortu][]" {{in_array('Lain-lain',$hambatan) ? 'checked' : ''}}>
-            <label class="custom-control-label" for="hambatan_lain">Lain-lain</label>
+            <input type="checkbox" class="custom-control-input" id="hambatan_emosional" value="Emosional" name="skrinning[hambatan_ortu][]" {{in_array('Emosional',$hambatan) ? 'checked' : ''}}>
+            <label class="custom-control-label" for="hambatan_emosional">Emosional</label>
           </div>
+          <div class="col-sm-12">
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="hambatan_pendengaran" value="Pendengaran terganggu" name="skrinning[hambatan_ortu][]" {{in_array('Pendengaran terganggu',$hambatan) ? 'checked' : ''}}>
+              <label class="custom-control-label" for="hambatan_pendengaran">Pendengaran terganggu</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="hambatan_fisik" value="Fisik lemah" name="skrinning[hambatan_ortu][]" {{in_array('Fisik lemah',$hambatan) ? 'checked' : ''}}>
+              <label class="custom-control-label" for="hambatan_fisik">Fisik lemah</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="hambatan_bicara" value="Gangguan bicara" name="skrinning[hambatan_ortu][]" {{in_array('Gangguan bicara',$hambatan) ? 'checked' : ''}}>
+              <label class="custom-control-label" for="hambatan_bicara">Gangguan bicara</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="hambatan_motivasi" value="Motivasi kurang" name="skrinning[hambatan_ortu][]" {{in_array('Motivasi kurang',$hambatan) ? 'checked' : ''}}>
+              <label class="custom-control-label" for="hambatan_motivasi">Motivasi kurang</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="hambatan_keyakinan" value="Keyakinan/mitos" name="skrinning[hambatan_ortu][]" {{in_array('Keyakinan/mitos',$hambatan) ? 'checked' : ''}}>
+              <label class="custom-control-label" for="hambatan_keyakinan">Keyakinan/mitos</label>
+            </div>
+            <div class="custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="hambatan_lain" value="Lain-lain" name="skrinning[hambatan_ortu][]" {{in_array('Lain-lain',$hambatan) ? 'checked' : ''}}>
+              <label class="custom-control-label" for="hambatan_lain">Lain-lain</label>
+            </div>
+          </div>
+          <input id="[hambatan_ket]" type="text" class="form-control" name="skrinning[hambatan_ortu_lain]" value="{{ $skrinning->hambatan_ortu_lain }}" placeholder="Lainnya...">
         </div>
-        <input id="[hambatan_ket]" type="text" class="form-control" name="skrinning[hambatan_ortu_lain]" value="{{ $skrinning->hambatan_ortu_lain }}" placeholder="Lainnya...">
       </div>
-    </div>
       <h5 class="mt-3 mb-3">Kebutuhan edukasi orang tua pasien : (pilih topik perawat / bidan)</h5>
       @php
       $edukasi=explode(', ',$skrinning->edukasi_ortu)??[];
       @endphp
       <div class="form-group">
-      <table class="w-100">
-        <tbody>
-          <tr>
-            <td>
-              <input type="checkbox" id="proses_penyakit" value="Proses penyakit" name="skrinning[edukasi_ortu][]" {{in_array('Proses penyakit',$edukasi) ? 'checked' : ''}}>
-              <label for="proses_penyakit">Proses penyakit</label>
-            </td>
-            <td>
-              <input type="checkbox" id="obat-obatan" value="Obat-obatan" name="skrinning[edukasi_ortu][]" {{in_array('Obat-obatan',$edukasi) ? 'checked' : ''}}>
-              <label for="obat-obatan">Obat-obatan</label>
-            </td>
-            <td>
-              <input type="checkbox" id="prosedur" value="Prosedur" name="skrinning[edukasi_ortu][]" {{in_array('Prosedur',$edukasi) ? 'checked' : ''}}>
-              <label for="prosedur">Prosedur (contoh : cara perawatan luka)</label>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="edukasi_pencegahan" value="Pencegahan faktor resiko" name="skrinning[edukasi_ortu][]" {{in_array('Pencegahan faktor resiko',$edukasi) ? 'checked' : ''}}>
-              <label for="edukasi_pencegahan">Pencegahan faktor resiko</label>
-            </td>
-            <td>
-              <input type="checkbox" id="manajemen_nyeri" value="Manajemen nyeri" name="skrinning[edukasi_ortu][]" {{in_array('Manajemen nyeri',$edukasi) ? 'checked' : ''}}>
-              <label for="manajemen_nyeri">Manajemen nyeri</label>
-            </td>
-            <td>
-              <input type="checkbox" id="diet_dan_nutrisi" value="Diet dan nutrisi" name="skrinning[edukasi_ortu][]" {{in_array('Diet dan nutrisi',$edukasi) ? 'checked' : ''}}>
-              <label for="diet_dan_nutrisi">Diet dan nutrisi</label>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type="checkbox" id="edukasi_lingkungan" value="Lingkungan yang perlu disiapkan pasca rawat" name="skrinning[edukasi_ortu][]" {{in_array('Lingkungan yang perlu disiapkan pasca rawat',$edukasi) ? 'checked' : ''}}>
-              <label for="edukasi_lingkungan">Lingkungan yang perlu disiapkan pasca rawat</label>
-            </td>
-            <td>
-              <input type="checkbox" id="edukasi_rehabilitasi" value="Rehabilitasi" name="skrinning[edukasi_ortu][]" {{in_array('Rehabilitasi',$edukasi) ? 'checked' : ''}}>
-              <label for="edukasi_rehabilitasi">Rehabilitasi</label>
-            </td>
-            <td>
-              <input type="checkbox" id="edukasi_lain" value="Lain-lain" name="skrinning[edukasi_ortu][]" {{in_array('Lain-lain',$edukasi) ? 'checked' : ''}}>
-              <label for="edukasi_lain">Lain-lain</label>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        <table class="w-100">
+          <tbody>
+            <tr>
+              <td>
+                <input type="checkbox" id="proses_penyakit" value="Proses penyakit" name="skrinning[edukasi_ortu][]" {{in_array('Proses penyakit',$edukasi) ? 'checked' : ''}}>
+                <label for="proses_penyakit">Proses penyakit</label>
+              </td>
+              <td>
+                <input type="checkbox" id="obat-obatan" value="Obat-obatan" name="skrinning[edukasi_ortu][]" {{in_array('Obat-obatan',$edukasi) ? 'checked' : ''}}>
+                <label for="obat-obatan">Obat-obatan</label>
+              </td>
+              <td>
+                <input type="checkbox" id="prosedur" value="Prosedur" name="skrinning[edukasi_ortu][]" {{in_array('Prosedur',$edukasi) ? 'checked' : ''}}>
+                <label for="prosedur">Prosedur (contoh : cara perawatan luka)</label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="checkbox" id="edukasi_pencegahan" value="Pencegahan faktor resiko" name="skrinning[edukasi_ortu][]" {{in_array('Pencegahan faktor resiko',$edukasi) ? 'checked' : ''}}>
+                <label for="edukasi_pencegahan">Pencegahan faktor resiko</label>
+              </td>
+              <td>
+                <input type="checkbox" id="manajemen_nyeri" value="Manajemen nyeri" name="skrinning[edukasi_ortu][]" {{in_array('Manajemen nyeri',$edukasi) ? 'checked' : ''}}>
+                <label for="manajemen_nyeri">Manajemen nyeri</label>
+              </td>
+              <td>
+                <input type="checkbox" id="diet_dan_nutrisi" value="Diet dan nutrisi" name="skrinning[edukasi_ortu][]" {{in_array('Diet dan nutrisi',$edukasi) ? 'checked' : ''}}>
+                <label for="diet_dan_nutrisi">Diet dan nutrisi</label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="checkbox" id="edukasi_lingkungan" value="Lingkungan yang perlu disiapkan pasca rawat" name="skrinning[edukasi_ortu][]" {{in_array('Lingkungan yang perlu disiapkan pasca rawat',$edukasi) ? 'checked' : ''}}>
+                <label for="edukasi_lingkungan">Lingkungan yang perlu disiapkan pasca rawat</label>
+              </td>
+              <td>
+                <input type="checkbox" id="edukasi_rehabilitasi" value="Rehabilitasi" name="skrinning[edukasi_ortu][]" {{in_array('Rehabilitasi',$edukasi) ? 'checked' : ''}}>
+                <label for="edukasi_rehabilitasi">Rehabilitasi</label>
+              </td>
+              <td>
+                <input type="checkbox" id="edukasi_lain" value="Lain-lain" name="skrinning[edukasi_ortu][]" {{in_array('Lain-lain',$edukasi) ? 'checked' : ''}}>
+                <label for="edukasi_lain">Lain-lain</label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <input id="edukasi_ket" type="text" class="form-control" name="skrinning[edukasi_ortu_ket]" placeholder="Lainnya..." value="{{ $skrinning->edukasi_ortu_ket }}">
       <hr>
       <div class="container mt-3">

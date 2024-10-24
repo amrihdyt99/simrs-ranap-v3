@@ -87,8 +87,8 @@ class CaseManagerController extends Controller
                     ['med_rec', $akumulasi['med_rec']],
                 ])->count();
 
-            $cekAkumulasi['tgl_akumulasi'] = Carbon::parse($cekAkumulasi['tgl_akumulasi'])->toDateTimeString();
-            $cekAkumulasi['tgl_ttd'] = Carbon::parse($cekAkumulasi['tgl_ttd'])->toDateTimeString();
+            $akumulasi['tgl_akumulasi'] = Carbon::parse($akumulasi['tgl_akumulasi'])->toDateTimeString();
+            $akumulasi['tgl_ttd'] = Carbon::parse($akumulasi['tgl_ttd'])->toDateTimeString();
 
             if ($cekAkumulasi > 0) {
                 $akumulasi['updated_at'] = Carbon::now();

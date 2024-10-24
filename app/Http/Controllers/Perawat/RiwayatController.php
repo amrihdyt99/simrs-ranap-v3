@@ -253,7 +253,7 @@ class RiwayatController extends Controller
         $resiko_jatuh_morse = DB::table('resiko_jatuh_skala_morse')
             ->where('reg_no', $request->reg_no)
             ->get();
-        
+
         if (!$resiko_jatuh_morse) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -272,7 +272,7 @@ class RiwayatController extends Controller
         $resiko_jatuh_morse = DB::table('resiko_jatuh_humpty_dumpty')
             ->where('reg_no', $request->reg_no)
             ->get();
-        
+
         if (!$resiko_jatuh_morse) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -291,7 +291,7 @@ class RiwayatController extends Controller
         $resiko_jatuh_geriatri = DB::table('resiko_jatuh_geriatri')
             ->where('reg_no', $request->reg_no)
             ->get();
-        
+
         if (!$resiko_jatuh_geriatri) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -310,7 +310,7 @@ class RiwayatController extends Controller
         $resiko_jatuh_neonatus = DB::table('resiko_jatuh_neonatus')
             ->where('reg_no', $request->reg_no)
             ->get();
-        
+
         if (!$resiko_jatuh_neonatus) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -363,7 +363,7 @@ class RiwayatController extends Controller
                 ->toJson();
         }
     }
-    
+
     public function getFluidBalance(Request $request)
     {
         $fluid_balance = DB::table('fluid_balance_data_baru')
@@ -383,7 +383,7 @@ class RiwayatController extends Controller
         );
     }
 
-    
+
     public function getDtDrugHistory(Request $request)
     {
         if ($request->ajax()) {
@@ -403,7 +403,7 @@ class RiwayatController extends Controller
         $moni_darah = DB::table('monitoring_transfusi_darah')
             ->where('reg_no', $request->reg_no)
             ->get();
-            
+
         if (!$moni_darah) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -438,7 +438,7 @@ class RiwayatController extends Controller
         $tolak = DB::table('rs_tindakan_medis_penolakan')
             ->where('reg_no', $request->reg_no)
             ->first();
-            
+
         if (!$informasi) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -463,7 +463,7 @@ class RiwayatController extends Controller
         $case_manager_evaluasi = DB::table('case_manager_akumulasi')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$case_manager) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -490,29 +490,29 @@ class RiwayatController extends Controller
                              bed_asal.bed_code AS bed_code_asal, bed_asal.RoomName AS bed_asal_name , bed_asal.ServiceUnitName AS bed_asal_unit, bed_asal.ClassName AS bed_asal_class,
                              bed_tujuan.bed_code AS bed_code_tujuan, bed_tujuan.RoomName AS bed_tujuan_name, bed_tujuan.ServiceUnitName AS bed_tujuan_unit, bed_tujuan.ClassName AS bed_tujuan_class,
                              internal.transfer_rawat_intensif
-                        FROM $dbInap.transfer_internal AS internal
-                        LEFT JOIN $dbMaster.m_pasien AS pasien on pasien.MedicalNo = internal.medrec
+                        FROM $dbInap.dbo.transfer_internal AS internal
+                        LEFT JOIN $dbMaster.dbo.m_pasien AS pasien on pasien.MedicalNo = internal.medrec
                         LEFT JOIN (
-                            SELECT $dbMaster.m_bed.bed_id, $dbMaster.m_bed.bed_code, $dbMaster.m_bed.class_code, 
-                                    $dbMaster.m_ruangan.RoomName, $dbMaster.m_unit.ServiceUnitName, $dbMaster.m_room_class.ClassName
-                            FROM $dbMaster.m_bed
-                            LEFT JOIN $dbMaster.m_ruangan ON $dbMaster.m_ruangan.RoomID = $dbMaster.m_bed.room_id
-                            LEFT JOIN $dbMaster.m_room_class ON $dbMaster.m_room_class.ClassCode = $dbMaster.m_bed.class_code
-                            LEFT JOIN $dbMaster.m_unit_departemen ON 
-                                ($dbMaster.m_unit_departemen.ServiceUnitID = $dbMaster.m_bed.service_unit_id OR $dbMaster.m_unit_departemen.ServiceUnitCode = $dbMaster.m_bed.service_unit_id)
-                            LEFT JOIN $dbMaster.m_unit ON $dbMaster.m_unit.ServiceUnitCode = $dbMaster.m_unit_departemen.ServiceUnitCode
-                            WHERE $dbMaster.m_unit_departemen.isActive = 1
+                            SELECT m_bed.bed_id, m_bed.bed_code, m_bed.class_code, 
+                                    m_ruangan.RoomName, m_unit.ServiceUnitName, m_room_class.ClassName
+                            FROM $dbMaster.dbo.m_bed as m_bed
+                            LEFT JOIN $dbMaster.dbo.m_ruangan as m_ruangan ON m_ruangan.RoomID = m_bed.room_id
+                            LEFT JOIN $dbMaster.dbo.m_room_class as m_room_class ON m_room_class.ClassCode = m_bed.class_code
+                            LEFT JOIN $dbMaster.dbo.m_unit_departemen as m_unit_departemen ON 
+                                (m_unit_departemen.ServiceUnitID = m_bed.service_unit_id OR m_unit_departemen.ServiceUnitCode = m_bed.service_unit_id)
+                            LEFT JOIN $dbMaster.dbo.m_unit as m_unit ON m_unit.ServiceUnitCode = m_unit_departemen.ServiceUnitCode
+                            WHERE m_unit_departemen.isActive = 1
                         ) AS bed_asal on bed_asal.bed_id = internal.transfer_unit_asal
                         LEFT JOIN (
-                            SELECT $dbMaster.m_bed.bed_id, $dbMaster.m_bed.bed_code, $dbMaster.m_bed.class_code, 
-                                    $dbMaster.m_ruangan.RoomName, $dbMaster.m_unit.ServiceUnitName, $dbMaster.m_room_class.ClassName
-                            FROM $dbMaster.m_bed
-                            LEFT JOIN $dbMaster.m_ruangan ON $dbMaster.m_ruangan.RoomID = $dbMaster.m_bed.room_id
-                            LEFT JOIN $dbMaster.m_room_class ON $dbMaster.m_room_class.ClassCode = $dbMaster.m_bed.class_code
-                            LEFT JOIN $dbMaster.m_unit_departemen ON
-                                ($dbMaster.m_unit_departemen.ServiceUnitID = $dbMaster.m_bed.service_unit_id OR $dbMaster.m_unit_departemen.ServiceUnitCode = $dbMaster.m_bed.service_unit_id)
-                            LEFT JOIN $dbMaster.m_unit ON $dbMaster.m_unit.ServiceUnitCode = $dbMaster.m_unit_departemen.ServiceUnitCode
-                            WHERE $dbMaster.m_unit_departemen.isActive = 1
+                            SELECT m_bed.bed_id, m_bed.bed_code, m_bed.class_code, 
+                                    m_ruangan.RoomName, m_unit.ServiceUnitName, m_room_class.ClassName
+                            FROM $dbMaster.dbo.m_bed as m_bed
+                            LEFT JOIN $dbMaster.dbo.m_ruangan as m_ruangan ON m_ruangan.RoomID = m_bed.room_id
+                            LEFT JOIN $dbMaster.dbo.m_room_class as m_room_class ON m_room_class.ClassCode = m_bed.class_code
+                            LEFT JOIN $dbMaster.dbo.m_unit_departemen as m_unit_departemen ON
+                                (m_unit_departemen.ServiceUnitID = m_bed.service_unit_id OR m_unit_departemen.ServiceUnitCode = m_bed.service_unit_id)
+                            LEFT JOIN $dbMaster.dbo.m_unit as m_unit ON m_unit.ServiceUnitCode = m_unit_departemen.ServiceUnitCode
+                            WHERE m_unit_departemen.isActive = 1
                         ) AS bed_tujuan on bed_tujuan.bed_id = internal.transfer_unit_tujuan
                         WHERE internal.transfer_reg = '$request->reg_no'
                         ORDER BY internal.transfer_id DESC";
@@ -531,13 +531,13 @@ class RiwayatController extends Controller
         $dbMaster = DB::connection('mysql2')->getDatabaseName();
         $dbInap = DB::connection('mysql')->getDatabaseName();
 
-        $persiapan_pasien = DB::table($dbInap . '.transfer_internal')
-            ->leftJoin($dbMaster . '.m_room_class AS class', 'class.ClassCode', '=', 'transfer_internal.class')
-            ->leftJoin($dbMaster . '.m_room_class AS charge_class', 'charge_class.ClassCode', '=', 'transfer_internal.charge_class')
+        $persiapan_pasien = DB::table($dbInap . '.dbo.transfer_internal')
+            ->leftJoin($dbMaster . '.dbo.m_room_class AS class', 'class.ClassCode', '=', 'transfer_internal.class')
+            ->leftJoin($dbMaster . '.dbo.m_room_class AS charge_class', 'charge_class.ClassCode', '=', 'transfer_internal.charge_class')
             ->where('transfer_reg', $request->reg_no)
             ->select('transfer_internal.*', 'class.ClassName as class_name', 'charge_class.ClassName as charge_class_name')
             ->first();
-        
+
         $ruangan_asal = DB::connection('mysql2')
             ->table('m_registrasi')
             ->join('m_bed_history', 'm_bed_history.RegNo', '=', 'm_registrasi.reg_no')
@@ -546,8 +546,7 @@ class RiwayatController extends Controller
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
             ->leftJoin('m_unit_departemen', function ($join) {
-                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
@@ -555,7 +554,7 @@ class RiwayatController extends Controller
             ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
             ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
             ->first();
-        
+
         $ruangan_tujuan = DB::connection('mysql2')
             ->table('m_bed')
             ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
@@ -590,9 +589,9 @@ class RiwayatController extends Controller
         if ($request->ajax()) {
             $riwayat_ti_alat = DB::table('transfer_internal_alat_terpasang')
                 ->where('reg_no', $request->reg_no)
-                ->get(); 
+                ->get();
             return DataTables()
-                ->of($riwayat_ti_alat) 
+                ->of($riwayat_ti_alat)
                 ->escapeColumns([])
                 ->toJson();
         }
@@ -603,9 +602,9 @@ class RiwayatController extends Controller
         if ($request->ajax()) {
             $riwayat_ti_obat = DB::table('transfer_internal_obat_dibawa')
                 ->where('reg_no', $request->reg_no)
-                ->get(); 
+                ->get();
             return DataTables()
-                ->of($riwayat_ti_obat) 
+                ->of($riwayat_ti_obat)
                 ->escapeColumns([])
                 ->toJson();
         }
@@ -616,9 +615,9 @@ class RiwayatController extends Controller
         if ($request->ajax()) {
             $riwayat_ti_status = DB::table('transfer_internal_status_pasien')
                 ->where('reg_no', $request->reg_no)
-                ->get(); 
+                ->get();
             return DataTables()
-                ->of($riwayat_ti_status) 
+                ->of($riwayat_ti_status)
                 ->escapeColumns([])
                 ->toJson();
         }
@@ -629,17 +628,18 @@ class RiwayatController extends Controller
         $terima = DB::table('transfer_internal')
             ->where('transfer_reg', $request->reg_no)
             ->select(
-                'transfer_terima_tanggal', 
-                'transfer_terima_kondisi', 
-                'transfer_terima_gcs_e', 
-                'transfer_terima_gcs_m', 
-                'transfer_terima_gcs_v', 
-                'transfer_terima_td', 
-                'transfer_terima_n', 
-                'transfer_terima_suhu', 
-                'transfer_terima_p')
+                'transfer_terima_tanggal',
+                'transfer_terima_kondisi',
+                'transfer_terima_gcs_e',
+                'transfer_terima_gcs_m',
+                'transfer_terima_gcs_v',
+                'transfer_terima_td',
+                'transfer_terima_n',
+                'transfer_terima_suhu',
+                'transfer_terima_p'
+            )
             ->first();
-        
+
         return response()->json(
             [
                 'status' => true,
@@ -654,9 +654,9 @@ class RiwayatController extends Controller
         if ($request->ajax()) {
             $riwayat_ti_diagnostik = DB::table('transfer_internal_diagnostik')
                 ->where('reg_no', $request->reg_no)
-                ->get(); 
+                ->get();
             return DataTables()
-                ->of($riwayat_ti_diagnostik) 
+                ->of($riwayat_ti_diagnostik)
                 ->escapeColumns([])
                 ->toJson();
         }
@@ -668,7 +668,7 @@ class RiwayatController extends Controller
             ->table('rs_catatan_keperawatan_pra_tindakan')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$catatan_pratindakan) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -688,7 +688,7 @@ class RiwayatController extends Controller
             ->table('rs_pasien_intra_tindakan')
             ->where('no_reg', $request->reg_no)
             ->first();
-        
+
         if (!$catatan_intra_tindakan) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -708,7 +708,7 @@ class RiwayatController extends Controller
             ->table('rs_pasien_intra_pemantuan')
             ->where('no_reg', $request->reg_no)
             ->first();
-        
+
         if (!$hemodinamik) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -728,7 +728,7 @@ class RiwayatController extends Controller
             ->table('rs_cathlab_sign_in')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$cath_sign_in) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -748,7 +748,7 @@ class RiwayatController extends Controller
             ->table('rs_cathlab_time_out')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$cath_time_out) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -768,7 +768,7 @@ class RiwayatController extends Controller
             ->table('rs_cathlab_sign_out')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$cath_sign_out) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -788,7 +788,7 @@ class RiwayatController extends Controller
             ->table('rs_paska_tindakan')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$pemantauan) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -808,7 +808,7 @@ class RiwayatController extends Controller
             ->table('rs_observasi_paska_tindakan')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$observasi) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -830,8 +830,8 @@ class RiwayatController extends Controller
             ->where('m_physician_team.reg_no', $request->reg_no)
             ->select('m_physician_team.*', 'm_paramedis.ParamedicName as nama_dokter')
             ->get();
-        
-        
+
+
 
         if (!$physician_team) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
@@ -862,7 +862,7 @@ class RiwayatController extends Controller
             ->orderBy('job_orders.waktu_order', 'asc')
             ->orderBy('job_orders_dt.item_name', 'asc')
             ->get();
-        
+
         $jumlah_rp_all = 0; // Inisialisasi jumlah_rp_all
 
         foreach ($riwayat_admin_nurse as $item) {
@@ -929,7 +929,7 @@ class RiwayatController extends Controller
             ->table('rs_checklist_kepulangan')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         if (!$checklist_pulang) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -942,6 +942,4 @@ class RiwayatController extends Controller
             200
         );
     }
-
 }
-

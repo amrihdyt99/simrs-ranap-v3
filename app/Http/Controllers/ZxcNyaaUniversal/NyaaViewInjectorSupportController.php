@@ -685,20 +685,20 @@ class NyaaViewInjectorSupportController extends AaaBaseController
 
             if ($mode == '1') {
                 $dtx_a_add['nama_alat_terpasang'] = $request->nama_alat_terpasang;
-                $dtx_a_add['waktu_alat_terpasang'] = $request->waktu_alat_terpasang;
+                $dtx_a_add['waktu_alat_terpasang'] = Carbon::parse($request->waktu_alat_terpasang)->toDateTimeString();
             } elseif ($mode == '2') {
                 $dtx_a_add['item_id'] = $request->item_id;
                 $dtx_a_add['quantity'] = $request->quantity;
                 $dtx_a_add['item_unit_code'] = $request->item_unit_code;
             } elseif ($mode == '3') {
-                $dtx_a_add['waktu'] = $request->waktu;
+                $dtx_a_add['waktu'] = Carbon::parse($request->waktu)->toDateTimeString();
                 $dtx_a_add['kesadaran'] = $request->kesadaran;
                 $dtx_a_add['td'] = $request->td;
                 $dtx_a_add['hr'] = $request->hr;
                 $dtx_a_add['rr'] = $request->rr;
                 $dtx_a_add['spo2'] = $request->spo2;
             } elseif ($mode == '4') {
-                $dtx_a_add['waktu'] = $request->waktu;
+                $dtx_a_add['waktu'] = Carbon::parse($request->waktu)->toDateTimeString();
                 $dtx_a_add['kejadian'] = $request->kejadian;
                 $dtx_a_add['tindakan'] = $request->tindakan;
             } elseif ($mode == '5') {
