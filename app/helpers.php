@@ -22,6 +22,13 @@ function domain($path = 1)
     return $domain;
 }
 
+function getHostDatabase(){
+    if (str_contains(env('DB_HOST'), '192.168.80.114')) {
+        return 1;
+    }
+    return 0;
+}
+
 function urlPharmacy($path, $location = '')
 {
     return domain(1) . 'farmasi/web-apis/' . $path . '?akseskunci=' . keyPharmacy() . '' . $location;
@@ -206,8 +213,8 @@ function getUni()
 function getDatabase($name)
 {
     $db = [
-        'master' => DB::connection('mysql2')->getDatabaseName(),
-        'inap' => DB::connection('mysql')->getDatabaseName(),
+        'master' => DB::connection('mysql2')->getDatabaseName().''.sqlServerConfig()[0],
+        'inap' => DB::connection('mysql')->getDatabaseName().''.sqlServerConfig()[0],
     ];
 
     return $db[$name];
@@ -339,6 +346,8 @@ function getCurrentBPJSPrice($currentData = [])
 {
     if (is_array($currentData) && !isset($currentData['regNo'])) {
         $tarif = $currentData['currentPrice'];
+    } else if (is_array($currentData) && !isset($currentData['ChargeClassCode'])) {
+        $tarif = 0; 
     } else {
         $convertChargeClass = DB::connection('mysql2')
             ->table('m_room_class')
@@ -371,17 +380,20 @@ function getCurrentBPJSPrice($currentData = [])
 
 function countInpatientDays($reg)
 {
-    $data = DB::connection('mysql2')
-        ->table('m_bed_history')
-        ->where('regNo', $reg);
 
-    $first = $data->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'asc')
+    $first = DB::connection('mysql2')
+        ->table('m_bed_history')
+        ->where('regNo', $reg)
+        ->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'asc')
         ->select([
             DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) as validateDate")
         ])
         ->first();
 
-    $last = $data->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'desc')
+    $last = DB::connection('mysql2')
+        ->table('m_bed_history')
+        ->where('regNo', $reg)
+        ->orderBy(DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime)"), 'desc')
         ->where('Description', 'Pasien Pulang')
         ->select([
             DB::raw("CONCAT(ReceiveTransferDate, ' ', ReceiveTransferTime) as validateDate")
@@ -394,7 +406,7 @@ function countInpatientDays($reg)
             'data' => [
                 'duration' => ['days' => 0]
             ],
-            'msg' => 'Total perhitungan tarif kamar belum bisa dilakukan, dikarenakan pasien belum pulang. Mohon koordinasikan dengan perawat untuk penutupan bed dan pemulangan pasien ini.'
+            'msg' => 'Informasi : \nPasien ini belum dipulangkan, mohon koordinasikan dengan perawat untuk penutupan bed dan pemulangan pasien ini.'
         ];
     }
 
@@ -440,4 +452,14 @@ function paymentMethod()
     ];
 
     return $data_method;
+}
+
+function sqlServerConfig(){
+    $dbo = '';
+    if (str_contains(env('DB_HOST'), '192.168.80.114')) {
+        $dbo = '.dbo';
+    } else {
+        
+    }
+    return [$dbo];
 }

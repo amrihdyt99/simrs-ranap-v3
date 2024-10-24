@@ -44,6 +44,7 @@ class BillingController extends AaaBaseController
                 'reg_diagnosis',
                 'reg_lama',
                 'reg_cara_bayar',
+				'service_unit',
 
                 'PatientName',
                 'm_pasien.SSN',
@@ -131,7 +132,7 @@ class BillingController extends AaaBaseController
         $currentData = [
             'payer' => $payer,
             'regNo' => $request->reg_ri,
-            'ChargeClassCode' => $currentData['ChargeClassCode'],
+            'ChargeClassCode' => $currentData['ChargeClassCode'] ?? null,
         ];
 
         if (!empty($previousData)) {
@@ -156,7 +157,7 @@ class BillingController extends AaaBaseController
             $item['ItemTindakan'] = $value->jenis_order;
             $item['ItemTarif'] = $tarif;
             $item['ItemTarifAwal'] = $tarif;
-            $item['ItemJumlah'] = $value->qty;
+            $item['ItemJumlah'] = (float) $value->qty;
             $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
@@ -319,7 +320,7 @@ class BillingController extends AaaBaseController
                 $item['ItemTindakan'] = 'Obat';
                 $item['ItemTarif'] = (float) $v->quantity * $v->harga_jual;
                 $item['ItemTarifAwal'] = (float) $v->harga_jual;
-                $item['ItemJumlah'] = $v->quantity;
+                $item['ItemJumlah'] = (float) $v->quantity;
                 $item['ItemDokter'] = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode', $value->kode_dokter)->first()->ParamedicName;
                 $item['ItemPoli'] = $value->kode_poli;
                 $item['ItemReview'] = $value->is_review == false ? 0 : 1;
@@ -398,9 +399,9 @@ class BillingController extends AaaBaseController
             $item['ItemName1'] = $value->cpoe_name;
             $item['ItemBundle'] = null;
             $item['ItemTindakan'] = $value->cpoe_jenis;
-            $item['ItemTarif'] = $value->cpoe_tarif;
-            $item['ItemTarifAwal'] = $value->cpoe_tarif;
-            $item['ItemJumlah'] = $value->cpoe_jumlah;
+            $item['ItemTarif'] = (float) $value->cpoe_tarif;
+            $item['ItemTarifAwal'] = (float) $value->cpoe_tarif;
+            $item['ItemJumlah'] = (float) $value->cpoe_jumlah;
             $item['ItemDokter'] = $value->cpoe_dokter;
             $item['ItemPoli'] = 'Rehab Medik';
             $item['ItemReview'] = '-';
@@ -428,9 +429,9 @@ class BillingController extends AaaBaseController
             $item['ItemName1'] = $value->ItemName1;
             $item['ItemBundle'] = null;
             $item['ItemTindakan'] = 'lainnya';
-            $item['ItemTarif'] = $value->TotalPersonal;
-            $item['ItemTarifAwal'] = $value->TotalPersonal;
-            $item['ItemJumlah'] = $value->DispenseQty;
+            $item['ItemTarif'] = (float) $value->TotalPersonal;
+            $item['ItemTarifAwal'] = (float) $value->TotalPersonal;
+            $item['ItemJumlah'] = (float) $value->DispenseQty;
             $item['ItemDokter'] = $value->ParamedicName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
@@ -685,7 +686,14 @@ class BillingController extends AaaBaseController
     public function storePayment(Request $request)
     {
         try {
-            // return $request;
+            $currentLocation = getCurrentLocation($request->reg);
+            if (empty($currentLocation)) {
+                return [
+                    'success' => false,
+                    'message' => 'Data charge class dan service unit tidak ada, mohon hubungi Bagian Admisi'
+                ];
+            }
+            
             $data = [
                 'pvalidation_code' => genKode(DB::table('rs_pasien_billing_validation'), 'created_at', null, null, 'QARP'),
                 'pvalidation_reg' => $request->reg,
@@ -863,8 +871,12 @@ class BillingController extends AaaBaseController
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
 
-        // dd($data_luar);
-
+        if(!isset($ruangan)){
+			return [
+				'success' => false,
+				'message' => 'Data charge class dan service unit ada, hubungi bagian admisi'
+			];
+		}
 
         return view('kasir.billing.review_invoice', [
             'data'              => $data,
