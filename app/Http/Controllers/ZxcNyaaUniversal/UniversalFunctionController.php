@@ -101,6 +101,10 @@ class UniversalFunctionController extends Controller
             $redirect = true;
             $url = '/farmasi/dashboard';
         }
+        // elseif($level_user==='keuangan'){
+        //     $redirect = true;
+        //     $url = '/keuangan';
+        // }
         // return
         if($redirect===true){
             return redirect($url);
@@ -764,6 +768,13 @@ class UniversalFunctionController extends Controller
 
         }
 
+        elseif ($value === 'keuangan') {
+            $dtx_extends = 'zxc-nyaa-universal.000_layout.nyaa_app';
+            $dtx_container_extends = 'zxc-nyaa-universal.000_layout.nyaa_app_onlycontent';
+            $dtx_pusherstyles = 'nyaa_parent_styles';
+            $dtx_pusherscripts = 'nyaa_parent_scripts';
+        }
+
 
 
         // TIDAK ADA MATCH
@@ -840,10 +851,11 @@ class UniversalFunctionController extends Controller
                 'pendaftaran' => 'Pendaftaran',
                 'perawat' => 'Perawat',
                 'radiologi' => 'Radiologi',
-                // 'case_manager' => 'Case Manager',
+                'case_manager' => 'Case Manager',
                 // 'nutritionist' => 'Ahli Gizi / Nutritionist',
                 'dietitian' => 'Ahli Diet / Dietisien',
                 'farmasi' => 'Farmasi',
+                'keuangan' => 'Keuangan'
                 // 'dokter_gizi' => 'Dokter Spesialis Gizi',
             ];
             if($mode==='get_all'){
