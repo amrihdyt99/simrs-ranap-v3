@@ -127,7 +127,7 @@
                 <div style="display: flex; justify-content: space-between; ">
                     <div style="display: flex;">
                         <div style="width: 150px;">Ruang</div>
-                        <div>: </div>
+                        <div>: {{ $data_pasien->ruangan }}</div>
                         <div style="width: 150px;"></div>
                         <div>Kelas  : {{ $data_pasien->room_class }}</div>
                     </div>
