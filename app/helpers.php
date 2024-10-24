@@ -305,6 +305,7 @@ function getCurrentLocation($reg, $skipLast = false)
         $data['ChargeClassCode'] = $getLatestBedHistory->ToChargeClassCode;
         $data['BedID'] = $getLatestBedHistory->ToBedID;
         $data['BedCode'] = $getLatestBedHistory->bed_code;
+        $data['RoomID'] = $getLatestBedHistory->room_id;
     }
 
     return $data;
