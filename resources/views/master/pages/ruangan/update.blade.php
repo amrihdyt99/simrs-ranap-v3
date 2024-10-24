@@ -27,7 +27,7 @@
                                 <div class="form-group">
                                     <label for="RoomCode">Room Code</label>
                                     <input type="text" value="{{$ruangan->RoomCode}}" class="form-control @error('RoomCode') is-invalid @enderror"
-                                        id="RoomCode" name="RoomCode" required>
+                                        id="RoomCode" name="RoomCode" required readonly>
                                 </div>
                                 @error('RoomCode')
                                 <div class="alert alert-danger">{{ $message }}</div>

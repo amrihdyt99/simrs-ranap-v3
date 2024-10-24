@@ -572,8 +572,8 @@ IRD--}}
                         <td></td>
                         <td></td> 
                         <td align="center">
-                            @if($datapasien->perawat_signature != null)
-                                <img src="{{$datapasien->perawat_signature}}" width="150" height="100" /><br>
+                            @if(isset($datapasien->perawat_signature) && $datapasien->perawat_signature != null)
+                                <img src="{{$datapasien->perawat_signature ?? '' }}" width="150" height="100" /><br>
                             @endif
                             ({{ $datapasien->perawat_name ?? 'Nama Perawat' }})
                         </td>

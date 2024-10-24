@@ -160,6 +160,16 @@ $registrasi_data = DB::connection('mysql2')
                     </div>
                 </div>
                 <div class="row">
+                    <div class="left-tab" id="tab-gizi-anak" onclick="clickTab('gizi-anak')">
+                        Asuhan Gizi Anak
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="left-tab" id="tab-gizi-obgyn" onclick="clickTab('gizi-obgyn')">
+                        Asuhan Gizi Obgyn
+                    </div>
+                </div>
+                <div class="row">
                     <div class="left-tab" id="tab-edukasi" onclick="clickTab('edukasi')">
                         Edukasi
                     </div>

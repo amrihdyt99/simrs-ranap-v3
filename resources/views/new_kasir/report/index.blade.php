@@ -60,7 +60,7 @@
                                     <th style="text-align: left" rowspan="2">No Registrasi</th>
                                     <th style="text-align: left" rowspan="2">No Transaksi</th>
                                     <th style="text-align: left" rowspan="2">Nama Pasien</th>
-                                    <th style="text-align: left" rowspan="2">Poliklinik</th>
+                                    <th style="text-align: left" rowspan="2">Service Unit</th>
                                     <th style="text-align: left" rowspan="2">Total Tagihan</th>
                                     <th class="text-center" colspan="7">Pembayaran</th>
                                 </tr>

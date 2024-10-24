@@ -278,6 +278,8 @@ trait RanapRegistrationTrait
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_room_class', 'm_registrasi.reg_class', '=', 'm_room_class.ClassCode')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->leftJoin('m_bed', 'm_registrasi.bed', '=', 'm_bed.bed_id')
+            ->leftJoin('m_ruangan','m_bed.room_id','=','m_ruangan.RoomID')
             ->where('m_registrasi.reg_no', $this->parseRegNoByUnderScore($regno))
             ->select(
                 'm_registrasi.reg_no',
@@ -287,7 +289,8 @@ trait RanapRegistrationTrait
                 'm_pasien.GCSex as jenis_kelamin',
                 'm_paramedis.ParamedicName as reg_dokter',
                 'm_registrasi.reg_tgl',
-                'm_room_class.ClassName as room_class'
+                'm_room_class.ClassName as room_class',
+                'm_ruangan.RoomName as ruangan'
             )
             ->first();
 
