@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ranap;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\IGD\IGDServices;
 use App\Http\Services\Ranap\RegistrationRanapService;
+use App\Http\Services\TarifKamarService;
 use App\Models\Bed;
 use App\Models\ICD10;
 use App\Models\KelasKategori;
@@ -14,6 +15,7 @@ use App\Models\PasienVClaim;
 use App\Models\RegistrasiPJawab;
 use App\Models\RegistrationInap;
 use App\Models\SuratPersetujuanMedis;
+use App\Models\SuratRawatIntensif;
 use App\Models\RoomClass;
 use App\Models\ServiceRoom;
 use App\Models\ServiceUnit;
@@ -34,11 +36,15 @@ class RegisterController extends Controller
 {
     use RanapRegistrationTrait, MasterPasienTrait, HttpRequestTraits, MasterBedTraits;
 
-    protected $igdService, $regRanapService;
-    public function __construct(IGDServices $igdService, RegistrationRanapService $regRanapService)
-    {
+    protected $igdService, $regRanapService, $tarifKamarService;
+    public function __construct(
+        IGDServices $igdService,
+        RegistrationRanapService $regRanapService,
+        TarifKamarService $tarifKamarService
+    ) {
         $this->igdService = $igdService;
         $this->regRanapService = $regRanapService;
+        $this->tarifKamarService = $tarifKamarService;
     }
     public function index(Request $request)
     {
@@ -70,7 +76,7 @@ class RegisterController extends Controller
             'asal_pasien' => $asal_pasien,
             'service_unit' => $data['service_unit'],
             'service_room' => $data['service_room'],
-            'room_class' => $data['room_class'],
+            'room_class' => $data['cover_class'],
             'ruangan_baru' => $data['ruangan_baru'],
             'physician' => $data['physician'],
             'bed' => $data['bed'],
@@ -142,7 +148,7 @@ class RegisterController extends Controller
                             <a class="dropdown-item" href="' . $url_lengkapi_pendaftaran . '" target="_blank">Lengkapi Pendaftaran</a>
                             <button class="dropdown-item print-admisi" data-reg_no="' . $query->reg_no . '">Admisi</button>
                             <button class="dropdown-item print-generalconsent" data-reg_no="' . $query->reg_no . '">General Consent</button> 
-                            <a class="dropdown-item" href="' . $url_ringkasan_masuk_keluar . '" target="_blank">Ringkasan Masuk & Keluar</a>
+                            <button class="dropdown-item print-ringkasan-pasien" data-reg_no="' . $query->reg_no . '">Ringkasan Masuk & Keluar</button>
                             <button class="dropdown-item print-rawatintensif  " data-reg_no="' . $query->reg_no . '">Surat Rawat Intensif</button>
                             <button class="dropdown-item print-persetujuan-medis" data-reg_no="' . $query->reg_no . '">Persetujuan Medis</button> 
                         </div>' .
@@ -193,15 +199,6 @@ class RegisterController extends Controller
         return "{$diff->y} Y {$diff->m} m {$diff->d} d";
     }
 
-    public function rawatIntensif($reg_no)
-    {
-        $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
-        return view('register.pages.ranap.rawat-intensif', compact('data_pasien'));
-    }
-
-
-
-
     public function batal_ranap($no)
     {
         $reg = str_replace("_", "/", $no);
@@ -243,8 +240,17 @@ class RegisterController extends Controller
     public function formRegisterInap()
     {
         $data = $this->getDataFormRegistration();
-        //return view('register.pages.baru.pilih_pasien',$data);
-        return view('register.pages.ranap.create', $data);
+        $context = [
+            'service_unit' => $data['service_unit'],
+            'service_room' => $data['service_room'],
+            'room_class' => $data['cover_class'],
+            'ruangan_baru' => $data['ruangan_baru'],
+            'physician' => $data['physician'],
+            'bed' => $data['bed'],
+            'icd10' => $data['icd10'],
+            'cover_class' => $data['cover_class'],
+        ];
+        return view('register.pages.ranap.create', $context);
     }
 
 
@@ -296,124 +302,7 @@ class RegisterController extends Controller
 
     public function storeRegisterInap(Request $request)
     {
-        try {
-
-            $pasien = DB::connection('mysql2')
-                ->table('m_pasien')
-                ->where(['MedicalNo' => $request->reg_medrec])
-                ->first();
-
-
-            if ($request->mrn_category === 'newborn') {
-                $request->merge(['reg_medrec' => $this->generateMRN()]);
-            }
-            //update data pasien
-            $paramspasien = array(
-                'SSN' => $request->ssn,
-                'PatientName' => $request->nama,
-                // 'PatientCity' => $request->kota,
-                // 'PatientProvince' => $request->provinsi,
-                'PatientAddress' => $request->alamat,
-                'GCBloodType' => $request->gol_darah,
-                'BloodRhesus' => $request->rhesus,
-                // 'GCNationality' => $request->kebangsaan,
-                // 'GCRace' => $request->suku,
-                'GCOccupation' => $request->pekerjaan,
-                'GCReligion' => $request->agama,
-                'MobilePhoneNo1' => $request->telepon_1,
-                'CityOfBirth' => $request->tempat_lahir,
-                'DateOfBirth' => $request->tanggal_lahir,
-                'GCSex' => $request->jenis_kelamin,
-                'GCMaritalStatus' => $request->status_nikah,
-                'GCEducation' => $request->pendidikan,
-                'PatientAddress' => $request->alamat,
-
-            );
-
-
-            if ($pasien) {
-                // Update data pasien
-                DB::connection('mysql2')
-                    ->table('m_pasien')
-                    ->where(['MedicalNo' => $request->reg_medrec])
-                    ->update($paramspasien);
-            } else {
-                DB::connection('mysql2')
-                    ->table('m_pasien')
-                    ->insert(array_merge($paramspasien, ['MedicalNo' => $request->reg_medrec]));
-            }
-            $data_bed = DB::connection('mysql2')->table('m_bed')->where(['bed_id' => $request->bed_id])->first();
-
-            $tgl_lahir = DB::connection('mysql2')->table('m_pasien')->where('MedicalNo', $request->reg_medrec)->first()->DateOfBirth;
-            $date1 = date_create($tgl_lahir);
-            $date2 = date_create(date('Y-m-d'));
-            $diff = date_diff($date1, $date2);
-            $tahun = $diff->y;
-            $bulan = $diff->m;
-            $hari = $diff->d;
-            if ($tahun == 0 && $bulan == 0 && $hari <= 28) {
-                $kategori = "A";
-            } elseif ($tahun <= 17) {
-                $kategori = "R";
-            } else {
-                $kategori = "D";
-            }
-
-            $registerNumber = RegistrationInap::generateCode();
-            $registrasi['reg_no'] = $registerNumber;
-            $registrasi['reg_tgl'] = date('Y-m-d');
-            $registrasi['reg_jam'] = date('H:i:s');
-            $registrasi['bed'] = $data_bed->bed_id;
-            $registrasi['room_class'] = $data_bed->class_code;
-            $registrasi['service_unit'] = $data_bed->service_unit_id;
-            $registrasi['reg_cara_bayar'] = $request->reg_cara_bayar;
-            $registrasi['reg_dokter'] = $request->reg_dokter;
-            $registrasi['reg_no_dokumen'] = $request->reg_no_dokumen;
-            $registrasi['departemen_asal'] = $request->departemen_asal;
-            $registrasi['purpose'] = $request->purpose;
-            $registrasi['link_regis'] = $request->link_regis;
-            $registrasi['reg_lama'] = $request->link_regis;
-            $registrasi['reg_diagnosis'] = $request->reg_diagnosis;
-            $registrasi['reg_medrec'] = $request->reg_medrec;
-            $registrasi['reg_class'] = $request->reg_class;
-            $registrasi['reg_pjawab_alamat'] = $request->reg_pjawab_alamat ?? '-';
-            $registrasi['reg_pjawab_nohp'] = $request->reg_pjawab_nohp;
-            $registrasi['reg_pjawab_hub'] = $request->reg_hub_pasien;
-            $registrasi['reg_ketersidaan_kamar'] = $request->reg_ketersidaan_kamar;
-            $registrasi['reg_info_kewajiban'] = $request->reg_info_hak_kewajiban;
-            $registrasi['reg_info_general_consent'] = $request->reg_info_general_consent;
-            $registrasi['reg_info_carabayar'] = $request->reg_info_carabayar;
-            // $registrasi['reg_kategori'] = $kategori; // belum ada kolom kategori di database
-            RegistrationInap::create($registrasi);
-
-            //update data ruangan
-            $paramruangan = array(
-                'registration_no' => $registerNumber,
-                'bed_status' => '0116^O'
-            );
-            $updateruangan = DB::connection('mysql2')
-                ->table('m_bed')
-                ->where(['bed_id' => $request->bed_id])
-                ->update($paramruangan);
-
-            //ADD PENANGGUNG JAWAB PASIEN
-            $pj_pasien = request()->pj_pasien;
-
-            foreach ($pj_pasien as $pj) {
-                $pj['reg_no'] = $registerNumber;
-                RegistrasiPJawab::create($pj);
-            }
-
-            //tambahkan ini juga karena akan menyimpan data pj pasien ke tabel nya anjay
-            $pjawab_pasien = RegistrasiPJawab::where('reg_no', $this->parseRegNoByUnderScore($registerNumber))->get();
-
-            // dd($pj_pasien);
-
-
-            return redirect()->route('register.ranap.index');
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        return $this->regRanapService->storeRegistrationRanap($request);
     }
     /*
 
@@ -650,6 +539,55 @@ class RegisterController extends Controller
         $data_pasien = $this->getDataPersetujuanMedis($reg_no);
         return view('register.pages.ranap.persetujuan-medis', compact('data_pasien'));
     }
+
+
+
+    public function storeSuratRawatIntensif(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'reg_no' => 'required|string',
+                'penanggung_jawab' => 'required|string',
+                'umur_penanggung_jawab' => 'required|integer',
+                'jenis_kelamin' => 'required|string',
+                'alamat_penanggung_jawab' => 'required|string',
+                'keluarga_signature' => 'nullable|string',
+                'keluarga_signature_2' => 'nullable|string',
+                'penanggung_jawab_2' => 'nullable|string',
+            ]);
+
+            // Check if data already exists
+            $existingData = SuratRawatIntensif::where('reg_no', $validatedData['reg_no'])->first();
+            if ($existingData) {
+                // Update existing data
+                $existingData->update($validatedData);
+                $message = 'Data rawat intensif berhasil diupdate.';
+            } else {
+                // Create new data
+                $newData = SuratRawatIntensif::create($validatedData);
+                $message = 'Data rawat intensif berhasil disimpan.';
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'redirect' => route('register.ranap.rawat-intensif', ['reg_no' => $validatedData['reg_no']])
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function rawatIntensif($reg_no)
+    {
+        $data_pasien = $this->getDataSuratRawatIntensif($reg_no);
+        $savedData = SuratRawatIntensif::where('reg_no', $reg_no)->first();
+        return view('register.pages.ranap.rawat-intensif', compact('data_pasien', 'savedData'));
+    }
+
+
     function uploadTtdAdmisi(Request $request)
     {
         $regno = $request->reg_no;
@@ -894,6 +832,12 @@ class RegisterController extends Controller
                 ->table('m_registrasi')
                 ->where('reg_no', request()->reg_no)
                 ->value('reg_lama');
+            // store data tarif kamar
+            $this->tarifKamarService->storeTarifKamar([
+                'reg_no' => request()->reg_no,
+                'charge_class' => request()->charge_class_code,
+                'qty' => 1,
+            ]);
 
             // dd($param_pasien);
             DB::commit();

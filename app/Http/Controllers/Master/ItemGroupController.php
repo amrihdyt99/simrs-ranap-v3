@@ -140,12 +140,12 @@ class ItemGroupController extends Controller
      */
     public function destroy($id)
     {
-        $classCategory = DB::connection('mysql2')
+        $itemGroup = DB::connection('mysql2')
             ->table('m_item_group')
             ->where('ItemGroupCode', $id)
             ->first();
 
-        if (!$classCategory) {
+        if (!$itemGroup) {
             return response()->json(['error' => 'Data tidak ditemukan'], 404);
         }
 

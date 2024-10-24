@@ -227,6 +227,7 @@ class TarifController extends Controller
         $userid = $request->userid;
         $regno = $request->regno;
         $datajson = $request->datajson;
+        $perawat_name = $request->perawat_name;
         //$datajson=json_decode($datajson,true);
         $countorder = DB::connection('mysql')
             ->table("job_orders")
@@ -239,7 +240,7 @@ class TarifController extends Controller
             )
             ->count();
         $newDateFormat = str_replace('-', '', now()->toDateString());
-        $orderNumberFormat = 'ANY/RI/' . $newDateFormat . $countorder;
+        $orderNumberFormat = genKode(DB::table('job_orders_dt')->where('jenis_order', 'lainnya'), null, null, null, 'ANY');
         $jobOrder['reg_no'] = $regno;
         $jobOrder['kode_dokter'] = $userid;
         $jobOrder['waktu_order'] = now()->toDateTimeString();
@@ -266,7 +267,11 @@ class TarifController extends Controller
             //$jobOrderDetail['ket_dosis'] = $request->ket_dosis[$i];
             $jobOrderDetail['harga_jual'] = $price;
             $jobOrderDetail['order_no'] = $orderNumberFormat;
-            $jobOrderDetail['flag'] = 0;
+            // $jobOrderDetail['flag'] = 0;
+            $jobOrderDetail['created_by_id'] = $userid;
+            $jobOrderDetail['deleted'] = 0;
+            $jobOrderDetail['flag_billing_perawat'] = 1;
+            $jobOrderDetail['created_by_name'] = $perawat_name;
             array_push($detailBatch, $jobOrderDetail);
         }
 

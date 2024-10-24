@@ -26,11 +26,13 @@ use App\Http\Controllers\Master\v2\DepartmentServiceUnitController;
 use App\Http\Controllers\Master\v2\DepartmentV2Controller;
 use App\Http\Controllers\Master\v2\DraftController;
 use App\Http\Controllers\Master\v2\DTDController;
+use App\Http\Controllers\Master\v2\ItemController;
+use App\Http\Controllers\Master\v2\ItemTarifController;
 use App\Http\Controllers\Master\v2\NewServiceUnitController;
 use App\Http\Controllers\Master\v2\SiteDepartmentController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter,perawat'])->group(function () {
+Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,adminregister,dokter,perawat,farmasi'])->group(function () {
     /*
     Route::get('/', function () {
         return redirect()->route('master.bed.index');
@@ -72,6 +74,8 @@ Route::prefix('master')->name('master.')->middleware(['auth', 'role:adminmaster,
     Route::resource('dtd', DTDController::class);
     Route::resource('education', EducationController::class);
     Route::resource('item-group', ItemGroupController::class);
+    Route::resource('item', ItemController::class);
+    Route::resource('item-tarif', ItemTarifController::class);
 
     Route::prefix('aksesRuangan')->group(function () {
         Route::get('/', [AksesRuanganController::class, 'index']);

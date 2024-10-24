@@ -46,7 +46,6 @@
         <tr>
           <th>Kode Daftar Masalah</th>
           <th>Nama Masalah</th>
-          <th>Layanan</th>
           <th>Aksi</th>
         </tr>
       </thead>
@@ -128,19 +127,6 @@
           name: "masalah_nama",
           orderable: true,
           searchable: true,
-        },
-        {
-          data: "masalah_layanan",
-          name: "masalah_layanan",
-          orderable: true,
-          searchable: true,
-          render: function(columnData, type, rowData, meta) {
-            if (columnData) {
-              return `<span class="badge badge-success text-white">Ya</span>`;
-            } else {
-              return `<span class="badge badge-danger">Tidak</span>`;
-            }
-          }
         },
         {
           data: "action",

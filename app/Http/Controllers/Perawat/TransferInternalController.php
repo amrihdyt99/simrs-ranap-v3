@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Perawat;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bed;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -246,40 +247,141 @@ class TransferInternalController extends Controller
                     ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
                     ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
                     // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                    ->leftJoin('m_unit_departemen', function ($join) {
-                        $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                            ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
-                    })
+                    ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
                     ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
-                    ->select('m_bed_history.ToBedID as bed_id', 'm_bed_history.ToClassCode as class', 'm_bed_history.ToChargeClassCode as charge_class')
+                    ->select('m_bed_history.ToBedID as bed_id', 'm_bed_history.ToClassCode as class', 'm_bed_history.ToChargeClassCode as charge_class', 'm_bed.service_unit_id')
                     ->where('m_registrasi.reg_no', $tf_internal->transfer_reg)
                     ->orderBy('m_bed_history.ReceiveTransferDate', 'desc')
                     ->orderBy('m_bed_history.ReceiveTransferTime', 'desc')
                     ->first();
 
-                $history = array(
-                    'RegNo' => $request->transfer_reg,
-                    'MedicalNo' => $request->medrec,
-                    'HistoryRefCode' => $request->kode_transfer_internal,
-                    'TableRef' => 'transfer_internal',
-                    'FromBedID' => $ruangan_asal->bed_id,
-                    'FromClassCode' => $ruangan_asal->class,
-                    'FromChargeClassCode' => $ruangan_asal->charge_class,
-                    'ToBedID'   => $request->transfer_unit_tujuan,
-                    'ToClassCode' => $tf_internal->class,
-                    'ToChargeClassCode' => $tf_internal->charge_class,
-                    'RequestTransferDate' => Carbon::parse($request->ditransfer_waktu)->toDateString(),
-                    'RequestTransferTime'   => Carbon::parse($request->ditransfer_waktu)->toTimeString(),
-                    'ReceiveTransferDate'   => Carbon::parse($request->transfer_terima_tanggal)->toDateString(),
-                    'ReceiveTransferTime'   => Carbon::parse($request->transfer_terima_tanggal)->toTimeString(),
-                    'Description'   => 'Transfer Internal',
-                    'CreatedBy'     => auth()->user()->username,
-                    'RequestedBy'   => $tf_internal->ditransfer_oleh_user_id,
-                    'ReceivedBy'    => auth()->user()->username,
-                    'created_at' => Carbon::now(),
-                );
+                $bed_tujuan = Bed::find($request->transfer_unit_tujuan);
+                $normalClass = ['001', '002', '003', '004', 'anak01', 'anak02', 'anak03', 'vvip', 'ikb'];
+
+                if (in_array($tf_internal->charge_class, $normalClass)) {
+                    $history = array(
+                        'RegNo' => $request->transfer_reg,
+                        'MedicalNo' => $request->medrec,
+                        'HistoryRefCode' => $request->kode_transfer_internal,
+                        'TableRef' => 'transfer_internal',
+                        'FromServiceUnitID' => $ruangan_asal->service_unit_id,
+                        'FromBedID' => $ruangan_asal->bed_id,
+                        'FromClassCode' => $ruangan_asal->class,
+                        'FromChargeClassCode' => $ruangan_asal->charge_class,
+                        'ToUnitServiceID'   => $bed_tujuan->service_unit_id,
+                        'ToBedID'   => $request->transfer_unit_tujuan,
+                        'ToClassCode' => $tf_internal->class,
+                        'ToChargeClassCode' => $tf_internal->charge_class,
+                        'RequestTransferDate' => Carbon::parse($request->ditransfer_waktu)->toDateString(),
+                        'RequestTransferTime'   => Carbon::parse($request->ditransfer_waktu)->toTimeString(),
+                        'ReceiveTransferDate'   => Carbon::parse($request->transfer_terima_tanggal)->toDateString(),
+                        'ReceiveTransferTime'   => Carbon::parse($request->transfer_terima_tanggal)->toTimeString(),
+                        'Description'   => 'Transfer Internal',
+                        'CreatedBy'     => auth()->user()->username,
+                        'RequestedBy'   => $tf_internal->ditransfer_oleh_user_id,
+                        'ReceivedBy'    => auth()->user()->username,
+                        'created_at' => Carbon::now(),
+                    );
+                } else {
+                    $history = array(
+                        'RegNo' => $request->transfer_reg,
+                        'MedicalNo' => $request->medrec,
+                        'HistoryRefCode' => $request->kode_transfer_internal,
+                        'TableRef' => 'transfer_internal',
+                        'FromServiceUnitID' => $ruangan_asal->service_unit_id,
+                        'FromBedID' => $ruangan_asal->bed_id,
+                        'FromClassCode' => $ruangan_asal->class,
+                        'FromChargeClassCode' => $ruangan_asal->charge_class,
+                        'ToUnitServiceID'   => $bed_tujuan->service_unit_id,
+                        'ToBedID'   => $request->transfer_unit_tujuan,
+                        'ToClassCode' => $tf_internal->class,
+                        'ToChargeClassCode' => $ruangan_asal->charge_class,
+                        'RequestTransferDate' => Carbon::parse($request->ditransfer_waktu)->toDateString(),
+                        'RequestTransferTime'   => Carbon::parse($request->ditransfer_waktu)->toTimeString(),
+                        'ReceiveTransferDate'   => Carbon::parse($request->transfer_terima_tanggal)->toDateString(),
+                        'ReceiveTransferTime'   => Carbon::parse($request->transfer_terima_tanggal)->toTimeString(),
+                        'Description'   => 'Transfer Internal',
+                        'CreatedBy'     => auth()->user()->username,
+                        'RequestedBy'   => $tf_internal->ditransfer_oleh_user_id,
+                        'ReceivedBy'    => auth()->user()->username,
+                        'created_at' => Carbon::now(),
+                    );
+                }
 
                 DB::connection('mysql2')->table('m_bed_history')->insert($history);
+
+                // Create Order
+                $order_no = genKode(DB::table('job_orders_dt')->where('jenis_order', 'lainnya'), null, null, null, 'ANY');
+
+                if (in_array($tf_internal->charge_class, $normalClass)) {
+                    $kode = 'AKM1';
+                    $nama_item = 'Tarif akomodasi kamar';
+                } else if ($tf_internal->charge_class == 'hcu') {
+                    $kode = 'AKM2';
+                    $nama_item = 'Tarif akomodasi kamar HCU';
+                } else if ($tf_internal->charge_class == 'iw01') {
+                    $kode = 'AKM4';
+                    $nama_item = 'Tarif akomodasi kamar Intermediate Ward (IW)';
+                } else if (in_array($tf_internal->charge_class, ['icu01', 'cvcu'])) {
+                    $kode = 'AKM3';
+                    $nama_item = 'Tarif akomodasi kamar ICU';
+                } else if (in_array($tf_internal->charge_class, ['iso', 'iso1', 'iso2', 'iso3'])) {
+                    $kode = 'AKM5';
+                    $nama_item = 'Tarif akomodasi kamar Isolasi';
+                } else if ($tf_internal->charge_class == 'NEO1') {
+                    $kode = 'AKM6';
+                    $nama_item = 'Tarif akomodasi kamar Neonatus';
+                } else if ($tf_internal->charge_class == 'picu01') {
+                    $kode = 'AKM9';
+                    $nama_item = 'Tarif akomodasi kamar PICU';
+                } else if ($tf_internal->charge_class == 'nicu01') {
+                    $kode = 'AKM10';
+                    $nama_item = 'Tarif akomodasi kamar NICU';
+                }
+
+                if (in_array($tf_internal->charge_class, $normalClass)) {
+                    $tarif = getItemTindakan($request->transfer_reg, $tf_internal->charge_class, 'LAIN', $kode);
+                } else {
+                    $tarif = getItemTindakan($request->transfer_reg, $ruangan_asal->charge_class, 'LAIN', $kode);
+                }
+                $tarif = count($tarif) > 0 ? (float) $tarif[0]->PersonalPrice : 0;
+
+                $dataTarif = [
+                    'reg_no' => $request->transfer_reg,
+                    'order_no' => $order_no,
+                    'waktu_order' => date('Y-m-d H:i:s'),
+                    'service_unit' => $bed_tujuan->service_unit_id,
+                ];
+
+                $dataTarifDT = [
+                    'reg_no'        => $request->transfer_reg,
+                    'order_no'      => $order_no,
+                    'item_code'     => $kode,
+                    'item_name'     => $nama_item,
+                    'jenis_order'   => 'lainnya',
+                    'qty'           => 1,
+                    'harga_jual'    => $tarif,
+                    'created_at'    => date('Y-m-d H:i:s'),
+                    'deleted'       => 0,
+                    'created_by_id' => auth()->user()->id,
+                    'created_by_name' => auth()->user()->name,
+                ];
+
+                $check_ = DB::table('job_orders_dt')
+                    ->where([
+                        ['reg_no', $request->transfer_reg],
+                        ['item_code', $kode],
+                        ['deleted', '!=', '0'],
+                    ])->first();
+
+                if (!isset($check_)) {
+                    $jobOrders = DB::table('job_orders')->insert($dataTarif);
+                    if ($jobOrders) {
+                        $jobOrdersDT = DB::table('job_orders_dt')->insert($dataTarifDT);
+                    }
+                }
+
+
 
 
                 DB::connection('mysql')->commit();
@@ -344,6 +446,25 @@ class TransferInternalController extends Controller
 
         return response()->json([
             'data' => $perawat
+        ]);
+    }
+
+    public function getKetersediaanKamar(Request $request)
+    {
+        $ruangan = DB::connection('mysql2')
+            ->table('m_bed')
+            ->leftJoin('m_ruangan', 'm_ruangan.RoomID', '=', 'm_bed.room_id')
+            ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
+            // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
+            ->leftJoin('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID')
+            ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
+            ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
+            ->whereNull('registration_no')
+            ->where('m_bed.is_active', 1)
+            ->where('m_bed.bed_status', '0116^R')
+            ->get();
+        return response()->json([
+            'data' => $ruangan
         ]);
     }
 }

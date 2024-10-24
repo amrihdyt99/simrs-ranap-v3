@@ -161,7 +161,6 @@
 
     $('#tarikDataClassCategory').click(function() {
       var $button = $(this);
-      $button.prop('disabled', true);
 
       Swal.fire({
         title: 'Tarik Data Site Departemen ?',
@@ -173,6 +172,7 @@
         cancelButtonText: 'Batal'
       }).then((result) => {
         if (result.isConfirmed) {
+          $button.prop('disabled', true);
           $.ajax({
             url: "{{ url('tarik/site-departemen') }}",
             method: 'GET',

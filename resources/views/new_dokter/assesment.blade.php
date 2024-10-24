@@ -235,18 +235,23 @@
                                             <a class="nav-link active" id="baru-asper-tab" data-toggle="tab" href="#baru-asper" role="tab" aria-controls="baru-asper" aria-selected="false">Assesmen Klinik Hari Ini</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="riwayat-soapdok-tab" data-toggle="tab" href="#riwayat-soapdok" role="tab" aria-controls="riwayat-soapdok" aria-selected="false">Riwayat CPPT</a>
+                                            <a class="nav-link" id="riwayat-edukasi-tab" data-toggle="tab" href="#riwayat-edukasi" role="tab" aria-controls="riwayat-edukasi" aria-selected="false">Riwayat Edukasi</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="riwayat-asdok-tab" data-toggle="tab" href="#riwayat-asdok" role="tab" aria-controls="riwayat-asdok" aria-selected="false">Riwayat Asesmen Klinik</a>
+                                            <a class="nav-link" id="riwayat-soapdok-tab" data-toggle="tab" href="#riwayat-soapdok" role="tab" aria-controls="riwayat-soapdok" aria-selected="false">Riwayat CPPT</a>
                                         </li>
+                                        <!-- <li class="nav-item">
+                                            <a class="nav-link" id="riwayat-asdok-tab" data-toggle="tab" href="#riwayat-asdok" role="tab" aria-controls="riwayat-asdok" aria-selected="false">Riwayat Asesmen Klinik</a>
+                                        </li> -->
                                         <li class="nav-item">
                                             <a class="nav-link" id="riwayat-penunjang-tab" data-toggle="tab" href="#riwayat-penunjang" role="tab" aria-controls="riwayat-penunjang" aria-selected="false">Riwayat Penunjang</a>
                                         </li>
-
                                         <li class="nav-item">
-                                            <a class="nav-link" id="riwayat-resume-tab" data-toggle="tab" href="#riwayat-resume" role="tab" aria-controls="riwayat-resume" aria-selected="false">Riwayat Resume</a>
+                                            <a class="nav-link" id="riwayat-obat-tab" data-toggle="tab" href="#riwayat-obat" role="tab" aria-controls="riwayat-obat" aria-selected="false">Riwayat Obat</a>
                                         </li>
+                                        <!-- <li class="nav-item">
+                                            <a class="nav-link" id="riwayat-resume-tab" data-toggle="tab" href="#riwayat-resume" role="tab" aria-controls="riwayat-resume" aria-selected="false">Riwayat Resume</a>
+                                        </li> -->
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="baru-asper" role="tabpanel" aria-labelledby="baru-asper-tab">
@@ -261,8 +266,14 @@
                                         <div class="tab-pane fade" id="riwayat-penunjang" role="tabpanel" aria-labelledby="riwayat-penunjang-tab">
                                             @include('new_dokter.penunjang.index')
                                         </div>
+                                        <div class="tab-pane fade" id="riwayat-obat" role="tabpanel" aria-labelledby="riwayat-obat-tab">
+                                            @include('new_dokter.riwayat_dokter.riwayat_obat')
+                                        </div>
                                         <div class="tab-pane fade" id="riwayat-resume" role="tabpanel" aria-labelledby="riwayat-resume-tab">
                                             @include('new_dokter.resume.riwayat')
+                                        </div>
+                                        <div class="tab-pane fade" id="riwayat-edukasi" role="tabpanel" aria-labelledby="riwayat-edukasi-tab">
+                                            @include('new_dokter.riwayat_dokter.edukasi_dokter')
                                         </div>
                                     </div>
                                     @include('new_perawat.soap.show')
@@ -323,7 +334,7 @@
     $medrec = "{{$patient->reg_medrec}}";
     $subs = "";
     $hosted = '{{url("")}}'
-    var $service_unit = '{{$dataPasien->service_unit}}'
+    var $service_unit = '{{$dataPasien->currentLocation["ServiceUnitID"]}}'
     var $id_cppt = '{{$id_cppt}}'
     var selectedRoom = localStorage.getItem('pilihruang').split(',')
     var $id_dpjp = "{{$patient->reg_dokter}}"
@@ -339,6 +350,63 @@
 
     getEdukasi('#formEdukasiDokter', 'dokter')
 
+    $('#edukasi_anastesi_tab').on('click', function() {
+        getEdukasiAnastesi();
+    });
+
+    function getEdukasiAnastesi(){
+        $.ajax({
+            url: $hosted + '/api/get-edukasi-anastesi',
+            method: 'GET',
+            data: {
+                reg_no: $reg,
+            },
+            success: function(response) {
+                // console.log(response);
+                let edukasi = response.data_edukasi;
+                let pasien = response.data_pasien;
+                let ttd_dokter = ''; 
+                let doktername = '{{auth()->user()->name}}';
+                
+                if (edukasi) { 
+                    $('input[name="dilakukan_ke"][value="' + edukasi.dilakukan_ke + '"]').prop('checked', true);
+                    $('input[name="tindakan"]').val(edukasi.tindakan);
+                    $('input[name="jenis_anastesi"]').val(edukasi.jenis_anastesi);
+                    $('input[name="tgl_ttd"]').val(edukasi.tgl_ttd);
+                    $('input[name="nama_pihak_pasien"]').val(edukasi.nama_pihak_pasien);
+                    $('input[name="nama_dokter"]').val(edukasi.nama_dokter);
+
+                    let signaturePasienDataURL = edukasi.ttd_pihak_pasien;
+                    $('#signature_pasien_anastesi').val(signaturePasienDataURL);
+                    let $canvasPasien = $('[id*="signature-pad-pasien-anastesi"] canvas')[0];
+                    if ($canvasPasien && signaturePasienDataURL) {
+                        let signaturePadPasien = new SignaturePad($canvasPasien);
+                        signaturePadPasien.fromDataURL(signaturePasienDataURL);
+                    }
+
+                    ttd_dokter = edukasi.ttd_dokter;
+
+                }
+
+                $('input[name="nama"]').val(pasien.PatientName);
+                $('input[name="umur"]').val(pasien.DateOfBirth);
+                $('input[name="jenis_kelamin"][value="' + pasien.GCSex + '"]').prop('checked', true);
+                $('input[name="no_telp"]').val(pasien.MobilePhoneNo1);
+                $('input[name="no_rekam_medis"]').val(pasien.reg_medrec);
+                $('input[name="diagonsa"]').val(pasien.NM_ICD10);
+                $('input[name="nama_dokter"]').val(doktername);
+
+
+                let signatureDokterDataURL = ttd_dokter || "{{ auth()->user()->signature }}";
+                $('#signature_dokter_anastesi').val(signatureDokterDataURL);
+                let $canvasDokter = $('[id*="signature-pad-dokter-anastesi"] canvas')[0];
+                if ($canvasDokter) {
+                    let signaturePadDokter = new SignaturePad($canvasDokter);
+                    signaturePadDokter.fromDataURL(signatureDokterDataURL);
+                }
+            },
+        })
+    }
 
     $('div[id*="panel-"]').hide();
     $('#panel-assesment').show();
@@ -387,7 +455,7 @@
     function add_soap() {
         const reg = '{{$dataPasien->reg_no}}';
         const rm = '{{$dataPasien->reg_medrec}}';
-        const bed = '{{$dataPasien->bed}}';
+        const bed = '{{$dataPasien->currentLocation["BedID"]}}';
         const utama = '{{$dataPasien->reg_dokter}}';
         const soapdok_dokter = '{{ auth()->user()->dokter_id}}';
         const nama_ppa = '{{auth()->user()->name}}';
@@ -646,4 +714,5 @@
 <script src="{{asset('new_assets/js/physician_team.js')}}"></script>
 <script src="{{asset('new_assets/js/persetujuan_penolakan.js')}}"></script>
 <script src="{{asset('new_assets/js/surat_rujukan.js')}}"></script>
+<script src="{{asset('new_assets/js/riwayat_dokter.js')}}"></script>
 @endsection

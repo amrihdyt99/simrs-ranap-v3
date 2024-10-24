@@ -607,23 +607,23 @@ class NursingController extends Controller
                 'created_at' => date('Y-m-d H:m:s'),
             ];
 
-            $data['asuhan'] = [
-                'asdewasa_reg' => $request->dewasa_reg,
-                'asdewasa_assesment' => $request->asdewasa_assesment,
-                'asdewasa_diagnosa' => $request->diagnosa,
-                'asdewasa_tujuan' => $request->asdewasa_tujuan,
-                'asdewasa_energi' => $request->asdewasa_energi,
-                'asdewasa_protein' => $request->asdewasa_protein,
-                'asdewasa_kh' => $request->asdewasa_kh,
-                'asdewasa_lemak' => $request->asdewasa_lemak,
-                'asdewasa_rute' => $request->asdewasa_rute,
-                'asdewasa_jenis_makanan' => $request->asdewasa_jenis_makanan,
-                'asdewasa_frekuensi' => $request->asdewasa_frekuensi,
-                'asdewasa_jadwal_makanan' => $request->asdewasa_jadwal_makanan,
-                'asdewasa_monitoring_evaluasi' => $request->monitoring,
-                'asdewasa_user' => auth()->user()->id,
-                'created_at' => date('Y-m-d H:m:s'),
-            ];
+            // $data['asuhan'] = [
+            //     'asdewasa_reg' => $request->dewasa_reg,
+            //     'asdewasa_assesment' => $request->asdewasa_assesment,
+            //     'asdewasa_diagnosa' => $request->diagnosa,
+            //     'asdewasa_tujuan' => $request->asdewasa_tujuan,
+            //     'asdewasa_energi' => $request->asdewasa_energi,
+            //     'asdewasa_protein' => $request->asdewasa_protein,
+            //     'asdewasa_kh' => $request->asdewasa_kh,
+            //     'asdewasa_lemak' => $request->asdewasa_lemak,
+            //     'asdewasa_rute' => $request->asdewasa_rute,
+            //     'asdewasa_jenis_makanan' => $request->asdewasa_jenis_makanan,
+            //     'asdewasa_frekuensi' => $request->asdewasa_frekuensi,
+            //     'asdewasa_jadwal_makanan' => $request->asdewasa_jadwal_makanan,
+            //     'asdewasa_monitoring_evaluasi' => $request->monitoring,
+            //     'asdewasa_user' => auth()->user()->id,
+            //     'created_at' => date('Y-m-d H:m:s'),
+            // ];
 
             $check_assesment = DB::table('assesment_gizi_dewasa')
                 ->where('dewasa_reg', $request->dewasa_reg)
@@ -631,11 +631,11 @@ class NursingController extends Controller
                 ->where('created_at', 'like', '%' . date('Y-m-d H') . '%')
                 ->first();
 
-            $check_asuhan = DB::table('asuhan_gizi_dewasa')
-                ->where('asdewasa_reg', $request->dewasa_reg)
-                ->where('asdewasa_user', auth()->user()->id)
-                ->where('created_at', 'like', '%' . date('Y-m-d H') . '%')
-                ->first();
+            // $check_asuhan = DB::table('asuhan_gizi_dewasa')
+            //     ->where('asdewasa_reg', $request->dewasa_reg)
+            //     ->where('asdewasa_user', auth()->user()->id)
+            //     ->where('created_at', 'like', '%' . date('Y-m-d H') . '%')
+            //     ->first();
 
             if (isset($check_assesment)) {
                 $store = DB::table('assesment_gizi_dewasa')->where('dewasa_id', $check_assesment->dewasa_id)->update($data['assesment']);
@@ -643,11 +643,11 @@ class NursingController extends Controller
                 $store = DB::table('assesment_gizi_dewasa')->insert($data['assesment']);
             }
 
-            if (isset($check_asuhan)) {
-                $store = DB::table('asuhan_gizi_dewasa')->where('asdewasa_id', $check_asuhan->asdewasa_id)->update($data['asuhan']);
-            } else {
-                $store = DB::table('asuhan_gizi_dewasa')->insert($data['asuhan']);
-            }
+            // if (isset($check_asuhan)) {
+            //     $store = DB::table('asuhan_gizi_dewasa')->where('asdewasa_id', $check_asuhan->asdewasa_id)->update($data['asuhan']);
+            // } else {
+            //     $store = DB::table('asuhan_gizi_dewasa')->insert($data['asuhan']);
+            // }
 
             return response()->json(200);
         } catch (\Throwable $th) {
@@ -658,7 +658,6 @@ class NursingController extends Controller
     public function store_transfer_internal(Request $request)
     {
         try {
-
             // $validatedData = $request->validate([
             //     'transfer_gcs_e' => 'required|integer|min:1|max:4',
             //     'transfer_gcs_m' => 'required|integer|min:1|max:6',
@@ -680,7 +679,7 @@ class NursingController extends Controller
                     'transfer_unit_asal' => $request->transfer_unit_asal,
                     'transfer_unit_tujuan' => $request->transfer_unit_tujuan,
                     'class' => $request->transfer_class,
-                    'charge_class' => $request->transfer_charge_class,
+                    'charge_class' => isset($request->transfer_charge_class) ? $request->transfer_charge_class : $request->transfer_charge_class_temp,
                     'transfer_waktu_hubungi' => $request->transfer_waktu_hubungi,
                     'transfer_kategori' => $request->transfer_kategori,
                     'transfer_alasan_masuk' => $request->transfer_alasan_masuk,
@@ -738,7 +737,7 @@ class NursingController extends Controller
                     'transfer_unit_asal' => $request->transfer_unit_asal,
                     'transfer_unit_tujuan' => $request->transfer_unit_tujuan,
                     'class' => $request->transfer_class,
-                    'charge_class' => $request->transfer_charge_class,
+                    'charge_class' => isset($request->transfer_charge_class) ? $request->transfer_charge_class : $request->transfer_charge_class_temp,
                     'transfer_waktu_hubungi' => $request->transfer_waktu_hubungi,
                     'transfer_kategori' => $request->transfer_kategori,
                     'transfer_alasan_masuk' => $request->transfer_alasan_masuk,

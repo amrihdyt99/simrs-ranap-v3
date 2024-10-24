@@ -314,6 +314,7 @@
             data: $('#form_assesment_gizi_dewasa').serialize() + '&diagnosa=' + $('#t_asuhan_gizi_dewasa').html() + '&monitoring=' + $('#t_monitoring_asuhan_gizi_dewasa').html() + "&medrec=" + medrec + "&regno=" + regno,
             success: function(data) {
                 neko_simpan_success();
+                $('.left-tab.active').click();
             },
             error: function(data) {
                 neko_simpan_error_noreq();
@@ -355,14 +356,16 @@
             };
             data.push(item);
         }
-        var perawat_id = "{{auth()->user()->perawat_id}}";
+        let perawat_id = "{{auth()->user()->id}}";
+        let perawat_name = "{{auth()->user()->name}}";
         $.ajax({
             type: "POST",
             url: "{{ route('add.ordertindakanperawat') }}",
             data: {
                 "datajson": data,
                 "regno": regno,
-                "userid": perawat_id
+                "userid": perawat_id,
+                "perawat_name": perawat_name
             },
             success: function(data) {
                 neko_simpan_success();
@@ -766,15 +769,30 @@
 
     // physician team
     function addPhysicianTeam() {
+        let kodeDokter = $('#physician_kode_dokter').val();
+        let kodeLainnya = $('#physician_kode_lainnya').val();
+        let kategori = $('#physician_kategori').val();
+
+        let data = {
+            regno: regno,
+            kategori: kategori,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        };
+
+        if (kodeDokter) {
+            data.kode_dokter = kodeDokter;
+        } else if (kodeLainnya) {
+            data.kode_dokter = kodeLainnya;
+        } else {
+            alert('Pilih PPA atau PPA Lainnya');
+            return;
+        }
+        
         neko_proses();
         $.ajax({
             url: "{{ route('add.physicianteam') }}",
             type: "POST",
-            data: {
-                kode_dokter: $('#physician_kode_dokter').val(),
-                kategori: $('#physician_kategori').val(),
-                regno: regno,
-            },
+            data: data,
             success: function(data) {
                 neko_simpan_success();
                 getPhysicianTeamPerawat();

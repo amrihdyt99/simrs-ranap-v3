@@ -140,6 +140,23 @@
       </div>
     </div>
   </section>
+
+<div class="modal fade" id="modalRingkasanPasien" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg custom-width" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-between">
+          <h5 class="modal-title" id="resultModalLabel">Ringkasan Masuk & Keluar Pasien</h5>
+          <div class="d-flex align-items-center">
+            <button id="printButtonRingkasanPasien" class="btn" style="border: 1px solid black; color: black; margin-right: 10px;">Cetak Halaman</button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <iframe id="iframe-ringkasanPasien" style="border:none; width: 100%; height: calc(100vh - 200px);"></iframe>
+      </div>
+    </div>
+</div>
 </div>
 @endsection
 
@@ -350,6 +367,37 @@
             }
           });
         });
+
+        $(row).find('.print-ringkasan-pasien').click(function() {
+          var reg = $(this).data('reg_no');
+          let url = "{{ route('register.ranap.ringkasan-masuk-keluar', ':reg_no') }}"
+          url = url.replace(':reg_no', reg)
+          console.log(reg);
+          $.ajax({
+            type: "get",
+            url,
+            success: function(data) {
+              console.log(data);
+              $('#report-ringkasanPasien').empty().html(data);
+              var iframe = document.getElementById('iframe-ringkasanPasien');
+              iframe.contentDocument.open();
+              iframe.contentDocument.write(data);
+              iframe.contentDocument.close();
+              $('#modalRingkasanPasien').modal('show').on('shown.bs.modal', function() {
+                var modalDialog = $(this).find('.modal-dialog');
+                modalDialog.css({
+                  'max-width': '80%',
+                  'width': '80%',
+                  'max-height': '90%',
+                  'height': '90%'
+                });
+              });
+            },
+            error: function() {
+              neko_d_custom_error('Gagal, Memuat Ringkasan Masuk & Keluar Pasien');
+            }
+          });
+        });
         $(row).find('.print-rawatintensif').click(function() {
           var reg = $(this).data('reg_no');
           let url = "{{ route('register.ranap.rawat-intensif', ':reg_no') }}"
@@ -385,6 +433,11 @@
   }
 </script>
 <script>
+document.getElementById('printButtonRingkasanPasien').addEventListener('click', function() {
+  var iframe = document.getElementById('iframe-ringkasanPasien');
+  iframe.contentWindow.focus();
+  iframe.contentWindow.print();
+});
 document.getElementById('printButtonAdmisi').addEventListener('click', function() {
   var iframe = document.getElementById('iframe-admisi');
   iframe.contentWindow.focus();

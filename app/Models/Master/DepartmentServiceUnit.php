@@ -13,8 +13,9 @@ class DepartmentServiceUnit extends Model
     protected $table = 'm_unit_departemen';
     protected $primaryKey = 'ServiceUnitID';
     protected $connection = 'mysql2';
-    protected $guarded = [];
     public $timestamps = false;
+
+    protected $guarded = [];
 
     public function unit()
     {

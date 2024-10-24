@@ -1,5 +1,12 @@
  <div class="text-black" style="font-size: 14px">
         <div class="form-group">
+            <label class="control-label">Pilih Tipe Tindakan</label>
+            <select class="form-control" id="tipe_tindakan" name="tipe_tindakan" disabled>
+                <option value="">----Tidak ada dipilih ----</option>
+                <option value="RAD">Radiologi</option>
+                <option value="LAB">Laboratorium</option>
+                <option value="LAIN" selected>Lainnya</option>
+            </select>
             <label class="control-label">Pilih Order Tindakan</label>
             <select class="form-control select2" id="order_tindakan" name="order_tindakan">
                 <option value="-">----Tidak ada dipilih ----</option>

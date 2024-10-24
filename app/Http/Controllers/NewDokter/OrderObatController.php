@@ -143,7 +143,7 @@ class OrderObatController extends Controller
                     ->join('m_unit_departemen as b', 'a.ServiceUnitCode', 'b.ServiceUnitCode'),
                 'b.ServiceUnitID',
                 $request->service_unit,
-                ['a.*', DB::raw("(select ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode limit 1) as ServiceUnitID")]
+                ['a.*', DB::raw("(select ".getLimit()[0]." ServiceUnitID from m_unit_departemen where ServiceUnitCode = a.ServiceUnitCode ".getLimit()[1].") as ServiceUnitID")]
             );
 
             $service_room = [
@@ -1090,7 +1090,8 @@ class OrderObatController extends Controller
     {
         try {
             $check = DB::table('rs_pasien_instruksi_luar')
-                ->where('id_cppt', $request->id_cppt)
+                ->where('reg_no', $request->reg_no)
+                ->whereDate('created_at', date('Y-m-d'))
                 ->first();
 
             $data = [

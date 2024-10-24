@@ -9,6 +9,7 @@ use App\Http\Controllers\NewDokter\ResumeController;
 use App\Http\Controllers\Perawat\NeonatusController;
 use App\Http\Controllers\Master\DepartementController;
 use App\Http\Controllers\Master\LogActivityController;
+use App\Http\Controllers\Master\v2\ItemController;
 use App\Http\Controllers\NewDokter\EdukasiAnastesiController;
 use App\Http\Controllers\NewPerawat\NewNursingController;
 use App\Http\Controllers\Perawat\AssesmentAnakController;
@@ -279,6 +280,7 @@ Route::group(['prefix' => 'sphaira'], function () {
 	Route::get('departement', [ApiMasterController::class, 'department'])->name('sphaira.department');
 	Route::get('class-category', [ApiMasterController::class, 'classCategory'])->name('sphaira.classCategory');
 	Route::get('check-table', [ApiMasterController::class, 'checkTable'])->name('sphaira.check-table');
+	Route::get('check-sys-gen-code', [ApiMasterController::class, 'checkSysGenCode'])->name('sphaira.check-sys-code');
 });
 
 
@@ -291,9 +293,18 @@ Route::group(['prefix' => 'sphaira-rajal'], function () {
 	Route::get('m_item', [ApiMasterRajalController::class, 'm_item'])->name('sphaira-rajal.m_item');
 	Route::get('m_item_group', [ApiMasterRajalController::class, 'm_item_group'])->name('sphaira-rajal.m_item_group');
 	Route::get('check_table', [ApiMasterRajalController::class, 'check_table'])->name('sphaira-rajal.check_table');
+	Route::get('m_item_tarif', [ApiMasterRajalController::class, 'm_item_tarif'])->name('sphaira-rajal.m_item_tarif');
+	Route::get('m_item_sub', [ApiMasterRajalController::class, 'm_item_sub'])->name('sphaira-rajal.m_item_sub');
+	Route::get('m_item_tarif_mcu', [ApiMasterRajalController::class, 'm_item_tarif_mcu'])->name('sphaira-rajal.m_item_tarif_mcu');
+	Route::get('speciality', [ApiMasterRajalController::class, 'speciality'])->name('sphaira-rajal.speciality');
+	Route::get('infectious_desease', [ApiMasterRajalController::class, 'infectious_desease'])->name('sphaira-rajal.infectious_desease');
 });
 
 // api data master
+
+Route::prefix('master')->name('api-master.')->group(function () {
+	Route::get('select2Item', [ItemController::class, 'select2Item'])->name('item.select2');
+});
 
 Route::prefix('pasien')->name('pasien.')->group(function () {
 	Route::get('visit-history/{medicalRecord}', [PasienController::class, 'visitHistory'])->name('visit.history');
@@ -320,6 +331,8 @@ Route::prefix('perawat')->name('perawat.')->group(function () {
 	Route::post('store-case-manager', [CaseManagerController::class, 'store_case_manager'])->name('case-manager.store');
 	Route::get('get-nursing-durgs', [NewNursingController::class, 'getDrugsDatatable'])->name('nursing-drugs.get');
 	Route::post('store-case-manager-akumulasi', [CaseManagerController::class, 'store_case_manager_akumulasi'])->name('case-manager-akumulasi.store');
+	Route::get('get-kamar-ready', [TransferInternalController::class, 'getKetersediaanKamar'])->name('transfer-internal.getKamar');
+	Route::post('store-asuhan-gizi-dewasa', [NewNursingController::class, 'StoreAsuhanGiziDewasa'])->name('asuhan-gizi-dewasa.store');
 });
 
 Route::prefix('bed')->name('bed.')->group(function () {
@@ -389,6 +402,20 @@ Route::prefix('dokter')->name('dokter.')->group(function () {
 });
 
 Route::post('/add-edukasi-anastesi', [EdukasiAnastesiController::class, 'addEdukasiAnastesi'])->name('add.edukasi.anastesi');
+Route::get('/get-edukasi-anastesi', [EdukasiAnastesiController::class, 'getEdukasiAnastesi'])->name('get.edukasi.anastesi');
+Route::get('getPPALainnya', [\App\Http\Controllers\NewDokter\PhysicianTeamController::class, 'getPPALainnya'])->name('getPPALainnya');
+// Riwayat Dokter
+Route::get('/getRiwayatPenunjang', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatPenunjang']);
+// Route::get('/getRiwayatSOAP', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatSOAP']);
+
+Route::get('/getRiwayatSoap', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatSoap']);
+Route::get('/getRiwayatObat', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getRiwayatObat']);
+
+//assesment awal dokterrrr
+Route::get('/assesment-awal-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getAssesmentData'])->name('assesment-awal-dokter');
+//edukasi dokter
+Route::get('/edukasi-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getEdukasiData'])->name('edukasi-dokter');
+
 
 Route::prefix('laporan-operasi')->name('laporan-operasi.')->group(function () {
 	Route::get('/patient/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'index'])->where('reg_no', '(.*)')->name('index');

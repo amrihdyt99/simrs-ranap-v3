@@ -6,7 +6,9 @@ use App\Models\Master\DaftarMasalah;
 use App\Models\Master\Draft;
 use App\Models\Master\DTD;
 use App\Models\Master\Education;
+use App\Models\Master\Item;
 use App\Models\Master\ItemGroup;
+use App\Models\Master\ItemTarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -44,6 +46,8 @@ class TarikDataRajalController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_daftar_masalah')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -58,6 +62,8 @@ class TarikDataRajalController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_draft')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -72,6 +78,8 @@ class TarikDataRajalController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_dtd')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -86,6 +94,8 @@ class TarikDataRajalController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_education')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
@@ -100,8 +110,51 @@ class TarikDataRajalController extends Controller
             if (!$cek) {
                 DB::connection('mysql2')
                     ->table('m_item_group')->insert([$kue]);
+            } else {
+                $cek->update($kue);
             }
         }
         echo 'Alhamdulillah';
+    }
+
+    public function m_item(Request $request)
+    {
+
+        $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/m_item');
+        foreach ($data['data']  as $kue) {
+            $cek = Item::find($kue['ItemID']);
+            $groupItem = $kue['ItemGroupCode'];
+            if ($groupItem[0] === '0') {
+                $kue['ItemGroupCode'] = substr($groupItem, 1);
+            }
+            if (!$cek) {
+                DB::connection('mysql2')
+                    ->table('m_item')->insert([$kue]);
+            } else {
+                $cek->update($kue);
+            }
+        }
+        echo 'Alhamdulillah';
+    }
+
+    public function m_item_tarif(Request $request)
+    {
+        try {
+            $data = $this->curl_nih('https://rsud.sumselprov.go.id/simrs_ranap/api/sphaira-rajal/m_item_tarif');
+
+            foreach ($data['data']  as $kue) {
+                $cek = ItemTarif::find($kue['tarif_id']);
+                if (!$cek) {
+                    DB::connection('mysql2')
+                        ->table('m_item_tarif')->insert([$kue]);
+                } else {
+                    $cek->update($cek);
+                }
+            }
+
+            echo 'Alhamdulillah';
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

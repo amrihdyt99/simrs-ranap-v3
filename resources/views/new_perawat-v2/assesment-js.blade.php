@@ -45,6 +45,7 @@
     var kategori_pasien = "{{$dataPasien->kategori_pasien}}";
     var tgl_lahir_pasien = "{{$dataPasien->DateOfBirth}}";
     var classcode = "{{$dataPasien->reg_class}}";
+    var bed_history_class = "{{$dataPasien->ToChargeClassCode ?? ''}}";
     var ddxutama = '#ddx-utama'
     var ddxutamalen = $(ddxutama).length
     $hosted = '{{url("")}}'
@@ -813,6 +814,10 @@
                         success: function(data) {
                             inject_view_data(data);
                             asuhanGiziDewasa_init();
+                            loadAllFunctionAssesmentGiziDewasa();
+                            getAlertAlergi(regno);
+                            getAlertJatuh(regno);
+                            getAlertEWS(regno);
                         },
                         error: function(data) {
                             clear_show_error();
@@ -870,10 +875,11 @@
                         url: "{{route('nyaa_universal.view_injector.perawat.nurse_admin_nurse')}}",
                         success: function(data) {
                             inject_view_data(data);
-                            neko_select2_init_data("{{ route('nyaa_universal.select2.data_tindakan_baru') }}", 'order_tindakan', {
-                                "type": "X0001^01",
-                                "class": classcode,
-                            });
+                            // neko_select2_init_data("{{ route('nyaa_universal.select2.data_tindakan_baru') }}", 'order_tindakan', {
+                            //     "type": "X0001^01",
+                            //     "class": classcode,
+                            // });
+                            getTindakanKeperawatan();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1027,6 +1033,7 @@
                         success: function(data) {
                             inject_view_data(data);
                             neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
+                            neko_select2_init(`{{ route("getPPALainnya") }}`, 'physician_kode_lainnya ');
                             getPhysicianTeamPerawat();
                         },
                         error: function(data) {
@@ -1700,6 +1707,41 @@
     }
 
     // Admin Nurse
+    function getTindakanKeperawatan(){
+        $('#order_tindakan').select2({
+            ajax: {
+                url: "{{ route('nyaa_universal.select2.data_tindakan_baru_v2') }}",
+                type: 'POST',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        reg: regno,
+                        class: bed_history_class,
+                        type: $('#tipe_tindakan').val(),
+                        searchParams: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data.data, function(item) {
+                            return {
+                                id: item.ItemCode,
+                                text: '[' + item.ItemCode + '] ' + item.ItemName1,
+                                data_name: item.ItemName1,
+                                data_price: item.PersonalPrice,
+                                data_type: item.cpoe_jenis
+                            };
+                        })
+                    };
+                },
+                cache: true 
+            },
+            placeholder: 'Pilih Tindakan',
+            minimumInputLength: 2 
+        });
+    }
+
     function keranjangOrder() {
         var identifier = neko_random(15);
 
@@ -1901,7 +1943,7 @@
 
     // surat_rujukan
     function init_SuratRujukan() {
-        nyaa_dttb_suratrujukan_load_all();
+        // nyaa_dttb_suratrujukan_load_all();
         $('.btn_surat_rujukan').on('click', function() {
             simpanSuratRujukan();
         });
@@ -2412,3 +2454,4 @@
 @include('new_perawat.nursing.v2.js.nursing_js')
 @include('new_perawat.soap.js.soap_perawat_js')
 @include('new_perawat.riwayat-v2.js.riwayat_js')
+@include('new_perawat.gizi.js.assesesment_gizi_dewasa_js')

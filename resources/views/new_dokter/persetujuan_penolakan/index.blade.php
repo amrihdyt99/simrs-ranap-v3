@@ -20,6 +20,10 @@
         <a class="nav-link" id="penolakan_tab" data-toggle="tab" href="#penolakan" role="tab" aria-controls="penolakan" aria-selected="false">
             Penolakan Tindakan Medis</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" id="edukasi_anastesi_tab" data-toggle="tab" href="#edukasi_anastesi" role="tab" aria-controls="edukasi_anastesi" aria-selected="false">
+            Edukasi Anastesi</a>
+    </li>
 </ul>
 
 <div class="text-black" style="font-size: 14px">
@@ -32,6 +36,9 @@
         </div>
         <div id="penolakan" class="tab-pane fade" role="tabpanel" aria-labelledby="penolakan_tab">
             @include('new_dokter.persetujuan_penolakan.penolakan')
+        </div>
+        <div id="edukasi_anastesi" class="tab-pane fade" role="tabpanel" aria-labelledby="edukasi_anastesi_tab">
+            @include('new_perawat.edukasi.components.edukasi_anastesi')
         </div>
     </div>
 </div>

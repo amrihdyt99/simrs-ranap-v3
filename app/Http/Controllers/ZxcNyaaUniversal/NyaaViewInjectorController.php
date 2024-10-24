@@ -59,7 +59,7 @@ class NyaaViewInjectorController extends AaaBaseController
                     ->select('created_at')
             )
             ->first();
-        
+
         $datamypatient = DB::connection('mysql2')
             ->table('m_registrasi')
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
@@ -172,7 +172,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_edukasi_pasien_rehab')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         $edukasi_pasien_anastesi = DB::connection('mysql')
             ->table('rs_edukasi_pasien_anastesi')
             ->where('reg_no', $request->reg_no)
@@ -409,12 +409,23 @@ class NyaaViewInjectorController extends AaaBaseController
             ->where('asdewasa_reg', $request->reg_no)
             ->latest()->first();
 
+        $diagnosa_gizi_dewasa = DB::connection('mysql')
+            ->table('diagnosa_gizi_dewasa')
+            ->where('reg_no', $request->reg_no)
+            ->get();
+
+        $monitoring_evaluasi_gizi_dewasa = DB::connection('mysql')
+            ->table('monitoring_evaluasi_gizi_dewasa')
+            ->where('reg_no', $request->reg_no)
+            ->get();
+
         $context = array(
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'assesment_gizi_dewasa' => optional($assesment_gizi_dewasa),
             'asuhan_gizi_dewasa' => optional($asuhan_gizi_dewasa),
-
+            'diagnosa_gizi_dewasa' => $diagnosa_gizi_dewasa,
+            'monitoring_evaluasi_gizi_dewasa' => $monitoring_evaluasi_gizi_dewasa,
         );
         return view('new_perawat.gizi.index_dewasa')
             ->with($context);
@@ -496,8 +507,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
             ->leftJoin('m_unit_departemen', function ($join) {
-                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
@@ -512,8 +522,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_room_class', 'm_room_class.ClassCode', '=', 'm_bed.class_code')
             // ->join('m_unit_departemen', 'm_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
             ->leftJoin('m_unit_departemen', function ($join) {
-                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitCode')
-                    ->orOn('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
+                $join->on('m_bed.service_unit_id', '=', 'm_unit_departemen.ServiceUnitID');
             })
             ->leftJoin('m_unit', 'm_unit_departemen.ServiceUnitCode', '=', 'm_unit.ServiceUnitCode')
             ->select('bed_id', 'bed_code', 'room_id', 'class_code', 'RoomName as ruang', 'ServiceUnitName as kelompok', 'm_room_class.ClassName as kelas')
@@ -1480,7 +1489,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->table('rs_observasi_paska_tindakan')
             ->where('reg_no', $request->reg_no)
             ->first();
-        
+
         $pemantauan_hemodinamik = DB::connection('mysql')
             ->table('rs_pasien_intra_pemantuan')
             ->where('no_reg', $request->reg_no)
@@ -1585,7 +1594,7 @@ class NyaaViewInjectorController extends AaaBaseController
             ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
             ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
             ->where(['m_registrasi.reg_no' => $request->reg_no])
-            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName', 'm_registrasi.*')
             ->first();
 
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
@@ -1749,5 +1758,59 @@ class NyaaViewInjectorController extends AaaBaseController
 
         return view('new_perawat.case_manager.index')
             ->with($context);
+    }
+
+    function persetujuan_penolakan_dokter(Request $request)
+    {
+        $dataPasien = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin('m_pasien', 'm_registrasi.reg_medrec', '=', 'm_pasien.MedicalNo')
+            ->leftJoin('m_paramedis', 'm_registrasi.reg_dokter', '=', 'm_paramedis.ParamedicCode')
+            ->where(['m_registrasi.reg_no' => $request->reg_no])
+            ->select('m_pasien.*', 'm_paramedis.ParamedicName','m_registrasi.*')
+            ->first();
+
+        $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
+
+        $informasi = DB::connection('mysql')
+            ->table('rs_tindakan_medis_informasi')
+            ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
+            ->select('rs_tindakan_medis_informasi.*', 'rs_m_paramedic.ParamedicName')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $persetujuan = DB::connection('mysql')
+            ->table('rs_tindakan_medis_persetujuan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        $penolakan = DB::connection('mysql')
+            ->table('rs_tindakan_medis_penolakan')
+            ->where('reg_no', $request->reg_no)
+            ->first();
+
+        if (!$informasi) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json(
+            [
+                'status' => true,
+                'data' => [
+                  
+                    'informasi' => $informasi,
+                    'persetujuan' => $persetujuan,
+                    'penolakan' => $penolakan,
+                    'dataPasien' => $dataPasien,
+                    'registrasi_pj' => $registrasi_pj,
+                ]
+            ],
+            200
+        );
+    }
+
+    public function pemeriksaan_penunjang(Request $request)
+    {
+        return view('new_dokter.pemeriksaan_penunjang.index');
     }
 }

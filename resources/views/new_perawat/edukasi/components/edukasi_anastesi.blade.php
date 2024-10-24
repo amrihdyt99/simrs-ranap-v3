@@ -7,23 +7,23 @@
                     diatas dan telah dijelaskan terkait dengan prosedur anestesi dan sedasi yang akan dilakukan terhadap
                     <div class="d-flex flex-row align-items-center">
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="diri_sendiri" id="diri_sendiri" {{ isset($edukasi_pasien_anastesi->dilakukan_ke) && $edukasi_pasien_anastesi->dilakukan_ke == 'diri_sendiri' ? 'checked' : '' }}>
+                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="diri_sendiri" id="diri_sendiri">
                             <label class="custom-control-label" for="diri_sendiri">Diri saya sendiri</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="istri_suami" id="istri_suami" {{ isset($edukasi_pasien_anastesi->dilakukan_ke) && $edukasi_pasien_anastesi->dilakukan_ke == 'istri_suami' ? 'checked' : '' }}>
+                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="istri_suami" id="istri_suami">
                             <label class="custom-control-label" for="istri_suami">Istri/Suami</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="anak" id="anak" {{ isset($edukasi_pasien_anastesi->dilakukan_ke) && $edukasi_pasien_anastesi->dilakukan_ke == 'anak' ? 'checked' : '' }}>
+                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="anak" id="anak">
                             <label class="custom-control-label" for="anak">Anak</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="ayah" id="ayah" {{ isset($edukasi_pasien_anastesi->dilakukan_ke) && $edukasi_pasien_anastesi->dilakukan_ke == 'ayah' ? 'checked' : '' }}>
+                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="ayah" id="ayah">
                             <label class="custom-control-label" for="ayah">Ayah</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="ibu" id="ibu" {{ isset($edukasi_pasien_anastesi->dilakukan_ke) && $edukasi_pasien_anastesi->dilakukan_ke == 'ibu' ? 'checked' : '' }}>
+                            <input type="radio" class="custom-control-input" name="dilakukan_ke" value="ibu" id="ibu">
                             <label class="custom-control-label" for="ibu">Ibu</label>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                     Nama :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="nama" value="{{ $datamypatient->PatientName ?? '' }}" id="nama">
+                    <input type="text" class="form-control" name="nama" value="" id="nama">
                 </td>
             </tr>
             <tr>
@@ -42,13 +42,13 @@
                     Umur/Jenis Kelamin :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="umur" id="umur" value="{{app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->kalkulasi_umur($datamypatient->DateOfBirth ?? '','tahun')}}">
+                    <input type="text" class="form-control" name="umur" id="umur" value="">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="jenis_kelamin" value="Laki Laki" id="laki_laki" {{ (app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->jenis_kelamin_sphaira($datamypatient->GCSex ?? '') == 'Laki-Laki') ? 'checked' : '' }}>
+                        <input type="radio" class="custom-control-input" name="jenis_kelamin" value="0001^M" id="laki_laki">
                         <label class="custom-control-label" for="laki_laki">Laki-laki</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" name="jenis_kelamin" value="Perempuan" id="perempuan" {{ (app(\App\Http\Controllers\ZxcNyaaUniversal\UniversalFunctionController::class)->jenis_kelamin_sphaira($datamypatient->GCSex ?? '') == 'Perempuan') ? 'checked' : '' }}>
+                        <input type="radio" class="custom-control-input" name="jenis_kelamin" value="0001^F" id="perempuan">
                         <label class="custom-control-label" for="perempuan">Perempuan</label>
                     </div>
                 </td>
@@ -58,7 +58,7 @@
                     No.Telp :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="no_telp" id="no_telp" value="{{ $datamypatient->MobilePhoneNo1 ?? '' }}">
+                    <input type="text" class="form-control" name="no_telp" id="no_telp" value="">
                 </td>
             </tr>
             <tr>
@@ -66,7 +66,7 @@
                     No. Rekam Medis :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="no_rekam_medis" id="no_rekam_medis" value="{{ $datamypatient->reg_medrec ?? '' }}">
+                    <input type="text" class="form-control" name="no_rekam_medis" id="no_rekam_medis" value="">
                 </td>
             </tr>
             <tr>
@@ -74,7 +74,7 @@
                     Diagnosa :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="diagonsa" id="diagonsa" value="{{ $datamypatient->NM_ICD10 ?? '' }}">
+                    <input type="text" class="form-control" name="diagonsa" id="diagonsa" value="">
                 </td>
             </tr>
             <tr>
@@ -82,7 +82,7 @@
                     Rencana tindakan :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="tindakan" id="tindakan" value="{{ $edukasi_pasien_anastesi->tindakan ?? '' }}" >
+                    <input type="text" class="form-control" name="tindakan" id="tindakan" value="">
                 </td>
             </tr>
             <tr>
@@ -90,7 +90,7 @@
                     Jenis Anastesi :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="jenis_anastesi" id="jenis_anastesi" value="{{ $edukasi_pasien_anastesi->jenis_anastesi ?? '' }}">
+                    <input type="text" class="form-control" name="jenis_anastesi" id="jenis_anastesi" value="">
                 </td>
             </tr>
         </table>
@@ -100,7 +100,7 @@
                 <td colspan="3" class="text-right">
                     <div class="d-flex align-items-center mb-2 justify-content-end">
                         <label for="tgl_ttd" class="font-weight-bold mr-2">Palembang</label>
-                        <input type="datetime-local" class="form-control" name="tgl_ttd" id="tgl_ttd" style="width: 200px;" value="{{ $edukasi_pasien_anastesi->tgl_ttd ?? '' }}">
+                        <input type="datetime-local" class="form-control" name="tgl_ttd" id="tgl_ttd" style="width: 200px;" value="">
                     </div>
                 </td>
             </tr>
@@ -114,10 +114,10 @@
                                 HTML canvas tag.</canvas>
                         </div>
                         <div style="margin: 10px;">
-                            <input type="hidden" id="signature_dokter_anastesi" name="ttd_dokter" value="{{$edukasi_pasien_anastesi->ttd_dokter ?? ''}}">
+                            <input type="hidden" id="signature_dokter_anastesi" name="ttd_dokter" value="">
                             <button type="button" id="clear_btn_dokter_anastesi" class="btn btn-danger"
                                 data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
-                            <input type="text" class="form-control mt-2" name="nama_pihak_pasien" value="{{$datamypatient->PatientName ?? ''}}" placeholder="Nama Edukator">
+                            <input type="text" class="form-control mt-2" name="nama_dokter" value="" placeholder="Nama Edukator">
                         </div>
                     </div>
                 </td>
@@ -132,10 +132,10 @@
                                     the HTML canvas tag.</canvas>
                             </div>
                             <div style="margin: 10px; text-align: center;">
-                                <input type="hidden" id="signature_pasien_anastesi" name="ttd_pihak_pasien" value="{{$edukasi_pasien_anastesi->ttd_pihak_pasien ?? ''}}">
+                                <input type="hidden" id="signature_pasien_anastesi" name="ttd_pihak_pasien" value="">
                                 <button type="button" id="clear_btn_pasien_anastesi" class="btn btn-danger"
                                     data-action="clear"><span class="glyphicon glyphicon-remove"></span> Hapus</button>
-                                <input type="text" class="form-control mt-2" name="nama_dokter" value="{{$datamypatient->ParamedicName ?? ''}}" placeholder="Nama Sasaran">
+                                <input type="text" class="form-control mt-2" name="nama_pihak_pasien" value="" placeholder="Nama Sasaran">
                             </div>
                         </div>
                     </div>

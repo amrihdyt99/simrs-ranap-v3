@@ -1,0 +1,27 @@
+- php artisan command:pull-master-rajal rs_m_infectious_desease
+- php artisan command:pull-master-rajal rs_m_intervensi
+- php artisan command:pull-master-rajal rs_m_intervensi_item
+- php artisan command:pull-master-rajal rs_m_item_rehab
+- php artisan command:pull-master-rajal rs_m_item_sub
+- php artisan command:pull-master-rajal rs_m_item_tarif_mcu
+- php artisan command:pull-master-rajal rs_m_item_tipe
+- php artisan command:pull-master-rajal rs_m_marital
+- php artisan command:pull-master-rajal rs_m_mcu_pemeriksaan
+- php artisan command:pull-master-rajal rs_m_menu
+- php artisan command:pull-master-rajal rs_m_nationality
+- php artisan command:pull-master-rajal rs_m_obat
+- php artisan command:pull-master-rajal rs_m_occupation
+- php artisan command:pull-master-rajal rs_m_paramedic_schedule
+- php artisan command:pull-master-rajal rs_m_paramedic_type
+- php artisan command:pull-master-rajal rs_m_ppk
+- php artisan command:pull-master-rajal rs_m_race
+- php artisan command:pull-master-rajal rs_m_referal
+- php artisan command:pull-master-rajal rs_m_religion
+- php artisan command:pull-master-rajal rs_m_rencana_keperawatan
+- php artisan command:pull-master-rajal rs_m_role
+- php artisan command:pull-master-rajal rs_m_specialty
+- php artisan command:pull-master-rajal rs_m_tujuan_terukur
+- php artisan command:pull-master-rajal rs_m_visit_type
+- php artisan command:pull-master-rajal rs_m_wilayah
+- php artisan command:pull-master-rajal rs_menu_distribusi
+-

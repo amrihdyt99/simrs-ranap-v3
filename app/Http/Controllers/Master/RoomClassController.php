@@ -22,7 +22,7 @@ class RoomClassController extends Controller
 
     public function ajax_index(Request $request)
     {
-        $ruangan = DB::connection('mysql2')->table('m_room_class')
+        $ruangan = DB::connection('mysql2')->table('m_room_class')->select('m_room_class.*', 'm_class_category.ClassCategoryName')
             ->leftJoin('m_class_category', 'm_class_category.ClassCategoryCode', '=', 'm_room_class.ClassCategoryCode')->get();
 
         return DataTables()
@@ -43,8 +43,7 @@ class RoomClassController extends Controller
 
     public function create()
     {
-
-        $classCategory = ClassCategory::where('IsActive', 1)->get();
+        $classCategory = ClassCategory::where([['IsActive', 1], ['IsDeleted', 0]])->get();
 
         return view('master.pages.class.create', compact('classCategory'));
     }
@@ -70,7 +69,7 @@ class RoomClassController extends Controller
 
     public function edit(RoomClass $class)
     {
-        $classCategory = ClassCategory::where('IsActive', 1)->get();
+        $classCategory = ClassCategory::where([['IsActive', 1], ['IsDeleted', 0]])->get();
         return view('master.pages.class.update', ['room_class' => $class, 'classCategory' => $classCategory]);
     }
 

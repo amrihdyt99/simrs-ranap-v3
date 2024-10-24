@@ -57,6 +57,8 @@
             list_obat.forEach(function(currentValue, index, array) {
               return html += `<li>${currentValue.nama_obat}</li>
                                   <ul>
+                                    <li>Cara Pemberian : ${currentValue.cara_pemberian}</li>
+                                    <li>Antibiotik : ${currentValue.antibiotik}</li>
                                     <li>Dosis : ${currentValue.dosis}</li>
                                     <li>Frekuensi : ${currentValue.frekuensi}</li>
                                   </ul>
@@ -66,18 +68,6 @@
 
             return html;
           }
-        },
-        {
-          data: "cara_pemberian",
-          name: "cara_pemberian",
-          orderable: true,
-          searchable: true,
-        },
-        {
-          data: "antibiotik",
-          name: "antibiotik",
-          orderable: true,
-          searchable: true,
         },
         {
           data: "created_by_name",
@@ -115,6 +105,18 @@
         {
           data: "nama_obat",
           name: "nama_obat",
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: "cara_pemberian",
+          name: "cara_pemberian",
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: "antibiotik",
+          name: "antibiotik",
           orderable: true,
           searchable: true,
         },
@@ -169,6 +171,18 @@
         {
           data: "nama_obat",
           name: "nama_obat",
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: "cara_pemberian",
+          name: "cara_pemberian",
+          orderable: true,
+          searchable: true,
+        },
+        {
+          data: "antibiotik",
+          name: "antibiotik",
           orderable: true,
           searchable: true,
         },

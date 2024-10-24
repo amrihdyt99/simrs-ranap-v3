@@ -445,10 +445,11 @@
 
   function loadSelect2TfInternal() {
     let bed_tujuan_id = $('#select-bed-tujuan').val();
+    let nonClass = ['005', '006', 'NEO1', 'cvcu', 'hcu', 'icu01', 'ikb', 'iso', 'iso1', 'iso2', 'iso3', 'isoicu', 'iw01', 'nicu01', 'picu01'];
     $(async function() {
       $.ajax({
         type: "get",
-        url: "{{url('api/cekketersediaanruangan')}}",
+        url: "{{url('api/perawat/get-kamar-ready')}}",
         dataType: "json",
         success: function(r) {
           var opt = '<option value="" disabled>Pilih Tujuan Ruangan dan Bed</option>';
@@ -498,6 +499,19 @@
       $('#select-class-bed').select2({
         theme: 'bootstrap4',
         placeholder: "-",
+      }).on('select2:select', function(e) {
+
+        var d = e.params.data;
+        let exists = nonClass.includes(d.id);
+
+        if (exists) {
+          $('#temp_charge_class_bed').val(d.id);
+          $('#select-charge-class-bed').val(d.id).trigger('change');
+          $('#select-charge-class-bed').prop('disabled', true);
+        } else {
+          $('#select-charge-class-bed').prop('disabled', false);
+          $('#temp_charge_class_bed').val('');
+        }
       });
       if (class_code) {
         $('#select-class-bed').val(class_code).trigger('change');
@@ -509,7 +523,13 @@
         placeholder: "-",
       });
       if (class_charge_code) {
-        $('#select-charge-class-bed').val(class_charge_code).trigger('change');
+        let exists = nonClass.includes(class_charge_code);
+        if (exists) {
+          $('#select-charge-class-bed').val(class_charge_code).trigger('change');
+          $('#select-charge-class-bed').prop('disabled', true);
+        } else {
+          $('#select-charge-class-bed').val(class_charge_code).trigger('change');
+        }
       }
     })
   }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\NewDokter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PhysicianTeamController extends Controller
 {
@@ -19,10 +20,11 @@ class PhysicianTeamController extends Controller
 
         try {
             DB::connection('mysql2')->table('m_physician_team')->insert([
+                'reg_no' => $data['regno'],
                 'kode_dokter' => $data['kode_dokter'],
                 'kategori' => $data['kategori'],
-                'reg_no' => $data['regno'],
                 'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             return response()->json([
@@ -238,4 +240,39 @@ class PhysicianTeamController extends Controller
             ], 500);
         }
     }
+
+    public function getPPALainnya(Request $request)
+    {
+        try {
+            $term = $request->input('term');
+            $ppaLainnya = DB::connection('mysql2')->table("users")
+                ->select('name', 'level_user', 'dokter_id', 'perawat_id')
+                ->whereIn('level_user', ['lab', 'radiologi', 'dietitian'])
+                ->when(!$request->has('is_deleted'), function ($query) {
+                    return $query->where('is_deleted', 0); 
+                })
+                ->when($request->has('is_deleted'), function ($query) {
+                    return $query->where('is_deleted', $request->input('is_deleted')); 
+                })
+                ->when($term, function ($query) use ($term) {
+                    return $query->where('name', 'like', '%' . $term . '%');
+                })
+                ->get();
+
+            $results = $ppaLainnya->map(function ($item) {
+                return [
+                    'id' => $item->dokter_id ?: $item->perawat_id ?: $item->name,
+                    'text' => $item->name . ' (' . $item->level_user . ')'
+                ];
+            });
+
+            return response()->json(['results' => $results]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'results' => []
+            ], 500);
+        }
+    }
+
+
 }

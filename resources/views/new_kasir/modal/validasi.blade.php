@@ -42,6 +42,8 @@
               <label for="" class="mr-3">Virtual Account</label>
               <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="Transfer">
               <label for="" class="mr-3">Transfer</label>
+              <input type="checkbox" class="form-control-check check_pay_method mr-1" name="pvalidation_method[]" style="transform: scale(1.5); margin-left: 20px" value="QRIS">
+              <label for="" class="mr-3">QRIS</label>
             </div>
             
             <div class="col-lg-2">

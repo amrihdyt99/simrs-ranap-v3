@@ -155,8 +155,18 @@ $registrasi_data = DB::connection('mysql2')
                 @else
                 @if (Auth::user()->level_user == 'dietitian')
                 <div class="row">
-                    <div class="left-tab active" id="tab-edukasi" onclick="clickTab('edukasi')">
+                    <div class="left-tab active" id="tab-gizi-dewasa" onclick="clickTab('gizi-dewasa')">
+                        Asuhan Gizi Dewasa
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="left-tab" id="tab-edukasi" onclick="clickTab('edukasi')">
                         Edukasi
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="left-tab" id="tab-physician-team" onclick="clickTab('physician-team')">
+                        Physician Team
                     </div>
                 </div>
                 <div class="row">
@@ -166,6 +176,11 @@ $registrasi_data = DB::connection('mysql2')
                 </div>
                 @else
                 @if(Auth::user()->level_user=="radiologi" || Auth::user()->level_user=="lab")
+                <div class="row">
+                    <div class="left-tab" id="tab-physician-team" onclick="clickTab('physician-team')">
+                        Physician Team
+                    </div>
+                </div>
                 <div class="row">
                     <div class="left-tab active" id="tab-radiologi" onclick="clickTab('radiologi')">
                         Radiologi
