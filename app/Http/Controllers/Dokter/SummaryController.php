@@ -9,12 +9,20 @@ use App\Models\PasienCPOELaboratory;
 use App\Models\PasienSoapDok;
 use App\Models\PasienSoaper;
 use App\Models\RegistrationInap;
+use App\Repository\LaporanOperasiRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class SummaryController extends Controller
 {
+
+    protected $laporanOperasiRepo;
+    public function __construct(LaporanOperasiRepository $laporanOperasiRepo)
+    {
+        $this->laporanOperasiRepo = $laporanOperasiRepo;
+        if (!auth()->check()) return redirect()->route('login');
+    }
 
     public function get_id_cppt($reg_no, $soapdok_dokter, $med_rec, $nama_ppa, $bed, $dpjp_utama)
     {
@@ -95,14 +103,17 @@ class SummaryController extends Controller
             ->pluck('kategori')
             ->toArray();
 
+        $data['physician'] = DB::connection('mysql2')->table("m_paramedis")->where(['GCParamedicType' => "X0055^001"])->where('IsActive', 1)->get();
         $data['physician_team_role'] = $physician_team_role;
-        $data['assesment_awal_dokter'] = DB::connection('mysql')->table('assesment_awal_dokter')->where('no_reg', $reg)->first();
-        $data['pasien_prosedur'] = DB::connection('mysql')->table('rs_pasien_prosedur')
-            ->leftJoin('icd9cm_bpjs', 'rs_pasien_prosedur.pprosedur_prosedur', '=', 'icd9cm_bpjs.ID_TIND')
-            ->where('pprosedur_reg', $reg)
-            ->select('rs_pasien_prosedur.*', 'icd9cm_bpjs.NM_TINDAKAN as nama_tindakan')
-            ->get();
-        // dd($data['pasien_prosedur']);
+        $data_laporan_operasi = $this->laporanOperasiRepo->getDataLaporanOperasi($reg);
+        $data_laporan_pasca_operasi = $this->laporanOperasiRepo->getDataLaporanPascaOperasi($reg);
+        $data['assesment_awal_dokter'] = $data_laporan_operasi['assesment_awal'];
+        $data['pasien_prosedur'] = $data_laporan_operasi['pasien_prosedur'];
+        $data['rencana_pre_operasi'] = $data_laporan_operasi['rencana_pre_operasi'];
+        $data['operasi_tindakan'] = $data_laporan_operasi['operasi_tindakan'];
+        $data['penemuan_komplikasi'] = $data_laporan_operasi['penemuan_komplikasi'];
+        $data['pasca_operasi'] = $data_laporan_pasca_operasi;
+        // dd($data['pasca_operasi']);
 
         return view('new_dokter.assesment', compact('data', 'reg', 'patient', 'dataPasien', 'icd9cm', 'icd10', 'diagnosa', 'prosedur', 'subs', 'id_cppt', 'physician_team_role'));
     }

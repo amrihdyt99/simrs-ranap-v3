@@ -4,11 +4,17 @@ namespace App\Repository;
 
 use App\Models\RegistrationInap;
 use App\Traits\Ranap\RanapRegistrationTrait;
+use App\Utils\ConnectionDB;
 use Illuminate\Support\Facades\DB;
 
 class MasterRegistrationRepository
 {
     use RanapRegistrationTrait;
+    protected $db;
+    public function __construct(ConnectionDB $connectionDB)
+    {
+        $this->db = $connectionDB;
+    }
     /**
      * Store registration data
      * @param object $data
@@ -38,5 +44,10 @@ class MasterRegistrationRepository
             DB::rollBack();
             throw $th;
         }
+    }
+
+    public function findOneByRegNo($reg_no)
+    {
+        return $this->db->connDbMaster()->table('m_registrasi')->where('reg_no', $reg_no)->first();
     }
 }

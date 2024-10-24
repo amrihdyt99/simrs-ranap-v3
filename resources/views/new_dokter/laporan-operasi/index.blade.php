@@ -39,6 +39,10 @@
 
 @push('myscripts')
   <script>
+    $(document).ready(function(){
+      getDataLaporan()
+    })
+
     const handleSave = ()=>{
       // show dialog confirmation
       Swal.fire({
@@ -60,6 +64,16 @@
           )
         }
       })
+    }
+
+    const getDataLaporan = async()=>{
+      try {
+        let url = '{{ route("laporan-operasi.index", ":reg_no") }}'
+        url = url.replace(':reg_no', '{{ $reg }}')
+        const res = await fetch(url).then(res => res.json())
+        console.log('res', res)
+      } catch (error) {
+      }
     }
   </script>
 @endpush

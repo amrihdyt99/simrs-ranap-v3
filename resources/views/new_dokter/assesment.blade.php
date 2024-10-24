@@ -277,7 +277,7 @@
                                 <div id="panel-laporan-operasi">
                                     <div class="d-flex justify-content-between">
                                         <h2>Laporan Operasi</h2>
-                                        {{-- <button class="btn btn-sm btn-primary">Cetak Laporan</button> --}}
+                                        <a class="btn btn-sm btn-primary" href="{{ route('dokter.laporan-operasioutput', $reg) }}" target="_blank">Cetak Laporan</a>
                                     </div>
                                     <hr>
                                     @include('new_dokter.laporan-operasi.index')
