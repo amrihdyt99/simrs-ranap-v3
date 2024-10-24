@@ -276,19 +276,62 @@
                     <div class="ml-3">
                         <div class="row">
                             <div class="col-sm-12 col-lg-2">a. Rawat di</div>
-                            <div class="col-sm-12 col-lg-10">:</div>
+                            <div class="col-sm-12 col-lg-10">: {{ $laporan_operasi['pasca_operasi']['data_pasca']->instruksi_rawat ?? '' }}</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 col-lg-2">b. Posisi</div>
-                            <div class="col-sm-12 col-lg-10">:</div>
+                            <div class="col-sm-12 col-lg-10">: {{ $laporan_operasi['pasca_operasi']['data_pasca']->instruksi_posisi ?? '' }}</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 col-lg-2">c. Diet</div>
-                            <div class="col-sm-12 col-lg-10">:</div>
+                            <div class="col-sm-12 col-lg-10">:
+                                {{ $laporan_operasi['pasca_operasi']['data_pasca']->diet == 0  ? ' Tidak Perlu Puasa' : 'Puasa Total'  }},
+
+                                @if ($laporan_operasi['pasca_operasi']['data_pasca']->diet == 1)
+                                    {{ $laporan_operasi['pasca_operasi']['data_pasca']->lama_hari_diet_total }}
+                                @else
+                                    Boleh diet {{ $laporan_operasi['pasca_operasi']['data_pasca']->ket_boleh_diet }} setelah {{ $laporan_operasi['pasca_operasi']['data_pasca']->ket_setelah_diet }}
+                                @endif
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 col-lg-2">d. Infus</div>
-                            <div class="col-sm-12 col-lg-10">:</div>
+                            <div class="col-sm-12 col-lg-10 ">:
+                                <div class="col-sm-12 col-lg-4">
+                                    @if ($laporan_operasi['pasca_operasi']['data_pasca']->infus_sesuai_instruksi == 1)
+                                        <input type="checkbox" checked readonly></input>
+                                        <span>Sesuai instruksi dokter anestesi</span>
+                                    @endif
+                                </div>
+                                <div class="col-sm-12 col-lg-4">
+                                    @if ($laporan_operasi['pasca_operasi']['data_pasca']->infus_cairan == 1)
+                                        <input type="checkbox" checked readonly></input>
+                                        <span>Cairan</span>
+                                    @endif
+                                </div>
+                                <div class="mt-2 ml-2">
+                                    <table class="mytable w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>Cairan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @empty($laporan_operasi['pasca_operasi']['data_pasca']->infus_cairan_data)
+                                            <tr>
+                                                <td>Belum ada data</td>
+                                            </tr>
+                                            @else
+                                            @foreach (json_decode($laporan_operasi['pasca_operasi']['data_pasca']->infus_cairan_data) as $item)
+                                                <tr>
+                                                    <td>{{ $item }}</td>
+                                                </tr>
+                                            @endforeach
+                                            @endempty
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </td>
@@ -297,7 +340,7 @@
                 <td>
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">2. Pemberian Obat</div>
-                        <div class="col-sm-12 col-lg-10">:</div>
+                        <div class="col-sm-12 col-lg-10">: {{ $laporan_operasi['pasca_operasi']['data_pasca']->instruksi_pemberian_obat }}</div>
                     </div>
                 </td>
             </tr>
@@ -305,7 +348,7 @@
                 <td>
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">3. Pemberian Transfusi</div>
-                        <div class="col-sm-12 col-lg-10">:</div>
+                        <div class="col-sm-12 col-lg-10">: {{ $laporan_operasi['pasca_operasi']['data_pasca']->instruksi_pemberian_tranfusi }}</div>
                     </div>
                 </td>
             </tr>
@@ -314,29 +357,51 @@
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">4. Drain</div>
                         <div class="col-sm-12 col-lg-10">:
+                            {{ $laporan_operasi['pasca_operasi']['data_pasca']->instruksi_drain == '1' ? 'Terpasang' : 'Tidak Terpasang' }}
+                            <div class="mt-2 ml-2">
+                                <table class="mytable w-100">
+                                    <thead>
+                                        <tr style="background-color: #ddd;">
+                                            <td>Terpasang</td>
+                                            <td>Jenis</td>
+                                            <td>Letak</td>
+                                            <td>Lama Pemasangan</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @empty($laporan_operasi['pasca_operasi']['data_drain'])
+                                        <tr>
+                                            <td colspan="4">Belum ada data</td>
+                                        </tr>
+                                        @else
+                                        @foreach (json_decode($laporan_operasi['pasca_operasi']['data_drain']) as $item)
+                                        <tr>
+                                            <td>{{ $loop->iteration.'.' }} Drain</td>
+                                            <td>{{ $item->jenis_drain }}</td>
+                                            <td>{{ $item->letak_pemasangan }}</td>
+                                            <td>{{ $item->lama_pemasangan }}</td>
+                                        </tr>
+                                        @endforeach
+                                        @endempty
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                        
                     </div>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <table class="mytable w-100">
-                        <thead>
-                            <tr style="background-color: #ddd;">
-                                <td>Terpasang</td>
-                                <td>Jenis</td>
-                                <td>Letak</td>
-                                <td>Lama Pemasangan</td>
-                            </tr>
-                        </thead>
-                    </table>
-                </td>
-            </tr>
+           
             <tr>
                 <td>
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">5. Tampon</div>
-                        <div class="col-sm-12 col-lg-10">: </div>
+                        <div class="col-sm-12 col-lg-10">: 
+                            {{ $laporan_operasi['pasca_operasi']['data_pasca']->tampon == '1' ? 'Terpasang' : 'Tidak Terpasang' }},
+                            @if ($laporan_operasi['pasca_operasi']['data_pasca']->tampon == '1')
+                                Letak {{ $laporan_operasi['pasca_operasi']['data_pasca']->tampon_letak ?? '' }}  Selama {{ $laporan_operasi['pasca_operasi']['data_pasca']->durasi_hari_tampon ?? '' }} Hari
+                            @endif
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -344,7 +409,12 @@
                 <td>
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">6. NGT</div>
-                        <div class="col-sm-12 col-lg-10">: </div>
+                        <div class="col-sm-12 col-lg-10">: 
+                            {{ $laporan_operasi['pasca_operasi']['data_pasca']->ngt == '1' ? 'Ada' : 'Tidak Ada' }},
+                            @if ($laporan_operasi['pasca_operasi']['data_pasca']->ngt == '1')
+                                Selama {{ $laporan_operasi['pasca_operasi']['data_pasca']->catatan_ngt ?? '' }} Hari
+                            @endif
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -352,7 +422,12 @@
                 <td>
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">7. Kateter Urin</div>
-                        <div class="col-sm-12 col-lg-10">: </div>
+                        <div class="col-sm-12 col-lg-10">: 
+                            {{ $laporan_operasi['pasca_operasi']['data_pasca']->kateter_urin == '1' ? 'Terpasang' : 'Tidak Terpasang' }},
+                            @if ($laporan_operasi['pasca_operasi']['data_pasca']->kateter_urin == '1')
+                                Monitor urin tiap {{ $laporan_operasi['pasca_operasi']['data_pasca']->catatan_kateter_urin ?? '' }} jam
+                            @endif
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -360,15 +435,35 @@
                 <td>
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">8. Pemeriksaan Pasca</div>
-                        <div class="col-sm-12 col-lg-10">: </div>
+                        <div class="col-sm-12 col-lg-10">: 
+                            @if ($laporan_operasi['pasca_operasi']['data_pasca']->pemeriksaan_pasca_laboratorium == '1')
+                               <div>
+                                <input type="checkbox" checked readonly></input>
+                                <span>Laboratorium</span>. Perlu {{ $laporan_operasi['pasca_operasi']['data_pasca']->catatan_pemeriksaan_pasca_laboratorium ?? '' }}
+                               </div>
+    
+                            @endif
+                            @if ($laporan_operasi['pasca_operasi']['data_pasca']->pemeriksaan_pasca_radiologi == '1')
+                               <div>
+                                <input type="checkbox" checked readonly></input>
+                                <span>Radiologi</span>. Perlu {{ $laporan_operasi['pasca_operasi']['data_pasca']->catatan_pemeriksaan_pasca_radiologi ?? '' }}
+                               </div>
+    
+                            @endif
+                        </div>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td>
                     <div class="row">
-                        <div class="col-sm-12 col-lg-2">9. Kebutuhan khusus terkait pemulangan pasien</div>
-                        <div class="col-sm-12 col-lg-10">: </div>
+                        <div class="col-sm-12 col-lg-3">9. Kebutuhan khusus terkait pemulangan pasien</div>
+                        <div class="col-sm-12 col-lg-9">: 
+                            {{ $laporan_operasi['pasca_operasi']['data_pasca']->kebutuhan_terkait ==1 ? 'Ada' : 'Tidak Ada' }}
+                            @if ($laporan_operasi['pasca_operasi']['data_pasca']->kebutuhan_terkait ==1)
+                                {{ $laporan_operasi['pasca_operasi']['data_pasca']->catatan_kebutuhan_terkait ?? '' }}
+                            @endif
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -377,6 +472,12 @@
                     <div class="text-center">
                         <h5>Dokter Operator</h5>
                         <div style="min-height: 100px;"></div>
+                        <h6 class="text-center">
+                            {{ $laporan_operasi['dokter_operator_pasca_operasi']->ParamedicName ?? '' }}
+                        </h6>
+                        <p>
+                            {{ \Carbon\Carbon::parse($laporan_operasi['pasca_operasi']['data_pasca']->created_at)->format('d F Y') }}
+                        </p>
                     </div>
                 </td>
             </tr>

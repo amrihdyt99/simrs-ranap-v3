@@ -153,7 +153,8 @@ class LaporanOperasiService
             'instruksi_drain' => request()->get('instruksi_drain'),
             'tampon' => request()->get('instruksi_tampon'),
             'tampon_letak' => request()->get('instruksi_tampon_letak'),
-            'ngt' => request()->get('instruksi_ngt'),
+            'durasi_hari_tampon' => request()->get('durasi_hari_tampon'),
+            'ngt' => request()->get('ngt'),
             'catatan_ngt' => request()->get('catatan_ngt'),
             'kateter_urin' => request()->get('kateter_urin'),
             'catatan_kateter_urin' => request()->get('catatan_kateter_urin'),
@@ -175,7 +176,7 @@ class LaporanOperasiService
     public function storeRencanaPascaOperasi($reg_no)
     {
         try {
-
+            // return $this->responseData(200, 'OK', request()->all());
             $data_pasca_tindakan = $this->getDataRencanaPascaOperasi();
             $data_drain = $this->getDataDrain();
             $data_pasca_tindakan['reg_no'] = $reg_no;

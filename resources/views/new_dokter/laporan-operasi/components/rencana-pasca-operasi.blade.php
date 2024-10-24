@@ -104,9 +104,10 @@
                             @empty ($data['pasca_operasi']['data_pasca']->infus_cairan_data)
                             @else
                                 @foreach (json_decode($data['pasca_operasi']['data_pasca']->infus_cairan_data) as $item)
-                                <li class="list-group-item">
+                                <li class="list-group-item" id="row_{{ $loop->iteration-1 }}">
                                     {{ $item }}
-                                    <button type="button" class="btn btn-sm btn-danger ml-4" onclick="removeCairanInfus({{ $loop->index }})">Hapus</button>
+                                    <input type="hidden" value="{{ $item }}" name="cairan_infus[]">
+                                    <button type="button" class="btn btn-sm btn-danger ml-4" onclick="removeCairanInfus('row_{{ $loop->iteration-1 }}')">Hapus</button>
                                 </li>
                                 @endforeach
                             @endif
@@ -128,11 +129,13 @@
                     $data_instruksi_pemberian_tranfusi = ['Tidak Perlu', 'Menunggu Hasil Laboratorium'];
                 @endphp
                 @foreach ($data_instruksi_pemberian_tranfusi as $item)
-                    <div class="col-sm-12 col-lg-3">
+                    <div class="col-12">
                         <input type="radio" name="instruksi_pemberian_tranfusi" id="instruksi_pemberian_tranfusi_{{ $loop->iteration }}" value="{{ $item }}"
                             {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->instruksi_pemberian_tranfusi == $item ? 'checked': '' }}
                         >
-                        <label for="instruksi_pemberian_tranfusi_{{ $loop->iteration }}">{{ $item }}</label>
+                        <label for="instruksi_pemberian_tranfusi_{{ $loop->iteration }}">
+                            <span>{{ $item }}</span>
+                        </label>
                     </div>
                 @endforeach
                
@@ -146,13 +149,17 @@
                 <div class="col-sm-12 col-lg-2">
                     <select name="instruksi_drain" id="instruksi_drain" class="form-control">
                         <option value="">Pilih</option>
-                        <option value="1">Terpasang</option>
-                        <option value="0">Tidak Terpasang</option>
+                        <option value="1" {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->instruksi_drain == '1' ? 'selected' : '' }}>Terpasang</option>
+                        <option value="0" {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->instruksi_drain == '0' ? 'selected' : '' }}>Tidak Terpasang</option>
                     </select>
                 </div>
             </div>
             <div class="row mt-4">
                 <div class="col-12">
+                    @php
+                        $data_letak_drain = ['Subfacial', 'Subhepatal', 'Cavum Dauglas', 'T-Drain', 'Intracavitas', 'Lainnya'];
+                        $data_jenis_drain = ['Aktif', 'Pasif'];
+                    @endphp
                     <button type="button" class="btn btn-sm btn-primary" onclick="addRowDrain()">Tambah Drain</button>
                     <table class="table table-bordered mt-2">
                         <thead class="thead-light">
@@ -161,9 +168,40 @@
                                 <th>Jenis</th>
                                 <th>Letak</th>
                                 <th>Lama Pemasangan</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="drain-table"></tbody>
+                        <tbody id="drain-table">
+                            @empty($data['pasca_operasi']['data_drain'])]
+                            @else
+                                @foreach ($data['pasca_operasi']['data_drain'] as $item)
+                                    <tr id="row_{{ $loop->iteration-1 }}">
+                                        <td>Drain</td>
+                                        <td>
+                                            <select name="drain[{{ $loop->iteration-1 }}][jenis]" class="form-control">
+                                                <option value="">Pilih</option>
+                                                <option value="Aktif" {{ $item->jenis_drain == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                                <option value="Pasif" {{ $item->jenis_drain == 'Pasif' ? 'selected' : '' }}>Pasif</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="drain[{{ $loop->iteration-1 }}][letak_pemasangan]" class="form-control">
+                                                <option value="">Pilih</option>
+                                                @foreach ($data_letak_drain as $letak)
+                                                    <option value="{{ $letak }}" {{ $item->letak_pemasangan == $letak ? 'selected' : '' }}>{{ $letak }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="drain[{{ $loop->iteration-1 }}][lama_pemasangan]" class="form-control" value="{{ $item->lama_pemasangan ??'' }}"/>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeRowDrain('row_{{ $loop->iteration-1 }}')">Hapus</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endempty
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -173,22 +211,26 @@
             <label for="">Tampon</label>
             <div class="row ml-2">
                 <div class="col-sm-12 col-lg-2">
-                    <input type="radio" name="instruksi_tampon" id="instruksi-tampon-1" class="form-check-input" value="0">
+                    <input type="radio" name="instruksi_tampon" id="instruksi-tampon-1" class="form-check-input" value="0"
+                        {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->tampon == 0 ? 'checked': '' }}
+                    >
                     <label for="instruksi-tampon-1">Tidak Terpasang</label>
                 </div>
                 <div class="col-sm-12 col-lg-10">
                     <div class="row">
                         <div class="col-sm-12 col-lg-2">
-                            <input type="radio" name="instruksi_tampon" id="instruksi-tampon-2" class="form-check-input" value="1">
+                            <input type="radio" name="instruksi_tampon" id="instruksi-tampon-2" class="form-check-input" value="1"
+                            {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->tampon == 1 ? 'checked': '' }}
+                            >
                             <label for="instruksi-tampon-2">Terpasang</label>
                         </div>
                         <div class="col-sm-12 col-lg-4">
                             <label for="">Letak</label>
-                            <input type="text" name="instruksi_tampon_letak" id="instruksi_tampon_letak" class="form-control" placeholder="Letak Tampon...">
+                            <input type="text" name="instruksi_tampon_letak" id="instruksi_tampon_letak" class="form-control" placeholder="Letak Tampon..." value="{{ $data['pasca_operasi']['data_pasca']->tampon_letak ?? '' }}">
                         </div>
                         <div class="col-sm-12 col-lg-4">
                             <label for="">Selama</label>
-                            <input type="number" name="durasi_hari_tampon" id="durasi-hari-tampon" class="form-control" placeholder="Hari">
+                            <input type="number" name="durasi_hari_tampon" id="durasi-hari-tampon" class="form-control" placeholder="Hari" value="{{ $data['pasca_operasi']['data_pasca']->durasi_hari_tampon ?? '' }}">
                         </div>
                     </div>
                 </div>
@@ -199,16 +241,16 @@
             <label for="">NGT</label>
             <div class="row ml-2">
                 <div class="col-sm-12 col-lg-1">
-                    <input type="radio" name="ngt" id="ngt-y" class="form-check-input" value="0">
+                    <input type="radio" name="ngt" id="ngt-y" class="form-check-input" value="0" {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->ngt == 0 ? 'checked' : '' }}>
                     <label for="ngt-y">Tidak Ada</label>
                 </div>
                 <div class="col-sm-12 col-lg-1">
-                    <input type="radio" name="ngt" id="ngt-t" class="form-check-input" value="1">
+                    <input type="radio" name="ngt" id="ngt-t" class="form-check-input" value="1" {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->ngt == 1 ? 'checked' : '' }}>
                     <label for="ngt-t">Ada</label>
                 </div>
                 <div class="col-sm-12 col-lg-8 row">
                     <label for="" class="col-sm-12 col-lg-2">Selama (hari)</label>
-                    <input type="text" name="catatan_ngt" id="catatan_ngt" class="form-control" placeholder="Isi jika memilih ada.">
+                    <input type="text" name="catatan_ngt" id="catatan_ngt" class="form-control" placeholder="Isi jika memilih ada." value="{{ $data['pasca_operasi']['data_pasca']->catatan_ngt ?? '' }}">
                 </div>
             </div>
         </div>
@@ -217,16 +259,20 @@
             <label for="">Kateter Urin</label>
             <div class="row ml-2">
                 <div class="col-sm-12 col-lg-2">
-                    <input type="radio" name="kateter_urin" id="kateter_urin-y" class="form-check-input" value="0">
+                    <input type="radio" name="kateter_urin" id="kateter_urin-y" class="form-check-input" value="0"
+                        {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->kateter_urin == 0 ? 'checked': '' }}
+                    >
                     <label for="kateter_urin-y">Tidak Terpasang</label>
                 </div>
                 <div class="col-sm-12 col-lg-1">
-                    <input type="radio" name="kateter_urin" id="kateter_urin-t" class="form-check-input" value="1">
+                    <input type="radio" name="kateter_urin" id="kateter_urin-t" class="form-check-input" value="1"
+                    {{ isset($data['pasca_operasi']['data_pasca']) && $data['pasca_operasi']['data_pasca']->kateter_urin == 1 ? 'checked': '' }}
+                    >
                     <label for="kateter_urin-t">Terpasang</label>
                 </div>
                 <div class="col-sm-12 col-lg-8 row">
                     <label for="" class="col-sm-12 col-lg-4">Monitor Urin(jam)</label>
-                    <input type="text" name="catatan_kateter_urin" id="catatan_kateter_urin" class="form-control" placeholder="Isi jika memilih terpasang">
+                    <input type="text" name="catatan_kateter_urin" id="catatan_kateter_urin" class="form-control" placeholder="Isi jika memilih terpasang" value="{{ $data['pasca_operasi']['data_pasca']->catatan_kateter_urin ?? '' }}">
                 </div>
             </div>
         </div>
@@ -238,27 +284,29 @@
                 <div class="col-sm-12 col-lg-2">
                     <select name="pemeriksaan_pasca_laboratorium" id="pemeriksaan_pasca_laboratorium" class="form-control">
                         <option value="">Pilih</option>
-                        <option value="1">Perlu</option>
-                        <option value="0">Tidak Perlu</option>
+                        <option value="1" {{ $data['pasca_operasi']['data_pasca'] && $data['pasca_operasi']['data_pasca']->pemeriksaan_pasca_laboratorium == 1 ? 'selected' : '' }}>Perlu</option>
+                        <option value="0" {{ $data['pasca_operasi']['data_pasca'] && $data['pasca_operasi']['data_pasca']->pemeriksaan_pasca_laboratorium == 0 ? 'selected' : '' }}>Tidak Perlu</option>
                     </select>
                 </div>
                 <div class="col-sm-12 col-lg-6">
-                    <input type="text" name="catatan_pemeriksaan_pasca_laboratorium" id="" class="form-control" placeholder="Isi jika memilih perlu.">
+                    <input type="text" name="catatan_pemeriksaan_pasca_laboratorium" id="" class="form-control" placeholder="Isi jika memilih perlu."
+                        value="{{ $data['pasca_operasi']['data_pasca']->catatan_pemeriksaan_pasca_laboratorium ?? '' }}"
+                    >
                 </div>
             </div>
        </div>
        <div class="form-group mt-2">
-            <label for="">Laboratorium</label>
+            <label for="">Radiologi</label>
             <div class="row">
                 <div class="col-sm-12 col-lg-2">
                     <select name="pemeriksaan_pasca_radiologi" id="pemeriksaan_pasca_radiologi" class="form-control">
                         <option value="">Pilih</option>
-                        <option value="1">Perlu</option>
-                        <option value="0">Tidak Perlu</option>
+                        <option value="1"{{ $data['pasca_operasi']['data_pasca'] && $data['pasca_operasi']['data_pasca']->pemeriksaan_pasca_radiologi == 1 ? 'selected' : '' }}>Perlu</option>
+                        <option value="0"{{ $data['pasca_operasi']['data_pasca'] && $data['pasca_operasi']['data_pasca']->pemeriksaan_pasca_radiologi == 0 ? 'selected' : '' }}>Tidak Perlu</option>
                     </select>
                 </div>
                 <div class="col-sm-12 col-lg-6">
-                    <input type="text" name="catatan_pemeriksaan_pasca_radiologi" id="" class="form-control" placeholder="Isi jika memilih perlu.">
+                    <input type="text" name="catatan_pemeriksaan_pasca_radiologi" id="" class="form-control" placeholder="Isi jika memilih perlu." value="{{ $data['pasca_operasi']['data_pasca']->catatan_pemeriksaan_pasca_radiologi ?? '' }}">
                 </div>
             </div>
        </div>
@@ -268,15 +316,29 @@
                 <div class="col-sm-12 col-lg-2">
                     <select name="kebutuhan_terkait" id="kebutuhan_terkait" class="form-control">
                         <option value="">Pilih</option>
-                        <option value="1">Ada</option>
-                        <option value="0">Tidak Ada</option>
+                        <option value="1" {{ $data['pasca_operasi']['data_pasca'] && $data['pasca_operasi']['data_pasca']->kebutuhan_terkait == 1 ? 'selected' : '' }}>Ada</option>
+                        <option value="0" {{ $data['pasca_operasi']['data_pasca'] && $data['pasca_operasi']['data_pasca']->kebutuhan_terkait == 0 ? 'selected' : '' }}>Tidak Ada</option>
                     </select>
                 </div>
                 <div class="col-sm-12 col-lg-6">
-                    <input type="text" name="catatan_kebutuhan_terkait" id="" class="form-control" placeholder="Isi jika memilih ada.">
+                    <input type="text" name="catatan_kebutuhan_terkait" id="" class="form-control" placeholder="Isi jika memilih ada." value="{{ $data['pasca_operasi']['data_pasca']->catatan_kebutuhan_terkait ?? '' }}">
                 </div>
             </div>
        </div>
+
+       <div class="form-group">
+        <label for="dokter_operator">Dokter Operator</label>
+        <select id="kode_dokter_operator_pasca" name="kode_dokter_operator"
+            class="form-control select2bs4 {{ $errors->has('reg_dokter') ? " is-invalid" : "" }}">
+            <option value="">-</option>
+            @foreach ($data['physician'] as $row)
+            <option
+                value="{{ $row->ParamedicCode }}" {{ isset($data['pasca_operasi']['data_pasca']) && $row->ParamedicCode == $data['pasca_operasi']['data_pasca']->kode_dokter_operator ? 'selected':'' }}>
+                {{ $row->ParamedicName }}
+            </option>
+            @endforeach
+        </select>
+    </div>
     
         <div class="d-flex align-item-center justify-content-center mt-3 mb-3">
             <button class="btn btn-primary" onclick="saveRencanaPascaOperasi()">
@@ -288,8 +350,19 @@
 
 @push('myscripts')
 <script>
+    $(document).ready(function(){
+        $("#kode_dokter_operator_pasca").select2({
+            placeholder: "Pilih Dokter Operator",
+            allowClear: true
+        });
+    })
     const addCairanInfus = () => {
+
         const cairan = document.getElementById('catatan_instruksi_cairan_infus').value;
+        if(!cairan){
+            alert('Mohon isi cairan terlebih dahulu');
+            return;
+        }
         const input = `<input type="hidden" name="cairan_infus[]" value="${cairan}"/> <button class="btn btn-sm btn-danger ml-4" onclick="removeCairanInfus(${document.getElementById('daftar-cairan-infus').childNodes.length})">Hapus</button>`;
         const list = document.getElementById('daftar-cairan-infus');
         const element = cairan + input
@@ -297,11 +370,15 @@
         li.classList.add('list-group-item');
         li.innerHTML = element;
         list.appendChild(li);
+
+        // clear input
+        document.getElementById('catatan_instruksi_cairan_infus').value = '';
     }
 
-    const removeCairanInfus = (index) => {
+    const removeCairanInfus = (element) => {
         const list = document.getElementById('daftar-cairan-infus');
-        list.removeChild(list.childNodes[index]);
+        const item = document.getElementById(`${element}`);
+        list.removeChild(item);
     }
 
     const addRowDrain = ()=>{
@@ -329,24 +406,39 @@
         const inputLamaPemasangan = `
             <input type="text" name="drain[${rowCount}][lama_pemasangan]" class="form-control"/>
         `;
+        const deleteButton = `
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeRowDrain('row_${rowCount}')">Hapus</button>
+        `;
 
         const tr = document.createElement('tr');
+        tr.id = `row_${rowCount}`;
         const td1 = document.createElement('td');
         const td2 = document.createElement('td');
         const td3 = document.createElement('td');
         const td4 = document.createElement('td');
+        const td5 = document.createElement('td');
 
         td1.innerHTML = 'Drain';
         td2.innerHTML = selectJenisDrain;
         td3.innerHTML = selectLetak;
         td4.innerHTML = inputLamaPemasangan;
+        td5.innerHTML = deleteButton;
 
         tr.appendChild(td1);
         tr.appendChild(td2);
         tr.appendChild(td3);
         tr.appendChild(td4);
+        tr.appendChild(td5);
         table.appendChild(tr);
     }
+
+    const removeRowDrain = (tr_id)=>{
+        const table = document.getElementById('drain-table');
+        const tr = document.getElementById(tr_id);
+        table.removeChild(tr);
+    }
+
+
 
     const saveRencanaPascaOperasi = ()=>{
         event.preventDefault();

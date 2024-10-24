@@ -19,7 +19,7 @@ class CreateLpPascaOperasiTindakanDrain extends Migration
             $table->string('reg_no')->nullable();
             $table->string('jenis_drain')->nullable();
             $table->string('letak_pemasangan')->nullable();
-            $table->string('lama_pemasanngan')->nullable();
+            $table->string('lama_pemasangan')->nullable();
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
             $table->timestamps();

@@ -47,7 +47,7 @@ class LaporanOperasiRepository
         $penemuan_komplikasi = $this->getDataPenemuanKomplikasi($reg_no);
         $pasca_operasi = $this->getDataLaporanPascaOperasi($reg_no);
         $dokter_operator_penemuan_komplikasi = $this->masterPyschianRepository->findOneByCode($penemuan_komplikasi->kode_dokter_operator ?? '');
-        $dokter_operator_pasca_operasi = $this->masterPyschianRepository->findOneByCode($pasca_operasi['pasca_operasi']->kode_dokter_operator ?? '');
+        $dokter_operator_pasca_operasi = $this->masterPyschianRepository->findOneByCode($pasca_operasi['data_pasca']->kode_dokter_operator ?? '');
         return [
             'assesment_awal' => $assesment_awal,
             'pasien_prosedur' => $pasien_prosedur,
@@ -247,7 +247,7 @@ class LaporanOperasiRepository
                     $data_drain['reg_no'] = $data['reg_no'];
                     $data_drain['jenis_drain'] = $item['jenis'];
                     $data_drain['letak_pemasangan'] = $item['letak_pemasangan'];
-                    $data_drain['lama_pemasanngan'] = $item['lama_pemasangan'];
+                    $data_drain['lama_pemasangan'] = $item['lama_pemasangan'];
                     $data_drain['created_by'] = auth()->user()->name;
                     $data_drain['created_at'] = now();
                     $lp_pasca_operasi_tindakan_drain = $this->db->connDbRanap()->table('lp_pasca_operasi_tindakan_drain')->insert($data_drain);
@@ -265,6 +265,7 @@ class LaporanOperasiRepository
     {
         try {
             DB::beginTransaction();
+            $old_data = $this->db->connDbRanap()->table('lp_pasca_operasi_tindakan')->where('reg_no', $data['reg_no'])->first();
             $data['updated_by'] = auth()->user()->name;
             $data['updated_at'] = now();
             $lp_pasca_operasi_tindakan = $this->db->connDbRanap()->table('lp_pasca_operasi_tindakan')
@@ -275,14 +276,19 @@ class LaporanOperasiRepository
             if (!empty($drain)) {
                 $this->db->connDbRanap()->table('lp_pasca_operasi_tindakan_drain')->where('reg_no', $data['reg_no'])->delete();
                 foreach ($drain as $item) {
+                    $data_drain['id'] = $this->utils->generateUuid();
+                    $data_drain['lp_pasca_operasi_tindakan_id'] = $old_data->id;
+                    $data_drain['reg_no'] = $old_data->reg_no;
                     $data_drain['jenis_drain'] = $item['jenis'];
                     $data_drain['letak_pemasangan'] = $item['letak_pemasangan'];
-                    $data_drain['lama_pemasanngan'] = $item['lama_pemasangan'];
+                    $data_drain['lama_pemasangan'] = $item['lama_pemasangan'];
+                    $data_drain['created_by'] = auth()->user()->name;
                     $data_drain['updated_by'] = auth()->user()->name;
+                    $data_drain['created_at'] = now();
                     $data_drain['updated_at'] = now();
-                    $lp_pasca_operasi_tindakan_drain = $this->db->connDbRanap()->table('lp_pasca_operasi_tindakan_drain')
-                        ->where('reg_no', $data['reg_no'])
-                        ->update($data_drain);
+                    $lp_pasca_operasi_tindakan_drain = $this->db->connDbRanap()
+                        ->table('lp_pasca_operasi_tindakan_drain')
+                        ->insert($data_drain);
                 }
             }
             DB::commit();
