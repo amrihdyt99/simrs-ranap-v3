@@ -1,9 +1,23 @@
 <?php
 
 use App\Http\Controllers\CaseManager\PatientController;
+use App\Http\Controllers\NewCaseManager\DashboardController;
+use App\Http\Controllers\NewCaseManager\DetailPasienCaseManagerController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/casemanager/dashboard', [\App\Http\Controllers\CaseManager\PatientController::class, 'index'])->name('casemanager.dashboard');
+// Route::get('/casemanager/dashboard', [\App\Http\Controllers\CaseManager\PatientController::class, 'index'])->name('casemanager.dashboard');
+Route::middleware(['auth', 'role:perawat,dokter,nutritionist,dietitian,dokter_gizi,farmasi,case_manager', 'shift'])->group(function () {
+    Route::get('/casemanager/dashboard', [DashboardController::class, 'index'])->name('casemanager.dashboard');
+    Route::get('/casemanager/detail_pasien', [DetailPasienCaseManagerController::class, 'index'])->name('casemanager.detail_pasien_list');
+    Route::get('/casemanager/detail_pasien/{MedicalNo}', [DetailPasienCaseManagerController::class, 'show'])->where('MedicalNo', '(.*)')->name('casemanager.patient_detail');
+    Route::get('/casemanager/detail_pasien_register/{reg_no}', [DetailPasienCaseManagerController::class, 'show2'])->where('reg_no', '(.*)')->name('casemanager.patient_detail_registrasi');
+    Route::post('/save-shift', [DashboardController::class, 'saveShift'])->name('save.shift');
+    
+    Route::prefix('casemanager/patient')->group(function () {
+        // summary V2
+        Route::get('/summary-v2/{reg_no}', [\App\Http\Controllers\Perawat\SummaryV2Controller::class, 'summary'])->where('reg_no', '(.*)')->name('casemanager.patient.summary-v2');
+    });
+});
 
 Route::prefix('case-manager')->group(function () {
 
