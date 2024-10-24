@@ -39,42 +39,6 @@
 
 @push('myscripts')
   <script>
-    $(document).ready(function(){
-      getDataLaporan()
-    })
-
-    const handleSave = ()=>{
-      // show dialog confirmation
-      Swal.fire({
-        title: 'Simpan Laporan Operasi',
-        text: "Apakah anda yakin ingin menyimpan laporan operasi ini?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, Simpan!',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // do save operation
-          Swal.fire(
-            'Berhasil!',
-            'Berhasil disimpan.',
-            'success'
-          )
-        }
-      })
-    }
-
-    const getDataLaporan = async()=>{
-      try {
-        let url = '{{ route("laporan-operasi.index", ":reg_no") }}'
-        url = url.replace(':reg_no', '{{ $reg }}')
-        const res = await fetch(url).then(res => res.json())
-        console.log('res', res)
-      } catch (error) {
-      }
-    }
   </script>
 @endpush
 

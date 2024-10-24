@@ -416,7 +416,6 @@ Route::get('/assesment-awal-dokter', [App\Http\Controllers\NewDokter\RiwayatCont
 //edukasi dokter
 Route::get('/edukasi-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getEdukasiData'])->name('edukasi-dokter');
 
-
 Route::prefix('laporan-operasi')->name('laporan-operasi.')->group(function () {
 	Route::get('/patient/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'index'])->where('reg_no', '(.*)')->name('index');
 });
