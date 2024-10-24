@@ -363,7 +363,7 @@
             alert('Mohon isi cairan terlebih dahulu');
             return;
         }
-        const input = `<input type="hidden" name="cairan_infus[]" value="${cairan}"/> <button class="btn btn-sm btn-danger ml-4" onclick="removeCairanInfus(${document.getElementById('daftar-cairan-infus').childNodes.length})">Hapus</button>`;
+        const input = `<input type="hidden" name="cairan_infus[]" value="${cairan}"/> <button type="button" class="btn btn-sm btn-danger ml-4" onclick="removeCairanInfus(${document.getElementById('daftar-cairan-infus').childNodes.length})">Hapus</button>`;
         const list = document.getElementById('daftar-cairan-infus');
         const element = cairan + input
         const li = document.createElement('li');
