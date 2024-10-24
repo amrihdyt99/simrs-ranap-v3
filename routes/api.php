@@ -22,7 +22,7 @@ use App\Http\Controllers\Perawat\TransferInternalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -416,3 +416,6 @@ Route::get('/assesment-awal-dokter', [App\Http\Controllers\NewDokter\RiwayatCont
 //edukasi dokter
 Route::get('/edukasi-dokter', [App\Http\Controllers\NewDokter\RiwayatController::class, 'getEdukasiData'])->name('edukasi-dokter');
 
+Route::prefix('laporan-operasi')->name('laporan-operasi.')->group(function () {
+	Route::get('/patient/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'index'])->where('reg_no', '(.*)')->name('index');
+});

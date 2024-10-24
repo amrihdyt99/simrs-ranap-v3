@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use Carbon\Carbon;
 use PhpParser\Node\Expr\FuncCall;
+use Illuminate\Support\Str;
 
 class UtilsHelper
 {
@@ -85,5 +86,10 @@ class UtilsHelper
             'X0012^08' => 'Petani/Nelayan'
         ];
         return $occupation[$generalCode] ?? '-';
+    }
+
+    public function generateUuid()
+    {
+        return Str::orderedUuid();
     }
 }

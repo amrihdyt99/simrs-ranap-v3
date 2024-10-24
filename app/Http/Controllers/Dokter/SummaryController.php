@@ -9,12 +9,20 @@ use App\Models\PasienCPOELaboratory;
 use App\Models\PasienSoapDok;
 use App\Models\PasienSoaper;
 use App\Models\RegistrationInap;
+use App\Repository\LaporanOperasiRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class SummaryController extends Controller
 {
+
+    protected $laporanOperasiRepo;
+    public function __construct(LaporanOperasiRepository $laporanOperasiRepo)
+    {
+        $this->laporanOperasiRepo = $laporanOperasiRepo;
+        if (!auth()->check()) return redirect()->route('login');
+    }
 
     public function get_id_cppt($reg_no, $soapdok_dokter, $med_rec, $nama_ppa, $bed, $dpjp_utama)
     {
@@ -115,9 +123,20 @@ class SummaryController extends Controller
             ->where('reg_no', $patient->reg_no)
             ->where('kode_dokter', Auth::user()->dokter_id)
             ->pluck('kategori')
-            ->toArray(); 
+            ->toArray();
 
+        $data['physician'] = DB::connection('mysql2')->table("m_paramedis")->where(['GCParamedicType' => "X0055^001"])->where('IsActive', 1)->get();
         $data['physician_team_role'] = $physician_team_role;
+        $data_laporan_operasi = $this->laporanOperasiRepo->getDataLaporanOperasi($reg);
+        $data_laporan_pasca_operasi = $this->laporanOperasiRepo->getDataLaporanPascaOperasi($reg);
+        $data['assesment_awal_dokter'] = $data_laporan_operasi['assesment_awal'];
+        $data['pasien_prosedur'] = $data_laporan_operasi['pasien_prosedur'];
+        $data['rencana_pre_operasi'] = $data_laporan_operasi['rencana_pre_operasi'];
+        $data['operasi_tindakan'] = $data_laporan_operasi['operasi_tindakan'];
+        $data['penemuan_komplikasi'] = $data_laporan_operasi['penemuan_komplikasi'];
+        $data['pasca_operasi'] = $data_laporan_pasca_operasi;
+
+        // dd($data);
 
         return view('new_dokter.assesment', compact('data', 'reg', 'patient', 'dataPasien', 'icd9cm', 'icd10', 'diagnosa', 'prosedur', 'subs', 'id_cppt', 'physician_team_role'));
     }

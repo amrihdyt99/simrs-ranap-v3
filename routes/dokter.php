@@ -4,6 +4,7 @@ use App\Http\Controllers\Dokter\PatientController;
 use App\Http\Controllers\Dokter\SummaryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dokter\DetailPasienController;
+use App\Http\Controllers\Api;
 
 Route::get('/dokter', [\App\Http\Controllers\Dokter\PatientController::class, 'index']);
 Route::get('/dokter/dashboard', [\App\Http\Controllers\Dokter\PatientController::class, 'index'])->name('dokter.dashboard');
@@ -75,4 +76,12 @@ Route::prefix('dokter')->group(function () {
     Route::put('/available-physician/{id}', [\App\Http\Controllers\Dokter\TreatmentController::class, 'responseAvailablePhysician'])->name('dokter.available.physician.update');
     Route::get('/getHasillab', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'getHasilLab'])->name('get.hasil.lab');
     Route::get('/getHasilRad', [\App\Http\Controllers\NewDokter\OrderObatController::class, 'getHasilRadiologi'])->name('get.hasil.radiologi');
+
+    Route::prefix('laporan-operasi')->name('dokter.laporan-operasi')->group(function () {
+        Route::post('/laporan-rencana-pre-operasi/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'storeRencanaPreOperasi'])->where('reg_no', '(.*)')->name('store.rencana-pre-operasi');
+        Route::post('/laporan-rencana-operasi-tindakan/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'storeRencanaOperasiTindakan'])->where('reg_no', '(.*)')->name('store.rencana-operasi-tindakan');
+        Route::post('/prosedur-penemuan-komplikasi/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'storeProsedurPenemuanKompilasi'])->where('reg_no', '(.*)')->name('store.prosedur-penemuan-komplikasi');
+        Route::post('/laporan-rencana-pasca-operasi/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'storeRencanaPascaOperasi'])->where('reg_no', '(.*)')->name('store.laporan-rencana-pasca-operasi');
+        Route::get('/output/{reg_no}', [Api\Dokter\LaporanOperasiController::class, 'output'])->where('reg_no', '(.*)')->name('output');
+    });
 });
