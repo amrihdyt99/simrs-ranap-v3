@@ -40,7 +40,7 @@ class LaporanOperasiService
     public function storeRencanaPreOperasi($reg_no)
     {
         try {
-            $operasi = request()->get('operasi');
+            $operasi = request()->get('operasi') ?? [];
             $data_pre_operasi = [
                 'reg_no' => $reg_no,
                 'alergi' => request()->get('alergi'),
@@ -49,14 +49,16 @@ class LaporanOperasiService
                 'diagnosa_pre_operasi' => request()->get('diagnosa_pre_operasi')
             ];
             $data_pre_operasi_tindakan = [];
-            foreach ($operasi as $tindakan) {
-                $data_pre_operasi_tindakan[] = [
-                    'id' => $this->utils->generateUuid(),
-                    'kode_tindakan' => $tindakan['kode'],
-                    'reg_no' => $reg_no,
-                    'persiapan_alat_khusus' => $tindakan['persiapan'],
-                    'catatan_persiapan_alat_khusus' => $tindakan['catatan_persiapan']
-                ];
+            if (count($operasi) > 0) {
+                foreach ($operasi as $tindakan) {
+                    $data_pre_operasi_tindakan[] = [
+                        'id' => $this->utils->generateUuid(),
+                        'kode_tindakan' => $tindakan['kode'],
+                        'reg_no' => $reg_no,
+                        'persiapan_alat_khusus' => $tindakan['persiapan'],
+                        'catatan_persiapan_alat_khusus' => $tindakan['catatan_persiapan']
+                    ];
+                }
             }
             $data_pre_operasi['operasi'] = $data_pre_operasi_tindakan;
             if ($this->laporanOperasiRepo->checkRencanaPreOperasiIsExist($reg_no))

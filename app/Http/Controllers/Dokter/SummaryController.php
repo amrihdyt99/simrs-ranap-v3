@@ -135,7 +135,8 @@ class SummaryController extends Controller
         $data['operasi_tindakan'] = $data_laporan_operasi['operasi_tindakan'];
         $data['penemuan_komplikasi'] = $data_laporan_operasi['penemuan_komplikasi'];
         $data['pasca_operasi'] = $data_laporan_pasca_operasi;
-        // dd($data['pasca_operasi']);
+
+        // dd($data);
 
         return view('new_dokter.assesment', compact('data', 'reg', 'patient', 'dataPasien', 'icd9cm', 'icd10', 'diagnosa', 'prosedur', 'subs', 'id_cppt', 'physician_team_role'));
     }

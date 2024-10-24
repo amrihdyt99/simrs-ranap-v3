@@ -31,7 +31,6 @@ class LaporanOperasiRepository
             ->leftJoin('icd9cm_bpjs', 'rs_pasien_prosedur.pprosedur_prosedur', '=', 'icd9cm_bpjs.ID_TIND')
             ->leftJoin('lp_pre_operasi_tindakan', 'rs_pasien_prosedur.pprosedur_prosedur', '=', 'lp_pre_operasi_tindakan.kode_tindakan')
             ->where('pprosedur_reg', $reg_no)
-            ->where('lp_pre_operasi_tindakan.reg_no', $reg_no)
             ->select(
                 'rs_pasien_prosedur.*',
                 'icd9cm_bpjs.NM_TINDAKAN as nama_tindakan',
@@ -107,16 +106,19 @@ class LaporanOperasiRepository
                 'diagnosa_pre_operasi' => $data['diagnosa_pre_operasi'],
                 'created_by' => auth()->user()->name
             ]);
-            foreach ($data['operasi'] as $tindakan) {
-                $data_pre_operasi_tindakan = [
-                    'id' => $this->utils->generateUuid(),
-                    'lp_pre_operasi_id' => $data['id'],
-                    'reg_no' => $data['reg_no'],
-                    'kode_tindakan' => $tindakan['kode_tindakan'],
-                    'persiapan_alat_khusus' => $tindakan['persiapan_alat_khusus'],
-                    'catatan_persiapan_alat_khusus' => $tindakan['catatan_persiapan_alat_khusus'],
-                ];
-                $lp_pre_operasi_tindakan = $this->db->connDbRanap()->table('lp_pre_operasi_tindakan')->insert($data_pre_operasi_tindakan);
+            $lp_pre_operasi_tindakan = null;
+            if (count($data['operasi']) > 0) {
+                foreach ($data['operasi'] as $tindakan) {
+                    $data_pre_operasi_tindakan = [
+                        'id' => $this->utils->generateUuid(),
+                        'lp_pre_operasi_id' => $data['id'],
+                        'reg_no' => $data['reg_no'],
+                        'kode_tindakan' => $tindakan['kode_tindakan'],
+                        'persiapan_alat_khusus' => $tindakan['persiapan_alat_khusus'],
+                        'catatan_persiapan_alat_khusus' => $tindakan['catatan_persiapan_alat_khusus'],
+                    ];
+                    $lp_pre_operasi_tindakan = $this->db->connDbRanap()->table('lp_pre_operasi_tindakan')->insert($data_pre_operasi_tindakan);
+                }
             }
             DB::commit();
             return ['pre_operasi' => $lp_pre_operasi, 'pre_operasi_tindakan' => $lp_pre_operasi_tindakan];
@@ -138,19 +140,21 @@ class LaporanOperasiRepository
                 'updated_by' => auth()->user()->name,
                 'updated_at' => now()
             ]);
-
-            foreach ($data['operasi'] as $tindakan) {
-                // update data tindakan
-                $data_pre_operasi_tindakan = [
-                    'persiapan_alat_khusus' => $tindakan['persiapan_alat_khusus'],
-                    'catatan_persiapan_alat_khusus' => $tindakan['catatan_persiapan_alat_khusus'],
-                    'updated_by' => auth()->user()->name,
-                    'updated_at' => now()
-                ];
-                $lp_pre_operasi_tindakan = $this->db->connDbRanap()->table('lp_pre_operasi_tindakan')
-                    ->where('reg_no', $data['reg_no'])
-                    ->where('kode_tindakan', $tindakan['kode_tindakan'])
-                    ->update($data_pre_operasi_tindakan);
+            $lp_pre_operasi_tindakan = null;
+            if (count($data['operasi']) > 0) {
+                foreach ($data['operasi'] as $tindakan) {
+                    // update data tindakan
+                    $data_pre_operasi_tindakan = [
+                        'persiapan_alat_khusus' => $tindakan['persiapan_alat_khusus'],
+                        'catatan_persiapan_alat_khusus' => $tindakan['catatan_persiapan_alat_khusus'],
+                        'updated_by' => auth()->user()->name,
+                        'updated_at' => now()
+                    ];
+                    $lp_pre_operasi_tindakan = $this->db->connDbRanap()->table('lp_pre_operasi_tindakan')
+                        ->where('reg_no', $data['reg_no'])
+                        ->where('kode_tindakan', $tindakan['kode_tindakan'])
+                        ->update($data_pre_operasi_tindakan);
+                }
             }
             DB::commit();
             return ['pre_operasi' => $data_pre_operasi, 'pre_operasi_tindakan' => $lp_pre_operasi_tindakan];
