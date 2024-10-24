@@ -5,7 +5,7 @@
         {{ csrf_field() }}
         <div class="form-group">
             <label for="">Catatan Prosedur Penemuan Komplikasi</label>
-            <textarea class="form-control" id="catatan_prosedur_penemuan_komplikasi" rows="6" name="catatan_prosedur_penemuan_komplikasi">{{ $data['penemuan_komplikasi']->catatan_prosedur }}</textarea>
+            <textarea class="form-control" id="catatan_prosedur_penemuan_komplikasi" rows="6" name="catatan_prosedur_penemuan_komplikasi">{{ $data['penemuan_komplikasi']->catatan_prosedur ??'' }}</textarea>
         </div>
     
         <div class="form-group">
@@ -14,12 +14,12 @@
                 <div class="col-12 mb-2">
                     <select name="komplikasi" id="kompilasi" class="form-control">
                         <option value="">Pilih</option>
-                        <option value="1" {{  $data['penemuan_komplikasi']->is_komplikasi == '1' ? 'selected': '' }}>Ya</option>
-                        <option value="0" {{  $data['penemuan_komplikasi']->is_komplikasi == '0' ? 'selected': '' }}>Tidak</option>
+                        <option value="1" {{ isset($data['penemuan_komplikasi']) && $data['penemuan_komplikasi']->is_komplikasi == '1' ? 'selected': '' }}>Ya</option>
+                        <option value="0" {{ isset($data['penemuan_komplikasi']) && $data['penemuan_komplikasi']->is_komplikasi == '0' ? 'selected': '' }}>Tidak</option>
                     </select>
                 </div>
                 <div class="col-12">
-                    <textarea class="form-control" id="catatan_kompilasi" rows="3" name="catatan_komplikasi" placeholder="Jenis dan penanganan"></textarea>
+                    <textarea class="form-control" id="catatan_kompilasi" rows="3" name="catatan_komplikasi" placeholder="Jenis dan penanganan">{{ $data['penemuan_komplikasi']->catatan_komplikasi ?? '' }}</textarea>
                 </div>
             </div>
         </div>
@@ -29,12 +29,12 @@
                 <div class="col-12 mb-2">
                     <select name="implant" id="implan" class="form-control">
                         <option value="">Pilih</option>
-                        <option value="1" {{  $data['penemuan_komplikasi']->is_implant == '1' ? 'selected': '' }}>Ya</option>
-                        <option value="0" {{  $data['penemuan_komplikasi']->is_implant == '0' ? 'selected': '' }}>Tidak</option>
+                        <option value="1" {{ isset($data['penemuan_komplikasi']) && $data['penemuan_komplikasi']->is_implant == '1' ? 'selected': '' }}>Ya</option>
+                        <option value="0" {{ isset($data['penemuan_komplikasi']) && $data['penemuan_komplikasi']->is_implant == '0' ? 'selected': '' }}>Tidak</option>
                     </select>
                 </div>
                 <div class="col-12">
-                    <textarea class="form-control" id="catatan_implant" rows="3" name="catatan_implant" placeholder="Jenis dan jumlah">{{ $data['penemuan_komplikasi']->catatan_implant }}</textarea>
+                    <textarea class="form-control" id="catatan_implant" rows="3" name="catatan_implant" placeholder="Jenis dan jumlah">{{ $data['penemuan_komplikasi']->catatan_implant ?? '' }}</textarea>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <option value="">-</option>
                 @foreach ($data['physician'] as $row)
                 <option
-                    value="{{ $row->ParamedicCode }}" {{ $row->ParamedicCode == $data['penemuan_komplikasi']->kode_dokter_operator ? 'selected':'' }}>
+                    value="{{ $row->ParamedicCode }}" {{ isset($data['penemuan_komplikasi']) && $row->ParamedicCode == $data['penemuan_komplikasi']->kode_dokter_operator ? 'selected':'' }}>
                     {{ $row->ParamedicName }}
                 </option>
                 @endforeach

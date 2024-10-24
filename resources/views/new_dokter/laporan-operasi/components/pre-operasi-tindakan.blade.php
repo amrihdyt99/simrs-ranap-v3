@@ -5,35 +5,35 @@
         {{ csrf_field() }}
         <div class="form-group">
             <label for="anamnesis-singkat">Anamnesis Singkat</label>
-            <textarea class="form-control" id="anamnesis-singkat" rows="4" name="anamnesis_singkat" readonly>{{ $data['assesment_awal_dokter']->keluhan_utama }}</textarea>
+            <textarea class="form-control" id="anamnesis-singkat" rows="4" name="anamnesis_singkat" readonly>{{ $data['assesment_awal_dokter']->keluhan_utama ?? '' }}</textarea>
         </div>
         <div class="form-group">
             <label for="alergi">Alergi</label>
             <div class="row">
                 <div class="col-sm-12 col-lg-2 row">
                     <div class="col-sm-12 col-lg-6">
-                        <input type="radio" name="alergi" value="0" id="alergi_n" {{ $data['rencana_pre_operasi']->alergi==0 ? 'checked':'' }}>
+                        <input type="radio" name="alergi" value="0" id="alergi_n" {{ isset($data['rencana_pre_operasi']) && $data['rencana_pre_operasi']->alergi==0 ? 'checked':'' }}>
                         <label for="alergi_n">Tidak</label>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <input type="radio" name="alergi" value="1" id="alergi_y"  {{ $data['rencana_pre_operasi']->alergi==1 ? 'checked':'' }}>
+                        <input type="radio" name="alergi" value="1" id="alergi_y"  {{ isset($data['rencana_pre_operasi']) && $data['rencana_pre_operasi']->alergi==1 ? 'checked':'' }}>
                         <label for="alergi_y">Ya</label>
                     </div>
                 </div>
                 <div class="col-sm-12 col-lg-4">
-                    <input type="text" name="catatan_alergi" id="catatan_alergi" class="form-control" placeholder="Isi jika ada" value="{{ $data['rencana_pre_operasi']->catatan_alergi ?? '' }}">
+                    <input type="text" name="catatan_alergi" id="catatan_alergi" class="form-control" placeholder="Isi jika ada" value="{{ isset($data['rencana_pre_operasi']) && $data['rencana_pre_operasi']->catatan_alergi ?? '' }}">
                 </div>
             </div>
         </div>
     
         <div class="form-group">
             <label for="pemeriksaan-fisik">Pemeriksaan Fisik</label>
-            <textarea class="form-control" id="pemeriksaan-fisik" rows="4" name="pemeriksaan_fisik">{{ $data['rencana_pre_operasi']->pemeriksaan_fisik ?? '' }}</textarea>
+            <textarea class="form-control" id="pemeriksaan-fisik" rows="4" name="pemeriksaan_fisik">{{ isset($data['rencana_pre_operasi']) && $data['rencana_pre_operasi']->pemeriksaan_fisik ?? '' }}</textarea>
         </div>
     
         <div class="form-group">
             <label for="diagnosa-pre-operasi">Diagnosa Pre Operasi/Tindakan</label>
-            <textarea class="form-control" id="diagnosa-pre-operasi" rows="4" name="diagnosa_pre_operasi">{{ $data['rencana_pre_operasi']->diagnosa_pre_operasi ?? '' }}</textarea>
+            <textarea class="form-control" id="diagnosa-pre-operasi" rows="4" name="diagnosa_pre_operasi">{{ isset($data['rencana_pre_operasi']) && $data['rencana_pre_operasi']->diagnosa_pre_operasi ?? '' }}</textarea>
         </div>
     
         <div class="form-group">
