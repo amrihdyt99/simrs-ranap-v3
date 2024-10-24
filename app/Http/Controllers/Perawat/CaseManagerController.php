@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Validator;
 
 class CaseManagerController extends Controller
 {
-    function store_case_manager(Request $request){
+    function store_case_manager(Request $request)
+    {
         extract($request->all());
 
         if (isset($case['identifikasi_masalah'])) {
@@ -37,6 +38,8 @@ class CaseManagerController extends Controller
                     ['med_rec', $case['med_rec']],
                 ])->count();
 
+            $case['tanggal_ttd'] = Carbon::parse($case['tanggal_ttd'])->toDateTimeString();
+
             if ($cekCase > 0) {
                 $case['updated_at'] = Carbon::now();
                 $case['updated_by'] = $username;
@@ -52,7 +55,7 @@ class CaseManagerController extends Controller
                 'status' => 'success',
                 'message' => 'Data berhasil diperbarui',
             ]);
-            
+
             return $response;
         } catch (\Throwable $throw) {
             DB::rollBack();
@@ -63,7 +66,8 @@ class CaseManagerController extends Controller
         }
     }
 
-    function store_case_manager_akumulasi(Request $request){
+    function store_case_manager_akumulasi(Request $request)
+    {
         extract($request->all());
 
         DB::beginTransaction();
@@ -83,6 +87,9 @@ class CaseManagerController extends Controller
                     ['med_rec', $akumulasi['med_rec']],
                 ])->count();
 
+            $cekAkumulasi['tgl_akumulasi'] = Carbon::parse($cekAkumulasi['tgl_akumulasi'])->toDateTimeString();
+            $cekAkumulasi['tgl_ttd'] = Carbon::parse($cekAkumulasi['tgl_ttd'])->toDateTimeString();
+
             if ($cekAkumulasi > 0) {
                 $akumulasi['updated_at'] = Carbon::now();
                 $akumulasi['updated_by'] = $username;
@@ -98,7 +105,7 @@ class CaseManagerController extends Controller
                 'status' => 'success',
                 'message' => 'Data berhasil diperbarui',
             ]);
-            
+
             return $response;
         } catch (\Throwable $throw) {
             DB::rollBack();

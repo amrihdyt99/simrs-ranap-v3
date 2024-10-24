@@ -978,6 +978,9 @@
                             inject_view_data(data);
                             loadDatatableNews();
                             loadAllFunctionNursing();
+                            $('#history-tab').on('click', function() {
+                                loadDatatableNews();
+                            });
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1035,6 +1038,10 @@
                             neko_select2_init(`{{ route("nyaa_universal.select2.m_paramedic") }}`, 'physician_kode_dokter ');
                             neko_select2_init(`{{ route("getPPALainnya") }}`, 'physician_kode_lainnya ');
                             getPhysicianTeamPerawat();
+                            $('#btn_simpan_jawaban_konsul').on('click', function() {
+                                saveKonsul('jawaban');
+                            });
+                            getKonsulData();
                         },
                         error: function(data) {
                             clear_show_error();
@@ -1666,6 +1673,11 @@
                 bodyTable.innerHTML = '';
                 for (var i = 0; i < dataJSON.length; i++) {
 
+                    let jam = dataJSON[i]['jam_note'];
+                    let jamFormatted = jam ?
+                        jam.substring(0, 5) :
+                        "";
+
                     var tr = document.createElement('tr')
                     var col1 = document.createElement('td')
                     var col2 = document.createElement('td')
@@ -1673,9 +1685,10 @@
                     var col4 = document.createElement('td')
 
                     col1.innerHTML = dataJSON[i]['tgl_note']
-                    col2.innerHTML = dataJSON[i]['jam_note']
+                    col2.innerHTML = jamFormatted
                     col3.innerHTML = dataJSON[i]['catatan']
                     col4.innerHTML = dataJSON[i]['id_nurse']
+
                     if (dataJSON[i]['signature']) {
                         console.log("Signature Base64:", dataJSON[i]['signature']);
                         col4.innerHTML = `
@@ -2074,6 +2087,10 @@
     var signaturePadSasaran = null
     var signaturePadEdukator = null
 
+
+    let signaturePadDokter;
+    let signaturePadPasien;
+
     function ttd_edukasi_perawat() {
         // SASARAN
         let $wrapperSasaran = $('[id*="signature-pad-sasaran"]');
@@ -2119,6 +2136,7 @@
         let $wrapperDokter = $('[id*="signature-pad-dokter-anastesi"]');
         let $clearButtonDokter = $wrapperDokter.find("#clear_btn_dokter_anastesi");
         let $canvasDokter = $wrapperDokter.find("canvas")[0];
+
 
         if ($canvasDokter != undefined) {
             signaturePadDokter = new SignaturePad($canvasDokter);
@@ -2455,3 +2473,4 @@
 @include('new_perawat.soap.js.soap_perawat_js')
 @include('new_perawat.riwayat-v2.js.riwayat_js')
 @include('new_perawat.gizi.js.assesesment_gizi_dewasa_js')
+@include('new_perawat.physician_team.js.konsul_js')

@@ -1,5 +1,8 @@
 <script>
     function loadDatatableNews() {
+        if ($.fn.DataTable.isDataTable('#historyNewsTable')) {
+            $('#historyNewsTable').DataTable().clear().destroy();
+        }
         $('#historyNewsTable').DataTable({
             processing: true,
             serverSide: true,
