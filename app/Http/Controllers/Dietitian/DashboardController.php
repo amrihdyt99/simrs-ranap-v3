@@ -48,7 +48,7 @@ class DashboardController extends Controller
                 'm_registrasi.reg_cara_bayar',
                 'm_registrasi.reg_tgl',
             ])
-            ->orderByDesc('m_registrasi.reg_tgl');
+            ->orderBy('m_registrasi.reg_tgl', 'DESC')->get();
 
         return DataTables()
             ->of($datamypatient)
@@ -57,7 +57,7 @@ class DashboardController extends Controller
                     ->table('businesspartner')
                     ->where('id', $query->reg_cara_bayar)
                     ->first();
-            
+
                 return $businessPartner ? $businessPartner->BusinessPartnerName : '-';
             })
             ->editColumn('aksi_data', function ($query) use ($request) {
@@ -91,7 +91,7 @@ class DashboardController extends Controller
         ]);
 
         session()->forget('user_shift');
-        
+
         session(['user_shift' => $request->shift]);
 
         return response()->json(['success' => true]);

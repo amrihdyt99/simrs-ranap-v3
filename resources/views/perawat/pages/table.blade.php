@@ -4,7 +4,7 @@
       <th class="text-sm">Data pendaftaran</th>
       <th class="text-sm">Nama pasien</th>
       <th class="text-sm">Dpjp</th>
-      <th class="text-sm">Physician team</th>
+      <th class="text-sm">Physician Team</th>
       <th class="text-sm">Aksi</th>
     </tr>
   </thead>
@@ -25,19 +25,19 @@
       </td>
       <td class="text-sm"><b>{{$item->PatientName}}</b></td>
       <td class="text-sm">{{$item->ParamedicName}}</td>
-      <td class="text-sm">
-        @foreach(explode('|', $item->physician_team) as $team_member)
-            <span style="margin-right: 5px; margin-bottom: 5px; white-space: nowrap; font-size: 0.875rem;" class="badge badge-primary">{{ $team_member }}</span><br>
+      <td>
+        @foreach($item->physicianTeam as $team_member)
+        <span style="margin-right: 5px; margin-bottom: 5px; white-space: nowrap; font-size: 0.875rem;" class="badge badge-primary">{{ trim($team_member->ParamedicName) }}</span><br>
         @endforeach
       </td>
       <td class="text-sm">
-      @if ($item->reg_perawat_care == null)
+        @if ($item->reg_perawat_care == null)
         <button type="button" onclick="takeOver('{{$item->reg_no}}', '', {{$item->room_id}}, '{{$item->service_unit}}')" class="btn btn-sm btn-outline-primary">
           <i class="mr-2 fa fa-share-square"></i>Ambil Alih
         </button>
-      @else
+        @else
         <a href="{{ route('perawat.patient.summary-v2', ['reg_no' => $item->reg_no]) }}" class="btn btn-sm btn-outline-primary"><i class="mr-2 fa fa-clipboard-check"></i>Periksa</a><br>
-      @endif
+        @endif
       </td>
     </tr>
     @endforeach

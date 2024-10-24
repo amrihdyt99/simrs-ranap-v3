@@ -44,7 +44,7 @@ class BillingController extends AaaBaseController
                 'reg_diagnosis',
                 'reg_lama',
                 'reg_cara_bayar',
-				'service_unit',
+                'service_unit',
 
                 'PatientName',
                 'm_pasien.SSN',
@@ -81,10 +81,10 @@ class BillingController extends AaaBaseController
             ->table('businesspartner')
             ->where('id', $datamypatient->reg_cara_bayar)
             ->first();
-        
+
         $data['inpatient_days'] = countInpatientDays($reg_no);
 
-        // return $data;
+        //return $data;
 
         return view('new_kasir.view', $data);
         // return view('kasir/billing/daftar_tagihan',$data);
@@ -145,7 +145,7 @@ class BillingController extends AaaBaseController
             $currentData['currentPrice'] = $value->harga_jual;
 
             $tarif = getCurrentBPJSPrice($currentData);
-            
+
             $item['ItemUId'] = Str::random(5);
             $item['ItemReg'] = $value->reg_no;
             $item['ItemCode'] = $value->item_code;
@@ -157,7 +157,7 @@ class BillingController extends AaaBaseController
             $item['ItemTindakan'] = $value->jenis_order;
             $item['ItemTarif'] = $tarif;
             $item['ItemTarifAwal'] = $tarif;
-            $item['ItemJumlah'] = (float) $value->qty;
+            $item['ItemJumlah'] = $value->qty;
             $item['ItemDokter'] = $value->ParamedicName ?? $value->UserName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
@@ -320,7 +320,7 @@ class BillingController extends AaaBaseController
                 $item['ItemTindakan'] = 'Obat';
                 $item['ItemTarif'] = (float) $v->quantity * $v->harga_jual;
                 $item['ItemTarifAwal'] = (float) $v->harga_jual;
-                $item['ItemJumlah'] = (float) $v->quantity;
+                $item['ItemJumlah'] = $v->quantity;
                 $item['ItemDokter'] = DB::connection('mysql2')->table('m_paramedis')->where('ParamedicCode', $value->kode_dokter)->first()->ParamedicName;
                 $item['ItemPoli'] = $value->kode_poli;
                 $item['ItemReview'] = $value->is_review == false ? 0 : 1;
@@ -382,10 +382,11 @@ class BillingController extends AaaBaseController
         return $order_penunjang;
     }
 
-    public function getOrderFromRajal($reg_no){
+    public function getOrderFromRajal($reg_no)
+    {
         $order_penunjang = [];
 
-        $data = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$reg_no);
+        $data = getService(urlSimrs() . 'api/rajal/tagihan/perItem?reg_no=' . $reg_no);
 
         $data = json_decode($data);
 
@@ -399,9 +400,9 @@ class BillingController extends AaaBaseController
             $item['ItemName1'] = $value->cpoe_name;
             $item['ItemBundle'] = null;
             $item['ItemTindakan'] = $value->cpoe_jenis;
-            $item['ItemTarif'] = (float) $value->cpoe_tarif;
-            $item['ItemTarifAwal'] = (float) $value->cpoe_tarif;
-            $item['ItemJumlah'] = (float) $value->cpoe_jumlah;
+            $item['ItemTarif'] = $value->cpoe_tarif;
+            $item['ItemTarifAwal'] = $value->cpoe_tarif;
+            $item['ItemJumlah'] = $value->cpoe_jumlah;
             $item['ItemDokter'] = $value->cpoe_dokter;
             $item['ItemPoli'] = 'Rehab Medik';
             $item['ItemReview'] = '-';
@@ -429,9 +430,9 @@ class BillingController extends AaaBaseController
             $item['ItemName1'] = $value->ItemName1;
             $item['ItemBundle'] = null;
             $item['ItemTindakan'] = 'lainnya';
-            $item['ItemTarif'] = (float) $value->TotalPersonal;
-            $item['ItemTarifAwal'] = (float) $value->TotalPersonal;
-            $item['ItemJumlah'] = (float) $value->DispenseQty;
+            $item['ItemTarif'] = $value->TotalPersonal;
+            $item['ItemTarifAwal'] = $value->TotalPersonal;
+            $item['ItemJumlah'] = $value->DispenseQty;
             $item['ItemDokter'] = $value->ParamedicName;
             $item['ItemPoli'] = '';
             $item['ItemReview'] = '-';
@@ -687,13 +688,14 @@ class BillingController extends AaaBaseController
     {
         try {
             $currentLocation = getCurrentLocation($request->reg);
+
             if (empty($currentLocation)) {
                 return [
                     'success' => false,
                     'message' => 'Data charge class dan service unit tidak ada, mohon hubungi Bagian Admisi'
                 ];
             }
-            
+
             $data = [
                 'pvalidation_code' => genKode(DB::table('rs_pasien_billing_validation'), 'created_at', null, null, 'QARP'),
                 'pvalidation_reg' => $request->reg,
@@ -871,12 +873,14 @@ class BillingController extends AaaBaseController
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
 
-        if(!isset($ruangan)){
-			return [
-				'success' => false,
-				'message' => 'Data charge class dan service unit ada, hubungi bagian admisi'
-			];
-		}
+        // dd($data_luar);
+
+        if (!isset($ruangan)) {
+            return [
+                'success' => false,
+                'message' => 'Data charge class dan service unit ada, hubungi bagian admisi'
+            ];
+        }
 
         return view('kasir.billing.review_invoice', [
             'data'              => $data,
@@ -1002,7 +1006,7 @@ class BillingController extends AaaBaseController
 
         $user = DB::connection('mysql2')->table('users')->where('id', auth()->user()->id)->select('name', 'signature')->first();
 
-        // dd($payer_by_method);
+        //dd($payer_by_method);
 
         return view('kasir.billing.invoice_new', [
             'patient'           => $datamypatient,
@@ -1390,12 +1394,13 @@ class BillingController extends AaaBaseController
     }
 
     // REPORT
-    public function dataReport(Request $request){
+    public function dataReport(Request $request)
+    {
         if ($request->start && $request->end) {
             $data = DB::table('rs_pasien_billing_validation as a')
-                ->join(getDatabase('master').'.m_registrasi as b', 'pvalidation_reg', 'reg_no')
-                ->join(getDatabase('master').'.users', 'pvalidation_user', 'users.id')
-                ->join(getDatabase('master').'.m_pasien', 'reg_medrec', 'MedicalNo')
+                ->join(getDatabase('master') . '.m_registrasi as b', 'pvalidation_reg', 'reg_no')
+                ->join(getDatabase('master') . '.users', 'pvalidation_user', 'users.id')
+                ->join(getDatabase('master') . '.m_pasien', 'reg_medrec', 'MedicalNo')
                 ->where('pvalidation_user', auth()->user()->id)
                 ->whereDate('a.created_at', '>=', date('Y-m-d H:i:s', strtotime($request->start)))
                 ->whereDate('a.created_at', '<=', date('Y-m-d H:i:s', strtotime($request->end)))
@@ -1419,10 +1424,10 @@ class BillingController extends AaaBaseController
                     'reg_deleted as status',
                     'PatientAddress as alamat',
                     "reg_tgl as tgl_kedatangan",
-                    DB::raw("(select ".getLimit()[0]." ClassCategoryName from ".getDatabase('master').".m_class_category where ClassCategoryCode = charge_class_code ".getLimit()[1].") as kelas"),
-                    DB::raw("(select ".getLimit()[0]." name from ".getDatabase('master').".users where dokter_id = reg_dokter ".getLimit()[1].") as dokter"),
-                    DB::raw("(select ".getLimit()[0]." NM_ICD10 from rs_pasien_diagnosa join icd10_bpjs on ID_ICD10 = pdiag_diagnosa where pdiag_reg = reg_no ".getLimit()[1].") as diagnosa"),
-                    DB::raw("(select ".getLimit()[0]." BusinessPartnerName from ".getDatabase('master').".businesspartner where id = reg_cara_bayar ".getLimit()[1].") as payer"),
+                    DB::raw("(select " . getLimit()[0] . " ClassCategoryName from " . getDatabase('master') . ".m_class_category where ClassCategoryCode = charge_class_code " . getLimit()[1] . ") as kelas"),
+                    DB::raw("(select " . getLimit()[0] . " name from " . getDatabase('master') . ".users where dokter_id = reg_dokter " . getLimit()[1] . ") as dokter"),
+                    DB::raw("(select " . getLimit()[0] . " NM_ICD10 from rs_pasien_diagnosa join icd10_bpjs on ID_ICD10 = pdiag_diagnosa where pdiag_reg = reg_no " . getLimit()[1] . ") as diagnosa"),
+                    DB::raw("(select " . getLimit()[0] . " BusinessPartnerName from " . getDatabase('master') . ".businesspartner where id = reg_cara_bayar " . getLimit()[1] . ") as payer"),
 
                     'pvalidation_total as total',
                     'pvalidation_detail as detail',
@@ -1472,10 +1477,10 @@ class BillingController extends AaaBaseController
                         if ($search_value != '') {
                             $nominal = array_column(json_decode($value->detail), null, 'method')[$v];
 
-                            if (isset($nominal->nominal_difference)){
+                            if (isset($nominal->nominal_difference)) {
                                 $nominal = $dt['total'] - $nominal->nominal_difference;
                             } else if (isset($nominal->amount_cash)) {
-                                if($nominal->amount_changes < 1) {
+                                if ($nominal->amount_changes < 1) {
                                     $nominal = abs(abs($nominal->amount_cash - abs($nominal->amount_changes)) + $nominal->amount_changes);
                                 } else {
                                     $nominal = abs($nominal->amount_cash - abs($nominal->amount_changes));

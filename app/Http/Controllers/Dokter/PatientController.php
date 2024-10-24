@@ -28,19 +28,22 @@ class PatientController extends Controller
         return view('dokter.pages.dashboard');
     }
 
-    public function data_table(Request $request, $type, $ruang){
+    public function data_table(Request $request, $type, $ruang)
+    {
         $dokter_code = auth()->user()->dokter_id;
 
         $data = DB::connection('mysql2')
             ->table('m_registrasi')
-            ->leftJoin(DB::raw('(SELECT RegNo, ToUnitServiceID, ToClassCode
+            ->leftJoin(
+                DB::raw('(SELECT RegNo, ToUnitServiceID, ToClassCode
                                 FROM m_bed_history
                                 WHERE id = (SELECT MAX(id) FROM m_bed_history bh WHERE bh.RegNo = m_bed_history.RegNo))
-                                as m_bed_history'), 
-                   'm_registrasi.reg_no', 'm_bed_history.RegNo')
+                                as m_bed_history'),
+                'm_registrasi.reg_no',
+                'm_bed_history.RegNo'
+            )
             ->leftJoin('m_unit_departemen as udep', 'udep.ServiceUnitID', 'm_bed_history.ToUnitServiceID')
-            ->leftJoin('m_unit', 'udep.ServiceUnitCode', 'm_unit.ServiceUnitCode')
-            ;
+            ->leftJoin('m_unit', 'udep.ServiceUnitCode', 'm_unit.ServiceUnitCode');
 
         if ($type == 'area') {
             $data = $data->where('m_registrasi.reg_discharge', '!=', '3')
@@ -52,9 +55,9 @@ class PatientController extends Controller
                     $query->where('m_registrasi.reg_dokter', $dokter_code)
                         ->orWhereExists(function ($subQuery) {
                             $subQuery->select(DB::raw(1))
-                                    ->from('m_physician_team')
-                                    ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
-                                    ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
+                                ->from('m_physician_team')
+                                ->where('m_physician_team.kode_dokter', Auth::user()->dokter_id)
+                                ->whereColumn('m_physician_team.reg_no', 'm_registrasi.reg_no');
                         });
                 });
         } else {
@@ -63,7 +66,7 @@ class PatientController extends Controller
                     $data = $data->where($value['key'], $value['value']);
                 }
             }
-            
+
             $data = $data->where('m_registrasi.reg_discharge', '!=', '3')
                 ->whereRaw("
                     (reg_dokter_care = '' or reg_dokter_care like ?) 
@@ -76,8 +79,7 @@ class PatientController extends Controller
 						WITH (kode NVARCHAR(50) '$.kode') 
 						WHERE kode = ?
 					)
-				", [$dokter_code])
-				;
+				", [$dokter_code]);
         }
 
         $data = $data
@@ -88,27 +90,27 @@ class PatientController extends Controller
                 'm_registrasi.reg_jam',
                 'm_registrasi.reg_dokter_care',
 
-                DB::raw("(select ".getLimit()[0]." PatientName from ".getDatabase('master').".m_pasien where MedicalNo = reg_medrec ".getLimit()[1].") as PatientName"),
-                DB::raw("(select ".getLimit()[0]." ParamedicName from ".getDatabase('master').".m_paramedis where ParamedicCode = reg_dokter ".getLimit()[1].") as ParamedicName"),
-                DB::raw("(select ".getLimit()[0]." BusinessPartnerName from ".getDatabase('master').".businesspartner where id = reg_cara_bayar ".getLimit()[1].") as reg_cara_bayar"),
+                DB::raw("(select " . getLimit()[0] . " PatientName from " . getDatabase('master') . ".m_pasien where MedicalNo = reg_medrec " . getLimit()[1] . ") as PatientName"),
+                DB::raw("(select " . getLimit()[0] . " ParamedicName from " . getDatabase('master') . ".m_paramedis where ParamedicCode = reg_dokter " . getLimit()[1] . ") as ParamedicName"),
+                DB::raw("(select * from " . getDatabase('master') . ".m_physician_team where id = reg_no) as physicianTeam"),
             ])
             ->limit(200)
             ->get();
 
         foreach ($data as $key => $value) {
             $current = getCurrentLocation($value->reg_no);
-            
+
             $data[$key]->service_unit = $current['ServiceUnitID'] ?? null;
             $data[$key]->ServiceUnitName = $current['ServiceUnitName'] ?? null;
             $data[$key]->RoomName = $current['RoomName'] ?? null;
             $data[$key]->room_id = $current['RoomID'] ?? null;
-			$data[$key]->currentdt = $current;
+            $data[$key]->currentdt = $current;
 
             $data[$key]->physicianTeam = DB::connection('mysql2')
                 ->table('m_physician_team')
                 ->where('reg_no', $value->reg_no)
                 ->select([
-                    DB::raw("(select ".getLimit()[0]." ParamedicName from ".getDatabase('master').".m_paramedis where ParamedicCode = kode_dokter ".getLimit()[1].") as ParamedicName"),
+                    DB::raw("(select " . getLimit()[0] . " ParamedicName from " . getDatabase('master') . ".m_paramedis where ParamedicCode = kode_dokter " . getLimit()[1] . ") as ParamedicName"),
                     'kategori',
                     'kode_dokter'
                 ])

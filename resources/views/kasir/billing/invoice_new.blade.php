@@ -476,7 +476,7 @@ header("Content-type: text/css; charset: UTF-8");
               </tr>
               @isset($payer['Multipayer'])
               <tr>
-                <td>Multipayer</td>
+                <td>{{ $payer['Multipayer']['multipayer_name'] }}</td>
                 <td>:</td>
                 <td class="text-right"><b>{{ number_format($payer['Multipayer']['nominal_difference'], 2) }}</b></td>
               </tr>

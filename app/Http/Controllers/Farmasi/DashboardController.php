@@ -57,7 +57,7 @@ class DashboardController extends Controller
                     ->table('businesspartner')
                     ->where('id', $query->reg_cara_bayar)
                     ->first();
-            
+
                 return $businessPartner ? $businessPartner->BusinessPartnerName : '-';
             })
             ->editColumn('aksi_data', function ($query) use ($request) {
@@ -69,8 +69,77 @@ class DashboardController extends Controller
             ->toJson();
     }
 
-
     public function data_table(Request $request, $ruang)
+    {
+        $dokter_code = auth()->user()->dokter_id;
+
+        $datamypatient = DB::connection('mysql2')
+            ->table('m_registrasi')
+            ->leftJoin(
+                DB::raw('(SELECT RegNo, ToUnitServiceID, ToClassCode
+                                FROM m_bed_history
+                                WHERE id = (SELECT MAX(id) FROM m_bed_history bh WHERE bh.RegNo = m_bed_history.RegNo))
+                                as m_bed_history'),
+                'm_registrasi.reg_no',
+                'm_bed_history.RegNo'
+            )
+            ->leftJoin('m_unit_departemen as udep', 'udep.ServiceUnitID', 'm_bed_history.ToUnitServiceID')
+            ->leftJoin('m_unit', 'udep.ServiceUnitCode', 'm_unit.ServiceUnitCode');
+
+        $datamypatient = $datamypatient->where('m_registrasi.reg_discharge', '!=', '3')
+            ->whereRaw("
+                    (m_bed_history.ToUnitServiceID = ? or m_unit.ServiceUnitCode = ?)
+                ", [(int) $ruang, $ruang]);
+
+        $datamypatient = $datamypatient
+            ->select([
+                'm_registrasi.reg_medrec',
+                'm_registrasi.reg_no',
+                'm_registrasi.reg_tgl',
+                'm_registrasi.reg_jam',
+                'm_registrasi.reg_dokter_care',
+                'm_registrasi.reg_perawat_care',
+
+                DB::raw("(select " . getLimit()[0] . " PatientName from " . getDatabase('master') . ".m_pasien where MedicalNo = reg_medrec " . getLimit()[1] . ") as PatientName"),
+                DB::raw("(select " . getLimit()[0] . " ParamedicName from " . getDatabase('master') . ".m_paramedis where ParamedicCode = reg_dokter " . getLimit()[1] . ") as ParamedicName"),
+                DB::raw("(select " . getLimit()[0] . " BusinessPartnerName from " . getDatabase('master') . ".businesspartner where id = reg_cara_bayar " . getLimit()[1] . ") as reg_cara_bayar"),
+            ])
+            ->limit(200)
+            ->get();
+
+
+        foreach ($datamypatient as $key => $value) {
+            $current = getCurrentLocation($value->reg_no);
+
+            $datamypatient[$key]->service_unit = $current['ServiceUnitID'] ?? null;
+            $datamypatient[$key]->ServiceUnitName = $current['ServiceUnitName'] ?? null;
+            $datamypatient[$key]->RoomName = $current['RoomName'] ?? null;
+            $datamypatient[$key]->room_id = $current['RoomID'] ?? null;
+            $datamypatient[$key]->currentdt = $current;
+
+            $datamypatient[$key]->physicianTeam = DB::connection('mysql2')
+                ->table('m_physician_team')
+                ->where('reg_no', $value->reg_no)
+                ->select([
+                    DB::raw("(select " . getLimit()[0] . " ParamedicName from " . getDatabase('master') . ".m_paramedis where ParamedicCode = kode_dokter " . getLimit()[1] . ") as ParamedicName"),
+                    'kategori',
+                    'kode_dokter'
+                ])
+                ->get() ?? [];
+        }
+
+
+        if (isset($request->no_ajax)) {
+            return $datamypatient;
+        }
+
+        $noData = $datamypatient->isEmpty();
+
+        return view('farmasi.table', compact('datamypatient', 'noData'));
+    }
+
+
+    public function data_table_(Request $request, $ruang)
     {
         $datamypatient = DB::connection('mysql2')
             ->table("m_registrasi")
@@ -93,7 +162,7 @@ class DashboardController extends Controller
                 'm_registrasi.reg_no',
                 'm_registrasi.reg_dokter',
                 'm_paramedis.ParamedicName',
-                DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '".$ruang."') as ServiceUnitName"),
+                DB::raw("(select ServiceUnitName from m_unit where ServiceUnitCode = '" . $ruang . "') as ServiceUnitName"),
                 'businesspartner.BusinessPartnerName as reg_cara_bayar',
                 'm_registrasi.reg_tgl',
                 'm_registrasi.reg_jam',
@@ -146,7 +215,7 @@ class DashboardController extends Controller
         ]);
 
         session()->forget('user_shift');
-        
+
         session(['user_shift' => $request->shift]);
 
         return response()->json(['success' => true]);

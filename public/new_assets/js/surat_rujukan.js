@@ -80,9 +80,11 @@ $(document).ready(function () {
                     $("input[name='rujukan_pemberi_informasi']").val(
                         informasi.rujukan_pemberi_informasi || ""
                     );
-                    $("select2[name='ParamedicCode']").val(
-                        informasi.ParamedicCode || ""
-                    );
+                    $("#ParamedicCodeRujukan").val(informasi.ParamedicCode).trigger('change');
+                    if (informasi.ParamedicCode) {
+                        var $option = $('<option selected>').val(informasi.ParamedicCode).text(informasi.ParamedicName);
+                        $("#ParamedicCodeRujukan").append($option).trigger('change');
+                    }
                     $("input[name='rujukan_rs_tujuan']").val(
                         informasi.rujukan_rs_tujuan || ""
                     );

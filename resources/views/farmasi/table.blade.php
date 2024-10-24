@@ -25,9 +25,9 @@
       </td>
       <td class="text-sm"><b>{{$item->PatientName}}</b></td>
       <td class="text-sm">{{$item->ParamedicName}}</td>
-      <td class="text-sm">
-        @foreach(explode('|', $item->physician_team) as $team_member)
-            <span style="margin-right: 5px; margin-bottom: 5px; white-space: nowrap; font-size: 0.875rem;" class="badge badge-primary">{{ $team_member }}</span><br>
+      <td>
+        @foreach($item->physicianTeam as $team_member)
+        <span style="margin-right: 5px; margin-bottom: 5px; white-space: nowrap; font-size: 0.875rem;" class="badge badge-primary">{{ trim($team_member->ParamedicName) }}</span><br>
         @endforeach
       </td>
       <td class="text-sm">
