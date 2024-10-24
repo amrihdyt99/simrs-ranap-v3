@@ -34,7 +34,7 @@
                     Nama :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="nama" value="" id="nama">
+                    <input type="text" class="form-control" name="nama" value="" id="nama" readonly>
                 </td>
             </tr>
             <tr>
@@ -42,7 +42,7 @@
                     Umur/Jenis Kelamin :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="umur" id="umur" value="">
+                    <input type="text" class="form-control" name="umur" id="umur" value="" readonly>
                     <div class="custom-control custom-radio custom-control-inline">
                         <input type="radio" class="custom-control-input" name="jenis_kelamin" value="0001^M" id="laki_laki">
                         <label class="custom-control-label" for="laki_laki">Laki-laki</label>
@@ -58,7 +58,7 @@
                     No.Telp :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="no_telp" id="no_telp" value="">
+                    <input type="text" class="form-control" name="no_telp" id="no_telp" value="" readonly>
                 </td>
             </tr>
             <tr>
@@ -66,7 +66,7 @@
                     No. Rekam Medis :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="no_rekam_medis" id="no_rekam_medis" value="">
+                    <input type="text" class="form-control" name="no_rekam_medis" id="no_rekam_medis" value="" readonly>
                 </td>
             </tr>
             <tr>
@@ -74,7 +74,7 @@
                     Diagnosa :
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="diagonsa" id="diagonsa" value="">
+                    <input type="text" class="form-control" name="diagonsa" id="diagonsa" value="" readonly>
                 </td>
             </tr>
             <tr>

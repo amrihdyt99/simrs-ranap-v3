@@ -1600,10 +1600,13 @@ class NyaaViewInjectorController extends AaaBaseController
         $registrasi_pj = RegistrasiPJawab::where('reg_no', $request->reg_no)->get();
 
 
+        $dbMaster = DB::connection('mysql2')->getDatabaseName();
+        $dbInap = DB::connection('mysql')->getDatabaseName();
+
         $informasi = DB::connection('mysql')
-            ->table('rs_tindakan_medis_informasi')
-            ->join('rs_m_paramedic', 'rs_tindakan_medis_informasi.paramediccode', '=', 'rs_m_paramedic.paramediccode')
-            ->select('rs_tindakan_medis_informasi.*', 'rs_m_paramedic.ParamedicName')
+            ->table($dbInap . '.dbo.rs_tindakan_medis_informasi as rs_tindakan_medis_informasi')
+            ->join($dbMaster . '.dbo.m_paramedis as m_paramedis', 'rs_tindakan_medis_informasi.paramediccode', '=', 'm_paramedis.paramediccode')
+            ->select('rs_tindakan_medis_informasi.*', 'm_paramedis.ParamedicName')
             ->where('reg_no', $request->reg_no)
             ->first();
 
@@ -1621,8 +1624,8 @@ class NyaaViewInjectorController extends AaaBaseController
             'reg' => $request->reg_no,
             'medrec' => $request->medrec,
             'informasi' => optional($informasi),
-            'persetujuan' => $persetujuan,
-            'penolakan' => $penolakan,
+            'persetujuan' => optional($persetujuan),
+            'penolakan' => optional($penolakan),
             'dataPasien' => $dataPasien,
             'registrasi_pj' => $registrasi_pj,
 
@@ -1777,7 +1780,7 @@ class NyaaViewInjectorController extends AaaBaseController
 
         $informasi = DB::connection('mysql')
             ->table($dbInap . '.dbo.rs_tindakan_medis_informasi as rs_tindakan_medis_informasi')
-            ->join($dbMaster . '.dbo.m_paramedis as m_paramedis', 'rs_tindakan_medis_informasi.paramediccode', '=', 'm_paramedis.paramediccode')
+            ->join($dbMaster . '.dbo.m_paramedis as m_paramedis', 'rs_tindakan_medis_informasi.ParamedicCode', '=', 'm_paramedis.ParamedicCode')
             ->select('rs_tindakan_medis_informasi.*', 'm_paramedis.ParamedicName')
             ->where('reg_no', $request->reg_no)
             ->first();

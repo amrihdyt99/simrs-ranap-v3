@@ -121,7 +121,6 @@ class AssesmentAwalDokterController extends Controller
                     ['success' => true]
                 );
             }
-            
         } catch (\Throwable $th) {
             return response()->json(
                 ['success' => false, 'msg' => $th]
@@ -163,7 +162,7 @@ class AssesmentAwalDokterController extends Controller
         $params = $request->except('_token');
         $cek = DB::connection('mysql')
             ->table('rs_edukasi_pasien_dokter')->where('reg_no', $request->reg_no)->first();
-            
+
         $params['ttd_dokter'] = $request->ttd_edukator;
         $params['ttd_pasien'] = $request->ttd_sasaran;
         $params['med_rec'] = $request->medrec;
@@ -234,7 +233,8 @@ class AssesmentAwalDokterController extends Controller
         }
     }
 
-    function getAssesmentDokter(Request $request){
+    function getAssesmentDokter(Request $request)
+    {
         try {
             $data = DB::table('assesment_awal_dokter')
                 ->where('no_reg', $request->reg_no)
@@ -242,7 +242,6 @@ class AssesmentAwalDokterController extends Controller
                 ->first();
 
             return $data;
-
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -449,7 +448,7 @@ class AssesmentAwalDokterController extends Controller
                 $a['medical_no'] = $reg->reg_medrec;
                 $a['scheduled_dttm'] = date('YmdHis');
 
-                $send_to_radiology = postService(urlLabRadiology().'/api/order-radiologi', $a);
+                $send_to_radiology = postService(urlLabRadiology() . '/api/order-radiologi', $a);
 
                 $resp = json_decode($send_to_radiology);
 
@@ -472,13 +471,13 @@ class AssesmentAwalDokterController extends Controller
                     $jobOrder['status_kirim'] = $send_to_radiology;
 
                     $store_jor = DB::table('job_orders')
-                                    ->insert($jobOrder);
+                        ->insert($jobOrder);
                 }
 
                 if ($resp->success == false) {
                     return [
                         'code' => 500,
-                        'success'=> false,
+                        'success' => false,
                         'message' => $resp->message,
                         'data' => $resp->data
                     ];
@@ -535,7 +534,7 @@ class AssesmentAwalDokterController extends Controller
                 $i['item_unit'] = "X";
                 $i['personal_price'] = $a->harga_jual;
                 $i['corporate_price'] = 0;
-                
+
                 array_push($item, $i);
             }
 
@@ -586,7 +585,7 @@ class AssesmentAwalDokterController extends Controller
             $a['scheduled_dttm'] = date('YmdHis');
             $a['address'] = $pasien->PatientAddress ?? '-';
 
-            $send_to_laboratory = postService(urlLabRadiology().'/api/order-lab', $a);
+            $send_to_laboratory = postService(urlLabRadiology() . '/api/order-lab', $a);
 
             $resp = json_decode($send_to_laboratory);
 
@@ -609,13 +608,13 @@ class AssesmentAwalDokterController extends Controller
                 $jobOrder['status_kirim'] = $send_to_laboratory;
 
                 $store_jor = DB::table('job_orders')
-                                ->insert($jobOrder);
+                    ->insert($jobOrder);
             }
 
             if ($resp->success == false) {
                 return [
                     'code' => 500,
-                    'success'=> false,
+                    'success' => false,
                     'message' => $resp->message,
                     'data' => $resp->data
                 ];
@@ -637,7 +636,7 @@ class AssesmentAwalDokterController extends Controller
         );
 
         $cek = DB::connection('mysql')->table('rs_pasien_cppt')->where('status_review', '99')->where('soapdok_reg', $request->reg_no)->where('soapdok_dokter', $request->soapdok_dokter)->first();
-        
+
         if ($cek) {
             $simpancppt = DB::connection('mysql')
                 ->table('rs_pasien_cppt')
@@ -691,8 +690,8 @@ class AssesmentAwalDokterController extends Controller
         if (isset($lab) || isset($rad)) {
             return response()->json([
                 'success' => false,
-                'lab' => $lab, 
-                'rad' => $rad, 
+                'lab' => $lab,
+                'rad' => $rad,
             ]);
         }
 
@@ -778,16 +777,16 @@ class AssesmentAwalDokterController extends Controller
         }
 
         foreach ($data_soap as $new_key => $new_value) {
-            $data_soap[$new_key]['updated_at'] = $new_value['soap_tanggal'].' '.$new_value['soap_waktu'];
+            $data_soap[$new_key]['updated_at'] = $new_value['soap_tanggal'] . ' ' . $new_value['soap_waktu'];
         }
-        
+
         // GET DATA SOAP FROM RAJAL
-        $dataSoapFromRajal = getService(urlSimrs().'api/emr/cppt/latest/'.str_replace('/', '_', $request->reg_no), true);
+        $dataSoapFromRajal = getService(urlSimrs() . 'api/emr/cppt/latest/' . str_replace('/', '_', $request->reg_no), true);
 
         $dataSoapFromRajal = count($dataSoapFromRajal[0]) > 0 ? $dataSoapFromRajal[0] : [];
 
 
-        $dataTindakanFromRajal = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$request->reg_no, true);
+        $dataTindakanFromRajal = getService(urlSimrs() . 'api/rajal/tagihan/perItem?reg_no=' . $request->reg_no, true);
 
         if (count($dataTindakanFromRajal) > 0) {
             foreach ($dataTindakanFromRajal as $key_tindakan => $value_tindakan) {
@@ -803,10 +802,10 @@ class AssesmentAwalDokterController extends Controller
 
         if (count($dataSoapFromRajal)) {
             foreach ($dataSoapFromRajal as $key_soap_rajal => $value_soap_rajal) {
-                $filteredData = array_filter($dataTindakanFromRajal, function($item_tindakan) use ($value_soap_rajal) {
+                $filteredData = array_filter($dataTindakanFromRajal, function ($item_tindakan) use ($value_soap_rajal) {
                     return $item_tindakan['cpoe_dokter_kode'] == $value_soap_rajal['reg_dokter_kode'];
                 });
-                
+
                 $dataSoapFromRajal[$key_soap_rajal]['soapdok_posisi'] = ucfirst($value_soap_rajal['level_user']);
                 $dataSoapFromRajal[$key_soap_rajal]['order_lainnya'] = $filteredData;
             }
@@ -828,16 +827,16 @@ class AssesmentAwalDokterController extends Controller
     {
         $reg_no = $request->reg_no;
         $reg_lama = DB::connection('mysql2')->table('m_registrasi')->where('reg_no', $reg_no)->first()->reg_lama ?? $reg_no;
-    
-        $historySoapRajal = getService(urlSimrs().'api/emr/cppt/latest/'.str_replace('/', '_', $reg_lama), true);
+
+        $historySoapRajal = getService(urlSimrs() . 'api/emr/cppt/latest/' . str_replace('/', '_', $reg_lama), true);
         $historySoapRajal = count($historySoapRajal[0]) > 0 ? $historySoapRajal[0] : [];
-    
-        $historySoapIGD = getService(urlSimrs().'data_patient_notes/'.str_replace('/', '_', $reg_lama), true);
+
+        $historySoapIGD = getService(urlSimrs() . 'data_patient_notes/' . str_replace('/', '_', $reg_lama), true);
         $historySoapIGD = is_array($historySoapIGD) ? $historySoapIGD : [];
-    
+
         // Mengambil data tindakan
-        $dataTindakanFromRajal = getService(urlSimrs().'api/rajal/tagihan/perItem?reg_no='.$reg_lama, true);
-    
+        $dataTindakanFromRajal = getService(urlSimrs() . 'api/rajal/tagihan/perItem?reg_no=' . $reg_lama, true);
+
         if (count($dataTindakanFromRajal) > 0) {
             foreach ($dataTindakanFromRajal as $key_tindakan => $value_tindakan) {
                 $dataTindakanFromRajal[$key_tindakan]['id'] = $value_tindakan['cpoe_kode'];
@@ -849,33 +848,33 @@ class AssesmentAwalDokterController extends Controller
                 $dataTindakanFromRajal[$key_tindakan]['ParamedicName'] = $value_tindakan['cpoe_dokter'];
             }
         }
-    
+
         if (count($historySoapRajal) > 0) {
             foreach ($historySoapRajal as $key_soap => $value_soap) {
-                $filteredData = array_filter($dataTindakanFromRajal, function($item_tindakan) use ($value_soap) {
+                $filteredData = array_filter($dataTindakanFromRajal, function ($item_tindakan) use ($value_soap) {
                     return $item_tindakan['cpoe_dokter_kode'] == $value_soap['reg_dokter_kode'];
                 });
-                
+
                 $historySoapRajal[$key_soap]['soapdok_posisi'] = ucfirst($value_soap['level_user']);
                 $historySoapRajal[$key_soap]['order_lainnya'] = array_values($filteredData);
                 $historySoapRajal[$key_soap]['source'] = 'Rajal';
             }
         }
-    
+
         if (count($historySoapIGD) > 0) {
             foreach ($historySoapIGD as $key_soap => $value_soap) {
                 $historySoapIGD[$key_soap]['soapdok_posisi'] = 'IGD';
-                $historySoapIGD[$key_soap]['order_lainnya'] = []; 
+                $historySoapIGD[$key_soap]['order_lainnya'] = [];
                 $historySoapIGD[$key_soap]['source'] = 'IGD';
             }
         }
-    
+
         $allSoapData = array_merge($historySoapRajal, $historySoapIGD);
-    
+
         // usort($allSoapData, function ($a, $b) {
         //     return strtotime($b['updated_at'] ?? $b['soap_tanggal']) - strtotime($a['updated_at'] ?? $a['soap_tanggal']);
         // });
-    
+
         return response()->json([
             'success' => true,
             'data_soap' => $allSoapData,
@@ -960,10 +959,10 @@ class AssesmentAwalDokterController extends Controller
         } else {
             $edukasi_gizi = implode(",", $request->edukasi_gizi);
         }
-        if (!$request->penanganan_nyeri_kronis) {
-            $penanganan_nyeri_kronis = null;
+        if (!$request->penanganan_nyeri) {
+            $penanganan_nyeri = null;
         } else {
-            $penanganan_nyeri_kronis = implode(",", $request->penanganan_nyeri_kronis);
+            $penanganan_nyeri = implode(",", $request->penanganan_nyeri);
         }
         if (!$request->kebutuhan_lainnya) {
             $kebutuhan_lainnya = null;
@@ -977,12 +976,14 @@ class AssesmentAwalDokterController extends Controller
             'pengelolaan_penyakit_secara_berkelanjutan' => $pengelolaan_penyakit_secara_berkelanjutan,
             'bantuan_dalam_aktifitas' => $bantuan_dalam_aktifitas,
             'edukasi_gizi' => $edukasi_gizi,
-            'penanganan_nyeri_kronis' => $penanganan_nyeri_kronis,
+            'penanganan_nyeri_kronis' => $penanganan_nyeri,
             'kebutuhan_lainnya' => $kebutuhan_lainnya,
             'waktu' => $request->waktu,
             'tanggal' => $request->tanggal,
 
         );
+
+
         $simapn = DB::connection('mysql')
             ->table('rs_pemulangan_pasien')
             ->insert($params);
@@ -1021,7 +1022,7 @@ class AssesmentAwalDokterController extends Controller
                 ->leftJoin('rs_pasien_cppt as c', 'p.reg_no', '=', 'c.soapdok_reg')
                 // ->where('p.reg_no', 'c.soapdok_reg')
                 ->get();
-    
+
             return response()->json([
                 'success' => true,
                 'data' => $data,
@@ -1034,11 +1035,12 @@ class AssesmentAwalDokterController extends Controller
         }
     }
 
-    public function getAlertAlergi(Request $request){
+    public function getAlertAlergi(Request $request)
+    {
         try {
             $pengkajian_awal = null;
 
-            if($request->kategori_pasien === "dewasa"){
+            if ($request->kategori_pasien === "dewasa") {
                 $pengkajian_awal = DB::connection('mysql')
                     ->table('pengkajian_dewasa_awal')
                     ->select([
@@ -1049,7 +1051,7 @@ class AssesmentAwalDokterController extends Controller
                     ])
                     ->where('reg_no', $request->reg_no)
                     ->first();
-            } else if($request->kategori_pasien === "kebidanan"){
+            } else if ($request->kategori_pasien === "kebidanan") {
                 $pengkajian_awal = DB::connection('mysql')
                     ->table('pengkajian_obgyn_alergi_dan_keadaan_umum')
                     ->select([
@@ -1060,7 +1062,7 @@ class AssesmentAwalDokterController extends Controller
                     ])
                     ->where('reg_no', $request->reg_no)
                     ->first();
-            } else if($request->kategori_pasien === "anak"){
+            } else if ($request->kategori_pasien === "anak") {
                 $pengkajian_awal = DB::connection('mysql')
                     ->table('pengkajian_awal_anak_perawat')
                     ->select([
@@ -1079,7 +1081,8 @@ class AssesmentAwalDokterController extends Controller
         }
     }
 
-    public function getAlertJatuh(Request $request){
+    public function getAlertJatuh(Request $request)
+    {
         try {
             $resiko_jatuh = null;
 
@@ -1093,7 +1096,7 @@ class AssesmentAwalDokterController extends Controller
                     ->where('reg_no', $request->reg_no)
                     ->latest()
                     ->first();
-                
+
                 $resiko_jatuh_morse = DB::connection('mysql')
                     ->table('resiko_jatuh_skala_morse')
                     ->select([
@@ -1103,7 +1106,7 @@ class AssesmentAwalDokterController extends Controller
                     ->where('reg_no', $request->reg_no)
                     ->latest()
                     ->first();
-                
+
                 $resiko_jatuh = [
                     'geriatri' => $resiko_jatuh_geriatri,
                     'morse' => $resiko_jatuh_morse
@@ -1118,7 +1121,7 @@ class AssesmentAwalDokterController extends Controller
                     ->where('reg_no', $request->reg_no)
                     ->latest()
                     ->first();
-                
+
                 $resiko_jatuh_morse = DB::connection('mysql')
                     ->table('resiko_jatuh_skala_morse')
                     ->select([
@@ -1128,7 +1131,7 @@ class AssesmentAwalDokterController extends Controller
                     ->where('reg_no', $request->reg_no)
                     ->latest()
                     ->first();
-                
+
                 $resiko_jatuh = [
                     'geriatri' => $resiko_jatuh_geriatri,
                     'morse' => $resiko_jatuh_morse
@@ -1144,7 +1147,7 @@ class AssesmentAwalDokterController extends Controller
                     ->latest()
                     ->first();
 
-                    $resiko_jatuh_morse = DB::connection('mysql')
+                $resiko_jatuh_morse = DB::connection('mysql')
                     ->table('resiko_jatuh_skala_morse')
                     ->select([
                         'resiko_jatuh_morse_total_skor',
@@ -1170,7 +1173,8 @@ class AssesmentAwalDokterController extends Controller
         }
     }
 
-    public function checkPemeriksaan(Request $request){
+    public function checkPemeriksaan(Request $request)
+    {
         try {
             $cppt = DB::table('rs_pasien_cppt')
                 ->where('soapdok_reg', $request->reg_no)
@@ -1183,11 +1187,11 @@ class AssesmentAwalDokterController extends Controller
             $data = [
                 'cppt' => [
                     'status' => isset($cppt) ? 200 : 404,
-                    'msg' => (isset($cppt) ? 'Sudah' : 'Belum'). ' ada pemeriksaan dari dokter atau perawat'
+                    'msg' => (isset($cppt) ? 'Sudah' : 'Belum') . ' ada pemeriksaan dari dokter atau perawat'
                 ],
                 'tindakan' => [
                     'status' => isset($tindakan) ? 200 : 404,
-                    'msg' => (isset($tindakan) ? 'Sudah' : 'Belum'). ' ada pemeriksaan dari dokter atau perawat'
+                    'msg' => (isset($tindakan) ? 'Sudah' : 'Belum') . ' ada pemeriksaan dari dokter atau perawat'
                 ],
             ];
 

@@ -1,11 +1,11 @@
 @php
-    $get_tindakan_medis_data_penolakan = DB::connection('mysql')
-        ->table('rs_tindakan_medis_penolakan')
-        ->where('kode_tindakan_medis_setuju_tolak', $informasi->kode_tindakan_medis_setuju_tolak)
-        ->first();
-    if (!$get_tindakan_medis_data_penolakan) {
-        $get_tindakan_medis_data_penolakan = optional((object) []);
-    }
+$get_tindakan_medis_data_penolakan = DB::connection('mysql')
+->table('rs_tindakan_medis_penolakan')
+->where('reg_no', $informasi->reg_no)
+->first();
+if (!$get_tindakan_medis_data_penolakan) {
+$get_tindakan_medis_data_penolakan = optional((object) []);
+}
 @endphp
 <form id="PenolakanTindakanMedis">
     <input type="hidden" name="kode_tindakan_medis_setuju_tolak"
@@ -224,14 +224,14 @@
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
                                     @if($registrasi_pj->isNotEmpty())
-                                        <select name="nama_penolakan_keluarga" class="form-control mt-2">
-                                            <option value="">Pilih Nama Keluarga</option>
-                                            @foreach($registrasi_pj as $pj)
-                                                <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_penolakan->nama_penolakan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
-                                            @endforeach
-                                        </select>
+                                    <select name="nama_penolakan_keluarga" class="form-control mt-2">
+                                        <option value="">Pilih Nama Keluarga</option>
+                                        @foreach($registrasi_pj as $pj)
+                                        <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_penolakan->nama_penolakan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
+                                        @endforeach
+                                    </select>
                                     @else
-                                        <input type="text" name="nama_penolakan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="{{ $get_tindakan_medis_data_penolakan->nama_penolakan_keluarga ?? '' }}">
+                                    <input type="text" name="nama_penolakan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="{{ $get_tindakan_medis_data_penolakan->nama_penolakan_keluarga ?? '' }}">
                                     @endif
                                 </div>
                             </div>
@@ -260,8 +260,8 @@
                 </tr>
             </tbody>
         </table>
-        
-        
+
+
     </div>
-    <button class="btn btn-success float-left mt-4" id="save-penolakan-tindakan-medis" type="button" >Simpan</button>
+    <button class="btn btn-success float-left mt-4" id="save-penolakan-tindakan-medis" type="button">Simpan</button>
 </form>

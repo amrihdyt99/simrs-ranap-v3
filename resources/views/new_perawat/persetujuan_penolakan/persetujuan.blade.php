@@ -1,14 +1,14 @@
 @php
-    $get_tindakan_medis_data_persetujuan=DB::connection('mysql')
-            ->table('rs_tindakan_medis_persetujuan')
-            ->where('kode_tindakan_medis_setuju_tolak', $informasi->kode_tindakan_medis_setuju_tolak)
-            ->first();
-            if (!$get_tindakan_medis_data_persetujuan) {
-                $get_tindakan_medis_data_persetujuan=optional((object)[]);
-            }
+$get_tindakan_medis_data_persetujuan=DB::connection('mysql')
+->table('rs_tindakan_medis_persetujuan')
+->where('reg_no', $informasi->reg_no)
+->first();
+if (!$get_tindakan_medis_data_persetujuan) {
+$get_tindakan_medis_data_persetujuan=optional((object)[]);
+}
 @endphp
 <form id="PersetujuanTindakanMedis">
-<input type="hidden" name="kode_tindakan_medis_setuju_tolak" value="{{$informasi->kode_tindakan_medis_setuju_tolak}}">
+    <input type="hidden" name="kode_tindakan_medis_setuju_tolak" value="{{$informasi->kode_tindakan_medis_setuju_tolak}}">
     <div class="card">
         <div class="card-header">
             <h5><b>PERSETUJUAN TINDAKAN MEDIS</b></h5>
@@ -31,11 +31,11 @@
                     <td>
                         <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_laki_laki" value="Laki-laki" {{$get_tindakan_medis_data_persetujuan->persetujuan_jenis_kelamin_1 == 'Laki-laki' ? 'checked' : ''}}>
                         <label for="persetujuan_jenis_kelamin_1_laki_laki">Laki-laki</label>
-                    
+
                         <input type="radio" name="persetujuan_jenis_kelamin_1" id="persetujuan_jenis_kelamin_1_perempuan" value="Perempuan" {{$get_tindakan_medis_data_persetujuan->persetujuan_jenis_kelamin_1 == 'Perempuan' ? 'checked' : ''}}>
                         <label for="persetujuan_jenis_kelamin_1_perempuan">Perempuan</label>
                     </td>
-                    
+
                 </tr>
                 <tr>
                     <td>
@@ -204,14 +204,14 @@
                                         data-action="clear"><span class="glyphicon glyphicon-remove"></span>
                                         Hapus</button>
                                     @if($registrasi_pj->isNotEmpty())
-                                        <select name="nama_persetujuan_keluarga" class="form-control mt-2">
-                                            <option value="">Pilih Nama Keluarga</option>
-                                            @foreach($registrasi_pj as $pj)
-                                                <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
-                                            @endforeach
-                                        </select>
+                                    <select name="nama_persetujuan_keluarga" class="form-control mt-2">
+                                        <option value="">Pilih Nama Keluarga</option>
+                                        @foreach($registrasi_pj as $pj)
+                                        <option value="{{ $pj->reg_pjawab_nama }}" {{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga == $pj->reg_pjawab_nama ? 'selected' : '' }}>{{ $pj->reg_pjawab_nama }}</option>
+                                        @endforeach
+                                    </select>
                                     @else
-                                        <input type="text" name="nama_persetujuan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="{{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga ?? '' }}">
+                                    <input type="text" name="nama_persetujuan_keluarga" class="form-control mt-2" placeholder="Nama Keluarga" value="{{ $get_tindakan_medis_data_persetujuan->nama_persetujuan_keluarga ?? '' }}">
                                     @endif
                                 </div>
                             </div>
@@ -240,7 +240,7 @@
                 </tr>
             </tbody>
         </table>
-        
+
     </div>
     <button class="btn btn-success float-left mt-4" id="save-persetujuan-tindakan-medis" type="button">Simpan</button>
 </form>

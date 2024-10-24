@@ -88,6 +88,10 @@ class RekonsiliasiObatController extends AaaBaseController
                         ['med_rec', $rekon_data['med_rec']],
                     ])->count();
 
+                $rekon_data['time_ttd_dpjp'] = Carbon::parse($rekon_data['time_ttd_dpjp'])->toDateTimeString();
+                $rekon_data['time_ttd_farmasi'] = Carbon::parse($rekon_data['time_ttd_farmasi'])->toDateTimeString();
+                $rekon_data['time_ttd_perawat'] = Carbon::parse($rekon_data['time_ttd_perawat'])->toDateTimeString();
+
                 if ($cekRekon > 0) {
                     $rekon_data['updated_at'] = Carbon::now();
                     $rekonData = DB::connection('mysql')->table('rekonsiliasi_obat')->where('reg_no', $rekon_data['reg_no'])->update($rekon_data);
@@ -123,6 +127,7 @@ class RekonsiliasiObatController extends AaaBaseController
             $validator = Validator::make($request->all(), []);
 
             if ($validator->passes()) {
+                $obat['waktu_beri_terakhir'] = Carbon::parse($obat['waktu_beri_terakhir'])->toDateTimeString();
                 $obat['created_at'] = Carbon::now();
                 DB::connection('mysql')->table('rekonsiliasi_obat_item')->insert($obat);
 

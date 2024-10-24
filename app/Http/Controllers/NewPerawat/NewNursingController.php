@@ -411,7 +411,7 @@ class NewNursingController extends Controller
             'no_reg' => $request->reg_no,
             'med_rec' => $request->med_rec,
             'nama_perawat' => $request->nama_perawat,
-            'tanggal_waktu_pemberian' => $request->tanggal_pemberian,
+            'tanggal_waktu_pemberian' => Carbon::parse($request->tanggal_pemberian)->toDateTime(),
             'cairan_transfusi' => $request->cairan_transfusi,
             'jumlah_cairan' => $request->jumlah_transfusi,
             'minum' => $request->minum,
@@ -1093,8 +1093,8 @@ class NewNursingController extends Controller
                 'ttd_pasien' => $ttdPasien,
                 'nama_keluarga_pasien' => $r->nama_keluarga_pasien,
                 'nama_perawat' => $r->nama_perawat,
-                'tgl_assesment_awal' => $r->tgl_assesment_awal,
-                'tgl_ttd' => $r->tgl_ttd,
+                'tgl_assesment_awal' => Carbon::parse($r->tgl_assesment_awal)->toDateTimeString(),
+                'tgl_ttd' => Carbon::parse($r->tgl_ttd)->toDateTime(),
                 'kepada_lain' => $r->kepada_lain,
 
             ]);
@@ -3178,6 +3178,103 @@ class NewNursingController extends Controller
         $paramsawalsearch = array(
             'reg_no' => $request->reg_no,
             'med_rec' => $request->medrec,
+        );
+
+        $params = array(
+            'kode_tindakan_medis_setuju_tolak' => $request->kode_tindakan_medis_setuju_tolak,
+            'persetujuan_nama_1' => $request->persetujuan_nama_1,
+            'persetujuan_jenis_kelamin_1' => $request->persetujuan_jenis_kelamin_1,
+            'persetujuan_tanggal_lahir_1' => $request->persetujuan_tanggal_lahir_1,
+            'persetujuan_alamat_1' => $request->persetujuan_alamat_1,
+            'persetujuan_pernyataan' => $request->persetujuan_pernyataan,
+            'persetujuan_terhadap' => $request->persetujuan_terhadap,
+            'persetujuan_nama_2' => $request->persetujuan_nama_2,
+            'persetujuan_jenis_kelamin_2' => $request->persetujuan_jenis_kelamin_2,
+            'persetujuan_tanggal_lahir_2' => $request->persetujuan_tanggal_lahir_2,
+            'persetujuan_alamat_2' => $request->persetujuan_alamat_2,
+            'persetujuan_tanggal_waktu_ttd' => Carbon::parse($request->persetujuan_tanggal_waktu_ttd)->toDateTimeString(),
+            'persetujuan_ttd_yg_menyatakan' => $request->ttd_penerima_setuju,
+            'persetujuan_ttd_dokter' => $request->ttd_dokter_setuju,
+            'persetujuan_ttd_keluarga' => $request->ttd_keluarga_setuju,
+            'persetujuan_ttd_perawat' => $request->ttd_perawat_setuju,
+            'nama_persetujuan_penerima' => $request->nama_persetujuan_penerima,
+            'nama_persetujuan_dokter' => $request->nama_persetujuan_dokter,
+            'nama_persetujuan_keluarga' => $request->nama_persetujuan_keluarga,
+            'nama_persetujuan_perawat' => $request->nama_persetujuan_perawat,
+
+        );
+        $check = DB::connection('mysql')
+            ->table('rs_tindakan_medis_persetujuan')
+            ->where($paramsawalsearch)
+            ->first();
+
+        if ($check) {
+            DB::connection('mysql')
+                ->table('rs_tindakan_medis_persetujuan')
+                ->where($paramsawalsearch)
+                ->update($params);
+        } else {
+            DB::connection('mysql')
+                ->table('rs_tindakan_medis_persetujuan')
+                ->insert(array_merge($paramsawalsearch, $params));
+        }
+    }
+
+    function addPenolakanTindakanMedis(Request $request)
+    {
+        $paramsawalsearch = array(
+            'reg_no' => $request->reg_no,
+            'med_rec' => $request->medrec,
+        );
+
+        $params = array(
+            'kode_tindakan_medis_setuju_tolak' => $request->kode_tindakan_medis_setuju_tolak,
+            'penolakan_nama_1' => $request->penolakan_nama_1,
+            'penolakan_jenis_kelamin_1' => $request->penolakan_jenis_kelamin_1,
+            'penolakan_tanggal_lahir_1' => $request->penolakan_tanggal_lahir_1,
+            'penolakan_alamat_1' => $request->penolakan_alamat_1,
+            'penolakan_pernyataan' => $request->penolakan_pernyataan,
+            'penolakan_terhadap' => $request->penolakan_terhadap,
+
+            'penolakan_nama_2' => $request->penolakan_nama_2,
+            'penolakan_jenis_kelamin_2' => $request->penolakan_jenis_kelamin_2,
+            'penolakan_tanggal_lahir_2' => $request->penolakan_tanggal_lahir_2,
+            'penolakan_alamat_2' => $request->penolakan_alamat_2,
+            'penolakan_tanggal_ttd' => Carbon::parse($request->penolakan_tanggal_ttd)->toDateTimeString(),
+
+            'penolakan_ttd_yg_menyatakan' => $request->ttd_penerima_penolakan,
+            'penolakan_ttd_dokter' => $request->ttd_dokter_penolakan,
+            'penolakan_ttd_keluarga' => $request->ttd_keluarga_penolakan,
+            'penolakan_ttd_perawat' => $request->ttd_perawat_penolakan,
+            'nama_penolakan_penerima' => $request->nama_penolakan_penerima,
+            'nama_penolakan_dokter' => $request->nama_penolakan_dokter,
+            'nama_penolakan_keluarga' => $request->nama_penolakan_keluarga,
+            'nama_penolakan_perawat' => $request->nama_penolakan_perawat,
+
+        );
+        $check = DB::connection('mysql')
+            ->table('rs_tindakan_medis_penolakan')
+            ->where($paramsawalsearch)
+            ->first();
+
+        if ($check) {
+            DB::connection('mysql')
+                ->table('rs_tindakan_medis_penolakan')
+                ->where($paramsawalsearch)
+                ->update($params);
+        } else {
+            DB::connection('mysql')
+                ->table('rs_tindakan_medis_penolakan')
+                ->insert(array_merge($paramsawalsearch, $params));
+        }
+    }
+
+
+    function addPersetujuanTindakanMedisOld(Request $request)
+    {
+        $paramsawalsearch = array(
+            'reg_no' => $request->reg_no,
+            'med_rec' => $request->medrec,
             'kode_tindakan_medis_setuju_tolak' => $request->kode_tindakan_medis_setuju_tolak,
         );
 
@@ -3208,7 +3305,7 @@ class NewNursingController extends Controller
             ->updateOrInsert($paramsawalsearch, $params);
     }
 
-    function addPenolakanTindakanMedis(Request $request)
+    function addPenolakanTindakanMedisOld(Request $request)
     {
         $paramsawalsearch = array(
             'reg_no' => $request->reg_no,
